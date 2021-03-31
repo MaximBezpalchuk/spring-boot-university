@@ -1,4 +1,4 @@
-package com.foxminded.university;
+package com.foxminded.university.model;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public class Cathedra {
 
 	public void getTTForMonth(Teacher teacher, int month) {
 	}
-
+	
 	public List<Group> getGroups() {
 		return groups;
 	}
