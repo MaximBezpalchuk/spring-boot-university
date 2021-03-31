@@ -29,6 +29,7 @@ public class DataCreator {
 		
 	}
 
+	//TODO: make cathedra into constructors
 	private void createStudents() {
 		Student student1 = new Student("Petr", "Orlov", "888005353535", "Empty Street 8", "male", "999",
 				"General secondary education", LocalDate.of(1994, 12, 03));
