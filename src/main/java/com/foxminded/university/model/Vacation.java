@@ -6,30 +6,24 @@ public class Vacation {
 
 	private String description;
 	private LocalDate start;
-	private LocalDate finish;
+	private LocalDate end;
+
+	public Vacation(String description, LocalDate start, LocalDate end) {
+		this.description = description;
+		this.start = start;
+		this.end = end;
+	}
 
 	public String getDescription() {
 		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
 	}
 
 	public LocalDate getStart() {
 		return start;
 	}
 
-	public void setStart(LocalDate start) {
-		this.start = start;
-	}
-
-	public LocalDate getFinish() {
-		return finish;
-	}
-
-	public void setFinish(LocalDate finish) {
-		this.finish = finish;
+	public LocalDate getEnd() {
+		return end;
 	}
 
 }

@@ -8,6 +8,10 @@ public class Group {
 	private Cathedra cathedra;
 	private List<Lecture> lectures;
 	private String name;
+	
+	public Group(String name) {
+		this.name = name;
+	}
 
 	public List<Student> getStudents() {
 		return students;
@@ -35,10 +39,6 @@ public class Group {
 
 	public String getName() {
 		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 }

@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Teacher extends Person {
 
-	protected Teacher(String firstName, String lastName, String phone, String address, String gender, String postalCode,
+	public Teacher(String firstName, String lastName, String phone, String address, String gender, String postalCode,
 			String education, LocalDate birthDate) {
 		super(firstName, lastName, phone, address, gender, postalCode, education, birthDate);
 	}
