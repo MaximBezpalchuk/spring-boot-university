@@ -5,19 +5,17 @@ public class Audience {
 	private int room;
 	private int capacity;
 
-	public int getRoom() {
-		return room;
+	public Audience(int room, int capacity) {
+		this.room = room;
+		this.capacity = capacity;
 	}
 
-	public void setRoom(int room) {
-		this.room = room;
+	public int getRoom() {
+		return room;
 	}
 
 	public int getCapacity() {
 		return capacity;
 	}
 
-	public void setCapacity(int capacity) {
-		this.capacity = capacity;
-	}
 }

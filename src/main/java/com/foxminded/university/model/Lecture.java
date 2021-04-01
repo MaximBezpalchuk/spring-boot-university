@@ -12,6 +12,14 @@ public class Lecture {
 	private Subject subject;
 	private LectureTime time;
 
+	public Lecture(Subject subject, LocalDate date, LectureTime time, Audience audience, Teacher teacher) {
+		this.subject = subject;
+		this.date = date;
+		this.time = time;
+		this.audience = audience;
+		this.teacher = teacher;
+	}
+
 	public List<Group> getGroups() {
 		return groups;
 	}
@@ -24,40 +32,20 @@ public class Lecture {
 		return teacher;
 	}
 
-	public void setTeacher(Teacher teacher) {
-		this.teacher = teacher;
-	}
-
 	public Audience getAudience() {
 		return audience;
-	}
-
-	public void setAudience(Audience audience) {
-		this.audience = audience;
 	}
 
 	public LocalDate getDate() {
 		return date;
 	}
 
-	public void setDate(LocalDate date) {
-		this.date = date;
-	}
-
 	public Subject getSubject() {
 		return subject;
 	}
 
-	public void setSubject(Subject subject) {
-		this.subject = subject;
-	}
-
 	public LectureTime getTime() {
 		return time;
-	}
-
-	public void setTime(LectureTime time) {
-		this.time = time;
 	}
 
 }

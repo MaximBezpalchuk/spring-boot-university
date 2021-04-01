@@ -5,22 +5,19 @@ import java.util.List;
 
 public class Teacher extends Person {
 
-	public Teacher(String firstName, String lastName, String phone, String address, String gender, String postalCode,
-			String education, LocalDate birthDate) {
-		super(firstName, lastName, phone, address, gender, postalCode, education, birthDate);
-	}
-
 	private Cathedra cathedra;
 	private List<Subject> subjects;
 	private List<Vacation> vacations;
 	private String degree;
 
+	public Teacher(String firstName, String lastName, String phone, String address, String gender, String postalCode,
+			String education, LocalDate birthDate, Cathedra cathedra) {
+		super(firstName, lastName, phone, address, gender, postalCode, education, birthDate);
+		this.cathedra = cathedra;
+	}
+	
 	public Cathedra getCathedra() {
 		return cathedra;
-	}
-
-	public void setCathedra(Cathedra cathedra) {
-		this.cathedra = cathedra;
 	}
 
 	public List<Subject> getSubjects() {

@@ -1,12 +1,13 @@
 package com.foxminded.university.model;
 
 import java.util.List;
+import java.util.Map;
 
 public class Cathedra {
 
 	private List<Group> groups;
 	private List<Teacher> teachers;
-	private List<Lecture> lectures;
+	private Map<String, Lecture> lectures;
 	private List<Holiday> holidays;
 
 	public void getTTForDay(Student student, int day, int month) {
@@ -29,6 +30,14 @@ public class Cathedra {
 		this.groups = groups;
 	}
 
+	public void setLectures(Map<String, Lecture> lectures) {
+		this.lectures = lectures;
+	}
+
+	public void setHolidays(List<Holiday> holidays) {
+		this.holidays = holidays;
+	}
+
 	public List<Teacher> getTeachers() {
 		return teachers;
 	}
@@ -37,19 +46,12 @@ public class Cathedra {
 		this.teachers = teachers;
 	}
 
-	public List<Lecture> getLectures() {
+	public Map<String, Lecture> getLectures() {
 		return lectures;
-	}
-
-	public void setLectures(List<Lecture> lectures) {
-		this.lectures = lectures;
 	}
 
 	public List<Holiday> getHolidays() {
 		return holidays;
 	}
 
-	public void setHolidays(List<Holiday> holidays) {
-		this.holidays = holidays;
-	}
 }

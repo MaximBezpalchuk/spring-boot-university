@@ -9,8 +9,9 @@ public class Group {
 	private List<Lecture> lectures;
 	private String name;
 	
-	public Group(String name) {
+	public Group(String name, Cathedra cathedra) {
 		this.name = name;
+		this.cathedra = cathedra;
 	}
 
 	public List<Student> getStudents() {
@@ -23,10 +24,6 @@ public class Group {
 
 	public Cathedra getCathedra() {
 		return cathedra;
-	}
-
-	public void setCathedra(Cathedra cathedra) {
-		this.cathedra = cathedra;
 	}
 
 	public List<Lecture> getLectures() {
