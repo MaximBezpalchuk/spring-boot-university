@@ -8,7 +8,7 @@ public class Group {
 	private Cathedra cathedra;
 	private List<Lecture> lectures;
 	private String name;
-	
+
 	public Group(String name, Cathedra cathedra) {
 		this.name = name;
 		this.cathedra = cathedra;
