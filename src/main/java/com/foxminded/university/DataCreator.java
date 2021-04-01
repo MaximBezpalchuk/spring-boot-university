@@ -20,7 +20,7 @@ import com.foxminded.university.model.Vacation;
 
 public class DataCreator {
 
-	private Cathedra cathedra;
+	private Cathedra cathedra = new Cathedra();
 	private List<Student> students = new ArrayList<>();
 	private List<Teacher> teachers = new ArrayList<>();
 	private List<Group> groups = new ArrayList<>();
@@ -29,12 +29,7 @@ public class DataCreator {
 	private List<Audience> audiences = new ArrayList<>();
 	private List<Holiday> holidays = new ArrayList<>();
 	
-	public DataCreator(Cathedra cathedra) {
-		this.cathedra = cathedra;
-		createData();
-	}
-
-	private void createData() {
+	public Cathedra createData() {
 		cathedra.setGroups(groups);
 		cathedra.setLectures(lectures);
 		cathedra.setTeachers(teachers);
@@ -48,18 +43,19 @@ public class DataCreator {
 		createLectures();
 		assertGroupsToLectures();
 		createHolidays();
+		return cathedra;
 	}
 
 	private void createStudents() {
-		Student student1 = new Student("Petr", "Orlov", "888005353535", "Empty Street 8", "male", "999",
+		Student student1 = new Student("Petr", "Orlov", "888005353535", "Empty Street 8", "1@owl.com", "male", "999",
 				"General secondary education", LocalDate.of(1994, 3, 3));
-		Student student2 = new Student("Oleg", "Krasnov", "2247582", "Empty Street 8-2", "male", "999",
+		Student student2 = new Student("Oleg", "Krasnov", "2247582", "Empty Street 8-2", "2@owl.com", "male", "999",
 				"General secondary education", LocalDate.of(1994, 5, 13));
-		Student student3 = new Student("Margot", "Robbie", "9999999999", "Holywood Street 1", "female", "254826",
+		Student student3 = new Student("Margot", "Robbie", "9999999999", "Holywood Street 1", "3@owl.com", "female", "254826",
 				"General tecnical education", LocalDate.of(1990, 2, 7));
-		Student student4 = new Student("Kim", "Cattrall", "(312)-555-0690", "Virtual Reality Capsule no 2", "female",
+		Student student4 = new Student("Kim", "Cattrall", "(312)-555-0690", "Virtual Reality Capsule no 2", "4@owl.com", "female",
 				"12345", "College education", LocalDate.of(1956, 8, 21));
-		Student student5 = new Student("Thomas", "Anderson", "(312)-555-5555", "Virtual Reality Capsule no 3", "male",
+		Student student5 = new Student("Thomas", "Anderson", "(312)-555-5555", "Virtual Reality Capsule no 3", "5@owl.com", "male",
 				"12345", "College education", LocalDate.of(1962, 3, 11));
 		students.add(student1);
 		students.add(student2);
@@ -72,24 +68,28 @@ public class DataCreator {
 		Group group1 = new Group("Killers", cathedra);
 		List<Student> students1 = new ArrayList<>();
 		students1.add(students.get(0));
+		students.get(0).setGroup(group1);
 		students1.add(students.get(1));
+		students.get(1).setGroup(group1);
 		students1.add(students.get(2));
+		students.get(2).setGroup(group1);
 		group1.setStudents(students1);
 		Group group2 = new Group("Mages", cathedra);
 		List<Student> students2 = new ArrayList<>();
 		students2.add(students.get(3));
+		students.get(3).setGroup(group2);
 		students2.add(students.get(4));
+		students.get(4).setGroup(group2);
 		group2.setStudents(students2);
 		groups.add(group1);
 		groups.add(group2);
 	}
 
 	private void createTeachers() {
-		Teacher teacher1 = new Teacher("Daniel", "Morpheus", "1", "Virtual Reality Capsule no 1", "male", "12345",
+		Teacher teacher1 = new Teacher("Daniel", "Morpheus", "1", "Virtual Reality Capsule no 1", "1@bigowl.com", "male", "12345",
 				"Higher education", LocalDate.of(1970, 01, 01), cathedra);
-		Teacher teacher2 = new Teacher("Bane", "Smith", "1", "Virtual Reality", "male", "none", "none",
+		Teacher teacher2 = new Teacher("Bane", "Smith", "1", "Virtual Reality", "0@bigowl.com", "male", "none", "none",
 				LocalDate.of(1970, 01, 01), cathedra);
-		teachers = new ArrayList<>();
 		teachers.add(teacher1);
 		teachers.add(teacher2);
 		assertVacations();
@@ -202,15 +202,15 @@ public class DataCreator {
 		//Monday - wt and ul - only killers
 		Lecture wt1 = new Lecture(subjects.get(0), LocalDate.of(2021, 4, 4), createLectureTime(1), audiences.get(0), teachers.get(0));
 		Lecture wt2 = new Lecture(subjects.get(0), LocalDate.of(2021, 4, 4), createLectureTime(2), audiences.get(0), teachers.get(0));
-		Lecture ul1 = new Lecture(subjects.get(0), LocalDate.of(2021, 4, 4), createLectureTime(3), audiences.get(2), teachers.get(1));
-		Lecture ul2 = new Lecture(subjects.get(0), LocalDate.of(2021, 4, 4), createLectureTime(4), audiences.get(2), teachers.get(1));
+		Lecture ul1 = new Lecture(subjects.get(2), LocalDate.of(2021, 4, 4), createLectureTime(3), audiences.get(2), teachers.get(1));
+		Lecture ul2 = new Lecture(subjects.get(2), LocalDate.of(2021, 4, 4), createLectureTime(4), audiences.get(2), teachers.get(1));
 		//Wednesday - wm - only mages
-		Lecture wm1 = new Lecture(subjects.get(0), LocalDate.of(2021, 4, 6), createLectureTime(2), audiences.get(1), teachers.get(1));
-		Lecture wm2 = new Lecture(subjects.get(0), LocalDate.of(2021, 4, 6), createLectureTime(3), audiences.get(1), teachers.get(1));
-		Lecture wm3 = new Lecture(subjects.get(0), LocalDate.of(2021, 4, 6), createLectureTime(4), audiences.get(1), teachers.get(1));
+		Lecture wm1 = new Lecture(subjects.get(1), LocalDate.of(2021, 4, 6), createLectureTime(2), audiences.get(1), teachers.get(1));
+		Lecture wm2 = new Lecture(subjects.get(1), LocalDate.of(2021, 4, 6), createLectureTime(3), audiences.get(1), teachers.get(1));
+		Lecture wm3 = new Lecture(subjects.get(1), LocalDate.of(2021, 4, 6), createLectureTime(4), audiences.get(1), teachers.get(1));
 		//Friday - ul for mages, wt for killers
-		Lecture ul3 = new Lecture(subjects.get(0), LocalDate.of(2021, 4, 8), createLectureTime(2), audiences.get(2), teachers.get(1));
-		Lecture ul4 = new Lecture(subjects.get(0), LocalDate.of(2021, 4, 8), createLectureTime(3), audiences.get(2), teachers.get(1));
+		Lecture ul3 = new Lecture(subjects.get(2), LocalDate.of(2021, 4, 8), createLectureTime(2), audiences.get(2), teachers.get(1));
+		Lecture ul4 = new Lecture(subjects.get(2), LocalDate.of(2021, 4, 8), createLectureTime(3), audiences.get(2), teachers.get(1));
 		Lecture wt3 = new Lecture(subjects.get(0), LocalDate.of(2021, 4, 8), createLectureTime(4), audiences.get(0), teachers.get(0));
 		Lecture wt4 = new Lecture(subjects.get(0), LocalDate.of(2021, 4, 8), createLectureTime(5), audiences.get(0), teachers.get(0));
 		

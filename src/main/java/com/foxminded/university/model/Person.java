@@ -14,12 +14,13 @@ public class Person {
 	private String education;
 	private LocalDate birthDate;
 
-	protected Person(String firstName, String lastName, String phone, String address, String gender, String postalCode,
+	protected Person(String firstName, String lastName, String phone, String address, String email, String gender, String postalCode,
 			String education, LocalDate birthDate) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.phone = phone;
 		this.address = address;
+		this.email = email;
 		this.gender = gender;
 		this.postalCode = postalCode;
 		this.education = education;

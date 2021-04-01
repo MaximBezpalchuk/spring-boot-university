@@ -10,9 +10,9 @@ public class Teacher extends Person {
 	private List<Vacation> vacations;
 	private String degree;
 
-	public Teacher(String firstName, String lastName, String phone, String address, String gender, String postalCode,
+	public Teacher(String firstName, String lastName, String phone, String address, String email, String gender, String postalCode,
 			String education, LocalDate birthDate, Cathedra cathedra) {
-		super(firstName, lastName, phone, address, gender, postalCode, education, birthDate);
+		super(firstName, lastName, phone, address, email, gender, postalCode, education, birthDate);
 		this.cathedra = cathedra;
 	}
 	
