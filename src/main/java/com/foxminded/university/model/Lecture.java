@@ -32,6 +32,10 @@ public class Lecture {
 		return teacher;
 	}
 
+	public void setAudience(Audience audience) {
+		this.audience = audience;
+	}
+
 	public Audience getAudience() {
 		return audience;
 	}

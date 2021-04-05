@@ -34,6 +34,7 @@ public class DataCreator {
 		cathedra.setLectures(lectures);
 		cathedra.setTeachers(teachers);
 		cathedra.setHolidays(holidays);
+		cathedra.setSubjects(subjects);
 		createStudents();
 		createGroups();
 		createTeachers();
@@ -121,9 +122,11 @@ public class DataCreator {
 		teacherS1.add(teachers.get(0));
 		subjects.get(0).setTeachers(teacherS1);
 		List<Teacher> teacherS2 = new ArrayList<>();
-		teacherS2.add(teachers.get(0));
 		teacherS2.add(teachers.get(1));
 		subjects.get(1).setTeachers(teacherS2);
+		List<Teacher> teacherS3 = new ArrayList<>();
+		teacherS3.add(teachers.get(1));
+		subjects.get(2).setTeachers(teacherS3);
 	}
 
 	private void assertVacations() {

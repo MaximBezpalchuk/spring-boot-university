@@ -12,6 +12,7 @@ public class Cathedra {
 	private List<Teacher> teachers;
 	private Map<String, Lecture> lectures;
 	private List<Holiday> holidays;
+	private List<Subject> subjects;
 
 	public List<Lecture> getTTForDay(Student student, int day, int month) {
 		MonthDay md = MonthDay.of(month, day);
@@ -60,6 +61,14 @@ public class Cathedra {
 		return monthLecture;
 	}
 
+	public List<Subject> getSubjects() {
+		return subjects;
+	}
+
+	public void setSubjects(List<Subject> subjects) {
+		this.subjects = subjects;
+	}
+	
 	public List<Group> getGroups() {
 		return groups;
 	}
