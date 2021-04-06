@@ -1,12 +1,13 @@
 package com.foxminded.university.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Group {
 
-	private List<Student> students;
+	private List<Student> students = new ArrayList<>();
 	private Cathedra cathedra;
-	private List<Lecture> lectures;
+	private List<Lecture> lectures = new ArrayList<>();
 	private String name;
 
 	public Group(String name, Cathedra cathedra) {

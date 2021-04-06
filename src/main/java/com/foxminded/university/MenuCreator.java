@@ -4,12 +4,18 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Group;
+import com.foxminded.university.model.Holiday;
+import com.foxminded.university.model.Lecture;
+import com.foxminded.university.model.LectureTime;
 import com.foxminded.university.model.Subject;
+import com.foxminded.university.model.Teacher;
 
 public class MenuCreator {
 
@@ -178,7 +184,8 @@ public class MenuCreator {
 	private void submenuCreate() throws IOException {
 		System.out.println(printCreateMenu());
 		Formatter formatter = new Formatter();
-		DataUpdater du = new DataUpdater();
+		DataUpdater dataUpdater = new DataUpdater();
+		DataCreator dataCreator = new DataCreator();
 		int choise = getInput(6);
 		switch (choise) {
 		case 1:
@@ -209,7 +216,7 @@ public class MenuCreator {
 			System.out.println(formatter.formatGroupList(cathedra.getGroups()));
 			int groupNumber1 = getInput(cathedra.getGroups().size());
 			Group group1 = cathedra.getGroups().get(groupNumber1-1);
-			du.createStudent(firstName1, lastName1, phone1, address1, email1, gender1, postalCode1, education1, birthDate1, group1);
+			dataUpdater.createStudent(firstName1, lastName1, phone1, address1, email1, gender1, postalCode1, education1, birthDate1, group1);
 			System.out.println("Student added!");
 			break;
 		case 2:
@@ -244,20 +251,72 @@ public class MenuCreator {
 				Subject subject2 = cathedra.getSubjects().get(Integer.parseInt(subjNum)-1);
 				subjects2.add(subject2);
 			}
-			du.createTeacher(firstName2, lastName2, phone2, address2, email2, gender2, postalCode2, education2, birthDate2, cathedra, subjects2);
+			dataUpdater.createTeacher(firstName2, lastName2, phone2, address2, email2, gender2, postalCode2, education2, birthDate2, cathedra, subjects2);
 			System.out.println("Teacher added!");
 			break;
 		case 3:
-			System.out.println("Create new subject");
+			System.out.println("Enter subject name:");
+			String subjectName3 = reader.readLine();
+			System.out.println("Enter subject description:");
+			String subjectDescription3 = reader.readLine();
+			Subject subject3 = new Subject(subjectName3, subjectDescription3);
+			cathedra.getSubjects().add(subject3);
+			System.out.println("Subject added!");
 			break;
 		case 4:
-			System.out.println("Create new student group");
+			System.out.println("Enter group name:");
+			String groupName4 = reader.readLine();
+			Group group4 = new Group(groupName4, cathedra);
+			cathedra.getGroups().add(group4);
+			System.out.println("Group added!");
 			break;
 		case 5:
-			System.out.println("Create new lecture");
+			System.out.println("Enter lecture name");
+			String lectureName5 = reader.readLine();
+			System.out.println("Set subject from the list:");
+			System.out.println(formatter.formatSubjectList(cathedra.getSubjects()));
+			Subject subject5 = cathedra.getSubjects().get(Integer.parseInt(reader.readLine())-1);
+			System.out.println("Set teacher from the list:");
+			System.out.println(formatter.formatTeacherList(cathedra.getTeachers()));
+			Teacher teacher5 = cathedra.getTeachers().get(Integer.parseInt(reader.readLine())-1);
+			System.out.println("Set audience from the list:");
+			System.out.println(formatter.formatAudiencesList(cathedra.getAudiences()));
+			Audience audience5 = cathedra.getAudiences().get(Integer.parseInt(reader.readLine())-1);
+			System.out.println("Enter the lecture date separated by commas without spaces (YEAR,MONTH,DAY):");
+			String lectureDateString5 = reader.readLine();
+			String[] lectureArr5=lectureDateString5.split(",");
+			int lectureYear5 = Integer.parseInt(lectureArr5[0]);
+			int lectureMonth5 = Integer.parseInt(lectureArr5[1]);
+			int lectureDay5 = Integer.parseInt(lectureArr5[2]);
+			LocalDate lectureDate5 = LocalDate.of(lectureYear5, lectureMonth5, lectureDay5);
+			System.out.println("Set lecture time from the list:");
+			System.out.println("1. " + LocalTime.of(8, 0) + " - " + LocalTime.of(9, 30));
+			System.out.println("2. " + LocalTime.of(9, 40) + " - " + LocalTime.of(11, 10));
+			System.out.println("3. " + LocalTime.of(11, 20) + " - " + LocalTime.of(12, 50));
+			System.out.println("4. " + LocalTime.of(13, 20) + " - " + LocalTime.of(14, 50));
+			System.out.println("5. " + LocalTime.of(15, 0) + " - " + LocalTime.of(16, 30));
+			System.out.println("6. " + LocalTime.of(16, 40) + " - " + LocalTime.of(18, 10));
+			System.out.println("7. " + LocalTime.of(18, 20) + " - " + LocalTime.of(19, 50));
+			System.out.println("8. " + LocalTime.of(20, 0) + " - " + LocalTime.of(21, 30));
+			int lectureTimeInt5 = Integer.parseInt(reader.readLine());
+			LectureTime lectureTime5 = dataCreator.createLectureTime(lectureTimeInt5);
+			Lecture lecture5 = new Lecture(subject5, lectureDate5, lectureTime5, audience5, teacher5);
+			cathedra.getLectures().put(lectureName5, lecture5);
+			System.out.println("Lecture added!");
 			break;
 		case 6:
-			System.out.println("Create new holiday");
+			System.out.println("Enter holiday description");
+			String holidayDescription6 = reader.readLine();
+			System.out.println("Enter the holiday date separated by commas without spaces (YEAR,MONTH,DAY):");
+			String holidayDateString5 = reader.readLine();
+			String[] holidayArr5=holidayDateString5.split(",");
+			int holidayYear5 = Integer.parseInt(holidayArr5[0]);
+			int holidayMonth5 = Integer.parseInt(holidayArr5[1]);
+			int holidayDay5 = Integer.parseInt(holidayArr5[2]);
+			LocalDate holidayDate5 = LocalDate.of(holidayYear5, holidayMonth5, holidayDay5);
+			Holiday holiday6 = new Holiday(holidayDescription6, holidayDate5);
+			cathedra.getHolidays().add(holiday6);
+			System.out.println("Holiday added!");
 			break;
 		case 0:
 			break;
@@ -314,7 +373,7 @@ public class MenuCreator {
 			System.out.println("Change lecture time");
 			break;
 		case 7:
-			System.out.println("Set groups to lectures");
+			System.out.println("Set group to lecture");
 			break;
 		case 0:
 			break;

@@ -1,11 +1,12 @@
 package com.foxminded.university.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Lecture {
 
-	private List<Group> groups;
+	private List<Group> groups = new ArrayList<>();
 	private Teacher teacher;
 	private Audience audience;
 	private LocalDate date;

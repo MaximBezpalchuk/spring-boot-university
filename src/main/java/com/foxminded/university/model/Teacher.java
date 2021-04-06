@@ -1,13 +1,14 @@
 package com.foxminded.university.model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Teacher extends Person {
 
 	private Cathedra cathedra;
-	private List<Subject> subjects;
-	private List<Vacation> vacations;
+	private List<Subject> subjects = new ArrayList<>();
+	private List<Vacation> vacations = new ArrayList<>();
 	private String degree;
 
 	public Teacher(String firstName, String lastName, String phone, String address, String email, String gender,

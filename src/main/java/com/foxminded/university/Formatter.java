@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Lecture;
 import com.foxminded.university.model.Subject;
+import com.foxminded.university.model.Teacher;
 
 public class Formatter {
 
@@ -37,6 +39,18 @@ public class Formatter {
 	public String formatSubjectList(List<Subject> subjects) {
 		AtomicInteger index = new AtomicInteger();
 		return subjects.stream().map(subject -> String.format("%d. Name: %-7s |" + "Description: %s", index.incrementAndGet(), subject.getName(), subject.getDescription()))
+				.collect(Collectors.joining(System.lineSeparator()));
+	}
+	
+	public String formatTeacherList(List<Teacher> teachers) {
+		AtomicInteger index = new AtomicInteger();
+		return teachers.stream().map(teacher -> String.format("%d. Name: %-15s", index.incrementAndGet(), teacher.getFirstName() + " " + teacher.getLastName()))
+				.collect(Collectors.joining(System.lineSeparator()));
+	}
+	
+	public String formatAudiencesList(List<Audience> audiences) {
+		AtomicInteger index = new AtomicInteger();
+		return audiences.stream().map(audience -> String.format("%d. Room ¹: %-5d| Capacity: %d", index.incrementAndGet(), audience.getRoom(), audience.getCapacity()))
 				.collect(Collectors.joining(System.lineSeparator()));
 	}
 }

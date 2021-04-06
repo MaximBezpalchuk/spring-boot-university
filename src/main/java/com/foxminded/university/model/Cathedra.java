@@ -3,16 +3,18 @@ package com.foxminded.university.model;
 import java.time.Month;
 import java.time.MonthDay;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Cathedra {
 
-	private List<Group> groups;
-	private List<Teacher> teachers;
-	private Map<String, Lecture> lectures;
-	private List<Holiday> holidays;
-	private List<Subject> subjects;
+	private List<Group> groups = new ArrayList<>();
+	private List<Teacher> teachers = new ArrayList<>();
+	private Map<String, Lecture> lectures = new HashMap<>();
+	private List<Holiday> holidays = new ArrayList<>();
+	private List<Subject> subjects = new ArrayList<>();
+	private List<Audience> audiences = new ArrayList<>();
 
 	public List<Lecture> getTTForDay(Student student, int day, int month) {
 		MonthDay md = MonthDay.of(month, day);
@@ -61,6 +63,14 @@ public class Cathedra {
 		return monthLecture;
 	}
 
+	public List<Audience> getAudiences() {
+		return audiences;
+	}
+
+	public void setAudiences(List<Audience> audiences) {
+		this.audiences = audiences;
+	}
+
 	public List<Subject> getSubjects() {
 		return subjects;
 	}
@@ -68,7 +78,7 @@ public class Cathedra {
 	public void setSubjects(List<Subject> subjects) {
 		this.subjects = subjects;
 	}
-	
+
 	public List<Group> getGroups() {
 		return groups;
 	}

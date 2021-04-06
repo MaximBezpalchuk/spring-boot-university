@@ -35,6 +35,7 @@ public class DataCreator {
 		cathedra.setTeachers(teachers);
 		cathedra.setHolidays(holidays);
 		cathedra.setSubjects(subjects);
+		cathedra.setAudiences(audiences);
 		createStudents();
 		createGroups();
 		createTeachers();
@@ -145,7 +146,7 @@ public class DataCreator {
 		teachers.get(1).setVacations(vacationsT2);
 	}
 
-	private LectureTime createLectureTime(int lessonNumber) {
+	public LectureTime createLectureTime(int lessonNumber) {
 		LectureTime time = new LectureTime();
 		switch (lessonNumber) {
 		case 1:

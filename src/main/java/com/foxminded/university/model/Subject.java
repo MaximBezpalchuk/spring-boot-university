@@ -1,12 +1,13 @@
 package com.foxminded.university.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Subject {
 
 	private String name;
 	private String description;
-	private List<Teacher> teachers;
+	private List<Teacher> teachers = new ArrayList<>();
 
 	public Subject(String name, String description) {
 		this.name = name;
