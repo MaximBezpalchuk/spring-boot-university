@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Cathedra;
@@ -14,15 +15,20 @@ import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Holiday;
 import com.foxminded.university.model.Lecture;
 import com.foxminded.university.model.LectureTime;
+import com.foxminded.university.model.Student;
 import com.foxminded.university.model.Subject;
 import com.foxminded.university.model.Teacher;
+import com.foxminded.university.model.Vacation;
 
 public class MenuCreator {
 
 	private boolean exit;
 	private BufferedReader reader;
 	private Cathedra cathedra;
-	
+	Formatter formatter = new Formatter();
+	DataUpdater dataUpdater = new DataUpdater();
+	DataCreator dataCreator = new DataCreator();
+
 	public MenuCreator(Cathedra cathedra) {
 		this.cathedra = cathedra;
 	}
@@ -81,7 +87,13 @@ public class MenuCreator {
 		menu.append(System.lineSeparator());
 		menu.append("5 - Get holiday list");
 		menu.append(System.lineSeparator());
-		menu.append("6 - Get timetable");
+		menu.append("6 - Get timetable for student - day");
+		menu.append(System.lineSeparator());
+		menu.append("7 - Get timetable for teacher - day");
+		menu.append(System.lineSeparator());
+		menu.append("8 - Get timetable for student - month");
+		menu.append(System.lineSeparator());
+		menu.append("9 - Get timetable for teacher - month");
 		menu.append(System.lineSeparator());
 		menu.append("0 - Go to the main menu");
 
@@ -183,9 +195,6 @@ public class MenuCreator {
 
 	private void submenuCreate() throws IOException {
 		System.out.println(printCreateMenu());
-		Formatter formatter = new Formatter();
-		DataUpdater dataUpdater = new DataUpdater();
-		DataCreator dataCreator = new DataCreator();
 		int choise = getInput(6);
 		switch (choise) {
 		case 1:
@@ -207,7 +216,7 @@ public class MenuCreator {
 			String education1 = reader.readLine();
 			System.out.println("Enter the date of birth separated by commas without spaces (YEAR,MONTH,DAY):");
 			String birthDateString1 = reader.readLine();
-			String[] birthArr1=birthDateString1.split(",");
+			String[] birthArr1 = birthDateString1.split(",");
 			int birthYear1 = Integer.parseInt(birthArr1[0]);
 			int birthMonth1 = Integer.parseInt(birthArr1[1]);
 			int birthDay1 = Integer.parseInt(birthArr1[2]);
@@ -215,8 +224,9 @@ public class MenuCreator {
 			System.out.println("Set group from list:");
 			System.out.println(formatter.formatGroupList(cathedra.getGroups()));
 			int groupNumber1 = getInput(cathedra.getGroups().size());
-			Group group1 = cathedra.getGroups().get(groupNumber1-1);
-			dataUpdater.createStudent(firstName1, lastName1, phone1, address1, email1, gender1, postalCode1, education1, birthDate1, group1);
+			Group group1 = cathedra.getGroups().get(groupNumber1 - 1);
+			dataUpdater.createStudent(firstName1, lastName1, phone1, address1, email1, gender1, postalCode1, education1,
+					birthDate1, group1);
 			System.out.println("Student added!");
 			break;
 		case 2:
@@ -238,20 +248,21 @@ public class MenuCreator {
 			String education2 = reader.readLine();
 			System.out.println("Enter the date of birth separated by commas without spaces (YEAR,MONTH,DAY):");
 			String birthDateString2 = reader.readLine();
-			String[] birthArr2=birthDateString2.split(",");
+			String[] birthArr2 = birthDateString2.split(",");
 			int birthYear2 = Integer.parseInt(birthArr2[0]);
 			int birthMonth2 = Integer.parseInt(birthArr2[1]);
 			int birthDay2 = Integer.parseInt(birthArr2[2]);
 			LocalDate birthDate2 = LocalDate.of(birthYear2, birthMonth2, birthDay2);
 			System.out.println("Set subject from list:");
 			System.out.println(formatter.formatSubjectList(cathedra.getSubjects()));
-			String[] subjectsArr2= reader.readLine().split(",");
+			String[] subjectsArr2 = reader.readLine().split(",");
 			List<Subject> subjects2 = new ArrayList<>();
-			for(String subjNum : subjectsArr2) {
-				Subject subject2 = cathedra.getSubjects().get(Integer.parseInt(subjNum)-1);
+			for (String subjNum : subjectsArr2) {
+				Subject subject2 = cathedra.getSubjects().get(Integer.parseInt(subjNum) - 1);
 				subjects2.add(subject2);
 			}
-			dataUpdater.createTeacher(firstName2, lastName2, phone2, address2, email2, gender2, postalCode2, education2, birthDate2, cathedra, subjects2);
+			dataUpdater.createTeacher(firstName2, lastName2, phone2, address2, email2, gender2, postalCode2, education2,
+					birthDate2, cathedra, subjects2);
 			System.out.println("Teacher added!");
 			break;
 		case 3:
@@ -275,16 +286,16 @@ public class MenuCreator {
 			String lectureName5 = reader.readLine();
 			System.out.println("Set subject from the list:");
 			System.out.println(formatter.formatSubjectList(cathedra.getSubjects()));
-			Subject subject5 = cathedra.getSubjects().get(Integer.parseInt(reader.readLine())-1);
+			Subject subject5 = cathedra.getSubjects().get(Integer.parseInt(reader.readLine()) - 1);
 			System.out.println("Set teacher from the list:");
 			System.out.println(formatter.formatTeacherList(cathedra.getTeachers()));
-			Teacher teacher5 = cathedra.getTeachers().get(Integer.parseInt(reader.readLine())-1);
+			Teacher teacher5 = cathedra.getTeachers().get(Integer.parseInt(reader.readLine()) - 1);
 			System.out.println("Set audience from the list:");
-			System.out.println(formatter.formatAudiencesList(cathedra.getAudiences()));
-			Audience audience5 = cathedra.getAudiences().get(Integer.parseInt(reader.readLine())-1);
+			System.out.println(formatter.formatAudienceList(cathedra.getAudiences()));
+			Audience audience5 = cathedra.getAudiences().get(Integer.parseInt(reader.readLine()) - 1);
 			System.out.println("Enter the lecture date separated by commas without spaces (YEAR,MONTH,DAY):");
 			String lectureDateString5 = reader.readLine();
-			String[] lectureArr5=lectureDateString5.split(",");
+			String[] lectureArr5 = lectureDateString5.split(",");
 			int lectureYear5 = Integer.parseInt(lectureArr5[0]);
 			int lectureMonth5 = Integer.parseInt(lectureArr5[1]);
 			int lectureDay5 = Integer.parseInt(lectureArr5[2]);
@@ -309,7 +320,7 @@ public class MenuCreator {
 			String holidayDescription6 = reader.readLine();
 			System.out.println("Enter the holiday date separated by commas without spaces (YEAR,MONTH,DAY):");
 			String holidayDateString5 = reader.readLine();
-			String[] holidayArr5=holidayDateString5.split(",");
+			String[] holidayArr5 = holidayDateString5.split(",");
 			int holidayYear5 = Integer.parseInt(holidayArr5[0]);
 			int holidayMonth5 = Integer.parseInt(holidayArr5[1]);
 			int holidayDay5 = Integer.parseInt(holidayArr5[2]);
@@ -323,90 +334,353 @@ public class MenuCreator {
 		}
 	}
 
-	private void submenuRead() {
+	private void submenuRead() throws IOException {
 		System.out.println(printReadMenu());
-		int choise = getInput(6);
+		int choise = getInput(9);
 		switch (choise) {
 		case 1:
-			System.out.println("Get student list");
+			List<Student> students1 = new ArrayList<>();
+			for (Group group : cathedra.getGroups()) {
+				for (Student student : group.getStudents()) {
+					if (!students1.contains(student)) {
+						students1.add(student);
+					}
+				}
+			}
+			System.out.println(formatter.formatStudentList(students1));
 			break;
 		case 2:
-			System.out.println("Get teacher list");
+			System.out.println(formatter.formatTeacherList(cathedra.getTeachers()));
 			break;
 		case 3:
-			System.out.println("Get subject list");
+			System.out.println(formatter.formatSubjectList(cathedra.getSubjects()));
 			break;
 		case 4:
-			System.out.println("Get group list");
+			System.out.println(formatter.formatGroupList(cathedra.getGroups()));
 			break;
 		case 5:
-			System.out.println("Get holiday list");
+			System.out.println(formatter.formatHolidayList(cathedra.getHolidays()));
 			break;
 		case 6:
-			System.out.println("Get timetable");
+			System.out.println("Select student from the list:");
+			List<Student> students6 = new ArrayList<>();
+			for (Group group : cathedra.getGroups()) {
+				for (Student student : group.getStudents()) {
+					if (!students6.contains(student)) {
+						students6.add(student);
+					}
+				}
+			}
+			System.out.println(formatter.formatStudentList(students6));
+			Student student6 = students6.get(Integer.parseInt(reader.readLine()) - 1);
+			System.out.println("Enter date separated by commas without spaces (MONTH,DAY):");
+			String lactureDateString6 = reader.readLine();
+			String[] lectureArr6 = lactureDateString6.split(",");
+			int lectureMonth6 = Integer.parseInt(lectureArr6[0]);
+			int lectureDay6 = Integer.parseInt(lectureArr6[1]);
+			System.out.println(formatter.formatLectureList(cathedra.getTTForDay(student6, lectureDay6, lectureMonth6)));
+			break;
+		case 7:
+			System.out.println("Select teacher from the list:");
+			System.out.println(formatter.formatTeacherList(cathedra.getTeachers()));
+			Teacher teacher7 = cathedra.getTeachers().get(Integer.parseInt(reader.readLine()) - 1);
+			System.out.println("Enter date separated by commas without spaces (MONTH,DAY):");
+			String lactureDateString7 = reader.readLine();
+			String[] lectureArr7 = lactureDateString7.split(",");
+			int lectureMonth7 = Integer.parseInt(lectureArr7[0]);
+			int lectureDay7 = Integer.parseInt(lectureArr7[1]);
+			System.out.println(formatter.formatLectureList(cathedra.getTTForDay(teacher7, lectureDay7, lectureMonth7)));
+			break;
+		case 8:
+			System.out.println("Select student from the list:");
+			List<Student> students8 = new ArrayList<>();
+			for (Group group : cathedra.getGroups()) {
+				for (Student student : group.getStudents()) {
+					if (!students8.contains(student)) {
+						students8.add(student);
+					}
+				}
+			}
+			System.out.println(formatter.formatStudentList(students8));
+			Student student8 = students8.get(Integer.parseInt(reader.readLine()) - 1);
+			System.out.println("Enter month number:");
+			int lectureMonth8 = Integer.parseInt(reader.readLine());
+			System.out.println(formatter.formatLectureList(cathedra.getTTForMonth(student8, lectureMonth8)));
+			break;
+		case 9:
+			System.out.println("Select teacher from the list:");
+			System.out.println(formatter.formatTeacherList(cathedra.getTeachers()));
+			Teacher teacher9 = cathedra.getTeachers().get(Integer.parseInt(reader.readLine()) - 1);
+			System.out.println("Enter month number:");
+			int lectureMonth9 = Integer.parseInt(reader.readLine());
+			System.out.println(formatter.formatLectureList(cathedra.getTTForMonth(teacher9, lectureMonth9)));
 			break;
 		case 0:
 			break;
 		}
 	}
 
-	private void submenuUpdate() {
+	private void submenuUpdate() throws IOException {
 		System.out.println(printUpdateMenu());
 		int choise = getInput(7);
 		switch (choise) {
 		case 1:
-			System.out.println("Set student to group");
+			System.out.println("Select student from the list:");
+			List<Student> students1 = new ArrayList<>();
+			for (Group group : cathedra.getGroups()) {
+				for (Student student : group.getStudents()) {
+					if (!students1.contains(student)) {
+						students1.add(student);
+					}
+				}
+			}
+			System.out.println(formatter.formatStudentList(students1));
+			Student student1 = students1.get(Integer.parseInt(reader.readLine()) - 1);
+			System.out.println("Select group from the list:");
+			System.out.println(formatter.formatGroupList(cathedra.getGroups()));
+			Group group1 = cathedra.getGroups().get(Integer.parseInt(reader.readLine()) - 1);
+			student1.setGroup(group1);
+			group1.getStudents().add(student1);
+			System.out.println("Student group was changed!");
 			break;
 		case 2:
-			System.out.println("Set teacher vacation");
+			System.out.println("Select teacher from the list:");
+			System.out.println(formatter.formatTeacherList(cathedra.getTeachers()));
+			Teacher teacher2 = cathedra.getTeachers().get(Integer.parseInt(reader.readLine()) - 1);
+			System.out.println("Enter vacation start date separated by commas without spaces (YEAR,MONTH,DAY):");
+			String vacationStartDateString2 = reader.readLine();
+			String[] vacationStartArr2 = vacationStartDateString2.split(",");
+			int vacationStartYear2 = Integer.parseInt(vacationStartArr2[0]);
+			int vacationStartMonth2 = Integer.parseInt(vacationStartArr2[1]);
+			int vacationStartDay2 = Integer.parseInt(vacationStartArr2[2]);
+			LocalDate vacationStartDate2 = LocalDate.of(vacationStartYear2, vacationStartMonth2, vacationStartDay2);
+			System.out.println("Enter vacation end date separated by commas without spaces (YEAR,MONTH,DAY):");
+			String vacationEndDateString2 = reader.readLine();
+			String[] vacationEndArr2 = vacationEndDateString2.split(",");
+			int vacationEndYear2 = Integer.parseInt(vacationEndArr2[0]);
+			int vacationEndMonth2 = Integer.parseInt(vacationEndArr2[1]);
+			int vacationEndDay2 = Integer.parseInt(vacationEndArr2[2]);
+			LocalDate vacationEndDate2 = LocalDate.of(vacationEndYear2, vacationEndMonth2, vacationEndDay2);
+			System.out.println("Enter vacation name:");
+			String vacationName2 = reader.readLine();
+			Vacation vacation2 = new Vacation(vacationName2, vacationStartDate2, vacationEndDate2);
+			teacher2.getVacations().add(vacation2);
+			System.out.println("Vacation added!");
 			break;
 		case 3:
-			System.out.println("Set subject to teacher");
+			System.out.println("Set subject from the list:");
+			System.out.println(formatter.formatSubjectList(cathedra.getSubjects()));
+			Subject subject3 = cathedra.getSubjects().get(Integer.parseInt(reader.readLine()) - 1);
+			System.out.println("Select teacher from the list:");
+			System.out.println(formatter.formatTeacherList(cathedra.getTeachers()));
+			Teacher teacher3 = cathedra.getTeachers().get(Integer.parseInt(reader.readLine()) - 1);
+			subject3.getTeachers().add(teacher3);
+			teacher3.getSubjects().add(subject3);
+			System.out.println("Subject was set!");
 			break;
 		case 4:
-			System.out.println("Change lecture audience");
+			System.out.println("Select lecture from the list:");
+			List<Lecture> lectures4 = new ArrayList<>();
+			for (Entry<String, Lecture> entry : cathedra.getLectures().entrySet()) {
+				lectures4.add(entry.getValue());
+			}
+			System.out.println(formatter.formatLectureList(lectures4));
+			Lecture lecture4 = lectures4.get(Integer.parseInt(reader.readLine()) - 1);
+			System.out.println("Select audience from the list:");
+			System.out.println(formatter.formatAudienceList(cathedra.getAudiences()));
+			Audience audience4 = cathedra.getAudiences().get(Integer.parseInt(reader.readLine()) - 1);
+			lecture4.setAudience(audience4);
+			System.out.println("Lecture audience was changed!");
 			break;
 		case 5:
-			System.out.println("Change lecture date");
+			System.out.println("Select lecture from the list:");
+			List<Lecture> lectures5 = new ArrayList<>();
+			for (Entry<String, Lecture> entry : cathedra.getLectures().entrySet()) {
+				lectures5.add(entry.getValue());
+			}
+			System.out.println(formatter.formatLectureList(lectures5));
+			Lecture lecture5 = lectures5.get(Integer.parseInt(reader.readLine()) - 1);
+			System.out.println("Enter the lecture date separated by commas without spaces (YEAR,MONTH,DAY):");
+			String lectureDateString5 = reader.readLine();
+			String[] lectureArr5 = lectureDateString5.split(",");
+			int lectureYear5 = Integer.parseInt(lectureArr5[0]);
+			int lectureMonth5 = Integer.parseInt(lectureArr5[1]);
+			int lectureDay5 = Integer.parseInt(lectureArr5[2]);
+			LocalDate lectureDate5 = LocalDate.of(lectureYear5, lectureMonth5, lectureDay5);
+			lecture5.setDate(lectureDate5);
+			System.out.println("Lecture date was changed!");
 			break;
 		case 6:
-			System.out.println("Change lecture time");
+			System.out.println("Select lecture from the list:");
+			List<Lecture> lectures6 = new ArrayList<>();
+			for (Entry<String, Lecture> entry : cathedra.getLectures().entrySet()) {
+				lectures6.add(entry.getValue());
+			}
+			System.out.println(formatter.formatLectureList(lectures6));
+			Lecture lecture6 = lectures6.get(Integer.parseInt(reader.readLine()) - 1);
+			System.out.println("Set lecture time from the list:");
+			System.out.println("1. " + LocalTime.of(8, 0) + " - " + LocalTime.of(9, 30));
+			System.out.println("2. " + LocalTime.of(9, 40) + " - " + LocalTime.of(11, 10));
+			System.out.println("3. " + LocalTime.of(11, 20) + " - " + LocalTime.of(12, 50));
+			System.out.println("4. " + LocalTime.of(13, 20) + " - " + LocalTime.of(14, 50));
+			System.out.println("5. " + LocalTime.of(15, 0) + " - " + LocalTime.of(16, 30));
+			System.out.println("6. " + LocalTime.of(16, 40) + " - " + LocalTime.of(18, 10));
+			System.out.println("7. " + LocalTime.of(18, 20) + " - " + LocalTime.of(19, 50));
+			System.out.println("8. " + LocalTime.of(20, 0) + " - " + LocalTime.of(21, 30));
+			int lectureTimeInt6 = Integer.parseInt(reader.readLine());
+			LectureTime lectureTime6 = dataCreator.createLectureTime(lectureTimeInt6);
+			lecture6.setTime(lectureTime6);
+			System.out.println("Lecture time was changed!");
 			break;
 		case 7:
-			System.out.println("Set group to lecture");
+			System.out.println("Select lecture from the list:");
+			List<Lecture> lectures7 = new ArrayList<>();
+			for (Entry<String, Lecture> entry : cathedra.getLectures().entrySet()) {
+				lectures7.add(entry.getValue());
+			}
+			System.out.println(formatter.formatLectureList(lectures7));
+			Lecture lecture7 = lectures7.get(Integer.parseInt(reader.readLine()) - 1);
+			System.out.println("Select group from the list:");
+			System.out.println(formatter.formatGroupList(cathedra.getGroups()));
+			Group group7 = cathedra.getGroups().get(Integer.parseInt(reader.readLine()) - 1);
+			lecture7.getGroups().add(group7);
+			group7.getLectures().add(lecture7);
+			System.out.println("Lecture was set to group!");
 			break;
 		case 0:
 			break;
 		}
 	}
 
-	private void submenuDelete() {
+	private void submenuDelete() throws IOException {
 		System.out.println(printDeleteMenu());
 		int choise = getInput(8);
 		switch (choise) {
 		case 1:
-			System.out.println("Delete student");
+			System.out.println("Select student from the list:");
+			List<Student> students1 = new ArrayList<>();
+			for (Group group : cathedra.getGroups()) {
+				for (Student student : group.getStudents()) {
+					if (!students1.contains(student)) {
+						students1.add(student);
+					}
+				}
+			}
+			System.out.println(formatter.formatStudentList(students1));
+			Student student1 = students1.get(Integer.parseInt(reader.readLine()) - 1);
+			for (Group group : cathedra.getGroups()) {
+				if (group.getStudents().contains(student1)) {
+					group.getStudents().remove(student1);
+				}
+			}
+			System.out.println("Student was deleted!");
 			break;
 		case 2:
-			System.out.println("Delete teacher");
+			System.out.println("Select teacher from the list:");
+			System.out.println(formatter.formatTeacherList(cathedra.getTeachers()));
+			Teacher teacher2 = cathedra.getTeachers().get(Integer.parseInt(reader.readLine()) - 1);
+			cathedra.getTeachers().remove(teacher2);
+			for (Subject subject : cathedra.getSubjects()) {
+				if (subject.getTeachers().contains(teacher2)) {
+					subject.getTeachers().remove(teacher2);
+				}
+			}
+			System.out.println("Teacher was deleted!");
 			break;
 		case 3:
-			System.out.println("Delete group");
+			System.out.println("Select group from the list:");
+			System.out.println(formatter.formatGroupList(cathedra.getGroups()));
+			Group group3 = cathedra.getGroups().get(Integer.parseInt(reader.readLine()) - 1);
+			if (!group3.getStudents().isEmpty()) {
+				System.out.println("Please remove students first from group!");
+			} else {
+				List<Lecture> lectures3 = new ArrayList<>();
+				for (Entry<String, Lecture> entry : cathedra.getLectures().entrySet()) {
+					lectures3.add(entry.getValue());
+				}
+				for (Lecture lecture : lectures3) {
+					if (lecture.getGroups().contains(group3)) {
+						lecture.getGroups().remove(group3);
+					}
+				}
+				cathedra.getGroups().remove(group3);
+				System.out.println("Group was deleted!");
+			}
 			break;
 		case 4:
-			System.out.println("Delete lecture");
+			System.out.println("Select lecture from the list:");
+			/*
+			 * List<Lecture> lectures4 = new ArrayList<>(); for (Entry<String, Lecture>
+			 * entry : cathedra.getLectures().entrySet()) { lectures4.add(entry.getValue());
+			 * } System.out.println(formatter.formatLectureList(lectures4)); Lecture
+			 * lecture7 = lectures4.get(Integer.parseInt(reader.readLine()) - 1); for (Group
+			 * group : cathedra.getGroups()) { if (group.getLectures().contains(lecture7)) {
+			 * group.getLectures().remove(lecture7); } }
+			 */
+
+			// хз как удалить - мен€й на List
 			break;
 		case 5:
-			System.out.println("Delete audience");
+			System.out.println("Select audience from the list:");
+			System.out.println(formatter.formatAudienceList(cathedra.getAudiences()));
+			Audience audience5 = cathedra.getAudiences().get(Integer.parseInt(reader.readLine()) - 1);
+			List<Lecture> lectures5 = new ArrayList<>();
+			for (Entry<String, Lecture> entry : cathedra.getLectures().entrySet()) {
+				lectures5.add(entry.getValue());
+			}
+			boolean checker5 = false;
+			for (Lecture lecture : lectures5) {
+				if (lecture.getAudience().equals(audience5)) {
+					checker5 = true;
+				}
+			}
+			if (checker5) {
+				System.out.println("Please remove audiences first from lectures!");
+			} else {
+				cathedra.getAudiences().remove(audience5);
+				System.out.println("Audience was deleted!");
+			}
 			break;
 		case 6:
-			System.out.println("Delete subject");
+			System.out.println("Select subject from the list:");
+			System.out.println(formatter.formatSubjectList(cathedra.getSubjects()));
+			Subject subject6 = cathedra.getSubjects().get(Integer.parseInt(reader.readLine()) - 1);
+			List<Lecture> lectures6 = new ArrayList<>();
+			for (Entry<String, Lecture> entry : cathedra.getLectures().entrySet()) {
+				lectures6.add(entry.getValue());
+			}
+			boolean checker6 = false;
+			for (Lecture lecture : lectures6) {
+				if (lecture.getSubject().equals(subject6)) {
+					checker6 = true;
+				}
+			}
+			if (checker6) {
+				System.out.println("Please remove subject first from lecture!");
+			} else {
+				cathedra.getSubjects().remove(subject6);
+				for (Teacher teacher : cathedra.getTeachers()) {
+					teacher.getSubjects().remove(subject6);
+				}
+				System.out.println("Audience was deleted!");
+			}
 			break;
 		case 7:
-			System.out.println("Delete teacher vacation");
+			System.out.println("Select teacher from the list:");
+			System.out.println(formatter.formatTeacherList(cathedra.getTeachers()));
+			Teacher teacher7 = cathedra.getTeachers().get(Integer.parseInt(reader.readLine()) - 1);
+			System.out.println("Select vacation from the list:");
+			System.out.println(formatter.formatVacationList(teacher7.getVacations()));
+			Vacation vacation7 = teacher7.getVacations().get(Integer.parseInt(reader.readLine()) - 1);
+			teacher7.getVacations().remove(vacation7);
+			System.out.println("Teacher vacation was deleted!");
 			break;
 		case 8:
-			System.out.println("Delete holiday");
+			System.out.println("Select holiday from the list:");
+			System.out.println(formatter.formatHolidayList(cathedra.getHolidays()));
+			Holiday holiday = cathedra.getHolidays().get(Integer.parseInt(reader.readLine()) - 1);
+			cathedra.getHolidays().remove(holiday);
+			System.out.println("Holiday was deleted!");
 			break;
 		case 0:
 			break;

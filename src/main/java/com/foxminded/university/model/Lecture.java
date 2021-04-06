@@ -41,6 +41,14 @@ public class Lecture {
 		return audience;
 	}
 
+	public void setDate(LocalDate date) {
+		this.date = date;
+	}
+
+	public void setTime(LectureTime time) {
+		this.time = time;
+	}
+
 	public LocalDate getDate() {
 		return date;
 	}
