@@ -2,6 +2,7 @@ package com.foxminded.university;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.foxminded.university.model.Audience;
@@ -15,11 +16,23 @@ import com.foxminded.university.model.Vacation;
 
 public class Formatter {
 
-	//.sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
+	private <T> int getMaxFieldLength(List<T> list, Function<T, String> getter) {
+		return list.stream().map(getter).mapToInt(String::length).max().orElse(0);
+	}
+
+	// .sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
 	public String formatLectureList(List<Lecture> lectures) {
 		AtomicInteger index = new AtomicInteger();
+		int subjectNameFieldLength = getMaxFieldLength(lectures, lecture -> lecture.getSubject().getName());
+		int lectureAudienceFieldLength = getMaxFieldLength(lectures,
+				lecture -> String.valueOf(lecture.getAudience().getRoom()));
+		int teacherNameFieldLength = getMaxFieldLength(lectures, lecture -> lecture.getTeacher().getFirstName())
+				+ getMaxFieldLength(lectures, lecture -> lecture.getTeacher().getLastName()) + 1;
+
 		return lectures.stream()
-				.map(lecture -> String.format("%-3s Date: %10s | Subject: %-18s | Audience: %d | Teacher: %-15s",
+				.map(lecture -> String.format(
+						"%-3s Date: %s | Subject: %-" + subjectNameFieldLength + "s | Audience: %"
+								+ lectureAudienceFieldLength + "d | Teacher: %-" + teacherNameFieldLength + "s |",
 						index.incrementAndGet() + ".", lecture.getDate(), lecture.getSubject().getName(),
 						lecture.getAudience().getRoom(),
 						lecture.getTeacher().getFirstName() + " " + lecture.getTeacher().getLastName()))
@@ -28,55 +41,79 @@ public class Formatter {
 
 	public String formatGroupList(List<Group> groups) {
 		AtomicInteger index = new AtomicInteger();
-		return groups.stream().map(group -> String.format("%d. %s", index.incrementAndGet(), group.getName()))
-				.collect(Collectors.joining(System.lineSeparator()));
+		int nameFieldLength = getMaxFieldLength(groups, Group::getName);
+
+		return groups.stream().map(group -> String.format("%-3s %-" + nameFieldLength + "s",
+				index.incrementAndGet() + ".", group.getName())).collect(Collectors.joining(System.lineSeparator()));
 	}
 
 	public String formatSubjectList(List<Subject> subjects) {
 		AtomicInteger index = new AtomicInteger();
+		int nameFieldLength = getMaxFieldLength(subjects, Subject::getName);
+		int descriptionFieldLength = getMaxFieldLength(subjects, Subject::getDescription);
+
 		return subjects.stream()
-				.map(subject -> String.format("%d. Name: %-7s | " + "Description: %s", index.incrementAndGet(),
-						subject.getName(), subject.getDescription()))
+				.map(subject -> String.format(
+						"%-3s Name: %-" + nameFieldLength + "s | " + "Description: %-" + descriptionFieldLength + "s",
+						index.incrementAndGet() + ".", subject.getName(), subject.getDescription()))
 				.collect(Collectors.joining(System.lineSeparator()));
 	}
 
 	public String formatTeacherList(List<Teacher> teachers) {
 		AtomicInteger index = new AtomicInteger();
+		int nameFieldLength = getMaxFieldLength(teachers, Teacher::getFirstName)
+				+ getMaxFieldLength(teachers, Teacher::getLastName) + 1;
+
 		return teachers.stream()
-				.map(teacher -> String.format("%d. Name: %-15s", index.incrementAndGet(),
+				.map(teacher -> String.format("%-3s Name: %-" + nameFieldLength + "s", index.incrementAndGet() + ".",
 						teacher.getFirstName() + " " + teacher.getLastName()))
 				.collect(Collectors.joining(System.lineSeparator()));
 	}
 
 	public String formatAudienceList(List<Audience> audiences) {
 		AtomicInteger index = new AtomicInteger();
+		int roomFieldLength = getMaxFieldLength(audiences, audience -> String.valueOf(audience.getRoom()));
+		int capacityFieldLength = getMaxFieldLength(audiences, audience -> String.valueOf(audience.getCapacity()));
+
 		return audiences.stream()
-				.map(audience -> String.format("%d. Audience: %-5d| Capacity: %d", index.incrementAndGet(),
-						audience.getRoom(), audience.getCapacity()))
+				.map(audience -> String.format(
+						"%-3s Audience: %-" + roomFieldLength + "d | Capacity: %-" + capacityFieldLength + "d",
+						index.incrementAndGet() + ".", audience.getRoom(), audience.getCapacity()))
 				.collect(Collectors.joining(System.lineSeparator()));
 	}
 
 	public String formatStudentList(List<Student> students) {
 		AtomicInteger index = new AtomicInteger();
+		int nameFieldLength = getMaxFieldLength(students, Student::getFirstName)
+				+ getMaxFieldLength(students, Student::getLastName) + 1;
+		int groupNameFieldLength = getMaxFieldLength(students, student -> student.getGroup().getName());
+
 		return students.stream()
-				.map(student -> String.format("%d. Name: %-18s| Group: %s", index.incrementAndGet(),
-						student.getFirstName() + " " + student.getLastName(), student.getGroup().getName()))
+				.map(student -> String.format(
+						"%-3s Name: %-" + nameFieldLength + "s | Group: %-" + groupNameFieldLength + "s",
+						index.incrementAndGet() + ".", student.getFirstName() + " " + student.getLastName(),
+						student.getGroup().getName()))
 				.collect(Collectors.joining(System.lineSeparator()));
 	}
 
 	public String formatHolidayList(List<Holiday> holidays) {
 		AtomicInteger index = new AtomicInteger();
+		int descriptionFieldLength = getMaxFieldLength(holidays, Holiday::getDescription);
+
 		return holidays.stream()
-				.map(holiday -> String.format("%d. Name: %-18s| Date: %s", index.incrementAndGet(),
-						holiday.getDescription(), holiday.getDate()))
+				.map(holiday -> String.format("%-3s Name: %-" + descriptionFieldLength + "s | Date: %s",
+						index.incrementAndGet() + ".", holiday.getDescription(), holiday.getDate()))
 				.collect(Collectors.joining(System.lineSeparator()));
 	}
 
 	public String formatVacationList(List<Vacation> vacations) {
 		AtomicInteger index = new AtomicInteger();
+		int descriptionFieldLength = getMaxFieldLength(vacations, Vacation::getDescription);
+
 		return vacations.stream()
-				.map(vacation -> String.format("%d. Description: %-18s| Dates: %s to %s", index.incrementAndGet(),
-						vacation.getDescription(), vacation.getStart(), vacation.getEnd()))
+				.map(vacation -> String.format("%-3s Description: %-" + descriptionFieldLength + "s | Dates: %s to %s",
+						index.incrementAndGet() + ".", vacation.getDescription(), vacation.getStart(),
+						vacation.getEnd()))
 				.collect(Collectors.joining(System.lineSeparator()));
 	}
 }

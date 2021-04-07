@@ -3,64 +3,50 @@ package com.foxminded.university.model;
 import java.time.Month;
 import java.time.MonthDay;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Cathedra {
 
 	private List<Group> groups = new ArrayList<>();
 	private List<Teacher> teachers = new ArrayList<>();
-	private Map<String, Lecture> lectures = new HashMap<>();
+	private List<Lecture> lectures = new ArrayList<>();
 	private List<Holiday> holidays = new ArrayList<>();
 	private List<Subject> subjects = new ArrayList<>();
 	private List<Audience> audiences = new ArrayList<>();
 
 	public List<Lecture> getTTForDay(Student student, int day, int month) {
 		MonthDay md = MonthDay.of(month, day);
-		List<Lecture> dayLecture = new ArrayList<>();
-		for (Lecture lecture : student.getGroup().getLectures()) {
-			if (lecture.getDate().getMonthValue() == md.getMonthValue()
-					&& lecture.getDate().getDayOfMonth() == md.getDayOfMonth()) {
-				dayLecture.add(lecture);
-			}
-		}
-		return dayLecture;
+
+		return student.getGroup().getLectures().stream()
+				.filter(lecture -> lecture.getDate().getMonthValue() == md.getMonthValue()
+						&& lecture.getDate().getDayOfMonth() == md.getDayOfMonth())
+				.collect(Collectors.toList());
 	}
 
 	public List<Lecture> getTTForDay(Teacher teacher, int day, int month) {
 		MonthDay md = MonthDay.of(month, day);
-		List<Lecture> dayLecture = new ArrayList<>();
-		for (Map.Entry<String, Lecture> entry : lectures.entrySet()) {
-			if (entry.getValue().getTeacher().equals(teacher)
-					&& (entry.getValue().getDate().getMonthValue() == md.getMonthValue()
-							&& entry.getValue().getDate().getDayOfMonth() == md.getDayOfMonth())) {
-				dayLecture.add(entry.getValue());
-			}
-		}
-		return dayLecture;
+
+		return lectures.stream()
+				.filter(lecture -> lecture.getTeacher().equals(teacher)
+						&& (lecture.getDate().getMonthValue() == md.getMonthValue()
+								&& lecture.getDate().getDayOfMonth() == md.getDayOfMonth()))
+				.collect(Collectors.toList());
 	}
 
 	public List<Lecture> getTTForMonth(Student student, int month) {
 		Month date = Month.of(month);
-		List<Lecture> monthLecture = new ArrayList<>();
-		for (Lecture lecture : student.getGroup().getLectures()) {
-			if (lecture.getDate().getMonth().equals(date)) {
-				monthLecture.add(lecture);
-			}
-		}
-		return monthLecture;
+
+		return student.getGroup().getLectures().stream().filter(lecture -> lecture.getDate().getMonth().equals(date))
+				.collect(Collectors.toList());
 	}
 
 	public List<Lecture> getTTForMonth(Teacher teacher, int month) {
 		Month date = Month.of(month);
-		List<Lecture> monthLecture = new ArrayList<>();
-		for (Map.Entry<String, Lecture> entry : lectures.entrySet()) {
-			if (entry.getValue().getTeacher().equals(teacher) && entry.getValue().getDate().getMonth().equals(date)) {
-				monthLecture.add(entry.getValue());
-			}
-		}
-		return monthLecture;
+
+		return lectures.stream()
+				.filter(lecture -> (lecture.getTeacher().equals(teacher) && lecture.getDate().getMonth().equals(date)))
+				.collect(Collectors.toList());
 	}
 
 	public List<Audience> getAudiences() {
@@ -87,7 +73,7 @@ public class Cathedra {
 		this.groups = groups;
 	}
 
-	public void setLectures(Map<String, Lecture> lectures) {
+	public void setLectures(List<Lecture> lectures) {
 		this.lectures = lectures;
 	}
 
@@ -103,7 +89,7 @@ public class Cathedra {
 		this.teachers = teachers;
 	}
 
-	public Map<String, Lecture> getLectures() {
+	public List<Lecture> getLectures() {
 		return lectures;
 	}
 

@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Cathedra;
@@ -39,15 +38,15 @@ public class MenuCreator {
 		menu.append(System.lineSeparator());
 		menu.append("Chose what you want to do:");
 		menu.append(System.lineSeparator());
-		menu.append("1 - Create");
+		menu.append("1  - Create");
 		menu.append(System.lineSeparator());
-		menu.append("2 - Get info");
+		menu.append("2  - Get info");
 		menu.append(System.lineSeparator());
-		menu.append("3 - Update");
+		menu.append("3  - Update");
 		menu.append(System.lineSeparator());
-		menu.append("4 - Delete");
+		menu.append("4  - Delete");
 		menu.append(System.lineSeparator());
-		menu.append("0 - Exit");
+		menu.append("0  - Exit");
 
 		return menu.toString();
 	}
@@ -56,19 +55,21 @@ public class MenuCreator {
 		StringBuilder menu = new StringBuilder();
 		menu.append("Chose what you want to create:");
 		menu.append(System.lineSeparator());
-		menu.append("1 - Create new student");
+		menu.append("1  - Create new student");
 		menu.append(System.lineSeparator());
-		menu.append("2 - Create new teacher");
+		menu.append("2  - Create new teacher");
 		menu.append(System.lineSeparator());
-		menu.append("3 - Create new subject");
+		menu.append("3  - Create new subject");
 		menu.append(System.lineSeparator());
-		menu.append("4 - Create new student group");
+		menu.append("4  - Create new student group");
 		menu.append(System.lineSeparator());
-		menu.append("5 - Create new lecture");
+		menu.append("5  - Create new lecture");
 		menu.append(System.lineSeparator());
-		menu.append("6 - Create new holiday");
+		menu.append("6  - Create new holiday");
 		menu.append(System.lineSeparator());
-		menu.append("0 - Go to the main menu");
+		menu.append("7  - Create new audience");
+		menu.append(System.lineSeparator());
+		menu.append("0  - Go to the main menu");
 
 		return menu.toString();
 	}
@@ -77,25 +78,27 @@ public class MenuCreator {
 		StringBuilder menu = new StringBuilder();
 		menu.append("Chose what you want to get:");
 		menu.append(System.lineSeparator());
-		menu.append("1 - Get student list");
+		menu.append("1  - Get student list");
 		menu.append(System.lineSeparator());
-		menu.append("2 - Get teacher list");
+		menu.append("2  - Get teacher list");
 		menu.append(System.lineSeparator());
-		menu.append("3 - Get subject list");
+		menu.append("3  - Get subject list");
 		menu.append(System.lineSeparator());
-		menu.append("4 - Get group list");
+		menu.append("4  - Get group list");
 		menu.append(System.lineSeparator());
-		menu.append("5 - Get holiday list");
+		menu.append("5  - Get holiday list");
 		menu.append(System.lineSeparator());
-		menu.append("6 - Get timetable for student - day");
+		menu.append("6  - Get timetable for student - day");
 		menu.append(System.lineSeparator());
-		menu.append("7 - Get timetable for teacher - day");
+		menu.append("7  - Get timetable for teacher - day");
 		menu.append(System.lineSeparator());
-		menu.append("8 - Get timetable for student - month");
+		menu.append("8  - Get timetable for student - month");
 		menu.append(System.lineSeparator());
-		menu.append("9 - Get timetable for teacher - month");
+		menu.append("9  - Get timetable for teacher - month");
 		menu.append(System.lineSeparator());
-		menu.append("0 - Go to the main menu");
+		menu.append("10 - Get audience list");
+		menu.append(System.lineSeparator());
+		menu.append("0  - Go to the main menu");
 
 		return menu.toString();
 	}
@@ -104,21 +107,21 @@ public class MenuCreator {
 		StringBuilder menu = new StringBuilder();
 		menu.append("Chose what you want to update:");
 		menu.append(System.lineSeparator());
-		menu.append("1 - Set student to group");
+		menu.append("1  - Set student to group");
 		menu.append(System.lineSeparator());
-		menu.append("2 - Set teacher vacation");
+		menu.append("2  - Set teacher vacation");
 		menu.append(System.lineSeparator());
-		menu.append("3 - Set subject to teacher");
+		menu.append("3  - Set subject to teacher");
 		menu.append(System.lineSeparator());
-		menu.append("4 - Change lecture audience");
+		menu.append("4  - Change lecture audience");
 		menu.append(System.lineSeparator());
-		menu.append("5 - Change lecture date");
+		menu.append("5  - Change lecture date");
 		menu.append(System.lineSeparator());
-		menu.append("6 - Change lecture time");
+		menu.append("6  - Change lecture time");
 		menu.append(System.lineSeparator());
-		menu.append("7 - Set groups to lectures");
+		menu.append("7  - Set groups to lectures");
 		menu.append(System.lineSeparator());
-		menu.append("0 - Go to the main menu");
+		menu.append("0  - Go to the main menu");
 
 		return menu.toString();
 	}
@@ -127,23 +130,23 @@ public class MenuCreator {
 		StringBuilder menu = new StringBuilder();
 		menu.append("Chose what you want to delete:");
 		menu.append(System.lineSeparator());
-		menu.append("1 - Delete student");
+		menu.append("1  - Delete student");
 		menu.append(System.lineSeparator());
-		menu.append("2 - Delete teacher");
+		menu.append("2  - Delete teacher");
 		menu.append(System.lineSeparator());
-		menu.append("3 - Delete group");
+		menu.append("3  - Delete group");
 		menu.append(System.lineSeparator());
-		menu.append("4 - Delete lecture");
+		menu.append("4  - Delete lecture");
 		menu.append(System.lineSeparator());
-		menu.append("5 - Delete audience");
+		menu.append("5  - Delete audience");
 		menu.append(System.lineSeparator());
-		menu.append("6 - Delete subject");
+		menu.append("6  - Delete subject");
 		menu.append(System.lineSeparator());
-		menu.append("7 - Delete teacher vacation");
+		menu.append("7  - Delete teacher vacation");
 		menu.append(System.lineSeparator());
-		menu.append("8 - Delete holiday");
+		menu.append("8  - Delete holiday");
 		menu.append(System.lineSeparator());
-		menu.append("0 - Go to the main menu");
+		menu.append("0  - Go to the main menu");
 
 		return menu.toString();
 	}
@@ -195,7 +198,7 @@ public class MenuCreator {
 
 	private void submenuCreate() throws IOException {
 		System.out.println(printCreateMenu());
-		int choise = getInput(6);
+		int choise = getInput(7);
 		switch (choise) {
 		case 1:
 			System.out.println("Enter student first name:");
@@ -258,8 +261,7 @@ public class MenuCreator {
 			String[] subjectsArr2 = reader.readLine().split(",");
 			List<Subject> subjects2 = new ArrayList<>();
 			for (String subjNum : subjectsArr2) {
-				Subject subject2 = cathedra.getSubjects().get(Integer.parseInt(subjNum) - 1);
-				subjects2.add(subject2);
+				subjects2.add(cathedra.getSubjects().get(Integer.parseInt(subjNum) - 1));
 			}
 			dataUpdater.createTeacher(firstName2, lastName2, phone2, address2, email2, gender2, postalCode2, education2,
 					birthDate2, cathedra, subjects2);
@@ -282,8 +284,6 @@ public class MenuCreator {
 			System.out.println("Group added!");
 			break;
 		case 5:
-			System.out.println("Enter lecture name");
-			String lectureName5 = reader.readLine();
 			System.out.println("Set subject from the list:");
 			System.out.println(formatter.formatSubjectList(cathedra.getSubjects()));
 			Subject subject5 = cathedra.getSubjects().get(Integer.parseInt(reader.readLine()) - 1);
@@ -300,6 +300,7 @@ public class MenuCreator {
 			int lectureMonth5 = Integer.parseInt(lectureArr5[1]);
 			int lectureDay5 = Integer.parseInt(lectureArr5[2]);
 			LocalDate lectureDate5 = LocalDate.of(lectureYear5, lectureMonth5, lectureDay5);
+			// TODO: remake to dependency on entity
 			System.out.println("Set lecture time from the list:");
 			System.out.println("1. " + LocalTime.of(8, 0) + " - " + LocalTime.of(9, 30));
 			System.out.println("2. " + LocalTime.of(9, 40) + " - " + LocalTime.of(11, 10));
@@ -310,9 +311,10 @@ public class MenuCreator {
 			System.out.println("7. " + LocalTime.of(18, 20) + " - " + LocalTime.of(19, 50));
 			System.out.println("8. " + LocalTime.of(20, 0) + " - " + LocalTime.of(21, 30));
 			int lectureTimeInt5 = Integer.parseInt(reader.readLine());
+			// TODO: remake to entity
 			LectureTime lectureTime5 = dataCreator.createLectureTime(lectureTimeInt5);
 			Lecture lecture5 = new Lecture(subject5, lectureDate5, lectureTime5, audience5, teacher5);
-			cathedra.getLectures().put(lectureName5, lecture5);
+			cathedra.getLectures().add(lecture5);
 			System.out.println("Lecture added!");
 			break;
 		case 6:
@@ -327,7 +329,16 @@ public class MenuCreator {
 			LocalDate holidayDate5 = LocalDate.of(holidayYear5, holidayMonth5, holidayDay5);
 			Holiday holiday6 = new Holiday(holidayDescription6, holidayDate5);
 			cathedra.getHolidays().add(holiday6);
-			System.out.println("Holiday added!");
+			System.out.println("Holiday created!");
+			break;
+		case 7:
+			System.out.println("Enter audience room");
+			int audienceRoom7 = Integer.parseInt(reader.readLine());
+			System.out.println("Enter audience capacity");
+			int audienceCapacity7 = Integer.parseInt(reader.readLine());
+			Audience audience7 = new Audience(audienceRoom7, audienceCapacity7);
+			cathedra.getAudiences().add(audience7);
+			System.out.println("Audience created!");
 			break;
 		case 0:
 			break;
@@ -336,17 +347,12 @@ public class MenuCreator {
 
 	private void submenuRead() throws IOException {
 		System.out.println(printReadMenu());
-		int choise = getInput(9);
+		int choise = getInput(10);
 		switch (choise) {
 		case 1:
 			List<Student> students1 = new ArrayList<>();
-			for (Group group : cathedra.getGroups()) {
-				for (Student student : group.getStudents()) {
-					if (!students1.contains(student)) {
-						students1.add(student);
-					}
-				}
-			}
+			cathedra.getGroups().stream().forEach(group -> group.getStudents().stream()
+					.filter(student -> !students1.contains(student)).forEach(student -> students1.add(student)));
 			System.out.println(formatter.formatStudentList(students1));
 			break;
 		case 2:
@@ -364,13 +370,8 @@ public class MenuCreator {
 		case 6:
 			System.out.println("Select student from the list:");
 			List<Student> students6 = new ArrayList<>();
-			for (Group group : cathedra.getGroups()) {
-				for (Student student : group.getStudents()) {
-					if (!students6.contains(student)) {
-						students6.add(student);
-					}
-				}
-			}
+			cathedra.getGroups().stream().forEach(group -> group.getStudents().stream()
+					.filter(student -> !students6.contains(student)).forEach(student -> students6.add(student)));
 			System.out.println(formatter.formatStudentList(students6));
 			Student student6 = students6.get(Integer.parseInt(reader.readLine()) - 1);
 			System.out.println("Enter date separated by commas without spaces (MONTH,DAY):");
@@ -415,6 +416,9 @@ public class MenuCreator {
 			int lectureMonth9 = Integer.parseInt(reader.readLine());
 			System.out.println(formatter.formatLectureList(cathedra.getTTForMonth(teacher9, lectureMonth9)));
 			break;
+		case 10:
+			System.out.println(formatter.formatAudienceList(cathedra.getAudiences()));
+			break;
 		case 0:
 			break;
 		}
@@ -427,13 +431,8 @@ public class MenuCreator {
 		case 1:
 			System.out.println("Select student from the list:");
 			List<Student> students1 = new ArrayList<>();
-			for (Group group : cathedra.getGroups()) {
-				for (Student student : group.getStudents()) {
-					if (!students1.contains(student)) {
-						students1.add(student);
-					}
-				}
-			}
+			cathedra.getGroups().stream().forEach(group -> group.getStudents().stream()
+					.filter(student -> !students1.contains(student)).forEach(student -> students1.add(student)));
 			System.out.println(formatter.formatStudentList(students1));
 			Student student1 = students1.get(Integer.parseInt(reader.readLine()) - 1);
 			System.out.println("Select group from the list:");
@@ -480,12 +479,8 @@ public class MenuCreator {
 			break;
 		case 4:
 			System.out.println("Select lecture from the list:");
-			List<Lecture> lectures4 = new ArrayList<>();
-			for (Entry<String, Lecture> entry : cathedra.getLectures().entrySet()) {
-				lectures4.add(entry.getValue());
-			}
-			System.out.println(formatter.formatLectureList(lectures4));
-			Lecture lecture4 = lectures4.get(Integer.parseInt(reader.readLine()) - 1);
+			System.out.println(formatter.formatLectureList(cathedra.getLectures()));
+			Lecture lecture4 = cathedra.getLectures().get(Integer.parseInt(reader.readLine()) - 1);
 			System.out.println("Select audience from the list:");
 			System.out.println(formatter.formatAudienceList(cathedra.getAudiences()));
 			Audience audience4 = cathedra.getAudiences().get(Integer.parseInt(reader.readLine()) - 1);
@@ -494,12 +489,8 @@ public class MenuCreator {
 			break;
 		case 5:
 			System.out.println("Select lecture from the list:");
-			List<Lecture> lectures5 = new ArrayList<>();
-			for (Entry<String, Lecture> entry : cathedra.getLectures().entrySet()) {
-				lectures5.add(entry.getValue());
-			}
-			System.out.println(formatter.formatLectureList(lectures5));
-			Lecture lecture5 = lectures5.get(Integer.parseInt(reader.readLine()) - 1);
+			System.out.println(formatter.formatLectureList(cathedra.getLectures()));
+			Lecture lecture5 = cathedra.getLectures().get(Integer.parseInt(reader.readLine()) - 1);
 			System.out.println("Enter the lecture date separated by commas without spaces (YEAR,MONTH,DAY):");
 			String lectureDateString5 = reader.readLine();
 			String[] lectureArr5 = lectureDateString5.split(",");
@@ -512,13 +503,10 @@ public class MenuCreator {
 			break;
 		case 6:
 			System.out.println("Select lecture from the list:");
-			List<Lecture> lectures6 = new ArrayList<>();
-			for (Entry<String, Lecture> entry : cathedra.getLectures().entrySet()) {
-				lectures6.add(entry.getValue());
-			}
-			System.out.println(formatter.formatLectureList(lectures6));
-			Lecture lecture6 = lectures6.get(Integer.parseInt(reader.readLine()) - 1);
+			System.out.println(formatter.formatLectureList(cathedra.getLectures()));
+			Lecture lecture6 = cathedra.getLectures().get(Integer.parseInt(reader.readLine()) - 1);
 			System.out.println("Set lecture time from the list:");
+			// TODO: change to dependency on entity
 			System.out.println("1. " + LocalTime.of(8, 0) + " - " + LocalTime.of(9, 30));
 			System.out.println("2. " + LocalTime.of(9, 40) + " - " + LocalTime.of(11, 10));
 			System.out.println("3. " + LocalTime.of(11, 20) + " - " + LocalTime.of(12, 50));
@@ -528,18 +516,15 @@ public class MenuCreator {
 			System.out.println("7. " + LocalTime.of(18, 20) + " - " + LocalTime.of(19, 50));
 			System.out.println("8. " + LocalTime.of(20, 0) + " - " + LocalTime.of(21, 30));
 			int lectureTimeInt6 = Integer.parseInt(reader.readLine());
+			// TODO: change to entity
 			LectureTime lectureTime6 = dataCreator.createLectureTime(lectureTimeInt6);
 			lecture6.setTime(lectureTime6);
 			System.out.println("Lecture time was changed!");
 			break;
 		case 7:
 			System.out.println("Select lecture from the list:");
-			List<Lecture> lectures7 = new ArrayList<>();
-			for (Entry<String, Lecture> entry : cathedra.getLectures().entrySet()) {
-				lectures7.add(entry.getValue());
-			}
-			System.out.println(formatter.formatLectureList(lectures7));
-			Lecture lecture7 = lectures7.get(Integer.parseInt(reader.readLine()) - 1);
+			System.out.println(formatter.formatLectureList(cathedra.getLectures()));
+			Lecture lecture7 = cathedra.getLectures().get(Integer.parseInt(reader.readLine()) - 1);
 			System.out.println("Select group from the list:");
 			System.out.println(formatter.formatGroupList(cathedra.getGroups()));
 			Group group7 = cathedra.getGroups().get(Integer.parseInt(reader.readLine()) - 1);
@@ -559,20 +544,12 @@ public class MenuCreator {
 		case 1:
 			System.out.println("Select student from the list:");
 			List<Student> students1 = new ArrayList<>();
-			for (Group group : cathedra.getGroups()) {
-				for (Student student : group.getStudents()) {
-					if (!students1.contains(student)) {
-						students1.add(student);
-					}
-				}
-			}
+			cathedra.getGroups().stream().forEach(group -> group.getStudents().stream()
+					.filter(student -> !students1.contains(student)).forEach(student -> students1.add(student)));
 			System.out.println(formatter.formatStudentList(students1));
 			Student student1 = students1.get(Integer.parseInt(reader.readLine()) - 1);
-			for (Group group : cathedra.getGroups()) {
-				if (group.getStudents().contains(student1)) {
-					group.getStudents().remove(student1);
-				}
-			}
+			cathedra.getGroups().stream().filter(group -> group.getStudents().contains(student1))
+					.forEach(group -> group.getStudents().remove(student1));
 			System.out.println("Student was deleted!");
 			break;
 		case 2:
@@ -580,11 +557,8 @@ public class MenuCreator {
 			System.out.println(formatter.formatTeacherList(cathedra.getTeachers()));
 			Teacher teacher2 = cathedra.getTeachers().get(Integer.parseInt(reader.readLine()) - 1);
 			cathedra.getTeachers().remove(teacher2);
-			for (Subject subject : cathedra.getSubjects()) {
-				if (subject.getTeachers().contains(teacher2)) {
-					subject.getTeachers().remove(teacher2);
-				}
-			}
+			cathedra.getSubjects().stream().filter(subject -> subject.getTeachers().contains(teacher2))
+					.forEach(subject -> subject.getTeachers().remove(teacher2));
 			System.out.println("Teacher was deleted!");
 			break;
 		case 3:
@@ -594,46 +568,27 @@ public class MenuCreator {
 			if (!group3.getStudents().isEmpty()) {
 				System.out.println("Please remove students first from group!");
 			} else {
-				List<Lecture> lectures3 = new ArrayList<>();
-				for (Entry<String, Lecture> entry : cathedra.getLectures().entrySet()) {
-					lectures3.add(entry.getValue());
-				}
-				for (Lecture lecture : lectures3) {
-					if (lecture.getGroups().contains(group3)) {
-						lecture.getGroups().remove(group3);
-					}
-				}
+				cathedra.getLectures().stream().filter(lecture -> lecture.getGroups().contains(group3))
+						.forEach(lecture -> lecture.getGroups().remove(group3));
 				cathedra.getGroups().remove(group3);
 				System.out.println("Group was deleted!");
 			}
 			break;
 		case 4:
 			System.out.println("Select lecture from the list:");
-			/*
-			 * List<Lecture> lectures4 = new ArrayList<>(); for (Entry<String, Lecture>
-			 * entry : cathedra.getLectures().entrySet()) { lectures4.add(entry.getValue());
-			 * } System.out.println(formatter.formatLectureList(lectures4)); Lecture
-			 * lecture7 = lectures4.get(Integer.parseInt(reader.readLine()) - 1); for (Group
-			 * group : cathedra.getGroups()) { if (group.getLectures().contains(lecture7)) {
-			 * group.getLectures().remove(lecture7); } }
-			 */
-
-			// хз как удалить - мен€й на List
+			System.out.println(formatter.formatLectureList(cathedra.getLectures()));
+			Lecture lecture7 = cathedra.getLectures().get(Integer.parseInt(reader.readLine()) - 1);
+			cathedra.getGroups().stream().filter(group -> group.getLectures().contains(lecture7))
+					.forEach(group -> group.getLectures().remove(lecture7));
+			cathedra.getLectures().remove(lecture7);
+			System.out.println("Lecture was deleted!");
 			break;
 		case 5:
 			System.out.println("Select audience from the list:");
 			System.out.println(formatter.formatAudienceList(cathedra.getAudiences()));
 			Audience audience5 = cathedra.getAudiences().get(Integer.parseInt(reader.readLine()) - 1);
-			List<Lecture> lectures5 = new ArrayList<>();
-			for (Entry<String, Lecture> entry : cathedra.getLectures().entrySet()) {
-				lectures5.add(entry.getValue());
-			}
-			boolean checker5 = false;
-			for (Lecture lecture : lectures5) {
-				if (lecture.getAudience().equals(audience5)) {
-					checker5 = true;
-				}
-			}
+			boolean checker5 = cathedra.getLectures().stream()
+					.anyMatch(lecture -> lecture.getAudience().equals(audience5));
 			if (checker5) {
 				System.out.println("Please remove audiences first from lectures!");
 			} else {
@@ -645,24 +600,14 @@ public class MenuCreator {
 			System.out.println("Select subject from the list:");
 			System.out.println(formatter.formatSubjectList(cathedra.getSubjects()));
 			Subject subject6 = cathedra.getSubjects().get(Integer.parseInt(reader.readLine()) - 1);
-			List<Lecture> lectures6 = new ArrayList<>();
-			for (Entry<String, Lecture> entry : cathedra.getLectures().entrySet()) {
-				lectures6.add(entry.getValue());
-			}
-			boolean checker6 = false;
-			for (Lecture lecture : lectures6) {
-				if (lecture.getSubject().equals(subject6)) {
-					checker6 = true;
-				}
-			}
+			boolean checker6 = cathedra.getLectures().stream()
+					.anyMatch(lecture -> lecture.getSubject().equals(subject6));
 			if (checker6) {
 				System.out.println("Please remove subject first from lecture!");
 			} else {
 				cathedra.getSubjects().remove(subject6);
-				for (Teacher teacher : cathedra.getTeachers()) {
-					teacher.getSubjects().remove(subject6);
-				}
-				System.out.println("Audience was deleted!");
+				cathedra.getTeachers().stream().forEach(teacher -> teacher.getSubjects().remove(subject6));
+				System.out.println("Subject was deleted!");
 			}
 			break;
 		case 7:
