@@ -4,16 +4,16 @@ import java.time.LocalDate;
 
 public class Holiday {
 
-	private String description;
+	private String name;
 	private LocalDate date;
 
-	public Holiday(String description, LocalDate date) {
-		this.description = description;
+	public Holiday(String name, LocalDate date) {
+		this.name = name;
 		this.date = date;
 	}
 
-	public String getDescription() {
-		return description;
+	public String getName() {
+		return name;
 	}
 
 	public LocalDate getDate() {

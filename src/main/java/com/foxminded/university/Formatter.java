@@ -66,7 +66,7 @@ public class Formatter {
 
 		return teachers.stream()
 				.map(teacher -> String.format("%-3s Name: %-" + nameFieldLength + "s", index.incrementAndGet() + ".",
-						teacher.getFirstName() + " " + teacher.getLastName()))
+						teacher.getLastName() + " " + teacher.getFirstName()))
 				.collect(Collectors.joining(System.lineSeparator()));
 	}
 
@@ -91,18 +91,18 @@ public class Formatter {
 		return students.stream()
 				.map(student -> String.format(
 						"%-3s Name: %-" + nameFieldLength + "s | Group: %-" + groupNameFieldLength + "s",
-						index.incrementAndGet() + ".", student.getFirstName() + " " + student.getLastName(),
+						index.incrementAndGet() + ".", student.getLastName() + " " + student.getFirstName(),
 						student.getGroup().getName()))
 				.collect(Collectors.joining(System.lineSeparator()));
 	}
 
 	public String formatHolidayList(List<Holiday> holidays) {
 		AtomicInteger index = new AtomicInteger();
-		int descriptionFieldLength = getMaxFieldLength(holidays, Holiday::getDescription);
+		int nameFieldLength = getMaxFieldLength(holidays, Holiday::getName);
 
 		return holidays.stream()
-				.map(holiday -> String.format("%-3s Name: %-" + descriptionFieldLength + "s | Date: %s",
-						index.incrementAndGet() + ".", holiday.getDescription(), holiday.getDate()))
+				.map(holiday -> String.format("%-3s Name: %-" + nameFieldLength + "s | Date: %s",
+						index.incrementAndGet() + ".", holiday.getName(), holiday.getDate()))
 				.collect(Collectors.joining(System.lineSeparator()));
 	}
 

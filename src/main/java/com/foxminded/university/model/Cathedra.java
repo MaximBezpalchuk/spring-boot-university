@@ -18,7 +18,7 @@ public class Cathedra {
 	public List<Lecture> getTTForDay(Student student, int day, int month) {
 		MonthDay md = MonthDay.of(month, day);
 
-		return student.getGroup().getLectures().stream()
+		return student.getGroup().getLectures().stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
 				.filter(lecture -> lecture.getDate().getMonthValue() == md.getMonthValue()
 						&& lecture.getDate().getDayOfMonth() == md.getDayOfMonth())
 				.collect(Collectors.toList());
@@ -27,7 +27,7 @@ public class Cathedra {
 	public List<Lecture> getTTForDay(Teacher teacher, int day, int month) {
 		MonthDay md = MonthDay.of(month, day);
 
-		return lectures.stream()
+		return lectures.stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
 				.filter(lecture -> lecture.getTeacher().equals(teacher)
 						&& (lecture.getDate().getMonthValue() == md.getMonthValue()
 								&& lecture.getDate().getDayOfMonth() == md.getDayOfMonth()))
@@ -37,14 +37,14 @@ public class Cathedra {
 	public List<Lecture> getTTForMonth(Student student, int month) {
 		Month date = Month.of(month);
 
-		return student.getGroup().getLectures().stream().filter(lecture -> lecture.getDate().getMonth().equals(date))
-				.collect(Collectors.toList());
+		return student.getGroup().getLectures().stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
+				.filter(lecture -> lecture.getDate().getMonth().equals(date)).collect(Collectors.toList());
 	}
 
 	public List<Lecture> getTTForMonth(Teacher teacher, int month) {
 		Month date = Month.of(month);
 
-		return lectures.stream()
+		return lectures.stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
 				.filter(lecture -> (lecture.getTeacher().equals(teacher) && lecture.getDate().getMonth().equals(date)))
 				.collect(Collectors.toList());
 	}
