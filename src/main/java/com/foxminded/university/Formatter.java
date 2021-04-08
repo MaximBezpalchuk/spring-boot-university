@@ -9,6 +9,7 @@ import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Holiday;
 import com.foxminded.university.model.Lecture;
+import com.foxminded.university.model.LectureTime;
 import com.foxminded.university.model.Student;
 import com.foxminded.university.model.Subject;
 import com.foxminded.university.model.Teacher;
@@ -107,12 +108,17 @@ public class Formatter {
 
 	public String formatVacationList(List<Vacation> vacations) {
 		AtomicInteger index = new AtomicInteger();
-		int descriptionFieldLength = getMaxFieldLength(vacations, Vacation::getDescription);
 
-		return vacations.stream()
-				.map(vacation -> String.format("%-3s Description: %-" + descriptionFieldLength + "s | Dates: %s to %s",
-						index.incrementAndGet() + ".", vacation.getDescription(), vacation.getStart(),
-						vacation.getEnd()))
+		return vacations.stream().map(vacation -> String.format("%-3s Dates: %s to %s", index.incrementAndGet() + ".",
+				vacation.getStart(), vacation.getEnd())).collect(Collectors.joining(System.lineSeparator()));
+	}
+
+	public String formatLectureTimesList(List<LectureTime> lecturesTime) {
+		AtomicInteger index = new AtomicInteger();
+
+		return lecturesTime.stream()
+				.map(lectureTime -> String.format("%-3s Time: %s to %s", index.incrementAndGet() + ".",
+						lectureTime.getStart(), lectureTime.getEnd()))
 				.collect(Collectors.joining(System.lineSeparator()));
 	}
 }

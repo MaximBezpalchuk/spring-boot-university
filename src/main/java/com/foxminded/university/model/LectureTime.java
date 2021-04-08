@@ -7,20 +7,16 @@ public class LectureTime {
 	private LocalTime start;
 	private LocalTime end;
 
-	public LocalTime getStart() {
-		return start;
+	public LectureTime(LocalTime start, LocalTime end) {
+		this.start = start;
+		this.end = end;
 	}
 
-	public void setStart(LocalTime start) {
-		this.start = start;
+	public LocalTime getStart() {
+		return start;
 	}
 
 	public LocalTime getEnd() {
 		return end;
 	}
-
-	public void setEnd(LocalTime end) {
-		this.end = end;
-	}
-
 }

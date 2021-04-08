@@ -4,18 +4,12 @@ import java.time.LocalDate;
 
 public class Vacation {
 
-	private String description;
 	private LocalDate start;
 	private LocalDate end;
 
-	public Vacation(String description, LocalDate start, LocalDate end) {
-		this.description = description;
+	public Vacation(LocalDate start, LocalDate end) {
 		this.start = start;
 		this.end = end;
-	}
-
-	public String getDescription() {
-		return description;
 	}
 
 	public LocalDate getStart() {

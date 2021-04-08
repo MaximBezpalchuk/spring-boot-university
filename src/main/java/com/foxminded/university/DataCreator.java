@@ -27,6 +27,7 @@ public class DataCreator {
 	private List<Lecture> lectures = new ArrayList<>();
 	private List<Audience> audiences = new ArrayList<>();
 	private List<Holiday> holidays = new ArrayList<>();
+	private List<LectureTime> lectureTimes = new ArrayList<>();
 
 	public Cathedra createData() {
 		cathedra.setGroups(groups);
@@ -35,12 +36,14 @@ public class DataCreator {
 		cathedra.setHolidays(holidays);
 		cathedra.setSubjects(subjects);
 		cathedra.setAudiences(audiences);
+		cathedra.setLectureTimes(lectureTimes);
 		createStudents();
 		createGroups();
 		createTeachers();
 		createSubjects();
 		assertSubjectsToTeachers();
 		createAudiences();
+		createLectureTimes();
 		createLectures();
 		assertGroupsToLectures();
 		createHolidays();
@@ -121,60 +124,24 @@ public class DataCreator {
 
 	private void assertVacations() {
 		List<Vacation> vacationsT1 = new ArrayList<>();
-		vacationsT1.add(new Vacation("First", LocalDate.of(2021, 1, 15), LocalDate.of(2021, 1, 29)));
-		vacationsT1.add(new Vacation("Second", LocalDate.of(2021, 6, 15), LocalDate.of(2021, 6, 29)));
+		vacationsT1.add(new Vacation(LocalDate.of(2021, 1, 15), LocalDate.of(2021, 1, 29)));
+		vacationsT1.add(new Vacation(LocalDate.of(2021, 6, 15), LocalDate.of(2021, 6, 29)));
 		teachers.get(0).setVacations(vacationsT1);
 		List<Vacation> vacationsT2 = new ArrayList<>();
-		vacationsT2.add(new Vacation("First", LocalDate.of(2021, 3, 15), LocalDate.of(2021, 3, 29)));
-		vacationsT2.add(new Vacation("Second", LocalDate.of(2021, 7, 15), LocalDate.of(2021, 7, 29)));
+		vacationsT2.add(new Vacation(LocalDate.of(2021, 3, 15), LocalDate.of(2021, 3, 29)));
+		vacationsT2.add(new Vacation(LocalDate.of(2021, 7, 15), LocalDate.of(2021, 7, 29)));
 		teachers.get(1).setVacations(vacationsT2);
 	}
 
-	public LectureTime createLectureTime(int lessonNumber) {
-		LectureTime time = new LectureTime();
-		switch (lessonNumber) {
-		case 1:
-			time.setStart(LocalTime.of(8, 0));
-			time.setEnd(LocalTime.of(9, 30));
-			break;
-
-		case 2:
-			time.setStart(LocalTime.of(9, 40));
-			time.setEnd(LocalTime.of(11, 10));
-			break;
-
-		case 3:
-			time.setStart(LocalTime.of(11, 20));
-			time.setEnd(LocalTime.of(12, 50));
-			break;
-
-		case 4:
-			time.setStart(LocalTime.of(13, 20));
-			time.setEnd(LocalTime.of(14, 50));
-			break;
-
-		case 5:
-			time.setStart(LocalTime.of(15, 00));
-			time.setEnd(LocalTime.of(16, 30));
-			break;
-
-		case 6:
-			time.setStart(LocalTime.of(16, 40));
-			time.setEnd(LocalTime.of(18, 10));
-			break;
-
-		case 7:
-			time.setStart(LocalTime.of(18, 20));
-			time.setEnd(LocalTime.of(19, 50));
-			break;
-
-		case 8:
-			time.setStart(LocalTime.of(20, 00));
-			time.setEnd(LocalTime.of(21, 30));
-			break;
-		}
-
-		return time;
+	public void createLectureTimes() {
+		lectureTimes.add(new LectureTime(LocalTime.of(8, 0), LocalTime.of(9, 30)));
+		lectureTimes.add(new LectureTime(LocalTime.of(9, 40), LocalTime.of(11, 10)));
+		lectureTimes.add(new LectureTime(LocalTime.of(11, 20), LocalTime.of(12, 50)));
+		lectureTimes.add(new LectureTime(LocalTime.of(13, 20), LocalTime.of(14, 50)));
+		lectureTimes.add(new LectureTime(LocalTime.of(15, 00), LocalTime.of(16, 30)));
+		lectureTimes.add(new LectureTime(LocalTime.of(16, 40), LocalTime.of(18, 10)));
+		lectureTimes.add(new LectureTime(LocalTime.of(18, 20), LocalTime.of(19, 50)));
+		lectureTimes.add(new LectureTime(LocalTime.of(20, 00), LocalTime.of(21, 30)));
 	}
 
 	private void createAudiences() {
@@ -185,29 +152,29 @@ public class DataCreator {
 
 	private void createLectures() {
 		// Monday - wt and ul - only killers
-		lectures.add(new Lecture(subjects.get(0), LocalDate.of(2021, 4, 4), createLectureTime(1), audiences.get(0),
+		lectures.add(new Lecture(subjects.get(0), LocalDate.of(2021, 4, 4), lectureTimes.get(0), audiences.get(0),
 				teachers.get(0)));
-		lectures.add(new Lecture(subjects.get(0), LocalDate.of(2021, 4, 4), createLectureTime(2), audiences.get(0),
+		lectures.add(new Lecture(subjects.get(0), LocalDate.of(2021, 4, 4), lectureTimes.get(1), audiences.get(0),
 				teachers.get(0)));
-		lectures.add(new Lecture(subjects.get(2), LocalDate.of(2021, 4, 4), createLectureTime(3), audiences.get(2),
+		lectures.add(new Lecture(subjects.get(2), LocalDate.of(2021, 4, 4), lectureTimes.get(2), audiences.get(2),
 				teachers.get(1)));
-		lectures.add(new Lecture(subjects.get(2), LocalDate.of(2021, 4, 4), createLectureTime(4), audiences.get(2),
+		lectures.add(new Lecture(subjects.get(2), LocalDate.of(2021, 4, 4), lectureTimes.get(3), audiences.get(2),
 				teachers.get(1)));
 		// Wednesday - wm - only mages
-		lectures.add(new Lecture(subjects.get(1), LocalDate.of(2021, 4, 6), createLectureTime(2), audiences.get(1),
+		lectures.add(new Lecture(subjects.get(1), LocalDate.of(2021, 4, 6), lectureTimes.get(1), audiences.get(1),
 				teachers.get(1)));
-		lectures.add(new Lecture(subjects.get(1), LocalDate.of(2021, 4, 6), createLectureTime(3), audiences.get(1),
+		lectures.add(new Lecture(subjects.get(1), LocalDate.of(2021, 4, 6), lectureTimes.get(2), audiences.get(1),
 				teachers.get(1)));
-		lectures.add(new Lecture(subjects.get(1), LocalDate.of(2021, 4, 6), createLectureTime(4), audiences.get(1),
+		lectures.add(new Lecture(subjects.get(1), LocalDate.of(2021, 4, 6), lectureTimes.get(3), audiences.get(1),
 				teachers.get(1)));
 		// Friday - ul for mages, wt for killers
-		lectures.add(new Lecture(subjects.get(2), LocalDate.of(2021, 4, 8), createLectureTime(2), audiences.get(2),
+		lectures.add(new Lecture(subjects.get(2), LocalDate.of(2021, 4, 8), lectureTimes.get(1), audiences.get(2),
 				teachers.get(1)));
-		lectures.add(new Lecture(subjects.get(2), LocalDate.of(2021, 4, 8), createLectureTime(3), audiences.get(2),
+		lectures.add(new Lecture(subjects.get(2), LocalDate.of(2021, 4, 8), lectureTimes.get(2), audiences.get(2),
 				teachers.get(1)));
-		lectures.add(new Lecture(subjects.get(0), LocalDate.of(2021, 4, 8), createLectureTime(4), audiences.get(0),
+		lectures.add(new Lecture(subjects.get(0), LocalDate.of(2021, 4, 8), lectureTimes.get(3), audiences.get(0),
 				teachers.get(0)));
-		lectures.add(new Lecture(subjects.get(0), LocalDate.of(2021, 4, 8), createLectureTime(5), audiences.get(0),
+		lectures.add(new Lecture(subjects.get(0), LocalDate.of(2021, 4, 8), lectureTimes.get(4), audiences.get(0),
 				teachers.get(0)));
 	}
 

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.Month;
 import java.time.MonthDay;
 import java.util.ArrayList;
@@ -367,19 +366,12 @@ public class MenuCreator {
 			Audience audience5 = sortedAudiences.get(audienceNumber5 - 1);
 			System.out.println("Enter the lecture date separated by commas without spaces (YEAR,MONTH,DAY):");
 			LocalDate lectureDate5 = setupLocalDate();
-			// TODO: remake to dependency on entity
 			System.out.println("Set lecture time from the list:");
-			System.out.println("1. " + LocalTime.of(8, 0) + " - " + LocalTime.of(9, 30));
-			System.out.println("2. " + LocalTime.of(9, 40) + " - " + LocalTime.of(11, 10));
-			System.out.println("3. " + LocalTime.of(11, 20) + " - " + LocalTime.of(12, 50));
-			System.out.println("4. " + LocalTime.of(13, 20) + " - " + LocalTime.of(14, 50));
-			System.out.println("5. " + LocalTime.of(15, 0) + " - " + LocalTime.of(16, 30));
-			System.out.println("6. " + LocalTime.of(16, 40) + " - " + LocalTime.of(18, 10));
-			System.out.println("7. " + LocalTime.of(18, 20) + " - " + LocalTime.of(19, 50));
-			System.out.println("8. " + LocalTime.of(20, 0) + " - " + LocalTime.of(21, 30));
-			int lectureTimeInt5 = getInput(8);
-			// TODO: remake to entity, dont forget make "-1"
-			LectureTime lectureTime5 = dataCreator.createLectureTime(lectureTimeInt5);
+			List<LectureTime> sortedLectureTimes5 = sortLectureTimesByTime(cathedra.getLectureTimes());
+			System.out.println(formatter.formatLectureTimesList(sortedLectureTimes5));
+			int lectureTimeNumber5 = getInput(sortedLectureTimes5.size());
+			exitCheck(String.valueOf(lectureTimeNumber5));
+			LectureTime lectureTime5 = sortedLectureTimes5.get(lectureTimeNumber5 - 1);
 			Lecture lecture5 = new Lecture(subject5, lectureDate5, lectureTime5, audience5, teacher5);
 			cathedra.getLectures().add(lecture5);
 			System.out.println("Lecture added!");
@@ -582,10 +574,7 @@ public class MenuCreator {
 			LocalDate vacationStartDate2 = setupLocalDate();
 			System.out.println("Enter vacation end date separated by commas without spaces (YEAR,MONTH,DAY):");
 			LocalDate vacationEndDate2 = setupLocalDate();
-			System.out.println("Enter vacation name:");
-			String vacationName2 = reader.readLine();
-			exitCheck(vacationName2);
-			Vacation vacation2 = new Vacation(vacationName2, vacationStartDate2, vacationEndDate2);
+			Vacation vacation2 = new Vacation(vacationStartDate2, vacationEndDate2);
 			teacher2.getVacations().add(vacation2);
 			System.out.println("Vacation added!");
 			break;
@@ -645,19 +634,11 @@ public class MenuCreator {
 			exitCheck(String.valueOf(lectureNumber6));
 			Lecture lecture6 = sortedLectures6.get(lectureNumber6 - 1);
 			System.out.println("Set lecture time from the list:");
-			// TODO: change to dependency on entity
-			System.out.println("1. " + LocalTime.of(8, 0) + " - " + LocalTime.of(9, 30));
-			System.out.println("2. " + LocalTime.of(9, 40) + " - " + LocalTime.of(11, 10));
-			System.out.println("3. " + LocalTime.of(11, 20) + " - " + LocalTime.of(12, 50));
-			System.out.println("4. " + LocalTime.of(13, 20) + " - " + LocalTime.of(14, 50));
-			System.out.println("5. " + LocalTime.of(15, 0) + " - " + LocalTime.of(16, 30));
-			System.out.println("6. " + LocalTime.of(16, 40) + " - " + LocalTime.of(18, 10));
-			System.out.println("7. " + LocalTime.of(18, 20) + " - " + LocalTime.of(19, 50));
-			System.out.println("8. " + LocalTime.of(20, 0) + " - " + LocalTime.of(21, 30));
-			int lectureTimeNumber6 = getInput(8);
+			List<LectureTime> sortedLectureTimes6 = sortLectureTimesByTime(cathedra.getLectureTimes());
+			System.out.println(formatter.formatLectureTimesList(sortedLectureTimes6));
+			int lectureTimeNumber6 = getInput(sortedLectureTimes6.size());
 			exitCheck(String.valueOf(lectureTimeNumber6));
-			// TODO: change to entity - dont forget make "lectureTimeString6-1"
-			LectureTime lectureTime6 = dataCreator.createLectureTime(lectureTimeNumber6);
+			LectureTime lectureTime6 = sortedLectureTimes6.get(lectureTimeNumber6 - 1);
 			lecture6.setTime(lectureTime6);
 			System.out.println("Lecture time was changed!");
 			break;
@@ -846,6 +827,10 @@ public class MenuCreator {
 	}
 
 	private List<Vacation> sortVacationsByDate(List<Vacation> list) {
+		return list.stream().sorted((d1, d2) -> d1.getStart().compareTo(d2.getStart())).collect(Collectors.toList());
+	}
+
+	private List<LectureTime> sortLectureTimesByTime(List<LectureTime> list) {
 		return list.stream().sorted((d1, d2) -> d1.getStart().compareTo(d2.getStart())).collect(Collectors.toList());
 	}
 

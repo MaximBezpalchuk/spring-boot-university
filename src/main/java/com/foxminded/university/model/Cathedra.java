@@ -1,10 +1,7 @@
 package com.foxminded.university.model;
 
-import java.time.Month;
-import java.time.MonthDay;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Cathedra {
 
@@ -14,10 +11,15 @@ public class Cathedra {
 	private List<Holiday> holidays = new ArrayList<>();
 	private List<Subject> subjects = new ArrayList<>();
 	private List<Audience> audiences = new ArrayList<>();
+	private List<LectureTime> lectureTimes = new ArrayList<>();
 
+	public List<LectureTime> getLectureTimes() {
+		return lectureTimes;
+	}
 
-
-	
+	public void setLectureTimes(List<LectureTime> lectureTimes) {
+		this.lectureTimes = lectureTimes;
+	}
 
 	public List<Audience> getAudiences() {
 		return audiences;
