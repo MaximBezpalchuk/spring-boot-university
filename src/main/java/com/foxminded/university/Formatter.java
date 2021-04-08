@@ -20,7 +20,6 @@ public class Formatter {
 		return list.stream().map(getter).mapToInt(String::length).max().orElse(0);
 	}
 
-	// .sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
 	public String formatLectureList(List<Lecture> lectures) {
 		AtomicInteger index = new AtomicInteger();
 		int subjectNameFieldLength = getMaxFieldLength(lectures, lecture -> lecture.getSubject().getName());

@@ -3,8 +3,11 @@ package com.foxminded.university;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.Month;
+import java.time.MonthDay;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -154,16 +157,45 @@ public class MenuCreator {
 
 	private int getInput(int max) {
 		int choise = -1;
-		while (choise < 0 || choise > max) {
+		while (true) {
 			try {
 				choise = Integer.parseInt(reader.readLine());
-			} catch (NumberFormatException e) {
+				if (choise < 0 || choise > max) {
+					System.out.println("Invalid selection. Please try again");
+				} else {
+					break;
+				}
+			} catch (NumberFormatException | IOException e) {
 				System.out.println("Invalid selection. Please try again");
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
 		}
 		return choise;
+	}
+
+	private void exitCheck(String input) {
+		if (input.equals("0") | input.isEmpty()) {
+			System.out.println("Exit completed!");
+			System.exit(0);
+		}
+	}
+
+	private LocalDate setupLocalDate() {
+		LocalDate date;
+		while (true) {
+			try {
+				String input = reader.readLine();
+				exitCheck(input);
+				String[] splittedArray = input.split(",");
+				int year = Integer.parseInt(splittedArray[0]);
+				int month = Integer.parseInt(splittedArray[1]);
+				int day = Integer.parseInt(splittedArray[2]);
+				date = LocalDate.of(year, month, day);
+				break;
+			} catch (NumberFormatException | ArrayIndexOutOfBoundsException | DateTimeException | IOException e) {
+				System.out.println("Invalid selection. Please try again");
+			}
+		}
+		return date;
 	}
 
 	public void buildMenu() {
@@ -202,7 +234,7 @@ public class MenuCreator {
 		int choise = getInput(7);
 		switch (choise) {
 		case 1:
-			System.out.println("If you want to cancel, type 0 at any stage");
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Enter student first name:");
 			String firstName1 = reader.readLine();
 			exitCheck(firstName1);
@@ -228,25 +260,19 @@ public class MenuCreator {
 			String education1 = reader.readLine();
 			exitCheck(education1);
 			System.out.println("Enter the date of birth separated by commas without spaces (YEAR,MONTH,DAY):");
-			String birthDateString1 = reader.readLine();
-			exitCheck(birthDateString1);
-			String[] birthArr1 = birthDateString1.split(",");
-			int birthYear1 = Integer.parseInt(birthArr1[0]);
-			int birthMonth1 = Integer.parseInt(birthArr1[1]);
-			int birthDay1 = Integer.parseInt(birthArr1[2]);
-			LocalDate birthDate1 = LocalDate.of(birthYear1, birthMonth1, birthDay1);
+			LocalDate birthDate1 = setupLocalDate();
 			System.out.println("Set group from list:");
 			List<Group> sortedGroups1 = sortGroupsByName(cathedra.getGroups());
 			System.out.println(formatter.formatGroupList(sortedGroups1));
-			String groupNumber1 = reader.readLine();
-			exitCheck(groupNumber1);
-			Group group1 = sortedGroups1.get(Integer.parseInt(groupNumber1) - 1);
+			int groupNumber1 = getInput(sortedGroups1.size());
+			exitCheck(String.valueOf(groupNumber1));
+			Group group1 = sortedGroups1.get(groupNumber1 - 1);
 			dataUpdater.createStudent(firstName1, lastName1, phone1, address1, email1, gender1, postalCode1, education1,
 					birthDate1, group1);
 			System.out.println("Student added!");
 			break;
 		case 2:
-			System.out.println("If you want to cancel, type 0 at any stage");
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Enter teacher first name:");
 			String firstName2 = reader.readLine();
 			exitCheck(firstName2);
@@ -272,29 +298,34 @@ public class MenuCreator {
 			String education2 = reader.readLine();
 			exitCheck(education2);
 			System.out.println("Enter the date of birth separated by commas without spaces (YEAR,MONTH,DAY):");
-			String birthDateString2 = reader.readLine();
-			exitCheck(birthDateString2);
-			String[] birthArr2 = birthDateString2.split(",");
-			int birthYear2 = Integer.parseInt(birthArr2[0]);
-			int birthMonth2 = Integer.parseInt(birthArr2[1]);
-			int birthDay2 = Integer.parseInt(birthArr2[2]);
-			LocalDate birthDate2 = LocalDate.of(birthYear2, birthMonth2, birthDay2);
-			System.out.println("Set subject from list:");
+			LocalDate birthDate2 = setupLocalDate();
+			System.out.println("Set subjects from list separated by commas without spaces (SUBJ or SUBJ,SUBJ,SUBJ):");
 			List<Subject> sortedSubjects2 = sortSubjectsByName(cathedra.getSubjects());
 			System.out.println(formatter.formatSubjectList(sortedSubjects2));
-			String subjectNumber2 = reader.readLine();
-			exitCheck(subjectNumber2);
-			String[] subjectsArr2 = subjectNumber2.split(",");
 			List<Subject> subjects2 = new ArrayList<>();
-			for (String subjNum : subjectsArr2) {
-				subjects2.add(sortedSubjects2.get(Integer.parseInt(subjNum) - 1));
+			while (true) {
+				try {
+					String subjectNumber2 = reader.readLine();
+					exitCheck(subjectNumber2);
+					String[] subjectsArr2 = subjectNumber2.split(",");
+					for (String subjNumString : subjectsArr2) {
+						int subjNum = Integer.parseInt(subjNumString);
+						if (subjNum < 0 | subjNum > sortedSubjects2.size()) {
+							throw new ArrayIndexOutOfBoundsException();
+						}
+						subjects2.add(sortedSubjects2.get(subjNum - 1));
+					}
+					break;
+				} catch (NumberFormatException | ArrayIndexOutOfBoundsException | IOException e) {
+					System.out.println("Invalid selections. Please try again");
+				}
 			}
 			dataUpdater.createTeacher(firstName2, lastName2, phone2, address2, email2, gender2, postalCode2, education2,
 					birthDate2, cathedra, subjects2);
 			System.out.println("Teacher added!");
 			break;
 		case 3:
-			System.out.println("If you want to cancel, type 0 at any stage");
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Enter subject name:");
 			String subjectName3 = reader.readLine();
 			exitCheck(subjectName3);
@@ -306,7 +337,7 @@ public class MenuCreator {
 			System.out.println("Subject added!");
 			break;
 		case 4:
-			System.out.println("If you want to cancel, type 0 at any stage");
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Enter group name:");
 			String groupName4 = reader.readLine();
 			exitCheck(groupName4);
@@ -315,33 +346,27 @@ public class MenuCreator {
 			System.out.println("Group added!");
 			break;
 		case 5:
-			System.out.println("If you want to cancel, type 0 at any stage");
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Set subject from the list:");
 			List<Subject> sortedSubjects5 = sortSubjectsByName(cathedra.getSubjects());
 			System.out.println(formatter.formatSubjectList(sortedSubjects5));
-			String subjectNumber5 = reader.readLine();
-			exitCheck(subjectNumber5);
-			Subject subject5 = sortedSubjects5.get(Integer.parseInt(subjectNumber5) - 1);
+			int subjectNumber5 = getInput(sortedSubjects5.size());
+			exitCheck(String.valueOf(subjectNumber5));
+			Subject subject5 = sortedSubjects5.get(subjectNumber5 - 1);
 			System.out.println("Set teacher from the list:");
 			List<Teacher> sortedTeachers5 = sortTeachersByLastName(cathedra.getTeachers());
 			System.out.println(formatter.formatTeacherList(sortedTeachers5));
-			String teacherNumber5 = reader.readLine();
-			exitCheck(teacherNumber5);
-			Teacher teacher5 = sortedTeachers5.get(Integer.parseInt(teacherNumber5) - 1);
+			int teacherNumber5 = getInput(sortedTeachers5.size());
+			exitCheck(String.valueOf(teacherNumber5));
+			Teacher teacher5 = sortedTeachers5.get(teacherNumber5 - 1);
 			System.out.println("Set audience from the list:");
 			List<Audience> sortedAudiences = sortAudiencesByNumber(cathedra.getAudiences());
 			System.out.println(formatter.formatAudienceList(sortedAudiences));
-			String audienceNumber5 = reader.readLine();
-			exitCheck(audienceNumber5);
-			Audience audience5 = sortedAudiences.get(Integer.parseInt(audienceNumber5) - 1);
+			int audienceNumber5 = getInput(sortedAudiences.size());
+			exitCheck(String.valueOf(audienceNumber5));
+			Audience audience5 = sortedAudiences.get(audienceNumber5 - 1);
 			System.out.println("Enter the lecture date separated by commas without spaces (YEAR,MONTH,DAY):");
-			String lectureDateString5 = reader.readLine();
-			exitCheck(lectureDateString5);
-			String[] lectureArr5 = lectureDateString5.split(",");
-			int lectureYear5 = Integer.parseInt(lectureArr5[0]);
-			int lectureMonth5 = Integer.parseInt(lectureArr5[1]);
-			int lectureDay5 = Integer.parseInt(lectureArr5[2]);
-			LocalDate lectureDate5 = LocalDate.of(lectureYear5, lectureMonth5, lectureDay5);
+			LocalDate lectureDate5 = setupLocalDate();
 			// TODO: remake to dependency on entity
 			System.out.println("Set lecture time from the list:");
 			System.out.println("1. " + LocalTime.of(8, 0) + " - " + LocalTime.of(9, 30));
@@ -352,32 +377,26 @@ public class MenuCreator {
 			System.out.println("6. " + LocalTime.of(16, 40) + " - " + LocalTime.of(18, 10));
 			System.out.println("7. " + LocalTime.of(18, 20) + " - " + LocalTime.of(19, 50));
 			System.out.println("8. " + LocalTime.of(20, 0) + " - " + LocalTime.of(21, 30));
-			int lectureTimeInt5 = Integer.parseInt(reader.readLine());
-			// TODO: remake to entity
+			int lectureTimeInt5 = getInput(8);
+			// TODO: remake to entity, dont forget make "-1"
 			LectureTime lectureTime5 = dataCreator.createLectureTime(lectureTimeInt5);
 			Lecture lecture5 = new Lecture(subject5, lectureDate5, lectureTime5, audience5, teacher5);
 			cathedra.getLectures().add(lecture5);
 			System.out.println("Lecture added!");
 			break;
 		case 6:
-			System.out.println("If you want to cancel, type 0 at any stage");
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Enter holiday description");
 			String holidayDescription6 = reader.readLine();
 			exitCheck(holidayDescription6);
 			System.out.println("Enter the holiday date separated by commas without spaces (YEAR,MONTH,DAY):");
-			String holidayDateString5 = reader.readLine();
-			exitCheck(holidayDateString5);
-			String[] holidayArr5 = holidayDateString5.split(",");
-			int holidayYear5 = Integer.parseInt(holidayArr5[0]);
-			int holidayMonth5 = Integer.parseInt(holidayArr5[1]);
-			int holidayDay5 = Integer.parseInt(holidayArr5[2]);
-			LocalDate holidayDate5 = LocalDate.of(holidayYear5, holidayMonth5, holidayDay5);
+			LocalDate holidayDate5 = setupLocalDate();
 			Holiday holiday6 = new Holiday(holidayDescription6, holidayDate5);
 			cathedra.getHolidays().add(holiday6);
 			System.out.println("Holiday created!");
 			break;
 		case 7:
-			System.out.println("If you want to cancel, type 0 at any stage");
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Enter audience room");
 			String audienceRoom7 = reader.readLine();
 			exitCheck(audienceRoom7);
@@ -416,70 +435,107 @@ public class MenuCreator {
 			System.out.println(formatter.formatHolidayList(sortHolidaysByDate(cathedra.getHolidays())));
 			break;
 		case 6:
-			System.out.println("If you want to cancel, type 0 at any stage");
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select student from the list:");
 			List<Student> students6 = new ArrayList<>();
 			cathedra.getGroups().stream().forEach(group -> group.getStudents().stream()
 					.filter(student -> !students6.contains(student)).forEach(student -> students6.add(student)));
 			List<Student> sortedStudents6 = sortStudentsByLastName(students6);
 			System.out.println(formatter.formatStudentList(sortedStudents6));
-			String studentNumber6 = reader.readLine();
-			exitCheck(studentNumber6);
-			Student student6 = sortedStudents6.get(Integer.parseInt(studentNumber6) - 1);
+			int studentNumber6 = getInput(sortedStudents6.size());
+			exitCheck(String.valueOf(studentNumber6));
+			Student student6 = sortedStudents6.get(studentNumber6 - 1);
 			System.out.println("Enter date separated by commas without spaces (MONTH,DAY):");
-			String lactureDateString6 = reader.readLine();
-			exitCheck(lactureDateString6);
-			String[] lectureArr6 = lactureDateString6.split(",");
-			int lectureMonth6 = Integer.parseInt(lectureArr6[0]);
-			int lectureDay6 = Integer.parseInt(lectureArr6[1]);
-			System.out.println(formatter.formatLectureList(cathedra.getTTForDay(student6, lectureDay6, lectureMonth6)));
+			while (true) {
+				try {
+					String lactureDateString6 = reader.readLine();
+					exitCheck(lactureDateString6);
+					String[] lectureArr6 = lactureDateString6.split(",");
+					if (lectureArr6.length != 2) {
+						throw new ArrayIndexOutOfBoundsException();
+					}
+					int lectureMonth6 = Integer.parseInt(lectureArr6[0]);
+					int lectureDay6 = Integer.parseInt(lectureArr6[1]);
+					MonthDay date = MonthDay.of(lectureMonth6, lectureDay6);
+					System.out.println(formatter.formatLectureList(getTTForDay(student6, date)));
+					break;
+				} catch (NumberFormatException | DateTimeException | ArrayIndexOutOfBoundsException | IOException e) {
+					System.out.println("Invalid selection. Please try again");
+				}
+			}
 			break;
+
 		case 7:
-			System.out.println("If you want to cancel, type 0 at any stage");
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select teacher from the list:");
 			List<Teacher> sortedTeachers7 = sortTeachersByLastName(cathedra.getTeachers());
 			System.out.println(formatter.formatTeacherList(sortedTeachers7));
-			String teacherNumber7 = reader.readLine();
-			exitCheck(teacherNumber7);
-			Teacher teacher7 = sortedTeachers7.get(Integer.parseInt(teacherNumber7) - 1);
+			int teacherNumber7 = getInput(sortedTeachers7.size());
+			exitCheck(String.valueOf(teacherNumber7));
+			Teacher teacher7 = sortedTeachers7.get(teacherNumber7 - 1);
 			System.out.println("Enter date separated by commas without spaces (MONTH,DAY):");
-			String lectureDateString7 = reader.readLine();
-			exitCheck(lectureDateString7);
-			String[] lectureArr7 = lectureDateString7.split(",");
-			int lectureMonth7 = Integer.parseInt(lectureArr7[0]);
-			int lectureDay7 = Integer.parseInt(lectureArr7[1]);
-			System.out.println(formatter.formatLectureList(cathedra.getTTForDay(teacher7, lectureDay7, lectureMonth7)));
+			while (true) {
+				try {
+					String lectureDateString7 = reader.readLine();
+					exitCheck(lectureDateString7);
+					String[] lectureArr7 = lectureDateString7.split(",");
+					if (lectureArr7.length != 2) {
+						throw new ArrayIndexOutOfBoundsException();
+					}
+					int lectureMonth7 = Integer.parseInt(lectureArr7[0]);
+					int lectureDay7 = Integer.parseInt(lectureArr7[1]);
+					MonthDay date7 = MonthDay.of(lectureMonth7, lectureDay7);
+					System.out.println(formatter.formatLectureList(getTTForDay(teacher7, date7)));
+					break;
+				} catch (NumberFormatException | DateTimeException | ArrayIndexOutOfBoundsException | IOException e) {
+					System.out.println("Invalid selection. Please try again");
+				}
+			}
 			break;
 		case 8:
-			System.out.println("If you want to cancel, type 0 at any stage");
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select student from the list:");
 			List<Student> students8 = new ArrayList<>();
 			cathedra.getGroups().stream().forEach(group -> group.getStudents().stream()
 					.filter(student -> !students8.contains(student)).forEach(student -> students8.add(student)));
 			List<Student> sortedStudents8 = sortStudentsByLastName(students8);
 			System.out.println(formatter.formatStudentList(sortedStudents8));
-			String studentNumber8 = reader.readLine();
-			exitCheck(studentNumber8);
-			Student student8 = sortedStudents8.get(Integer.parseInt(studentNumber8) - 1);
+			int studentNumber8 = getInput(sortedStudents8.size());
+			exitCheck(String.valueOf(studentNumber8));
+			Student student8 = sortedStudents8.get(studentNumber8 - 1);
 			System.out.println("Enter month number:");
-			String lectureMonth8 = reader.readLine();
-			exitCheck(lectureMonth8);
-			System.out.println(
-					formatter.formatLectureList(cathedra.getTTForMonth(student8, Integer.parseInt(lectureMonth8))));
+			while (true) {
+				try {
+					String lectureMonth8 = reader.readLine();
+					exitCheck(lectureMonth8);
+					Month date = Month.of(Integer.parseInt(lectureMonth8));
+					System.out.println(formatter.formatLectureList(getTTForMonth(student8, date)));
+					break;
+				} catch (NumberFormatException | DateTimeException | ArrayIndexOutOfBoundsException | IOException e) {
+					System.out.println("Invalid selection. Please try again");
+				}
+			}
 			break;
 		case 9:
-			System.out.println("If you want to cancel, type 0 at any stage");
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select teacher from the list:");
 			List<Teacher> sortedTeachers9 = sortTeachersByLastName(cathedra.getTeachers());
 			System.out.println(formatter.formatTeacherList(sortedTeachers9));
-			String teacherNumber9 = reader.readLine();
-			exitCheck(teacherNumber9);
-			Teacher teacher9 = sortedTeachers9.get(Integer.parseInt(teacherNumber9) - 1);
+			int teacherNumber9 = getInput(sortedTeachers9.size());
+			exitCheck(String.valueOf(teacherNumber9));
+			Teacher teacher9 = sortedTeachers9.get(teacherNumber9 - 1);
 			System.out.println("Enter month number:");
-			String lectureMonth9 = reader.readLine();
-			exitCheck(lectureMonth9);
-			System.out.println(
-					formatter.formatLectureList(cathedra.getTTForMonth(teacher9, Integer.parseInt(lectureMonth9))));
+			while (true) {
+				try {
+					String lectureMonth9 = reader.readLine();
+					exitCheck(lectureMonth9);
+					Month date9 = Month.of(Integer.parseInt(lectureMonth9));
+					System.out.println(formatter.formatLectureList(getTTForMonth(teacher9, date9)));
+					break;
+				} catch (NumberFormatException | DateTimeException | ArrayIndexOutOfBoundsException | IOException e) {
+					System.out.println("Invalid selection. Please try again");
+				}
+			}
 			break;
 		case 10:
 			System.out.println(formatter.formatAudienceList(sortAudiencesByNumber(cathedra.getAudiences())));
@@ -494,50 +550,38 @@ public class MenuCreator {
 		int choise = getInput(7);
 		switch (choise) {
 		case 1:
-			System.out.println("If you want to cancel, type 0 at any stage");
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select student from the list:");
 			List<Student> students1 = new ArrayList<>();
 			cathedra.getGroups().stream().forEach(group -> group.getStudents().stream()
 					.filter(student -> !students1.contains(student)).forEach(student -> students1.add(student)));
 			List<Student> sortedStudents1 = sortStudentsByLastName(students1);
 			System.out.println(formatter.formatStudentList(sortStudentsByLastName(students1)));
-			String studentNumber1 = reader.readLine();
-			exitCheck(studentNumber1);
-			Student student1 = sortedStudents1.get(Integer.parseInt(studentNumber1) - 1);
+			int studentNumber1 = getInput(sortedStudents1.size());
+			exitCheck(String.valueOf(studentNumber1));
+			Student student1 = sortedStudents1.get(studentNumber1 - 1);
 			System.out.println("Select group from the list:");
 			List<Group> sortedGroups1 = sortGroupsByName(cathedra.getGroups());
 			System.out.println(formatter.formatGroupList(sortedGroups1));
-			String groupNumber1 = reader.readLine();
-			exitCheck(groupNumber1);
-			Group group1 = sortedGroups1.get(Integer.parseInt(groupNumber1) - 1);
+			int groupNumber1 = getInput(sortedGroups1.size());
+			exitCheck(String.valueOf(groupNumber1));
+			Group group1 = sortedGroups1.get(groupNumber1 - 1);
 			student1.setGroup(group1);
 			group1.getStudents().add(student1);
 			System.out.println("Student group was changed!");
 			break;
 		case 2:
-			System.out.println("If you want to cancel, type 0 at any stage");
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select teacher from the list:");
 			List<Teacher> sortedTeachers2 = sortTeachersByLastName(cathedra.getTeachers());
 			System.out.println(formatter.formatTeacherList(sortedTeachers2));
-			String teacherNumber2 = reader.readLine();
-			exitCheck(teacherNumber2);
-			Teacher teacher2 = sortedTeachers2.get(Integer.parseInt(teacherNumber2) - 1);
+			int teacherNumber2 = getInput(sortedTeachers2.size());
+			exitCheck(String.valueOf(teacherNumber2));
+			Teacher teacher2 = sortedTeachers2.get(teacherNumber2 - 1);
 			System.out.println("Enter vacation start date separated by commas without spaces (YEAR,MONTH,DAY):");
-			String vacationStartDateString2 = reader.readLine();
-			exitCheck(vacationStartDateString2);
-			String[] vacationStartArr2 = vacationStartDateString2.split(",");
-			int vacationStartYear2 = Integer.parseInt(vacationStartArr2[0]);
-			int vacationStartMonth2 = Integer.parseInt(vacationStartArr2[1]);
-			int vacationStartDay2 = Integer.parseInt(vacationStartArr2[2]);
-			LocalDate vacationStartDate2 = LocalDate.of(vacationStartYear2, vacationStartMonth2, vacationStartDay2);
+			LocalDate vacationStartDate2 = setupLocalDate();
 			System.out.println("Enter vacation end date separated by commas without spaces (YEAR,MONTH,DAY):");
-			String vacationEndDateString2 = reader.readLine();
-			exitCheck(vacationEndDateString2);
-			String[] vacationEndArr2 = vacationEndDateString2.split(",");
-			int vacationEndYear2 = Integer.parseInt(vacationEndArr2[0]);
-			int vacationEndMonth2 = Integer.parseInt(vacationEndArr2[1]);
-			int vacationEndDay2 = Integer.parseInt(vacationEndArr2[2]);
-			LocalDate vacationEndDate2 = LocalDate.of(vacationEndYear2, vacationEndMonth2, vacationEndDay2);
+			LocalDate vacationEndDate2 = setupLocalDate();
 			System.out.println("Enter vacation name:");
 			String vacationName2 = reader.readLine();
 			exitCheck(vacationName2);
@@ -546,67 +590,60 @@ public class MenuCreator {
 			System.out.println("Vacation added!");
 			break;
 		case 3:
-			System.out.println("If you want to cancel, type 0 at any stage");
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Set subject from the list:");
 			List<Subject> sortedSubjects3 = sortSubjectsByName(cathedra.getSubjects());
 			System.out.println(formatter.formatSubjectList(sortedSubjects3));
-			String subjectNumber3 = reader.readLine();
-			exitCheck(subjectNumber3);
-			Subject subject3 = sortedSubjects3.get(Integer.parseInt(subjectNumber3) - 1);
+			int subjectNumber3 = getInput(sortedSubjects3.size());
+			exitCheck(String.valueOf(subjectNumber3));
+			Subject subject3 = sortedSubjects3.get(subjectNumber3 - 1);
 			System.out.println("Select teacher from the list:");
 			List<Teacher> sortedTeachers3 = sortTeachersByLastName(cathedra.getTeachers());
 			System.out.println(formatter.formatTeacherList(sortedTeachers3));
-			String teacherNumber3 = reader.readLine();
-			exitCheck(teacherNumber3);
-			Teacher teacher3 = sortedTeachers3.get(Integer.parseInt(teacherNumber3) - 1);
+			int teacherNumber3 = getInput(sortedTeachers3.size());
+			exitCheck(String.valueOf(teacherNumber3));
+			Teacher teacher3 = sortedTeachers3.get(teacherNumber3 - 1);
 			subject3.getTeachers().add(teacher3);
 			teacher3.getSubjects().add(subject3);
 			System.out.println("Subject was set!");
 			break;
 		case 4:
-			System.out.println("If you want to cancel, type 0 at any stage");
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select lecture from the list:");
 			List<Lecture> sortedLectures4 = sortLecturesByDate(cathedra.getLectures());
 			System.out.println(formatter.formatLectureList(sortedLectures4));
-			String lectureNumber4 = reader.readLine();
-			exitCheck(lectureNumber4);
-			Lecture lecture4 = sortedLectures4.get(Integer.parseInt(lectureNumber4) - 1);
+			int lectureNumber4 = getInput(sortedLectures4.size());
+			exitCheck(String.valueOf(lectureNumber4));
+			Lecture lecture4 = sortedLectures4.get(lectureNumber4 - 1);
 			System.out.println("Select audience from the list:");
 			List<Audience> sortedAudiences4 = sortAudiencesByNumber(cathedra.getAudiences());
 			System.out.println(formatter.formatAudienceList(sortedAudiences4));
-			String audienceNumber4 = reader.readLine();
-			exitCheck(audienceNumber4);
-			Audience audience4 = sortedAudiences4.get(Integer.parseInt(audienceNumber4) - 1);
+			int audienceNumber4 = getInput(sortedAudiences4.size());
+			exitCheck(String.valueOf(audienceNumber4));
+			Audience audience4 = sortedAudiences4.get(audienceNumber4 - 1);
 			lecture4.setAudience(audience4);
 			System.out.println("Lecture audience was changed!");
 			break;
 		case 5:
-			System.out.println("If you want to cancel, type 0 at any stage");
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select lecture from the list:");
 			List<Lecture> sortedLectures5 = sortLecturesByDate(cathedra.getLectures());
 			System.out.println(formatter.formatLectureList(sortedLectures5));
-			String lectureNumber5 = reader.readLine();
-			exitCheck(lectureNumber5);
-			Lecture lecture5 = sortedLectures5.get(Integer.parseInt(lectureNumber5) - 1);
+			int lectureNumber5 = getInput(sortedLectures5.size());
+			exitCheck(String.valueOf(lectureNumber5));
+			Lecture lecture5 = sortedLectures5.get(lectureNumber5 - 1);
 			System.out.println("Enter the lecture date separated by commas without spaces (YEAR,MONTH,DAY):");
-			String lectureDateString5 = reader.readLine();
-			exitCheck(lectureDateString5);
-			String[] lectureArr5 = lectureDateString5.split(",");
-			int lectureYear5 = Integer.parseInt(lectureArr5[0]);
-			int lectureMonth5 = Integer.parseInt(lectureArr5[1]);
-			int lectureDay5 = Integer.parseInt(lectureArr5[2]);
-			LocalDate lectureDate5 = LocalDate.of(lectureYear5, lectureMonth5, lectureDay5);
-			lecture5.setDate(lectureDate5);
+			lecture5.setDate(setupLocalDate());
 			System.out.println("Lecture date was changed!");
 			break;
 		case 6:
-			System.out.println("If you want to cancel, type 0 at any stage");
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select lecture from the list:");
 			List<Lecture> sortedLectures6 = sortLecturesByDate(cathedra.getLectures());
 			System.out.println(formatter.formatLectureList(sortedLectures6));
-			String lectureNumber6 = reader.readLine();
-			exitCheck(lectureNumber6);
-			Lecture lecture6 = sortedLectures6.get(Integer.parseInt(lectureNumber6) - 1);
+			int lectureNumber6 = getInput(sortedLectures6.size());
+			exitCheck(String.valueOf(lectureNumber6));
+			Lecture lecture6 = sortedLectures6.get(lectureNumber6 - 1);
 			System.out.println("Set lecture time from the list:");
 			// TODO: change to dependency on entity
 			System.out.println("1. " + LocalTime.of(8, 0) + " - " + LocalTime.of(9, 30));
@@ -617,27 +654,27 @@ public class MenuCreator {
 			System.out.println("6. " + LocalTime.of(16, 40) + " - " + LocalTime.of(18, 10));
 			System.out.println("7. " + LocalTime.of(18, 20) + " - " + LocalTime.of(19, 50));
 			System.out.println("8. " + LocalTime.of(20, 0) + " - " + LocalTime.of(21, 30));
-			String lectureTimeString6 = reader.readLine();
-			exitCheck(lectureTimeString6);
-			// TODO: change to entity
-			LectureTime lectureTime6 = dataCreator.createLectureTime(Integer.parseInt(lectureTimeString6));
+			int lectureTimeNumber6 = getInput(8);
+			exitCheck(String.valueOf(lectureTimeNumber6));
+			// TODO: change to entity - dont forget make "lectureTimeString6-1"
+			LectureTime lectureTime6 = dataCreator.createLectureTime(lectureTimeNumber6);
 			lecture6.setTime(lectureTime6);
 			System.out.println("Lecture time was changed!");
 			break;
 		case 7:
-			System.out.println("If you want to cancel, type 0 at any stage");
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select lecture from the list:");
 			List<Lecture> sortedLectures7 = sortLecturesByDate(cathedra.getLectures());
 			System.out.println(formatter.formatLectureList(sortedLectures7));
-			String lectureNumber7 = reader.readLine();
-			exitCheck(lectureNumber7);
-			Lecture lecture7 = sortedLectures7.get(Integer.parseInt(lectureNumber7) - 1);
+			int lectureNumber7 = getInput(sortedLectures7.size());
+			exitCheck(String.valueOf(lectureNumber7));
+			Lecture lecture7 = sortedLectures7.get(lectureNumber7 - 1);
 			System.out.println("Select group from the list:");
 			List<Group> sortedGroups7 = sortGroupsByName(cathedra.getGroups());
 			System.out.println(formatter.formatGroupList(sortedGroups7));
-			String groupNumber7 = reader.readLine();
-			exitCheck(groupNumber7);
-			Group group7 = sortedGroups7.get(Integer.parseInt(groupNumber7) - 1);
+			int groupNumber7 = getInput(sortedGroups7.size());
+			exitCheck(String.valueOf(groupNumber7));
+			Group group7 = sortedGroups7.get(groupNumber7 - 1);
 			lecture7.getGroups().add(group7);
 			group7.getLectures().add(lecture7);
 			System.out.println("Lecture was set to group!");
@@ -652,41 +689,41 @@ public class MenuCreator {
 		int choise = getInput(8);
 		switch (choise) {
 		case 1:
-			System.out.println("If you want to cancel, type 0 at any stage");
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select student from the list:");
 			List<Student> students1 = new ArrayList<>();
 			cathedra.getGroups().stream().forEach(group -> group.getStudents().stream()
 					.filter(student -> !students1.contains(student)).forEach(student -> students1.add(student)));
 			List<Student> sortedStudents1 = sortStudentsByLastName(students1);
 			System.out.println(formatter.formatStudentList(sortedStudents1));
-			String studentNumber1 = reader.readLine();
-			exitCheck(studentNumber1);
-			Student student1 = sortedStudents1.get(Integer.parseInt(studentNumber1) - 1);
+			int studentNumber1 = getInput(sortedStudents1.size());
+			exitCheck(String.valueOf(studentNumber1));
+			Student student1 = sortedStudents1.get(studentNumber1 - 1);
 			cathedra.getGroups().stream().filter(group -> group.getStudents().contains(student1))
 					.forEach(group -> group.getStudents().remove(student1));
 			System.out.println("Student was deleted!");
 			break;
 		case 2:
-			System.out.println("If you want to cancel, type 0 at any stage");
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select teacher from the list:");
 			List<Teacher> sortedTeachers2 = sortTeachersByLastName(cathedra.getTeachers());
 			System.out.println(formatter.formatTeacherList(sortedTeachers2));
-			String teacherNumber2 = reader.readLine();
-			exitCheck(teacherNumber2);
-			Teacher teacher2 = sortedTeachers2.get(Integer.parseInt(teacherNumber2) - 1);
+			int teacherNumber2 = getInput(sortedTeachers2.size());
+			exitCheck(String.valueOf(teacherNumber2));
+			Teacher teacher2 = sortedTeachers2.get(teacherNumber2 - 1);
 			cathedra.getTeachers().remove(teacher2);
 			cathedra.getSubjects().stream().filter(subject -> subject.getTeachers().contains(teacher2))
 					.forEach(subject -> subject.getTeachers().remove(teacher2));
 			System.out.println("Teacher was deleted!");
 			break;
 		case 3:
-			System.out.println("If you want to cancel, type 0 at any stage");
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select group from the list:");
 			List<Group> sortedGroups3 = sortGroupsByName(cathedra.getGroups());
 			System.out.println(formatter.formatGroupList(sortedGroups3));
-			String groupNumber3 = reader.readLine();
-			exitCheck(groupNumber3);
-			Group group3 = sortedGroups3.get(Integer.parseInt(groupNumber3) - 1);
+			int groupNumber3 = getInput(sortedGroups3.size());
+			exitCheck(String.valueOf(groupNumber3));
+			Group group3 = sortedGroups3.get(groupNumber3 - 1);
 			if (!group3.getStudents().isEmpty()) {
 				System.out.println("Please remove students first from group!");
 			} else {
@@ -697,26 +734,26 @@ public class MenuCreator {
 			}
 			break;
 		case 4:
-			System.out.println("If you want to cancel, type 0 at any stage");
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select lecture from the list:");
 			List<Lecture> sortedLectures4 = sortLecturesByDate(cathedra.getLectures());
 			System.out.println(formatter.formatLectureList(sortedLectures4));
-			String lectureNumber4 = reader.readLine();
-			exitCheck(lectureNumber4);
-			Lecture lecture7 = sortedLectures4.get(Integer.parseInt(lectureNumber4) - 1);
+			int lectureNumber4 = getInput(sortedLectures4.size());
+			exitCheck(String.valueOf(lectureNumber4));
+			Lecture lecture7 = sortedLectures4.get(lectureNumber4 - 1);
 			cathedra.getGroups().stream().filter(group -> group.getLectures().contains(lecture7))
 					.forEach(group -> group.getLectures().remove(lecture7));
 			cathedra.getLectures().remove(lecture7);
 			System.out.println("Lecture was deleted!");
 			break;
 		case 5:
-			System.out.println("If you want to cancel, type 0 at any stage");
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select audience from the list:");
 			List<Audience> sortedAudiences5 = sortAudiencesByNumber(cathedra.getAudiences());
 			System.out.println(formatter.formatAudienceList(sortedAudiences5));
-			String audienceNumber5 = reader.readLine();
-			exitCheck(audienceNumber5);
-			Audience audience5 = sortedAudiences5.get(Integer.parseInt(audienceNumber5) - 1);
+			int audienceNumber5 = getInput(sortedAudiences5.size());
+			exitCheck(String.valueOf(audienceNumber5));
+			Audience audience5 = sortedAudiences5.get(audienceNumber5 - 1);
 			boolean checker5 = cathedra.getLectures().stream()
 					.anyMatch(lecture -> lecture.getAudience().equals(audience5));
 			if (checker5) {
@@ -727,13 +764,13 @@ public class MenuCreator {
 			}
 			break;
 		case 6:
-			System.out.println("If you want to cancel, type 0 at any stage");
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select subject from the list:");
 			List<Subject> sortedSubjects6 = sortSubjectsByName(cathedra.getSubjects());
 			System.out.println(formatter.formatSubjectList(sortedSubjects6));
-			String subjectNumber6 = reader.readLine();
-			exitCheck(subjectNumber6);
-			Subject subject6 = sortedSubjects6.get(Integer.parseInt(subjectNumber6) - 1);
+			int subjectNumber6 = getInput(sortedSubjects6.size());
+			exitCheck(String.valueOf(subjectNumber6));
+			Subject subject6 = sortedSubjects6.get(subjectNumber6 - 1);
 			boolean checker6 = cathedra.getLectures().stream()
 					.anyMatch(lecture -> lecture.getSubject().equals(subject6));
 			if (checker6) {
@@ -745,30 +782,30 @@ public class MenuCreator {
 			}
 			break;
 		case 7:
-			System.out.println("If you want to cancel, type 0 at any stage");
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select teacher from the list:");
 			List<Teacher> sortedTeachers7 = sortTeachersByLastName(cathedra.getTeachers());
 			System.out.println(formatter.formatTeacherList(sortedTeachers7));
-			String teacherNumber7 = reader.readLine();
-			exitCheck(teacherNumber7);
-			Teacher teacher7 = sortedTeachers7.get(Integer.parseInt(teacherNumber7) - 1);
+			int teacherNumber7 = getInput(sortedTeachers7.size());
+			exitCheck(String.valueOf(teacherNumber7));
+			Teacher teacher7 = sortedTeachers7.get(teacherNumber7 - 1);
 			System.out.println("Select vacation from the list:");
 			List<Vacation> sortedVacations7 = sortVacationsByDate(teacher7.getVacations());
 			System.out.println(formatter.formatVacationList(sortedVacations7));
-			String vacationNumber7 = reader.readLine();
-			exitCheck(vacationNumber7);
-			Vacation vacation7 = sortedVacations7.get(Integer.parseInt(vacationNumber7) - 1);
+			int vacationNumber7 = getInput(sortedVacations7.size());
+			exitCheck(String.valueOf(vacationNumber7));
+			Vacation vacation7 = sortedVacations7.get(vacationNumber7 - 1);
 			teacher7.getVacations().remove(vacation7);
 			System.out.println("Teacher vacation was deleted!");
 			break;
 		case 8:
-			System.out.println("If you want to cancel, type 0 at any stage");
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select holiday from the list:");
 			List<Holiday> sortedHolidays8 = sortHolidaysByDate(cathedra.getHolidays());
 			System.out.println(formatter.formatHolidayList(sortedHolidays8));
-			String holidayNumber8 = reader.readLine();
-			exitCheck(holidayNumber8);
-			Holiday holiday = sortedHolidays8.get(Integer.parseInt(holidayNumber8) - 1);
+			int holidayNumber8 = getInput(sortedHolidays8.size());
+			exitCheck(String.valueOf(holidayNumber8));
+			Holiday holiday = sortedHolidays8.get(holidayNumber8 - 1);
 			cathedra.getHolidays().remove(holiday);
 			System.out.println("Holiday was deleted!");
 			break;
@@ -812,10 +849,29 @@ public class MenuCreator {
 		return list.stream().sorted((d1, d2) -> d1.getStart().compareTo(d2.getStart())).collect(Collectors.toList());
 	}
 
-	private void exitCheck(String arg) {
-		if (arg.equals("0")) {
-			System.out.println("Exit completed!");
-			System.exit(0);
-		}
+	public List<Lecture> getTTForDay(Student student, MonthDay date) {
+		return student.getGroup().getLectures().stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
+				.filter(lecture -> lecture.getDate().getMonthValue() == date.getMonthValue()
+						&& lecture.getDate().getDayOfMonth() == date.getDayOfMonth())
+				.collect(Collectors.toList());
+	}
+
+	public List<Lecture> getTTForDay(Teacher teacher, MonthDay date) {
+		return teacher.getCathedra().getLectures().stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
+				.filter(lecture -> lecture.getTeacher().equals(teacher)
+						&& (lecture.getDate().getMonthValue() == date.getMonthValue()
+								&& lecture.getDate().getDayOfMonth() == date.getDayOfMonth()))
+				.collect(Collectors.toList());
+	}
+
+	public List<Lecture> getTTForMonth(Student student, Month date) {
+		return student.getGroup().getLectures().stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
+				.filter(lecture -> lecture.getDate().getMonth().equals(date)).collect(Collectors.toList());
+	}
+
+	public List<Lecture> getTTForMonth(Teacher teacher, Month date) {
+		return teacher.getCathedra().getLectures().stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
+				.filter(lecture -> (lecture.getTeacher().equals(teacher) && lecture.getDate().getMonth().equals(date)))
+				.collect(Collectors.toList());
 	}
 }
