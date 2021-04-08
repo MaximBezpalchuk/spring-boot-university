@@ -4,8 +4,11 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.foxminded.university.model.Audience;
+import com.foxminded.university.model.Degree;
+import com.foxminded.university.model.Gender;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Holiday;
 import com.foxminded.university.model.Lecture;
@@ -120,5 +123,15 @@ public class Formatter {
 				.map(lectureTime -> String.format("%-3s Time: %s to %s", index.incrementAndGet() + ".",
 						lectureTime.getStart(), lectureTime.getEnd()))
 				.collect(Collectors.joining(System.lineSeparator()));
+	}
+
+	public String getGenderString() {
+		return Stream.of(Gender.values()).map(genderType -> String.format("%s ", genderType.name()))
+				.collect(Collectors.joining());
+	}
+
+	public String getDegreeString() {
+		return Stream.of(Degree.values()).map(degreeType -> String.format("%s ", degreeType.name()))
+				.collect(Collectors.joining());
 	}
 }

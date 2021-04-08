@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Cathedra;
+import com.foxminded.university.model.Degree;
+import com.foxminded.university.model.Gender;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Holiday;
 import com.foxminded.university.model.Lecture;
@@ -250,8 +252,8 @@ public class MenuCreator {
 			String email1 = reader.readLine();
 			exitCheck(email1);
 			System.out.println("Enter student gender:");
-			String gender1 = reader.readLine();
-			exitCheck(gender1);
+			System.out.println(formatter.getGenderString());
+			Gender gender1 = genderMaker();
 			System.out.println("Enter student postal code:");
 			String postalCode1 = reader.readLine();
 			exitCheck(postalCode1);
@@ -288,8 +290,8 @@ public class MenuCreator {
 			String email2 = reader.readLine();
 			exitCheck(email2);
 			System.out.println("Enter teacher gender:");
-			String gender2 = reader.readLine();
-			exitCheck(gender2);
+			System.out.println(formatter.getGenderString());
+			Gender gender2 = genderMaker();
 			System.out.println("Enter teacher postal code:");
 			String postalCode2 = reader.readLine();
 			exitCheck(postalCode2);
@@ -298,6 +300,9 @@ public class MenuCreator {
 			exitCheck(education2);
 			System.out.println("Enter the date of birth separated by commas without spaces (YEAR,MONTH,DAY):");
 			LocalDate birthDate2 = setupLocalDate();
+			System.out.println("Enter teacher degree:");
+			System.out.println(formatter.getDegreeString());
+			Degree degree2 = degreeMaker();
 			System.out.println("Set subjects from list separated by commas without spaces (SUBJ or SUBJ,SUBJ,SUBJ):");
 			List<Subject> sortedSubjects2 = sortSubjectsByName(cathedra.getSubjects());
 			System.out.println(formatter.formatSubjectList(sortedSubjects2));
@@ -320,7 +325,8 @@ public class MenuCreator {
 				}
 			}
 			dataUpdater.createTeacher(firstName2, lastName2, phone2, address2, email2, gender2, postalCode2, education2,
-					birthDate2, cathedra, subjects2);
+					birthDate2, degree2, cathedra, subjects2);
+			
 			System.out.println("Teacher added!");
 			break;
 		case 3:
@@ -858,5 +864,35 @@ public class MenuCreator {
 		return teacher.getCathedra().getLectures().stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
 				.filter(lecture -> (lecture.getTeacher().equals(teacher) && lecture.getDate().getMonth().equals(date)))
 				.collect(Collectors.toList());
+	}
+
+	public Gender genderMaker() {
+		Gender gender;
+		while (true) {
+			try {
+				String value = reader.readLine();
+				exitCheck(value);
+				gender = Gender.valueOf(value);
+				break;
+			} catch (IllegalArgumentException | IOException e) {
+				System.out.println("Invalid selection. Please try again");
+			}
+		}
+		return gender;
+	}
+
+	public Degree degreeMaker() {
+		Degree degree;
+		while (true) {
+			try {
+				String value = reader.readLine();
+				exitCheck(value);
+				degree = Degree.valueOf(value);
+				break;
+			} catch (IllegalArgumentException | IOException e) {
+				System.out.println("Invalid selection. Please try again");
+			}
+		}
+		return degree;
 	}
 }

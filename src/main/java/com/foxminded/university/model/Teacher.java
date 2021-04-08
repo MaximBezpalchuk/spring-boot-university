@@ -9,9 +9,9 @@ public class Teacher extends Person {
 	private Cathedra cathedra;
 	private List<Subject> subjects = new ArrayList<>();
 	private List<Vacation> vacations = new ArrayList<>();
-	private String degree;
+	private Degree degree;
 
-	public Teacher(String firstName, String lastName, String phone, String address, String email, String gender,
+	public Teacher(String firstName, String lastName, String phone, String address, String email, Gender gender,
 			String postalCode, String education, LocalDate birthDate, Cathedra cathedra) {
 		super(firstName, lastName, phone, address, email, gender, postalCode, education, birthDate);
 		this.cathedra = cathedra;
@@ -37,11 +37,11 @@ public class Teacher extends Person {
 		this.vacations = vacations;
 	}
 
-	public String getDegree() {
+	public Degree getDegree() {
 		return degree;
 	}
 
-	public void setDegree(String degree) {
+	public void setDegree(Degree degree) {
 		this.degree = degree;
 	}
 }
