@@ -44,4 +44,45 @@ public class Teacher extends Person {
 	public void setDegree(Degree degree) {
 		this.degree = degree;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((cathedra == null) ? 0 : cathedra.hashCode());
+		result = prime * result + ((degree == null) ? 0 : degree.hashCode());
+		result = prime * result + ((subjects == null) ? 0 : subjects.hashCode());
+		result = prime * result + ((vacations == null) ? 0 : vacations.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Teacher other = (Teacher) obj;
+		if (cathedra == null) {
+			if (other.cathedra != null)
+				return false;
+		} else if (!cathedra.equals(other.cathedra))
+			return false;
+		if (degree != other.degree)
+			return false;
+		if (subjects == null) {
+			if (other.subjects != null)
+				return false;
+		} else if (!subjects.equals(other.subjects))
+			return false;
+		if (vacations == null) {
+			if (other.vacations != null)
+				return false;
+		} else if (!vacations.equals(other.vacations))
+			return false;
+		return true;
+	}
+
 }

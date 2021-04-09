@@ -326,7 +326,7 @@ public class MenuCreator {
 			}
 			dataUpdater.createTeacher(firstName2, lastName2, phone2, address2, email2, gender2, postalCode2, education2,
 					birthDate2, degree2, cathedra, subjects2);
-			
+
 			System.out.println("Teacher added!");
 			break;
 		case 3:
@@ -663,8 +663,7 @@ public class MenuCreator {
 			exitCheck(String.valueOf(groupNumber7));
 			Group group7 = sortedGroups7.get(groupNumber7 - 1);
 			lecture7.getGroups().add(group7);
-			group7.getLectures().add(lecture7);
-			System.out.println("Lecture was set to group!");
+			System.out.println("Group was set to lecture!");
 			break;
 		case 0:
 			break;
@@ -728,8 +727,6 @@ public class MenuCreator {
 			int lectureNumber4 = getInput(sortedLectures4.size());
 			exitCheck(String.valueOf(lectureNumber4));
 			Lecture lecture7 = sortedLectures4.get(lectureNumber4 - 1);
-			cathedra.getGroups().stream().filter(group -> group.getLectures().contains(lecture7))
-					.forEach(group -> group.getLectures().remove(lecture7));
 			cathedra.getLectures().remove(lecture7);
 			System.out.println("Lecture was deleted!");
 			break;
@@ -841,10 +838,11 @@ public class MenuCreator {
 	}
 
 	public List<Lecture> getTTForDay(Student student, MonthDay date) {
-		return student.getGroup().getLectures().stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
+		return cathedra.getLectures().stream()
+				.sorted((d1, d2) -> d1.getTime().getStart().compareTo(d2.getTime().getStart()))
 				.filter(lecture -> lecture.getDate().getMonthValue() == date.getMonthValue()
 						&& lecture.getDate().getDayOfMonth() == date.getDayOfMonth())
-				.collect(Collectors.toList());
+				.filter(lecture -> lecture.getGroups().contains(student.getGroup())).collect(Collectors.toList());
 	}
 
 	public List<Lecture> getTTForDay(Teacher teacher, MonthDay date) {
@@ -856,8 +854,9 @@ public class MenuCreator {
 	}
 
 	public List<Lecture> getTTForMonth(Student student, Month date) {
-		return student.getGroup().getLectures().stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
-				.filter(lecture -> lecture.getDate().getMonth().equals(date)).collect(Collectors.toList());
+		return cathedra.getLectures().stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
+				.filter(lecture -> lecture.getDate().getMonth().equals(date))
+				.filter(lecture -> lecture.getGroups().contains(student.getGroup())).collect(Collectors.toList());
 	}
 
 	public List<Lecture> getTTForMonth(Teacher teacher, Month date) {

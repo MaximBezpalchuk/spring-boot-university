@@ -203,16 +203,6 @@ public class DataCreator {
 		lectures.get(4).setGroups(wmGroups);
 		lectures.get(5).setGroups(wmGroups);
 		lectures.get(6).setGroups(wmGroups);
-		assertLecturesToGroups();
-	}
-
-	private void assertLecturesToGroups() {
-		List<Lecture> killersLectures = lectures.stream().filter(lecture -> lecture.getGroups().contains(groups.get(0)))
-				.collect(Collectors.toList());
-		groups.get(0).setLectures(killersLectures);
-		List<Lecture> magesLectures = lectures.stream().filter(lecture -> lecture.getGroups().contains(groups.get(1)))
-				.collect(Collectors.toList());
-		groups.get(1).setLectures(magesLectures);
 	}
 
 	private void createHolidays() {
