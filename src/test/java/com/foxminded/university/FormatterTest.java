@@ -32,7 +32,7 @@ class FormatterTest {
 		LocalDate date = LocalDate.of(2020, 1, 1);
 		LectureTime time = new LectureTime(LocalTime.of(10, 20), LocalTime.of(10, 21));
 		Audience audience = new Audience(1, 5);
-		Teacher teacher = new Teacher("Amigo", "Bueno", "999", "Puerto Rico", "dot@dot.com", Gender.F, "123", "none",
+		Teacher teacher = new Teacher("Amigo", "Bueno", "999", "Puerto Rico", "dot@dot.com", Gender.FEMALE, "123", "none",
 				LocalDate.of(1999, 1, 1), cathedra);
 		lectures.add(new Lecture(subject, date, time, audience, teacher));
 
@@ -59,7 +59,7 @@ class FormatterTest {
 	@Test
 	void formatTeacherListTest() {
 		List<Teacher> teachers = new ArrayList<>();
-		teachers.add(new Teacher("Amigo", "Bueno", "999", "Puerto Rico", "dot@dot.com", Gender.F, "123", "none",
+		teachers.add(new Teacher("Amigo", "Bueno", "999", "Puerto Rico", "dot@dot.com", Gender.FEMALE, "123", "none",
 				LocalDate.of(1999, 1, 1), cathedra));
 		assertEquals("1.  Name: Bueno Amigo", formatter.formatTeacherList(teachers));
 	}
@@ -79,7 +79,7 @@ class FormatterTest {
 	void formatStudentListTest() {
 		List<Student> students = new ArrayList<>();
 		Group group = new Group("name", cathedra);
-		Student student = new Student("Amigo", "Bueno", "999", "Puerto Rico", "dot@dot.com", Gender.F, "123", "none",
+		Student student = new Student("Amigo", "Bueno", "999", "Puerto Rico", "dot@dot.com", Gender.FEMALE, "123", "none",
 				LocalDate.of(1999, 1, 1));
 		student.setGroup(group);
 		students.add(student);
@@ -109,7 +109,7 @@ class FormatterTest {
 
 	@Test
 	void getGenderStringTest() {
-		assertEquals("M F ", formatter.getGenderString());
+		assertEquals("MALE FEMALE ", formatter.getGenderString());
 	}
 
 	@Test
