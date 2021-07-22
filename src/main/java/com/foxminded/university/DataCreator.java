@@ -21,7 +21,7 @@ import com.foxminded.university.model.Vacation;
 
 public class DataCreator {
 
-	private Cathedra cathedra = new Cathedra();
+	private Cathedra cathedra = new Cathedra("Fantastic Cathedra");
 	private List<Student> students = new ArrayList<>();
 	private List<Teacher> teachers = new ArrayList<>();
 	private List<Group> groups = new ArrayList<>();
@@ -99,10 +99,10 @@ public class DataCreator {
 	}
 
 	private void createSubjects() {
-		subjects.add(new Subject("Weapon Tactics", "Learning how to use heavy weapon and guerrilla tactics"));
-		subjects.add(new Subject("Wandless Magic", "Learning how to use spells without magic wand"));
+		subjects.add(new Subject(cathedra, "Weapon Tactics", "Learning how to use heavy weapon and guerrilla tactics"));
+		subjects.add(new Subject(cathedra, "Wandless Magic", "Learning how to use spells without magic wand"));
 		subjects.add(
-				new Subject("Universal language", "Learning the universal language established by the Federation"));
+				new Subject(cathedra, "Universal language", "Learning the universal language established by the Federation"));
 	}
 
 	private void assertSubjectsToTeachers() {
@@ -158,29 +158,29 @@ public class DataCreator {
 
 	private void createLectures() {
 		// Monday - wt and ul - only killers
-		lectures.add(new Lecture(subjects.get(0), LocalDate.of(2021, 4, 4), lectureTimes.get(0), audiences.get(0),
+		lectures.add(new Lecture(cathedra, subjects.get(0), LocalDate.of(2021, 4, 4), lectureTimes.get(0), audiences.get(0),
 				teachers.get(0)));
-		lectures.add(new Lecture(subjects.get(0), LocalDate.of(2021, 4, 4), lectureTimes.get(1), audiences.get(0),
+		lectures.add(new Lecture(cathedra, subjects.get(0), LocalDate.of(2021, 4, 4), lectureTimes.get(1), audiences.get(0),
 				teachers.get(0)));
-		lectures.add(new Lecture(subjects.get(2), LocalDate.of(2021, 4, 4), lectureTimes.get(2), audiences.get(2),
+		lectures.add(new Lecture(cathedra, subjects.get(2), LocalDate.of(2021, 4, 4), lectureTimes.get(2), audiences.get(2),
 				teachers.get(1)));
-		lectures.add(new Lecture(subjects.get(2), LocalDate.of(2021, 4, 4), lectureTimes.get(3), audiences.get(2),
+		lectures.add(new Lecture(cathedra, subjects.get(2), LocalDate.of(2021, 4, 4), lectureTimes.get(3), audiences.get(2),
 				teachers.get(1)));
 		// Wednesday - wm - only mages
-		lectures.add(new Lecture(subjects.get(1), LocalDate.of(2021, 4, 6), lectureTimes.get(1), audiences.get(1),
+		lectures.add(new Lecture(cathedra, subjects.get(1), LocalDate.of(2021, 4, 6), lectureTimes.get(1), audiences.get(1),
 				teachers.get(1)));
-		lectures.add(new Lecture(subjects.get(1), LocalDate.of(2021, 4, 6), lectureTimes.get(2), audiences.get(1),
+		lectures.add(new Lecture(cathedra, subjects.get(1), LocalDate.of(2021, 4, 6), lectureTimes.get(2), audiences.get(1),
 				teachers.get(1)));
-		lectures.add(new Lecture(subjects.get(1), LocalDate.of(2021, 4, 6), lectureTimes.get(3), audiences.get(1),
+		lectures.add(new Lecture(cathedra, subjects.get(1), LocalDate.of(2021, 4, 6), lectureTimes.get(3), audiences.get(1),
 				teachers.get(1)));
 		// Friday - ul for mages, wt for killers
-		lectures.add(new Lecture(subjects.get(2), LocalDate.of(2021, 4, 8), lectureTimes.get(1), audiences.get(2),
+		lectures.add(new Lecture(cathedra, subjects.get(2), LocalDate.of(2021, 4, 8), lectureTimes.get(1), audiences.get(2),
 				teachers.get(1)));
-		lectures.add(new Lecture(subjects.get(2), LocalDate.of(2021, 4, 8), lectureTimes.get(2), audiences.get(2),
+		lectures.add(new Lecture(cathedra, subjects.get(2), LocalDate.of(2021, 4, 8), lectureTimes.get(2), audiences.get(2),
 				teachers.get(1)));
-		lectures.add(new Lecture(subjects.get(0), LocalDate.of(2021, 4, 8), lectureTimes.get(3), audiences.get(0),
+		lectures.add(new Lecture(cathedra, subjects.get(0), LocalDate.of(2021, 4, 8), lectureTimes.get(3), audiences.get(0),
 				teachers.get(0)));
-		lectures.add(new Lecture(subjects.get(0), LocalDate.of(2021, 4, 8), lectureTimes.get(4), audiences.get(0),
+		lectures.add(new Lecture(cathedra, subjects.get(0), LocalDate.of(2021, 4, 8), lectureTimes.get(4), audiences.get(0),
 				teachers.get(0)));
 	}
 

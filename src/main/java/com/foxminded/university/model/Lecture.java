@@ -3,9 +3,11 @@ package com.foxminded.university.model;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Lecture {
 
+	private Cathedra cathedra;
 	private List<Group> groups = new ArrayList<>();
 	private Teacher teacher;
 	private Audience audience;
@@ -13,12 +15,17 @@ public class Lecture {
 	private Subject subject;
 	private LectureTime time;
 
-	public Lecture(Subject subject, LocalDate date, LectureTime time, Audience audience, Teacher teacher) {
+	public Lecture(Cathedra cathedra, Subject subject, LocalDate date, LectureTime time, Audience audience, Teacher teacher) {
+		this.cathedra = cathedra;
 		this.subject = subject;
 		this.date = date;
 		this.time = time;
 		this.audience = audience;
 		this.teacher = teacher;
+	}
+
+	public Cathedra getCathedra() {
+		return cathedra;
 	}
 
 	public List<Group> getGroups() {
@@ -63,15 +70,7 @@ public class Lecture {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((audience == null) ? 0 : audience.hashCode());
-		result = prime * result + ((date == null) ? 0 : date.hashCode());
-		result = prime * result + ((groups == null) ? 0 : groups.hashCode());
-		result = prime * result + ((subject == null) ? 0 : subject.hashCode());
-		result = prime * result + ((teacher == null) ? 0 : teacher.hashCode());
-		result = prime * result + ((time == null) ? 0 : time.hashCode());
-		return result;
+		return Objects.hash(audience, cathedra, date, groups, subject, teacher, time);
 	}
 
 	@Override
@@ -83,37 +82,10 @@ public class Lecture {
 		if (getClass() != obj.getClass())
 			return false;
 		Lecture other = (Lecture) obj;
-		if (audience == null) {
-			if (other.audience != null)
-				return false;
-		} else if (!audience.equals(other.audience))
-			return false;
-		if (date == null) {
-			if (other.date != null)
-				return false;
-		} else if (!date.equals(other.date))
-			return false;
-		if (groups == null) {
-			if (other.groups != null)
-				return false;
-		} else if (!groups.equals(other.groups))
-			return false;
-		if (subject == null) {
-			if (other.subject != null)
-				return false;
-		} else if (!subject.equals(other.subject))
-			return false;
-		if (teacher == null) {
-			if (other.teacher != null)
-				return false;
-		} else if (!teacher.equals(other.teacher))
-			return false;
-		if (time == null) {
-			if (other.time != null)
-				return false;
-		} else if (!time.equals(other.time))
-			return false;
-		return true;
+		return Objects.equals(audience, other.audience) && Objects.equals(cathedra, other.cathedra)
+				&& Objects.equals(date, other.date) && Objects.equals(groups, other.groups)
+				&& Objects.equals(subject, other.subject) && Objects.equals(teacher, other.teacher)
+				&& Objects.equals(time, other.time);
 	}
 
 }

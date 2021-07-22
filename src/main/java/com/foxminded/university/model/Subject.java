@@ -2,16 +2,27 @@ package com.foxminded.university.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Subject {
 
+	private Cathedra cathedra;
 	private String name;
 	private String description;
 	private List<Teacher> teachers = new ArrayList<>();
 
-	public Subject(String name, String description) {
+	public Subject(Cathedra cathedra, String name, String description) {
+		this.cathedra = cathedra;
 		this.name = name;
 		this.description = description;
+	}
+
+	public Cathedra getCathedra() {
+		return cathedra;
+	}
+
+	public void setCathedra(Cathedra cathedra) {
+		this.cathedra = cathedra;
 	}
 
 	public String getName() {
@@ -32,12 +43,7 @@ public class Subject {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((teachers == null) ? 0 : teachers.hashCode());
-		return result;
+		return Objects.hash(cathedra, description, name, teachers);
 	}
 
 	@Override
@@ -49,22 +55,8 @@ public class Subject {
 		if (getClass() != obj.getClass())
 			return false;
 		Subject other = (Subject) obj;
-		if (description == null) {
-			if (other.description != null)
-				return false;
-		} else if (!description.equals(other.description))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (teachers == null) {
-			if (other.teachers != null)
-				return false;
-		} else if (!teachers.equals(other.teachers))
-			return false;
-		return true;
+		return Objects.equals(cathedra, other.cathedra) && Objects.equals(description, other.description)
+				&& Objects.equals(name, other.name) && Objects.equals(teachers, other.teachers);
 	}
 
 }

@@ -337,7 +337,7 @@ public class MenuCreator {
 			System.out.println("Enter subject description:");
 			String subjectDescription3 = reader.readLine();
 			exitCheck(subjectDescription3);
-			Subject subject3 = new Subject(subjectName3, subjectDescription3);
+			Subject subject3 = new Subject(cathedra, subjectName3, subjectDescription3);
 			cathedra.getSubjects().add(subject3);
 			System.out.println("Subject added!");
 			break;
@@ -378,7 +378,7 @@ public class MenuCreator {
 			int lectureTimeNumber5 = getInput(sortedLectureTimes5.size());
 			exitCheck(String.valueOf(lectureTimeNumber5));
 			LectureTime lectureTime5 = sortedLectureTimes5.get(lectureTimeNumber5 - 1);
-			Lecture lecture5 = new Lecture(subject5, lectureDate5, lectureTime5, audience5, teacher5);
+			Lecture lecture5 = new Lecture(cathedra, subject5, lectureDate5, lectureTime5, audience5, teacher5);
 			cathedra.getLectures().add(lecture5);
 			System.out.println("Lecture added!");
 			break;

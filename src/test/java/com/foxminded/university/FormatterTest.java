@@ -23,18 +23,18 @@ import com.foxminded.university.model.Vacation;
 
 class FormatterTest {
 	private Formatter formatter = new Formatter();
-	private Cathedra cathedra = new Cathedra();
+	private Cathedra cathedra = new Cathedra("Fantastic Cathedra");
 
 	@Test
 	void formatLectureListTest() {
 		List<Lecture> lectures = new ArrayList<>();
-		Subject subject = new Subject("TestSubject", "Desc");
+		Subject subject = new Subject(cathedra, "TestSubject", "Desc");
 		LocalDate date = LocalDate.of(2020, 1, 1);
 		LectureTime time = new LectureTime(LocalTime.of(10, 20), LocalTime.of(10, 21));
 		Audience audience = new Audience(1, 5);
 		Teacher teacher = new Teacher("Amigo", "Bueno", "999", "Puerto Rico", "dot@dot.com", Gender.FEMALE, "123", "none",
 				LocalDate.of(1999, 1, 1), cathedra);
-		lectures.add(new Lecture(subject, date, time, audience, teacher));
+		lectures.add(new Lecture(cathedra, subject, date, time, audience, teacher));
 
 		assertEquals("1.  Date: 2020-01-01 | Subject: TestSubject | Audience: 1 | Teacher: Amigo Bueno |",
 				formatter.formatLectureList(lectures));
@@ -51,7 +51,7 @@ class FormatterTest {
 	@Test
 	void formatSubjectListTest() {
 		List<Subject> subjects = new ArrayList<>();
-		Subject subject = new Subject("TestSubject", "Desc");
+		Subject subject = new Subject(cathedra, "TestSubject", "Desc");
 		subjects.add(subject);
 		assertEquals("1.  Name: TestSubject | Description: Desc", formatter.formatSubjectList(subjects));
 	}
