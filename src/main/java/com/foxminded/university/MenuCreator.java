@@ -11,6 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
+import com.foxminded.university.config.SpringConfig;
+import com.foxminded.university.dao.AudienceDao;
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Degree;
@@ -32,6 +37,10 @@ public class MenuCreator {
 	Formatter formatter = new Formatter();
 	DataUpdater dataUpdater = new DataUpdater();
 	DataCreator dataCreator = new DataCreator();
+	
+	final ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
+	AudienceDao audienceDao = (AudienceDao) context.getBean("audienceDao");
+	
 
 	public MenuCreator(Cathedra cathedra) {
 		this.cathedra = cathedra;
@@ -402,6 +411,8 @@ public class MenuCreator {
 			String audienceCapacity7 = reader.readLine();
 			exitCheck(audienceCapacity7);
 			Audience audience7 = new Audience(Integer.parseInt(audienceRoom7), Integer.parseInt(audienceCapacity7));
+			audienceDao.create(audience7);
+			//TODO: убрать добавление в кафедру - далее из кафедры уберу в принципе эти листы
 			cathedra.getAudiences().add(audience7);
 			System.out.println("Audience created!");
 			break;
@@ -536,7 +547,7 @@ public class MenuCreator {
 			}
 			break;
 		case 10:
-			System.out.println(formatter.formatAudienceList(sortAudiencesByNumber(cathedra.getAudiences())));
+			System.out.println(formatter.formatAudienceList(sortAudiencesByNumber(audienceDao.findAll())));
 			break;
 		case 0:
 			break;

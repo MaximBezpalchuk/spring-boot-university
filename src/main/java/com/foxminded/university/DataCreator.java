@@ -1,3 +1,6 @@
+//DEPRECATED
+
+
 package com.foxminded.university;
 
 import java.time.LocalDate;

@@ -1,13 +1,26 @@
 package com.foxminded.university.model;
 
+import java.util.Objects;
+
 public class Audience {
 
+	private int id;
 	private int room;
 	private int capacity;
 
 	public Audience(int room, int capacity) {
 		this.room = room;
 		this.capacity = capacity;
+	}
+	
+	public Audience() {}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public int getRoom() {
@@ -20,11 +33,7 @@ public class Audience {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + capacity;
-		result = prime * result + room;
-		return result;
+		return Objects.hash(capacity, id, room);
 	}
 
 	@Override
@@ -36,12 +45,7 @@ public class Audience {
 		if (getClass() != obj.getClass())
 			return false;
 		Audience other = (Audience) obj;
-		if (capacity != other.capacity)
-			return false;
-		if (room != other.room)
-			return false;
-		return true;
+		return capacity == other.capacity && id == other.id && room == other.room;
 	}
 
-	
 }
