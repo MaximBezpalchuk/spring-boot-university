@@ -1,8 +1,10 @@
 package com.foxminded.university.model;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Holiday {
+	private int id;
 
 	private String name;
 	private LocalDate date;
@@ -10,6 +12,14 @@ public class Holiday {
 	public Holiday(String name, LocalDate date) {
 		this.name = name;
 		this.date = date;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getName() {
@@ -22,11 +32,7 @@ public class Holiday {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((date == null) ? 0 : date.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
+		return Objects.hash(date, id, name);
 	}
 
 	@Override
@@ -38,17 +44,7 @@ public class Holiday {
 		if (getClass() != obj.getClass())
 			return false;
 		Holiday other = (Holiday) obj;
-		if (date == null) {
-			if (other.date != null)
-				return false;
-		} else if (!date.equals(other.date))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		return true;
+		return Objects.equals(date, other.date) && id == other.id && Objects.equals(name, other.name);
 	}
 
 }
