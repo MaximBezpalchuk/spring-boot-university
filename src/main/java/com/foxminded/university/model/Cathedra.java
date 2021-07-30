@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class Cathedra {
+	private int id;
 
 	private String name;
 	private List<Group> groups = new ArrayList<>();
@@ -15,10 +16,18 @@ public class Cathedra {
 	private List<Audience> audiences = new ArrayList<>();
 	private List<LectureTime> lectureTimes = new ArrayList<>();
 
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public Cathedra(String name) {
 		this.name = name;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -85,7 +94,7 @@ public class Cathedra {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(audiences, groups, holidays, lectureTimes, lectures, name, subjects, teachers);
+		return Objects.hash(audiences, groups, holidays, id, lectureTimes, lectures, name, subjects, teachers);
 	}
 
 	@Override
@@ -98,9 +107,10 @@ public class Cathedra {
 			return false;
 		Cathedra other = (Cathedra) obj;
 		return Objects.equals(audiences, other.audiences) && Objects.equals(groups, other.groups)
-				&& Objects.equals(holidays, other.holidays) && Objects.equals(lectureTimes, other.lectureTimes)
-				&& Objects.equals(lectures, other.lectures) && Objects.equals(name, other.name)
-				&& Objects.equals(subjects, other.subjects) && Objects.equals(teachers, other.teachers);
+				&& Objects.equals(holidays, other.holidays) && id == other.id
+				&& Objects.equals(lectureTimes, other.lectureTimes) && Objects.equals(lectures, other.lectures)
+				&& Objects.equals(name, other.name) && Objects.equals(subjects, other.subjects)
+				&& Objects.equals(teachers, other.teachers);
 	}
 
 }

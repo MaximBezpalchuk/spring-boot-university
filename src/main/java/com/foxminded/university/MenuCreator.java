@@ -622,7 +622,7 @@ public class MenuCreator {
 			exitCheck(String.valueOf(lectureNumber4));
 			Lecture lecture4 = sortedLectures4.get(lectureNumber4 - 1);
 			System.out.println("Select audience from the list:");
-			List<Audience> sortedAudiences4 = sortAudiencesByNumber(cathedra.getAudiences());
+			List<Audience> sortedAudiences4 = sortAudiencesByNumber(audienceDao.findAll());
 			System.out.println(formatter.formatAudienceList(sortedAudiences4));
 			int audienceNumber4 = getInput(sortedAudiences4.size());
 			exitCheck(String.valueOf(audienceNumber4));
@@ -744,17 +744,20 @@ public class MenuCreator {
 		case 5:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select audience from the list:");
-			List<Audience> sortedAudiences5 = sortAudiencesByNumber(cathedra.getAudiences());
+			List<Audience> sortedAudiences5 = sortAudiencesByNumber(audienceDao.findAll());
 			System.out.println(formatter.formatAudienceList(sortedAudiences5));
 			int audienceNumber5 = getInput(sortedAudiences5.size());
 			exitCheck(String.valueOf(audienceNumber5));
 			Audience audience5 = sortedAudiences5.get(audienceNumber5 - 1);
+			//TODO: после добавления LectureDAO нужно сделать проверку по ним
 			boolean checker5 = cathedra.getLectures().stream()
 					.anyMatch(lecture -> lecture.getAudience().equals(audience5));
 			if (checker5) {
 				System.out.println("Please remove audiences first from lectures!");
 			} else {
+				//TODO: убрать удаление из cathedra после реализации всех DAO
 				cathedra.getAudiences().remove(audience5);
+				audienceDao.deleteById(audience5.getId());
 				System.out.println("Audience was deleted!");
 			}
 			break;
