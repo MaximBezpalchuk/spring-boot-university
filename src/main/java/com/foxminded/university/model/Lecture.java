@@ -7,6 +7,7 @@ import java.util.Objects;
 
 public class Lecture {
 
+	private int id;
 	private Cathedra cathedra;
 	private List<Group> groups = new ArrayList<>();
 	private Teacher teacher;
@@ -15,13 +16,22 @@ public class Lecture {
 	private Subject subject;
 	private LectureTime time;
 
-	public Lecture(Cathedra cathedra, Subject subject, LocalDate date, LectureTime time, Audience audience, Teacher teacher) {
+	public Lecture(Cathedra cathedra, Subject subject, LocalDate date, LectureTime time, Audience audience,
+			Teacher teacher) {
 		this.cathedra = cathedra;
 		this.subject = subject;
 		this.date = date;
 		this.time = time;
 		this.audience = audience;
 		this.teacher = teacher;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public Cathedra getCathedra() {
@@ -70,7 +80,7 @@ public class Lecture {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(audience, cathedra, date, groups, subject, teacher, time);
+		return Objects.hash(audience, cathedra, date, groups, id, subject, teacher, time);
 	}
 
 	@Override
@@ -83,7 +93,7 @@ public class Lecture {
 			return false;
 		Lecture other = (Lecture) obj;
 		return Objects.equals(audience, other.audience) && Objects.equals(cathedra, other.cathedra)
-				&& Objects.equals(date, other.date) && Objects.equals(groups, other.groups)
+				&& Objects.equals(date, other.date) && Objects.equals(groups, other.groups) && id == other.id
 				&& Objects.equals(subject, other.subject) && Objects.equals(teacher, other.teacher)
 				&& Objects.equals(time, other.time);
 	}

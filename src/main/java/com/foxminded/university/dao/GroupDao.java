@@ -1,6 +1,7 @@
 package com.foxminded.university.dao;
 
 import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,4 +64,8 @@ public class GroupDao {
 		jdbcTemplate.update(DELETE_GROUP, id);
 	}
 
+	// TODO: realize
+	public List<Group> findByLecture(int id) {
+		return new ArrayList<Group>();
+	}
 }

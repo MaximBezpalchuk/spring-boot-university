@@ -6,6 +6,7 @@ import java.util.Objects;
 
 public class Subject {
 
+	private int id;
 	private Cathedra cathedra;
 	private String name;
 	private String description;
@@ -15,6 +16,14 @@ public class Subject {
 		this.cathedra = cathedra;
 		this.name = name;
 		this.description = description;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public Cathedra getCathedra() {
@@ -43,7 +52,7 @@ public class Subject {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(cathedra, description, name, teachers);
+		return Objects.hash(cathedra, description, id, name, teachers);
 	}
 
 	@Override
@@ -56,7 +65,7 @@ public class Subject {
 			return false;
 		Subject other = (Subject) obj;
 		return Objects.equals(cathedra, other.cathedra) && Objects.equals(description, other.description)
-				&& Objects.equals(name, other.name) && Objects.equals(teachers, other.teachers);
+				&& id == other.id && Objects.equals(name, other.name) && Objects.equals(teachers, other.teachers);
 	}
 
 }
