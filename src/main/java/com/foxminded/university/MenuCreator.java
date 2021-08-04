@@ -591,7 +591,7 @@ public class MenuCreator {
 			LocalDate vacationStartDate2 = setupLocalDate();
 			System.out.println("Enter vacation end date separated by commas without spaces (YEAR,MONTH,DAY):");
 			LocalDate vacationEndDate2 = setupLocalDate();
-			Vacation vacation2 = new Vacation(vacationStartDate2, vacationEndDate2);
+			Vacation vacation2 = new Vacation(vacationStartDate2, vacationEndDate2, teacher2);
 			teacher2.getVacations().add(vacation2);
 			System.out.println("Vacation added!");
 			break;

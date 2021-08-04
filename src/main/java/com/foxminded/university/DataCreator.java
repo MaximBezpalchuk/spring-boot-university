@@ -133,12 +133,12 @@ public class DataCreator {
 
 	private void assertVacations() {
 		List<Vacation> vacationsT1 = new ArrayList<>();
-		vacationsT1.add(new Vacation(LocalDate.of(2021, 1, 15), LocalDate.of(2021, 1, 29)));
-		vacationsT1.add(new Vacation(LocalDate.of(2021, 6, 15), LocalDate.of(2021, 6, 29)));
+		vacationsT1.add(new Vacation(LocalDate.of(2021, 1, 15), LocalDate.of(2021, 1, 29), teachers.get(0)));
+		vacationsT1.add(new Vacation(LocalDate.of(2021, 6, 15), LocalDate.of(2021, 6, 29), teachers.get(0)));
 		teachers.get(0).setVacations(vacationsT1);
 		List<Vacation> vacationsT2 = new ArrayList<>();
-		vacationsT2.add(new Vacation(LocalDate.of(2021, 3, 15), LocalDate.of(2021, 3, 29)));
-		vacationsT2.add(new Vacation(LocalDate.of(2021, 7, 15), LocalDate.of(2021, 7, 29)));
+		vacationsT2.add(new Vacation(LocalDate.of(2021, 3, 15), LocalDate.of(2021, 3, 29), teachers.get(1)));
+		vacationsT2.add(new Vacation(LocalDate.of(2021, 7, 15), LocalDate.of(2021, 7, 29), teachers.get(1)));
 		teachers.get(1).setVacations(vacationsT2);
 	}
 
