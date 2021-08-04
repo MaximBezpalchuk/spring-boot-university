@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.RowMapper;
 import com.foxminded.university.dao.AudienceDao;
 import com.foxminded.university.dao.CathedraDao;
 import com.foxminded.university.dao.GroupDao;
+import com.foxminded.university.dao.LectureTimeDao;
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Group;
@@ -24,11 +25,13 @@ public class LectureRowMapper implements RowMapper<Lecture> {
 	private CathedraDao cathedraDao;
 	private GroupDao groupDao;
 	private AudienceDao audienceDao;
+	private LectureTimeDao lectureTimeDao;
 
-	public LectureRowMapper(CathedraDao cathedraDao, GroupDao groupDao, AudienceDao audienceDao) {
+	public LectureRowMapper(CathedraDao cathedraDao, GroupDao groupDao, AudienceDao audienceDao, LectureTimeDao lectureTimeDao) {
 		this.cathedraDao = cathedraDao;
 		this.groupDao = groupDao;
 		this.audienceDao = audienceDao;
+		this.lectureTimeDao = lectureTimeDao;
 	}
 
 	@Override
@@ -48,8 +51,8 @@ public class LectureRowMapper implements RowMapper<Lecture> {
 		resultSet.getDate("date").getTime()).toLocalDate()
 		//private Subject subject; //need subjectDao
 		
-		//private LectureTime time; //need LectureTimeDao
-		
+		//private LectureTime time;
+		lectureTimeDao.findById(resultSet.getInt("lecture_time_id"))
 		
 		
 		
