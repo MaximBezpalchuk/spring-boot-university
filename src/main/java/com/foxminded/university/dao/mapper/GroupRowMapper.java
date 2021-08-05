@@ -1,4 +1,3 @@
-//TODO: update with lists when add all dao classes
 package com.foxminded.university.dao.mapper;
 
 import java.sql.ResultSet;
@@ -21,7 +20,8 @@ public class GroupRowMapper implements RowMapper<Group> {
 
 	@Override
 	public Group mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-		Group group = new Group(resultSet.getString("name"), cathedraDao.findById(resultSet.getInt("cathedra")));
+
+		Group group = new Group(resultSet.getString("name"), cathedraDao.findById(resultSet.getInt("cathedra_id")));
 		group.setId(resultSet.getInt("id"));
 		return group;
 	}

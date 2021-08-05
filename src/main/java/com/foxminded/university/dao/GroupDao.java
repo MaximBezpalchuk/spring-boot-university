@@ -1,7 +1,6 @@
 package com.foxminded.university.dao;
 
 import java.sql.PreparedStatement;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +20,7 @@ public class GroupDao {
 	private final static String INSERT_GROUP = "INSERT INTO groups(name, cathedra_id) VALUES(?, ?)";
 	private final static String UPDATE_GROUP = "UPDATE groups SET name=?, cathedra_id=? WHERE id=?";
 	private final static String DELETE_GROUP = "DELETE FROM groups WHERE id = ?";
+	private final static String SELECT_BY_LECTURE_ID = "SELECT group_id FROM lectures_groups WHERE lecture_id = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private GroupRowMapper rowMapper;
@@ -32,7 +32,7 @@ public class GroupDao {
 	}
 
 	public void create(Group group) {
-		jdbcTemplate.update(INSERT_GROUP, group.getName(), group.getCathedra());
+		jdbcTemplate.update(INSERT_GROUP, group.getName(), group.getCathedra().getId());
 	}
 
 	public List<Group> findAll() {
@@ -64,8 +64,7 @@ public class GroupDao {
 		jdbcTemplate.update(DELETE_GROUP, id);
 	}
 
-	// TODO: realize
 	public List<Group> findByLecture(int id) {
-		return new ArrayList<Group>();
+		return jdbcTemplate.query(SELECT_BY_LECTURE_ID, rowMapper);
 	}
 }

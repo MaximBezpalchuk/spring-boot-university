@@ -3,6 +3,7 @@ package com.foxminded.university.dao;
 import java.sql.PreparedStatement;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -22,7 +23,8 @@ public class LectureDao {
 
 	private final JdbcTemplate jdbcTemplate;
 	private LectureRowMapper rowMapper;
-
+	
+	@Autowired
 	public LectureDao(JdbcTemplate jdbcTemplate, LectureRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.rowMapper = rowMapper;

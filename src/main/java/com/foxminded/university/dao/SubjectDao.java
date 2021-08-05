@@ -20,6 +20,7 @@ public class SubjectDao {
 	private final static String INSERT_SUBJECT = "INSERT INTO subjects(name, description, cathedra_id) VALUES(?, ?, ?)";
 	private final static String UPDATE_SUBJECT = "UPDATE subjects SET name=?, description=?, cathedra_id=? WHERE id=?";
 	private final static String DELETE_SUBJECT = "DELETE FROM subjects WHERE id = ?";
+	private final static String SELECT_BY_TEACHER_ID = "SELECT subject_id FROM subjects_teachers WHERE teacher_id = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private SubjectRowMapper rowMapper;
@@ -63,6 +64,11 @@ public class SubjectDao {
 
 	public void deleteById(int id) {
 		jdbcTemplate.update(DELETE_SUBJECT, id);
+	}
+
+	@SuppressWarnings("deprecation")
+	public Subject findByTeacherId(int id) {
+		return jdbcTemplate.query(SELECT_BY_TEACHER_ID, new Object[] { id }, rowMapper).stream().findAny().orElse(null);
 	}
 
 }

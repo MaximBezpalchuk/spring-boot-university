@@ -1,3 +1,8 @@
+//TODO: delete subjects list, asking for subjects from subjects_table where cathedra_id=?
+//TODO: delete groups list, asking for groups from groups_table where cathedra_id=?
+//TODO: delete teachers list, asking for teachers from teachers_table where cathedra_id=?
+//TODO: delete lectures list, asking for lectures from lectures_table where cathedra_id=?
+
 package com.foxminded.university.model;
 
 import java.util.ArrayList;

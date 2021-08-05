@@ -4,12 +4,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import com.foxminded.university.dao.CathedraDao;
 import com.foxminded.university.model.Degree;
 import com.foxminded.university.model.Gender;
 import com.foxminded.university.model.Teacher;
 
+@Component
 public class TeacherRowMapper implements RowMapper<Teacher> {
 
 	private CathedraDao cathedraDao;
@@ -20,6 +22,7 @@ public class TeacherRowMapper implements RowMapper<Teacher> {
 
 	@Override
 	public Teacher mapRow(ResultSet resultSet, int rowNum) throws SQLException {
+
 		Teacher teacher = new Teacher(resultSet.getString("first_name"), resultSet.getString("last_name"),
 				resultSet.getString("phone"), resultSet.getString("address"), resultSet.getString("email"),
 				Gender.valueOf(resultSet.getString("gender")), resultSet.getString("postalcode"),
@@ -28,6 +31,7 @@ public class TeacherRowMapper implements RowMapper<Teacher> {
 				cathedraDao.findById(resultSet.getInt("cathedra_id")));
 		teacher.setDegree(Degree.valueOf(resultSet.getString("degree")));
 		teacher.setId(resultSet.getInt("id"));
+
 		return teacher;
 	}
 

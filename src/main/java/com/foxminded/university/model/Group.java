@@ -1,5 +1,7 @@
 package com.foxminded.university.model;
 
+//TODO: delete student list, asking for students from student_table where group_id=?
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

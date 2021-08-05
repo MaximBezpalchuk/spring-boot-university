@@ -3,6 +3,7 @@ package com.foxminded.university.dao;
 import java.sql.PreparedStatement;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -16,13 +17,14 @@ public class StudentDao {
 
 	private final static String SELECT_ALL = "SELECT * FROM students";
 	private final static String SELECT_BY_ID = "SELECT * FROM students WHERE id = ?";
-	private final static String INSERT_STUDENT = "INSERT INTO students(first_name, last_name, phone, address, email, gender, postalcode, education, birthdate, group_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-	private final static String UPDATE_STUDENT = "UPDATE students SET first_name=?, last_name=?, phone=?, address=?, email=?, gender=?, postalcode=?, education=?, birthdate=?, group_id=? WHERE id=?";
+	private final static String INSERT_STUDENT = "INSERT INTO students(first_name, last_name, phone, address, email, gender, postalcode, education, birthdate, group_id) VALUES(?, ?, ?, ?, ?, ?::\"gender\", ?, ?, ?, ?)";
+	private final static String UPDATE_STUDENT = "UPDATE students SET first_name=?, last_name=?, phone=?, address=?, email=?, gender=?::\"gender\", postalcode=?, education=?, birthdate=?, group_id=? WHERE id=?";
 	private final static String DELETE_STUDENT = "DELETE FROM students WHERE id = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private StudentRowMapper rowMapper;
-
+	
+	@Autowired
 	public StudentDao(JdbcTemplate jdbcTemplate, StudentRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.rowMapper = rowMapper;
@@ -30,7 +32,7 @@ public class StudentDao {
 
 	public void create(Student student) {
 		jdbcTemplate.update(INSERT_STUDENT, student.getFirstName(), student.getLastName(), student.getPhone(),
-				student.getAddress(), student.getEmail(), student.getGender().toString(), student.getPostalCode(),
+				student.getAddress(), student.getEmail(), student.getGender(), student.getPostalCode(),
 				student.getEducation(), student.getBirthDate(), student.getGroup().getId());
 	}
 

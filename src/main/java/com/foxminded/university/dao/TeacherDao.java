@@ -3,6 +3,7 @@ package com.foxminded.university.dao;
 import java.sql.PreparedStatement;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -16,13 +17,15 @@ public class TeacherDao {
 
 	private final static String SELECT_ALL = "SELECT * FROM teachers";
 	private final static String SELECT_BY_ID = "SELECT * FROM teachers WHERE id = ?";
-	private final static String INSERT_STUDENT = "INSERT INTO teachers(first_name, last_name, phone, address, email, gender, postalcode, education, birthdate, cathedra_id,  degree) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-	private final static String UPDATE_STUDENT = "UPDATE teachers SET first_name=?, last_name=?, phone=?, address=?, email=?, gender=?, postalcode=?, education=?, birthdate=?, cathedra_id=?, degree=? WHERE id=?";
+	private final static String INSERT_STUDENT = "INSERT INTO teachers(first_name, last_name, phone, address, email, gender, postalcode, education, birthdate, cathedra_id,  degree) VALUES(?, ?, ?, ?, ?, ?::\"gender\", ?, ?, ?, ?, ?::\"degree\")";
+	private final static String UPDATE_STUDENT = "UPDATE teachers SET first_name=?, last_name=?, phone=?, address=?, email=?, gender=?::\"gender\", postalcode=?, education=?, birthdate=?, cathedra_id=?, degree=?::\"degree\" WHERE id=?";
 	private final static String DELETE_STUDENT = "DELETE FROM teachers WHERE id = ?";
+	private final static String SELECT_BY_SUBJECT_ID = "SELECT teacher_id FROM subjects_teachers WHERE subject_id = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private TeacherRowMapper rowMapper;
-
+	
+	@Autowired
 	public TeacherDao(JdbcTemplate jdbcTemplate, TeacherRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.rowMapper = rowMapper;
@@ -75,4 +78,9 @@ public class TeacherDao {
 	public void deleteById(int id) {
 		jdbcTemplate.update(DELETE_STUDENT, id);
 	}
+	
+	public List<Teacher> findBySubjectId(int id) {
+		return jdbcTemplate.query(SELECT_BY_SUBJECT_ID, rowMapper);
+	}
+
 }

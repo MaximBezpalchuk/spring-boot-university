@@ -1,3 +1,6 @@
+//TODO: delete vacations, asking vacation from vacation_table where teacher_id=?
+//TODO: delete subjects, asking subject from subject_table where teacher_id=?
+
 package com.foxminded.university.model;
 
 import java.time.LocalDate;
