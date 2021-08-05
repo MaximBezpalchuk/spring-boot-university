@@ -21,6 +21,5 @@ public class Main {
 
 		MenuCreator2 menu2 = new MenuCreator2(cathedra);
 		menu2.buildMenu();
-
 	}
 }
