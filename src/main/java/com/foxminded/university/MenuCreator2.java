@@ -11,12 +11,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 import com.foxminded.university.config.BeanUtil;
 import com.foxminded.university.dao.AudienceDao;
 import com.foxminded.university.dao.CathedraDao;
 import com.foxminded.university.dao.GroupDao;
+import com.foxminded.university.dao.HolidayDao;
+import com.foxminded.university.dao.LectureDao;
+import com.foxminded.university.dao.LectureTimeDao;
 import com.foxminded.university.dao.StudentDao;
+import com.foxminded.university.dao.SubjectDao;
+import com.foxminded.university.dao.TeacherDao;
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Degree;
@@ -43,8 +47,11 @@ public class MenuCreator2 {
 	CathedraDao cathedraDao = BeanUtil.getBean(CathedraDao.class);
 	GroupDao groupDao = BeanUtil.getBean(GroupDao.class);
 	StudentDao studentDao = BeanUtil.getBean(StudentDao.class);
-	
-	
+	SubjectDao subjectDao = BeanUtil.getBean(SubjectDao.class);
+	TeacherDao teacherDao = BeanUtil.getBean(TeacherDao.class);
+	LectureDao lectureDao = BeanUtil.getBean(LectureDao.class);
+	LectureTimeDao lectureTimeDao = BeanUtil.getBean(LectureTimeDao.class);
+	HolidayDao holidayDao = BeanUtil.getBean(HolidayDao.class);
 
 	public MenuCreator2(Cathedra cathedra) {
 		this.cathedra = cathedra;
@@ -200,6 +207,9 @@ public class MenuCreator2 {
 				String input = reader.readLine();
 				exitCheck(input);
 				String[] splittedArray = input.split(",");
+				if (splittedArray.length != 3) {
+					throw new ArrayIndexOutOfBoundsException();
+				}
 				int year = Integer.parseInt(splittedArray[0]);
 				int month = Integer.parseInt(splittedArray[1]);
 				int day = Integer.parseInt(splittedArray[2]);
@@ -281,9 +291,9 @@ public class MenuCreator2 {
 			int groupNumber1 = getInput(sortedGroups1.size());
 			exitCheck(String.valueOf(groupNumber1));
 			Group group1 = sortedGroups1.get(groupNumber1 - 1);
-			
-			studentDao.create(dataUpdater2.createStudent(firstName1, lastName1, phone1, address1, email1, gender1, postalCode1, education1,
-					birthDate1, group1));
+
+			studentDao.create(dataUpdater2.createStudent(firstName1, lastName1, phone1, address1, email1, gender1,
+					postalCode1, education1, birthDate1, group1));
 			System.out.println("Student added!");
 			break;
 		case 2:
@@ -318,7 +328,7 @@ public class MenuCreator2 {
 			System.out.println(formatter.getDegreeString());
 			Degree degree2 = degreeMaker();
 			System.out.println("Set subjects from list separated by commas without spaces (SUBJ or SUBJ,SUBJ,SUBJ):");
-			List<Subject> sortedSubjects2 = sortSubjectsByName(cathedra.getSubjects());
+			List<Subject> sortedSubjects2 = sortSubjectsByName(subjectDao.findAll());
 			System.out.println(formatter.formatSubjectList(sortedSubjects2));
 			List<Subject> subjects2 = new ArrayList<>();
 			while (true) {
@@ -338,9 +348,14 @@ public class MenuCreator2 {
 					System.out.println("Invalid selections. Please try again");
 				}
 			}
-			dataUpdater.createTeacher(firstName2, lastName2, phone2, address2, email2, gender2, postalCode2, education2,
-					birthDate2, degree2, cathedra, subjects2);
-
+			Teacher teacher12 = dataUpdater2.createTeacher(firstName2, lastName2, phone2, address2, email2, gender2,
+					postalCode2, education2, birthDate2, degree2, cathedraDao.findById(1));
+			teacherDao.update(teacher12);
+			for (Subject subject : subjects2) {
+				if (!teacher12.getSubjects().contains(subject)) {
+					teacherDao.updateSubject(teacher12, subject);
+				}
+			}
 			System.out.println("Teacher added!");
 			break;
 		case 3:
@@ -351,8 +366,7 @@ public class MenuCreator2 {
 			System.out.println("Enter subject description:");
 			String subjectDescription3 = reader.readLine();
 			exitCheck(subjectDescription3);
-			Subject subject3 = new Subject(cathedra, subjectName3, subjectDescription3);
-			cathedra.getSubjects().add(subject3);
+			subjectDao.update(new Subject(cathedraDao.findById(1), subjectName3, subjectDescription3));
 			System.out.println("Subject added!");
 			break;
 		case 4:
@@ -360,26 +374,25 @@ public class MenuCreator2 {
 			System.out.println("Enter group name:");
 			String groupName4 = reader.readLine();
 			exitCheck(groupName4);
-			Group group4 = new Group(groupName4, cathedra);
-			cathedra.getGroups().add(group4);
+			groupDao.update(new Group(groupName4, cathedraDao.findById(1)));
 			System.out.println("Group added!");
 			break;
 		case 5:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Set subject from the list:");
-			List<Subject> sortedSubjects5 = sortSubjectsByName(cathedra.getSubjects());
+			List<Subject> sortedSubjects5 = sortSubjectsByName(subjectDao.findAll());
 			System.out.println(formatter.formatSubjectList(sortedSubjects5));
 			int subjectNumber5 = getInput(sortedSubjects5.size());
 			exitCheck(String.valueOf(subjectNumber5));
 			Subject subject5 = sortedSubjects5.get(subjectNumber5 - 1);
 			System.out.println("Set teacher from the list:");
-			List<Teacher> sortedTeachers5 = sortTeachersByLastName(cathedra.getTeachers());
+			List<Teacher> sortedTeachers5 = sortTeachersByLastName(teacherDao.findAll());
 			System.out.println(formatter.formatTeacherList(sortedTeachers5));
 			int teacherNumber5 = getInput(sortedTeachers5.size());
 			exitCheck(String.valueOf(teacherNumber5));
 			Teacher teacher5 = sortedTeachers5.get(teacherNumber5 - 1);
 			System.out.println("Set audience from the list:");
-			List<Audience> sortedAudiences = sortAudiencesByNumber(cathedra.getAudiences());
+			List<Audience> sortedAudiences = sortAudiencesByNumber(audienceDao.findAll());
 			System.out.println(formatter.formatAudienceList(sortedAudiences));
 			int audienceNumber5 = getInput(sortedAudiences.size());
 			exitCheck(String.valueOf(audienceNumber5));
@@ -387,13 +400,13 @@ public class MenuCreator2 {
 			System.out.println("Enter the lecture date separated by commas without spaces (YEAR,MONTH,DAY):");
 			LocalDate lectureDate5 = setupLocalDate();
 			System.out.println("Set lecture time from the list:");
-			List<LectureTime> sortedLectureTimes5 = sortLectureTimesByTime(cathedra.getLectureTimes());
+			List<LectureTime> sortedLectureTimes5 = sortLectureTimesByTime(lectureTimeDao.findAll());
 			System.out.println(formatter.formatLectureTimesList(sortedLectureTimes5));
 			int lectureTimeNumber5 = getInput(sortedLectureTimes5.size());
 			exitCheck(String.valueOf(lectureTimeNumber5));
 			LectureTime lectureTime5 = sortedLectureTimes5.get(lectureTimeNumber5 - 1);
-			Lecture lecture5 = new Lecture(cathedra, subject5, lectureDate5, lectureTime5, audience5, teacher5);
-			cathedra.getLectures().add(lecture5);
+			lectureDao.update(
+					new Lecture(cathedraDao.findById(1), subject5, lectureDate5, lectureTime5, audience5, teacher5));
 			System.out.println("Lecture added!");
 			break;
 		case 6:
@@ -404,7 +417,9 @@ public class MenuCreator2 {
 			System.out.println("Enter the holiday date separated by commas without spaces (YEAR,MONTH,DAY):");
 			LocalDate holidayDate5 = setupLocalDate();
 			Holiday holiday6 = new Holiday(holidayDescription6, holidayDate5);
-			cathedra.getHolidays().add(holiday6);
+			holidayDao.update(holiday6);
+			//TODO: add cathedras_holidays table and update list<holidays> in cathedra
+			//cathedra.getHolidays().add(holiday6);
 			System.out.println("Holiday created!");
 			break;
 		case 7:
@@ -415,10 +430,8 @@ public class MenuCreator2 {
 			System.out.println("Enter audience capacity");
 			String audienceCapacity7 = reader.readLine();
 			exitCheck(audienceCapacity7);
-			Audience audience7 = new Audience(Integer.parseInt(audienceRoom7), Integer.parseInt(audienceCapacity7));
-			audienceDao.create(audience7);
-			//TODO: ÑƒÐ±Ñ€Ð°Ñ‚ÑŒ Ð´Ð¾Ð±Ð°Ð²Ð»ÐµÐ½Ð¸Ðµ Ð² ÐºÐ°Ñ„ÐµÐ´Ñ€Ñƒ - Ð´Ð°Ð»ÐµÐµ Ð¸Ð· ÐºÐ°Ñ„ÐµÐ´Ñ€Ñ‹ ÑƒÐ±ÐµÑ€Ñƒ Ð² Ð¿Ñ€Ð¸Ð½Ñ†Ð¸Ð¿Ðµ Ñ�Ñ‚Ð¸ Ð»Ð¸Ñ�Ñ‚Ñ‹
-			cathedra.getAudiences().add(audience7);
+			Audience audience7 = new Audience(Integer.parseInt(audienceRoom7), Integer.parseInt(audienceCapacity7), cathedraDao.findById(1));
+			audienceDao.update(audience7);
 			System.out.println("Audience created!");
 			break;
 		case 0:
@@ -751,13 +764,15 @@ public class MenuCreator2 {
 			int audienceNumber5 = getInput(sortedAudiences5.size());
 			exitCheck(String.valueOf(audienceNumber5));
 			Audience audience5 = sortedAudiences5.get(audienceNumber5 - 1);
-			//TODO: Ð¿Ð¾Ñ�Ð»Ðµ Ð´Ð¾Ð±Ð°Ð²Ð»ÐµÐ½Ð¸Ñ� LectureDAO Ð½ÑƒÐ¶Ð½Ð¾ Ñ�Ð´ÐµÐ»Ð°Ñ‚ÑŒ Ð¿Ñ€Ð¾Ð²ÐµÑ€ÐºÑƒ Ð¿Ð¾ Ð½Ð¸Ð¼
+			// TODO: Ð¿Ð¾Ñ�Ð»Ðµ Ð´Ð¾Ð±Ð°Ð²Ð»ÐµÐ½Ð¸Ñ� LectureDAO Ð½ÑƒÐ¶Ð½Ð¾ Ñ�Ð´ÐµÐ»Ð°Ñ‚ÑŒ
+			// Ð¿Ñ€Ð¾Ð²ÐµÑ€ÐºÑƒ Ð¿Ð¾ Ð½Ð¸Ð¼
 			boolean checker5 = cathedra.getLectures().stream()
 					.anyMatch(lecture -> lecture.getAudience().equals(audience5));
 			if (checker5) {
 				System.out.println("Please remove audiences first from lectures!");
 			} else {
-				//TODO: ÑƒÐ±Ñ€Ð°Ñ‚ÑŒ ÑƒÐ´Ð°Ð»ÐµÐ½Ð¸Ðµ Ð¸Ð· cathedra Ð¿Ð¾Ñ�Ð»Ðµ Ñ€ÐµÐ°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ð¸ Ð²Ñ�ÐµÑ… DAO
+				// TODO: ÑƒÐ±Ñ€Ð°Ñ‚ÑŒ ÑƒÐ´Ð°Ð»ÐµÐ½Ð¸Ðµ Ð¸Ð· cathedra Ð¿Ð¾Ñ�Ð»Ðµ
+				// Ñ€ÐµÐ°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ð¸ Ð²Ñ�ÐµÑ… DAO
 				cathedra.getAudiences().remove(audience5);
 				audienceDao.deleteById(audience5.getId());
 				System.out.println("Audience was deleted!");

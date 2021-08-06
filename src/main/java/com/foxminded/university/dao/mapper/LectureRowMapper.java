@@ -37,7 +37,7 @@ public class LectureRowMapper implements RowMapper<Lecture> {
 	public Lecture mapRow(ResultSet resultSet, int rowNum) throws SQLException {
 
 		Lecture lecture = new Lecture(cathedraDao.findById(resultSet.getInt("cathedra_id")),
-				subjectDao.findByTeacherId(resultSet.getInt("teacher_id")),
+				subjectDao.findById(resultSet.getInt("subject_id")),
 				new java.sql.Date(resultSet.getDate("date").getTime()).toLocalDate(),
 				lectureTimeDao.findById(resultSet.getInt("lecture_time_id")),
 				audienceDao.findById(resultSet.getInt("audience_id")), teacherDao.findById(resultSet.getInt("id")));

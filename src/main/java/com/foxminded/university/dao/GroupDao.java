@@ -1,6 +1,7 @@
 package com.foxminded.university.dao;
 
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,12 +49,12 @@ public class GroupDao {
 		if (group.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {
-				PreparedStatement statement = connection.prepareStatement(INSERT_GROUP);
+				PreparedStatement statement = connection.prepareStatement(INSERT_GROUP, Statement.RETURN_GENERATED_KEYS);
 				statement.setString(1, group.getName());
 				statement.setInt(2, group.getCathedra().getId());
 				return statement;
 			}, keyHolder);
-			group.setId((int) keyHolder.getKey());
+			group.setId((int) keyHolder.getKeyList().get(0).get("id"));
 		} else {
 			jdbcTemplate.update(UPDATE_GROUP, group.getName(), group.getCathedra().getId());
 		}

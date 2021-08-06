@@ -1,6 +1,7 @@
 package com.foxminded.university.dao;
 
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,8 @@ public class SubjectDao {
 	private final static String INSERT_SUBJECT = "INSERT INTO subjects(name, description, cathedra_id) VALUES(?, ?, ?)";
 	private final static String UPDATE_SUBJECT = "UPDATE subjects SET name=?, description=?, cathedra_id=? WHERE id=?";
 	private final static String DELETE_SUBJECT = "DELETE FROM subjects WHERE id = ?";
-	private final static String SELECT_BY_TEACHER_ID = "SELECT subject_id FROM subjects_teachers WHERE teacher_id = ?";
+	private final static String SELECT_BY_TEACHER_ID = "SELECT * FROM subjects WHERE id IN (SELECT subject_id FROM subjects_teachers WHERE teacher_id =?)";
+	
 
 	private final JdbcTemplate jdbcTemplate;
 	private SubjectRowMapper rowMapper;
@@ -29,10 +31,6 @@ public class SubjectDao {
 	public SubjectDao(JdbcTemplate jdbcTemplate, SubjectRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.rowMapper = rowMapper;
-	}
-
-	public void create(Subject subject) {
-		jdbcTemplate.update(INSERT_SUBJECT, subject.getName(), subject.getDescription(), subject.getCathedra().getId());
 	}
 
 	public List<Subject> findAll() {
@@ -48,13 +46,14 @@ public class SubjectDao {
 		if (subject.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {
-				PreparedStatement statement = connection.prepareStatement(INSERT_SUBJECT);
+				PreparedStatement statement = connection.prepareStatement(INSERT_SUBJECT,
+						Statement.RETURN_GENERATED_KEYS);
 				statement.setString(1, subject.getName());
 				statement.setString(2, subject.getDescription());
 				statement.setInt(3, subject.getCathedra().getId());
 				return statement;
 			}, keyHolder);
-			subject.setId((int) keyHolder.getKey());
+			subject.setId((int) keyHolder.getKeyList().get(0).get("id"));
 		} else {
 			jdbcTemplate.update(UPDATE_SUBJECT, subject.getName(), subject.getDescription(),
 					subject.getCathedra().getId(), subject.getId());
@@ -67,8 +66,8 @@ public class SubjectDao {
 	}
 
 	@SuppressWarnings("deprecation")
-	public Subject findByTeacherId(int id) {
-		return jdbcTemplate.query(SELECT_BY_TEACHER_ID, new Object[] { id }, rowMapper).stream().findAny().orElse(null);
+	public List<Subject> findByTeacherId(int id) {
+		return jdbcTemplate.query(SELECT_BY_TEACHER_ID, new Object[] { id }, rowMapper);
 	}
 
 }

@@ -410,8 +410,8 @@ public class MenuCreator {
 			System.out.println("Enter audience capacity");
 			String audienceCapacity7 = reader.readLine();
 			exitCheck(audienceCapacity7);
-			Audience audience7 = new Audience(Integer.parseInt(audienceRoom7), Integer.parseInt(audienceCapacity7));
-			audienceDao.create(audience7);
+			Audience audience7 = new Audience(Integer.parseInt(audienceRoom7), Integer.parseInt(audienceCapacity7), cathedra);
+			audienceDao.update(audience7);
 			//TODO: убрать добавление в кафедру - далее из кафедры уберу в принципе эти листы
 			cathedra.getAudiences().add(audience7);
 			System.out.println("Audience created!");

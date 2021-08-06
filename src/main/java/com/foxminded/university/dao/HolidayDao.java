@@ -1,6 +1,7 @@
 package com.foxminded.university.dao;
 
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,12 +48,12 @@ public class HolidayDao {
 		if (holiday.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {
-				PreparedStatement statement = connection.prepareStatement(INSERT_HOLIDAY);
+				PreparedStatement statement = connection.prepareStatement(INSERT_HOLIDAY, Statement.RETURN_GENERATED_KEYS);
 				statement.setString(1, holiday.getName());
 				statement.setDate(2, java.sql.Date.valueOf(holiday.getDate()));
 				return statement;
 			}, keyHolder);
-			holiday.setId((int) keyHolder.getKey());
+			holiday.setId((int) keyHolder.getKeyList().get(0).get("id"));
 		} else {
 			jdbcTemplate.update(UPDATE_HOLIDAY, holiday.getName(), holiday.getDate(), holiday.getId());
 		}

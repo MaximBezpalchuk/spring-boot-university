@@ -1,6 +1,7 @@
 package com.foxminded.university.dao;
 
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,11 +48,11 @@ public class CathedraDao {
 		if (cathedra.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {
-				PreparedStatement statement = connection.prepareStatement(INSERT_CATHEDRA);
+				PreparedStatement statement = connection.prepareStatement(INSERT_CATHEDRA, Statement.RETURN_GENERATED_KEYS);
 				statement.setString(1, cathedra.getName());
 				return statement;
 			}, keyHolder);
-			cathedra.setId((int) keyHolder.getKey());
+			cathedra.setId((int) keyHolder.getKeyList().get(0).get("id"));
 		} else {
 			jdbcTemplate.update(UPDATE_CATHEDRA, cathedra.getName(), cathedra.getId());
 		}
