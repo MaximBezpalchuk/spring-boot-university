@@ -209,11 +209,11 @@ public class DataCreator {
 	}
 
 	private void createHolidays() {
-		holidays.add(new Holiday("Christmas", LocalDate.of(2021, 12, 25)));
-		holidays.add(new Holiday("Thanksgiving", LocalDate.of(2021, 11, 22)));
-		holidays.add(new Holiday("Decoration Day", LocalDate.of(2021, 5, 31)));
-		holidays.add(new Holiday("Independence Day", LocalDate.of(2021, 7, 4)));
-		holidays.add(new Holiday("Labor Day", LocalDate.of(2021, 9, 6)));
-		holidays.add(new Holiday("New Year", LocalDate.of(2021, 1, 1)));
+		holidays.add(new Holiday("Christmas", LocalDate.of(2021, 12, 25), cathedra));
+		holidays.add(new Holiday("Thanksgiving", LocalDate.of(2021, 11, 22), cathedra));
+		holidays.add(new Holiday("Decoration Day", LocalDate.of(2021, 5, 31), cathedra));
+		holidays.add(new Holiday("Independence Day", LocalDate.of(2021, 7, 4), cathedra));
+		holidays.add(new Holiday("Labor Day", LocalDate.of(2021, 9, 6), cathedra));
+		holidays.add(new Holiday("New Year", LocalDate.of(2021, 1, 1), cathedra));
 	}
 }

@@ -8,10 +8,20 @@ public class Holiday {
 
 	private String name;
 	private LocalDate date;
+	private Cathedra cathedra;
 
-	public Holiday(String name, LocalDate date) {
+	public Holiday(String name, LocalDate date, Cathedra cathedra) {
 		this.name = name;
 		this.date = date;
+		this.cathedra = cathedra;
+	}
+
+	public Cathedra getCathedra() {
+		return cathedra;
+	}
+
+	public void setCathedra(Cathedra cathedra) {
+		this.cathedra = cathedra;
 	}
 
 	public int getId() {
@@ -32,7 +42,7 @@ public class Holiday {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(date, id, name);
+		return Objects.hash(cathedra, date, id, name);
 	}
 
 	@Override
@@ -44,7 +54,8 @@ public class Holiday {
 		if (getClass() != obj.getClass())
 			return false;
 		Holiday other = (Holiday) obj;
-		return Objects.equals(date, other.date) && id == other.id && Objects.equals(name, other.name);
+		return Objects.equals(cathedra, other.cathedra) && Objects.equals(date, other.date) && id == other.id
+				&& Objects.equals(name, other.name);
 	}
 
 }

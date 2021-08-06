@@ -416,10 +416,15 @@ public class MenuCreator2 {
 			exitCheck(holidayDescription6);
 			System.out.println("Enter the holiday date separated by commas without spaces (YEAR,MONTH,DAY):");
 			LocalDate holidayDate5 = setupLocalDate();
-			Holiday holiday6 = new Holiday(holidayDescription6, holidayDate5);
-			holidayDao.update(holiday6);
-			//TODO: add cathedras_holidays table and update list<holidays> in cathedra
-			//cathedra.getHolidays().add(holiday6);
+			System.out.println("Set cathedra from list:");
+			
+			List<Cathedra> sortedCathedras6 = sortCathedrasByName(cathedraDao.findAll());
+			System.out.println(formatter.formatCathedraList(sortedCathedras6));
+			int cathedraNumber6 = getInput(sortedCathedras6.size());
+			exitCheck(String.valueOf(cathedraNumber6));
+			Cathedra cathedra6 = sortedCathedras6.get(cathedraNumber6 - 1);
+			Holiday holiday6 = new Holiday(holidayDescription6, holidayDate5, cathedra6);
+			holidayDao.update(holiday6, cathedraDao.findById(1));
 			System.out.println("Holiday created!");
 			break;
 		case 7:
@@ -848,6 +853,10 @@ public class MenuCreator2 {
 	}
 
 	private List<Group> sortGroupsByName(List<Group> list) {
+		return list.stream().sorted((d1, d2) -> d1.getName().compareTo(d2.getName())).collect(Collectors.toList());
+	}
+	
+	private List<Cathedra> sortCathedrasByName(List<Cathedra> list) {
 		return list.stream().sorted((d1, d2) -> d1.getName().compareTo(d2.getName())).collect(Collectors.toList());
 	}
 

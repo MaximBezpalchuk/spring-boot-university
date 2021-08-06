@@ -398,7 +398,7 @@ public class MenuCreator {
 			exitCheck(holidayDescription6);
 			System.out.println("Enter the holiday date separated by commas without spaces (YEAR,MONTH,DAY):");
 			LocalDate holidayDate5 = setupLocalDate();
-			Holiday holiday6 = new Holiday(holidayDescription6, holidayDate5);
+			Holiday holiday6 = new Holiday(holidayDescription6, holidayDate5, cathedra);
 			cathedra.getHolidays().add(holiday6);
 			System.out.println("Holiday created!");
 			break;

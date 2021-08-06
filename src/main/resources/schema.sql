@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 DROP TABLE IF EXISTS cathedras, audiences, groups, lectures, students, subjects, teachers, vacations, holidays, lecture_times, subjects_teachers, lectures_groups, cathedras_holidays;
-=======
-DROP TABLE IF EXISTS cathedras, audiences, groups, lectures, students, subjects, teachers, vacations, holidays, lecture_times, subjects_teachers, lectures_groups;
->>>>>>> 4365640491eac9bdaaab4f10cabca17be36475e4
 
 --create types
 DO $$

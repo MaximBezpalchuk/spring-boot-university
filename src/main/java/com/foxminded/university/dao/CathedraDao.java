@@ -31,10 +31,6 @@ public class CathedraDao {
 		this.rowMapper = rowMapper;
 	}
 
-	public void create(Cathedra cathedra) {
-		jdbcTemplate.update(INSERT_CATHEDRA, cathedra.getName());
-	}
-
 	public List<Cathedra> findAll() {
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}

@@ -2,6 +2,9 @@
 //TODO: delete groups list, asking for groups from groups_table where cathedra_id=?
 //TODO: delete teachers list, asking for teachers from teachers_table where cathedra_id=?
 //TODO: delete lectures list, asking for lectures from lectures_table where cathedra_id=?
+//TODO: delete holiday list, asking for holidays from holidays_table where cathedra_id=?
+//TODO: delete audience list, asking for audiences from audiences_table where cathedra_id=?
+//TODO: delete lecture_times list, no need here
 
 package com.foxminded.university.model;
 

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.foxminded.university.model.Audience;
+import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Degree;
 import com.foxminded.university.model.Gender;
 import com.foxminded.university.model.Group;
@@ -48,6 +49,14 @@ public class Formatter {
 
 		return groups.stream().map(group -> String.format("%-3s %-" + nameFieldLength + "s",
 				index.incrementAndGet() + ".", group.getName())).collect(Collectors.joining(System.lineSeparator()));
+	}
+	
+	public String formatCathedraList(List<Cathedra> cathedras) {
+		AtomicInteger index = new AtomicInteger();
+		int nameFieldLength = getMaxFieldLength(cathedras, Cathedra::getName);
+
+		return cathedras.stream().map(cathedra -> String.format("%-3s %-" + nameFieldLength + "s",
+				index.incrementAndGet() + ".", cathedra.getName())).collect(Collectors.joining(System.lineSeparator()));
 	}
 
 	public String formatSubjectList(List<Subject> subjects) {
