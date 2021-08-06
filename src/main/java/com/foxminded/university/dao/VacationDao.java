@@ -1,6 +1,5 @@
 package com.foxminded.university.dao;
 
-//TODO: update teacher_id from TeacherDao
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
@@ -22,10 +21,11 @@ public class VacationDao {
 	private final static String INSERT_VACATION = "INSERT INTO vacations(start, finish, teacher_id) VALUES(?, ?, ?)";
 	private final static String UPDATE_VACATION = "UPDATE vacations SET start=?, finish=?, teacher_id=? WHERE id=?";
 	private final static String DELETE_VACATION = "DELETE FROM vacations WHERE id = ?";
+	private final static String SELECT_BY_TEACHER_ID = "SELECT * FROM vacations WHERE teacher_id=?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private VacationRowMapper rowMapper;
-	
+
 	@Autowired
 	public VacationDao(JdbcTemplate jdbcTemplate, VacationRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
@@ -49,7 +49,8 @@ public class VacationDao {
 		if (vacation.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {
-				PreparedStatement statement = connection.prepareStatement(INSERT_VACATION, Statement.RETURN_GENERATED_KEYS);
+				PreparedStatement statement = connection.prepareStatement(INSERT_VACATION,
+						Statement.RETURN_GENERATED_KEYS);
 				statement.setDate(1, java.sql.Date.valueOf(vacation.getStart()));
 				statement.setDate(2, java.sql.Date.valueOf(vacation.getEnd()));
 				statement.setInt(3, vacation.getTeacher().getId());
@@ -65,5 +66,10 @@ public class VacationDao {
 
 	public void deleteById(int id) {
 		jdbcTemplate.update(DELETE_VACATION, id);
+	}
+
+	@SuppressWarnings("deprecation")
+	public List<Vacation> findByTeacherId(int id) {
+		return jdbcTemplate.query(SELECT_BY_TEACHER_ID, new Object[] { id }, rowMapper);
 	}
 }

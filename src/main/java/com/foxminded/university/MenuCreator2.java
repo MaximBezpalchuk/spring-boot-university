@@ -706,57 +706,53 @@ public class MenuCreator2 {
 		case 1:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select student from the list:");
-			List<Student> students1 = new ArrayList<>();
-			cathedra.getGroups().stream().forEach(group -> group.getStudents().stream()
-					.filter(student -> !students1.contains(student)).forEach(student -> students1.add(student)));
-			List<Student> sortedStudents1 = sortStudentsByLastName(students1);
+			List<Student> sortedStudents1 = sortStudentsByLastName(studentDao.findAll());
 			System.out.println(formatter.formatStudentList(sortedStudents1));
 			int studentNumber1 = getInput(sortedStudents1.size());
 			exitCheck(String.valueOf(studentNumber1));
 			Student student1 = sortedStudents1.get(studentNumber1 - 1);
-			cathedra.getGroups().stream().filter(group -> group.getStudents().contains(student1))
-					.forEach(group -> group.getStudents().remove(student1));
+			studentDao.deleteById(student1.getId());
 			System.out.println("Student was deleted!");
 			break;
 		case 2:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select teacher from the list:");
-			List<Teacher> sortedTeachers2 = sortTeachersByLastName(cathedra.getTeachers());
+			List<Teacher> sortedTeachers2 = sortTeachersByLastName(teacherDao.findAll());
 			System.out.println(formatter.formatTeacherList(sortedTeachers2));
 			int teacherNumber2 = getInput(sortedTeachers2.size());
 			exitCheck(String.valueOf(teacherNumber2));
 			Teacher teacher2 = sortedTeachers2.get(teacherNumber2 - 1);
-			cathedra.getTeachers().remove(teacher2);
-			cathedra.getSubjects().stream().filter(subject -> subject.getTeachers().contains(teacher2))
-					.forEach(subject -> subject.getTeachers().remove(teacher2));
-			System.out.println("Teacher was deleted!");
+			if (lectureDao.findAll().stream().anyMatch(lecture -> lecture.getTeacher().equals(teacher2))) {
+				System.out.println("Please remove lectures with this teacher first!");
+			} else {
+				teacherDao.deleteById(teacher2.getId());
+				System.out.println("Teacher was deleted!");
+			}
 			break;
 		case 3:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select group from the list:");
-			List<Group> sortedGroups3 = sortGroupsByName(cathedra.getGroups());
+			List<Group> sortedGroups3 = sortGroupsByName(groupDao.findAll());
 			System.out.println(formatter.formatGroupList(sortedGroups3));
 			int groupNumber3 = getInput(sortedGroups3.size());
 			exitCheck(String.valueOf(groupNumber3));
 			Group group3 = sortedGroups3.get(groupNumber3 - 1);
-			if (!group3.getStudents().isEmpty()) {
+			if (studentDao.findAll().stream().anyMatch(student -> student.getGroup().equals(group3))) {
 				System.out.println("Please remove students first from group!");
 			} else {
-				cathedra.getLectures().stream().filter(lecture -> lecture.getGroups().contains(group3))
-						.forEach(lecture -> lecture.getGroups().remove(group3));
-				cathedra.getGroups().remove(group3);
+				groupDao.deleteById(group3.getId());
 				System.out.println("Group was deleted!");
 			}
 			break;
 		case 4:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select lecture from the list:");
-			List<Lecture> sortedLectures4 = sortLecturesByDate(cathedra.getLectures());
+			List<Lecture> sortedLectures4 = sortLecturesByDate(lectureDao.findAll());
 			System.out.println(formatter.formatLectureList(sortedLectures4));
 			int lectureNumber4 = getInput(sortedLectures4.size());
 			exitCheck(String.valueOf(lectureNumber4));
-			Lecture lecture7 = sortedLectures4.get(lectureNumber4 - 1);
-			cathedra.getLectures().remove(lecture7);
+			Lecture lecture4 = sortedLectures4.get(lectureNumber4 - 1);
+			lectureDao.deleteById(lecture4.getId());
 			System.out.println("Lecture was deleted!");
 			break;
 		case 5:
@@ -767,16 +763,9 @@ public class MenuCreator2 {
 			int audienceNumber5 = getInput(sortedAudiences5.size());
 			exitCheck(String.valueOf(audienceNumber5));
 			Audience audience5 = sortedAudiences5.get(audienceNumber5 - 1);
-			// TODO: Ð¿Ð¾Ñ�Ð»Ðµ Ð´Ð¾Ð±Ð°Ð²Ð»ÐµÐ½Ð¸Ñ� LectureDAO Ð½ÑƒÐ¶Ð½Ð¾ Ñ�Ð´ÐµÐ»Ð°Ñ‚ÑŒ
-			// Ð¿Ñ€Ð¾Ð²ÐµÑ€ÐºÑƒ Ð¿Ð¾ Ð½Ð¸Ð¼
-			boolean checker5 = cathedra.getLectures().stream()
-					.anyMatch(lecture -> lecture.getAudience().equals(audience5));
-			if (checker5) {
+			if (lectureDao.findAll().stream().anyMatch(lecture -> lecture.getAudience().equals(audience5))) {
 				System.out.println("Please remove audiences first from lectures!");
 			} else {
-				// TODO: ÑƒÐ±Ñ€Ð°Ñ‚ÑŒ ÑƒÐ´Ð°Ð»ÐµÐ½Ð¸Ðµ Ð¸Ð· cathedra Ð¿Ð¾Ñ�Ð»Ðµ
-				// Ñ€ÐµÐ°Ð»Ð¸Ð·Ð°Ñ†Ð¸Ð¸ Ð²Ñ�ÐµÑ… DAO
-				cathedra.getAudiences().remove(audience5);
 				audienceDao.deleteById(audience5.getId());
 				System.out.println("Audience was deleted!");
 			}
@@ -784,47 +773,44 @@ public class MenuCreator2 {
 		case 6:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select subject from the list:");
-			List<Subject> sortedSubjects6 = sortSubjectsByName(cathedra.getSubjects());
+			List<Subject> sortedSubjects6 = sortSubjectsByName(subjectDao.findAll());
 			System.out.println(formatter.formatSubjectList(sortedSubjects6));
 			int subjectNumber6 = getInput(sortedSubjects6.size());
 			exitCheck(String.valueOf(subjectNumber6));
 			Subject subject6 = sortedSubjects6.get(subjectNumber6 - 1);
-			boolean checker6 = cathedra.getLectures().stream()
-					.anyMatch(lecture -> lecture.getSubject().equals(subject6));
-			if (checker6) {
+			if (lectureDao.findAll().stream().anyMatch(lecture -> lecture.getSubject().equals(subject6))) {
 				System.out.println("Please remove subject first from lecture!");
 			} else {
-				cathedra.getSubjects().remove(subject6);
-				cathedra.getTeachers().stream().forEach(teacher -> teacher.getSubjects().remove(subject6));
+				subjectDao.deleteById(subject6.getId());
 				System.out.println("Subject was deleted!");
 			}
 			break;
 		case 7:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select teacher from the list:");
-			List<Teacher> sortedTeachers7 = sortTeachersByLastName(cathedra.getTeachers());
+			List<Teacher> sortedTeachers7 = sortTeachersByLastName(teacherDao.findAll());
 			System.out.println(formatter.formatTeacherList(sortedTeachers7));
 			int teacherNumber7 = getInput(sortedTeachers7.size());
 			exitCheck(String.valueOf(teacherNumber7));
 			Teacher teacher7 = sortedTeachers7.get(teacherNumber7 - 1);
 			System.out.println("Select vacation from the list:");
-			List<Vacation> sortedVacations7 = sortVacationsByDate(teacher7.getVacations());
+			List<Vacation> sortedVacations7 = sortVacationsByDate(vacationDao.findByTeacherId(teacher7.getId()));
 			System.out.println(formatter.formatVacationList(sortedVacations7));
 			int vacationNumber7 = getInput(sortedVacations7.size());
 			exitCheck(String.valueOf(vacationNumber7));
 			Vacation vacation7 = sortedVacations7.get(vacationNumber7 - 1);
-			teacher7.getVacations().remove(vacation7);
+			vacationDao.deleteById(vacation7.getId());
 			System.out.println("Teacher vacation was deleted!");
 			break;
 		case 8:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select holiday from the list:");
-			List<Holiday> sortedHolidays8 = sortHolidaysByDate(cathedra.getHolidays());
+			List<Holiday> sortedHolidays8 = sortHolidaysByDate(holidayDao.findAll());
 			System.out.println(formatter.formatHolidayList(sortedHolidays8));
 			int holidayNumber8 = getInput(sortedHolidays8.size());
 			exitCheck(String.valueOf(holidayNumber8));
 			Holiday holiday = sortedHolidays8.get(holidayNumber8 - 1);
-			cathedra.getHolidays().remove(holiday);
+			holidayDao.deleteById(holiday.getId());
 			System.out.println("Holiday was deleted!");
 			break;
 		case 0:
