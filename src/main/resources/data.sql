@@ -99,10 +99,3 @@ INSERT INTO holidays(name, date) VALUES('Decoration Day', '2021-5-31');
 INSERT INTO holidays(name, date) VALUES('Independence Day', '2021-7-4');
 INSERT INTO holidays(name, date) VALUES('Labor Day', '2021-9-6');
 INSERT INTO holidays(name, date) VALUES('New Year', '2021-1-1');
-
-INSERT INTO cathedras_holidays(cathedra_id, holiday_id) VALUES (1, 1);
-INSERT INTO cathedras_holidays(cathedra_id, holiday_id) VALUES (1, 2);
-INSERT INTO cathedras_holidays(cathedra_id, holiday_id) VALUES (1, 3);
-INSERT INTO cathedras_holidays(cathedra_id, holiday_id) VALUES (1, 4);
-INSERT INTO cathedras_holidays(cathedra_id, holiday_id) VALUES (1, 5);
-INSERT INTO cathedras_holidays(cathedra_id, holiday_id) VALUES (1, 6);
