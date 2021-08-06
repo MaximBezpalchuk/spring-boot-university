@@ -11,7 +11,7 @@ public class Main {
 		new BeanUtil(new AnnotationConfigApplicationContext(SpringConfig.class));
 		DatabaseInitializer initializer = BeanUtil.getBean(DatabaseInitializer.class);
 		initializer.createDatabase();
-		MenuCreator2 menu2 = new MenuCreator2();
-		menu2.buildMenu();
+		MenuCreator menu = new MenuCreator();
+		menu.buildMenu();
 	}
 }
