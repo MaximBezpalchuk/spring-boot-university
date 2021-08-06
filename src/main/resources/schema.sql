@@ -126,3 +126,11 @@ CREATE TABLE IF NOT EXISTS holidays (
 	name VARCHAR(50) NOT NULL,
 	date TIMESTAMP NOT NULL
 );
+
+--cathedra have list<Holiday>
+CREATE TABLE IF NOT EXISTS cathedras_holidays (
+	cathedra_id int NOT NULL,
+	holiday_id int NOT NULL,
+	foreign key (cathedra_id) REFERENCES cathedras(id) ON DELETE CASCADE,
+	foreign key (cathedra_id) REFERENCES holidays(id) ON DELETE CASCADE
+);
