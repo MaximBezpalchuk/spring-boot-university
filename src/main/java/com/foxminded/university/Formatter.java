@@ -26,6 +26,9 @@ public class Formatter {
 	}
 
 	public String formatLectureList(List<Lecture> lectures) {
+		if(lectures.isEmpty()) {
+			return "No such lectures this period";
+		}
 		AtomicInteger index = new AtomicInteger();
 		int subjectNameFieldLength = getMaxFieldLength(lectures, lecture -> lecture.getSubject().getName());
 		int lectureAudienceFieldLength = getMaxFieldLength(lectures,

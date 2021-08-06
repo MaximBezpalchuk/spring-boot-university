@@ -452,24 +452,21 @@ public class MenuCreator2 {
 			System.out.println(formatter.formatStudentList(sortStudentsByLastName(studentDao.findAll())));
 			break;
 		case 2:
-			System.out.println(formatter.formatTeacherList(sortTeachersByLastName(cathedra.getTeachers())));
+			System.out.println(formatter.formatTeacherList(sortTeachersByLastName(teacherDao.findAll())));
 			break;
 		case 3:
-			System.out.println(formatter.formatSubjectList(sortSubjectsByName(cathedra.getSubjects())));
+			System.out.println(formatter.formatSubjectList(sortSubjectsByName(subjectDao.findAll())));
 			break;
 		case 4:
-			System.out.println(formatter.formatGroupList(sortGroupsByName(cathedra.getGroups())));
+			System.out.println(formatter.formatGroupList(sortGroupsByName(groupDao.findAll())));
 			break;
 		case 5:
-			System.out.println(formatter.formatHolidayList(sortHolidaysByDate(cathedra.getHolidays())));
+			System.out.println(formatter.formatHolidayList(sortHolidaysByDate(holidayDao.findAll())));
 			break;
 		case 6:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select student from the list:");
-			List<Student> students6 = new ArrayList<>();
-			cathedra.getGroups().stream().forEach(group -> group.getStudents().stream()
-					.filter(student -> !students6.contains(student)).forEach(student -> students6.add(student)));
-			List<Student> sortedStudents6 = sortStudentsByLastName(students6);
+			List<Student> sortedStudents6 = sortStudentsByLastName(studentDao.findAll());
 			System.out.println(formatter.formatStudentList(sortedStudents6));
 			int studentNumber6 = getInput(sortedStudents6.size());
 			exitCheck(String.valueOf(studentNumber6));
@@ -497,7 +494,7 @@ public class MenuCreator2 {
 		case 7:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select teacher from the list:");
-			List<Teacher> sortedTeachers7 = sortTeachersByLastName(cathedra.getTeachers());
+			List<Teacher> sortedTeachers7 = sortTeachersByLastName(teacherDao.findAll());
 			System.out.println(formatter.formatTeacherList(sortedTeachers7));
 			int teacherNumber7 = getInput(sortedTeachers7.size());
 			exitCheck(String.valueOf(teacherNumber7));
@@ -524,10 +521,7 @@ public class MenuCreator2 {
 		case 8:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select student from the list:");
-			List<Student> students8 = new ArrayList<>();
-			cathedra.getGroups().stream().forEach(group -> group.getStudents().stream()
-					.filter(student -> !students8.contains(student)).forEach(student -> students8.add(student)));
-			List<Student> sortedStudents8 = sortStudentsByLastName(students8);
+			List<Student> sortedStudents8 = sortStudentsByLastName(studentDao.findAll());
 			System.out.println(formatter.formatStudentList(sortedStudents8));
 			int studentNumber8 = getInput(sortedStudents8.size());
 			exitCheck(String.valueOf(studentNumber8));
@@ -548,7 +542,7 @@ public class MenuCreator2 {
 		case 9:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select teacher from the list:");
-			List<Teacher> sortedTeachers9 = sortTeachersByLastName(cathedra.getTeachers());
+			List<Teacher> sortedTeachers9 = sortTeachersByLastName(teacherDao.findAll());
 			System.out.println(formatter.formatTeacherList(sortedTeachers9));
 			int teacherNumber9 = getInput(sortedTeachers9.size());
 			exitCheck(String.valueOf(teacherNumber9));

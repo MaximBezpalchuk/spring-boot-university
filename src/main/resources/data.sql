@@ -93,16 +93,9 @@ INSERT INTO lectures_groups(lecture_id, group_id) VALUES(5, (SELECT id FROM grou
 INSERT INTO lectures_groups(lecture_id, group_id) VALUES(6, (SELECT id FROM groups WHERE name = 'Mages'));		
 INSERT INTO lectures_groups(lecture_id, group_id) VALUES(7, (SELECT id FROM groups WHERE name = 'Mages'));		
 			
-INSERT INTO holidays(name, date) VALUES('Christmas', '2021-12-25');
-INSERT INTO holidays(name, date) VALUES('Thanksgiving', '2021-11-22');
-INSERT INTO holidays(name, date) VALUES('Decoration Day', '2021-5-31');
-INSERT INTO holidays(name, date) VALUES('Independence Day', '2021-7-4');
-INSERT INTO holidays(name, date) VALUES('Labor Day', '2021-9-6');
-INSERT INTO holidays(name, date) VALUES('New Year', '2021-1-1');
-
-INSERT INTO cathedras_holidays(cathedra_id, holiday_id) VALUES (1, 1);
-INSERT INTO cathedras_holidays(cathedra_id, holiday_id) VALUES (1, 2);
-INSERT INTO cathedras_holidays(cathedra_id, holiday_id) VALUES (1, 3);
-INSERT INTO cathedras_holidays(cathedra_id, holiday_id) VALUES (1, 4);
-INSERT INTO cathedras_holidays(cathedra_id, holiday_id) VALUES (1, 5);
-INSERT INTO cathedras_holidays(cathedra_id, holiday_id) VALUES (1, 6);
+INSERT INTO holidays(name, date, cathedra_id) VALUES('Christmas', '2021-12-25', '1');
+INSERT INTO holidays(name, date, cathedra_id) VALUES('Thanksgiving', '2021-11-22', '1');
+INSERT INTO holidays(name, date, cathedra_id) VALUES('Decoration Day', '2021-5-31', '1');
+INSERT INTO holidays(name, date, cathedra_id) VALUES('Independence Day', '2021-7-4', '1');
+INSERT INTO holidays(name, date, cathedra_id) VALUES('Labor Day', '2021-9-6', '1');
+INSERT INTO holidays(name, date, cathedra_id) VALUES('New Year', '2021-1-1', '1');

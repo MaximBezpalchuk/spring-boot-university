@@ -10,8 +10,6 @@ import com.foxminded.university.model.Cathedra;
 
 @Component
 public class CathedraRowMapper implements RowMapper<Cathedra> {
-
-	//TODO: add all needed lists when add other some dao classes
 	
 	@Override
 	public Cathedra mapRow(ResultSet resultSet, int rowNum) throws SQLException {
