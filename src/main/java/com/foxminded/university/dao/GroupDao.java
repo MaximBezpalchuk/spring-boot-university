@@ -32,10 +32,6 @@ public class GroupDao {
 		this.rowMapper = rowMapper;
 	}
 
-	public void create(Group group) {
-		jdbcTemplate.update(INSERT_GROUP, group.getName(), group.getCathedra().getId());
-	}
-
 	public List<Group> findAll() {
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}

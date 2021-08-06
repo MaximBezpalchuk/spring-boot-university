@@ -31,10 +31,6 @@ public class LectureTimeDao {
 		this.rowMapper = rowMapper;
 	}
 
-	public void create(LectureTime lectureTime) {
-		jdbcTemplate.update(INSERT_LECTURE_TIME, lectureTime.getStart(), lectureTime.getEnd());
-	}
-
 	public List<LectureTime> findAll() {
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
@@ -48,7 +44,8 @@ public class LectureTimeDao {
 		if (lectureTime.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {
-				PreparedStatement statement = connection.prepareStatement(INSERT_LECTURE_TIME, Statement.RETURN_GENERATED_KEYS);
+				PreparedStatement statement = connection.prepareStatement(INSERT_LECTURE_TIME,
+						Statement.RETURN_GENERATED_KEYS);
 				statement.setTime(1, java.sql.Time.valueOf(lectureTime.getStart()));
 				statement.setTime(2, java.sql.Time.valueOf(lectureTime.getEnd()));
 				return statement;

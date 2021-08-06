@@ -289,7 +289,7 @@ public class MenuCreator {
 			exitCheck(String.valueOf(groupNumber1));
 			Group group1 = sortedGroups1.get(groupNumber1 - 1);
 
-			studentDao.create(dataUpdater2.createStudent(firstName1, lastName1, phone1, address1, email1, gender1,
+			studentDao.update(dataUpdater2.createStudent(firstName1, lastName1, phone1, address1, email1, gender1,
 					postalCode1, education1, birthDate1, group1));
 			System.out.println("Student added!");
 			break;

@@ -32,10 +32,6 @@ public class VacationDao {
 		this.rowMapper = rowMapper;
 	}
 
-	public void create(Vacation vacation) {
-		jdbcTemplate.update(INSERT_VACATION, vacation.getStart(), vacation.getEnd());
-	}
-
 	public List<Vacation> findAll() {
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}

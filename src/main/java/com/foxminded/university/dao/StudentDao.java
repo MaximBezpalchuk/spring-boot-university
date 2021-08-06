@@ -31,12 +31,6 @@ public class StudentDao {
 		this.rowMapper = rowMapper;
 	}
 
-	public void create(Student student) {
-		jdbcTemplate.update(INSERT_STUDENT, student.getFirstName(), student.getLastName(), student.getPhone(),
-				student.getAddress(), student.getEmail(), student.getGender(), student.getPostalCode(),
-				student.getEducation(), student.getBirthDate(), student.getGroup().getId());
-	}
-
 	public List<Student> findAll() {
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}

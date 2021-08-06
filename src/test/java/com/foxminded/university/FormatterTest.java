@@ -36,7 +36,7 @@ class FormatterTest {
 				LocalDate.of(1999, 1, 1), cathedra);
 		lectures.add(new Lecture(cathedra, subject, date, time, audience, teacher));
 
-		assertEquals("1.  Date: 2020-01-01 | Subject: TestSubject | Audience: 1 | Teacher: Amigo Bueno |",
+		assertEquals("1.  Date: 2020-01-01 | Subject: TestSubject | Audience: 1 | Teacher: Amigo Bueno | Lecture start: 10:20, Lecture end: 10:21",
 				formatter.formatLectureList(lectures));
 	}
 
