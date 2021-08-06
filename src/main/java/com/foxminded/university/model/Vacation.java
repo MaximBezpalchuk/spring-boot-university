@@ -13,6 +13,7 @@ public class Vacation {
 	public Vacation(LocalDate start, LocalDate end, Teacher teacher) {
 		this.start = start;
 		this.end = end;
+		this.teacher = teacher;
 	}
 
 	public int getId() {

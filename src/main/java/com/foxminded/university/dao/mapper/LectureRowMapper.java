@@ -2,6 +2,8 @@ package com.foxminded.university.dao.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +13,7 @@ import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.LectureTimeDao;
 import com.foxminded.university.dao.SubjectDao;
 import com.foxminded.university.dao.TeacherDao;
+import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Lecture;
 
 @Component
@@ -40,11 +43,16 @@ public class LectureRowMapper implements RowMapper<Lecture> {
 				subjectDao.findById(resultSet.getInt("subject_id")),
 				new java.sql.Date(resultSet.getDate("date").getTime()).toLocalDate(),
 				lectureTimeDao.findById(resultSet.getInt("lecture_time_id")),
-				audienceDao.findById(resultSet.getInt("audience_id")), teacherDao.findById(resultSet.getInt("id")));
-
-		lecture.setGroups(groupDao.findByLecture(resultSet.getInt("id")));
+				audienceDao.findById(resultSet.getInt("audience_id")), 
+				teacherDao.findById(resultSet.getInt("teacher_id")));
 
 		lecture.setId(resultSet.getInt("id"));
+
+		List<Group> groups = groupDao.findByLectureId(lecture.getId());
+		if (!groups.isEmpty()) {
+			lecture.setGroups(groups);
+		}
+
 		return lecture;
 	}
 }

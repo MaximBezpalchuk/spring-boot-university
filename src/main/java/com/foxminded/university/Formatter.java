@@ -39,10 +39,12 @@ public class Formatter {
 		return lectures.stream()
 				.map(lecture -> String.format(
 						"%-3s Date: %s | Subject: %-" + subjectNameFieldLength + "s | Audience: %"
-								+ lectureAudienceFieldLength + "d | Teacher: %-" + teacherNameFieldLength + "s |",
+								+ lectureAudienceFieldLength + "d | Teacher: %-" + teacherNameFieldLength + "s |" + " Lecture start: %s, Lecture end: %s",
 						index.incrementAndGet() + ".", lecture.getDate(), lecture.getSubject().getName(),
 						lecture.getAudience().getRoom(),
-						lecture.getTeacher().getFirstName() + " " + lecture.getTeacher().getLastName()))
+						lecture.getTeacher().getFirstName() + " " + lecture.getTeacher().getLastName(),
+						lecture.getTime().getStart(),
+						lecture.getTime().getEnd()))
 				.collect(Collectors.joining(System.lineSeparator()));
 	}
 

@@ -51,7 +51,7 @@ public class VacationDao {
 			jdbcTemplate.update(connection -> {
 				PreparedStatement statement = connection.prepareStatement(INSERT_VACATION, Statement.RETURN_GENERATED_KEYS);
 				statement.setDate(1, java.sql.Date.valueOf(vacation.getStart()));
-				statement.setDate(1, java.sql.Date.valueOf(vacation.getEnd()));
+				statement.setDate(2, java.sql.Date.valueOf(vacation.getEnd()));
 				statement.setInt(3, vacation.getTeacher().getId());
 				return statement;
 			}, keyHolder);

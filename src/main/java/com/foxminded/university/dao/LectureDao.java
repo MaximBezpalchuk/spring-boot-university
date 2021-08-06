@@ -11,6 +11,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import com.foxminded.university.dao.mapper.LectureRowMapper;
+import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Lecture;
 
 @Component
@@ -21,20 +22,15 @@ public class LectureDao {
 	private final static String INSERT_LECTURE = "INSERT INTO lectures(cathedra_id, subject_id, date, lecture_time_id, audience_id, teacher_id) VALUES(?, ?, ?, ?, ?, ?)";
 	private final static String UPDATE_LECTURE = "UPDATE lectures SET cathedra_id=?, subject_id=?, date=?, lecture_time_id=?, audience_id=?, teacher_id=? WHERE id=?";
 	private final static String DELETE_LECTURE = "DELETE FROM lectures WHERE id = ?";
+	private final static String INSERT_GROUPS = "INSERT INTO lectures_groups(lecture_id, group_id) VALUES(?, ?)";
 
 	private final JdbcTemplate jdbcTemplate;
 	private LectureRowMapper rowMapper;
-	
+
 	@Autowired
 	public LectureDao(JdbcTemplate jdbcTemplate, LectureRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.rowMapper = rowMapper;
-	}
-
-	public void create(Lecture lecture) {
-		jdbcTemplate.update(INSERT_LECTURE, lecture.getCathedra().getId(), lecture.getSubject().getId(),
-				java.sql.Date.valueOf(lecture.getDate()), lecture.getTime().getId(), lecture.getAudience().getId(),
-				lecture.getTeacher().getId(), lecture.getId());
 	}
 
 	public List<Lecture> findAll() {
@@ -50,7 +46,8 @@ public class LectureDao {
 		if (lecture.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {
-				PreparedStatement statement = connection.prepareStatement(INSERT_LECTURE, Statement.RETURN_GENERATED_KEYS);
+				PreparedStatement statement = connection.prepareStatement(INSERT_LECTURE,
+						Statement.RETURN_GENERATED_KEYS);
 				statement.setInt(1, lecture.getCathedra().getId());
 				statement.setInt(2, lecture.getSubject().getId());
 				statement.setDate(3, java.sql.Date.valueOf(lecture.getDate()));
@@ -70,6 +67,10 @@ public class LectureDao {
 
 	public void deleteById(int id) {
 		jdbcTemplate.update(DELETE_LECTURE, id);
+	}
+
+	public void updateGroups(Lecture lecture, Group group) {
+		jdbcTemplate.update(INSERT_GROUPS, lecture.getId(), group.getId());
 	}
 
 }

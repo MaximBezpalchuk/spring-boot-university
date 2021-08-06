@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.MonthDay;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +22,7 @@ import com.foxminded.university.dao.LectureTimeDao;
 import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.dao.SubjectDao;
 import com.foxminded.university.dao.TeacherDao;
+import com.foxminded.university.dao.VacationDao;
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Degree;
@@ -52,6 +54,7 @@ public class MenuCreator2 {
 	LectureDao lectureDao = BeanUtil.getBean(LectureDao.class);
 	LectureTimeDao lectureTimeDao = BeanUtil.getBean(LectureTimeDao.class);
 	HolidayDao holidayDao = BeanUtil.getBean(HolidayDao.class);
+	VacationDao vacationDao = BeanUtil.getBean(VacationDao.class);
 
 	public MenuCreator2(Cathedra cathedra) {
 		this.cathedra = cathedra;
@@ -417,7 +420,7 @@ public class MenuCreator2 {
 			System.out.println("Enter the holiday date separated by commas without spaces (YEAR,MONTH,DAY):");
 			LocalDate holidayDate5 = setupLocalDate();
 			System.out.println("Set cathedra from list:");
-			
+
 			List<Cathedra> sortedCathedras6 = sortCathedrasByName(cathedraDao.findAll());
 			System.out.println(formatter.formatCathedraList(sortedCathedras6));
 			int cathedraNumber6 = getInput(sortedCathedras6.size());
@@ -435,7 +438,8 @@ public class MenuCreator2 {
 			System.out.println("Enter audience capacity");
 			String audienceCapacity7 = reader.readLine();
 			exitCheck(audienceCapacity7);
-			Audience audience7 = new Audience(Integer.parseInt(audienceRoom7), Integer.parseInt(audienceCapacity7), cathedraDao.findById(1));
+			Audience audience7 = new Audience(Integer.parseInt(audienceRoom7), Integer.parseInt(audienceCapacity7),
+					cathedraDao.findById(1));
 			audienceDao.update(audience7);
 			System.out.println("Audience created!");
 			break;
@@ -575,28 +579,25 @@ public class MenuCreator2 {
 		case 1:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select student from the list:");
-			List<Student> students1 = new ArrayList<>();
-			cathedra.getGroups().stream().forEach(group -> group.getStudents().stream()
-					.filter(student -> !students1.contains(student)).forEach(student -> students1.add(student)));
-			List<Student> sortedStudents1 = sortStudentsByLastName(students1);
-			System.out.println(formatter.formatStudentList(sortStudentsByLastName(students1)));
+			List<Student> sortedStudents1 = sortStudentsByLastName(studentDao.findAll());
+			System.out.println(formatter.formatStudentList(sortedStudents1));
 			int studentNumber1 = getInput(sortedStudents1.size());
 			exitCheck(String.valueOf(studentNumber1));
 			Student student1 = sortedStudents1.get(studentNumber1 - 1);
 			System.out.println("Select group from the list:");
-			List<Group> sortedGroups1 = sortGroupsByName(cathedra.getGroups());
+			List<Group> sortedGroups1 = sortGroupsByName(groupDao.findAll());
 			System.out.println(formatter.formatGroupList(sortedGroups1));
 			int groupNumber1 = getInput(sortedGroups1.size());
 			exitCheck(String.valueOf(groupNumber1));
 			Group group1 = sortedGroups1.get(groupNumber1 - 1);
 			student1.setGroup(group1);
-			group1.getStudents().add(student1);
+			studentDao.update(student1);
 			System.out.println("Student group was changed!");
 			break;
 		case 2:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select teacher from the list:");
-			List<Teacher> sortedTeachers2 = sortTeachersByLastName(cathedra.getTeachers());
+			List<Teacher> sortedTeachers2 = sortTeachersByLastName(teacherDao.findAll());
 			System.out.println(formatter.formatTeacherList(sortedTeachers2));
 			int teacherNumber2 = getInput(sortedTeachers2.size());
 			exitCheck(String.valueOf(teacherNumber2));
@@ -606,31 +607,31 @@ public class MenuCreator2 {
 			System.out.println("Enter vacation end date separated by commas without spaces (YEAR,MONTH,DAY):");
 			LocalDate vacationEndDate2 = setupLocalDate();
 			Vacation vacation2 = new Vacation(vacationStartDate2, vacationEndDate2, teacher2);
-			teacher2.getVacations().add(vacation2);
+			vacationDao.update(vacation2);
 			System.out.println("Vacation added!");
 			break;
 		case 3:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Set subject from the list:");
-			List<Subject> sortedSubjects3 = sortSubjectsByName(cathedra.getSubjects());
+			List<Subject> sortedSubjects3 = sortSubjectsByName(subjectDao.findAll());
 			System.out.println(formatter.formatSubjectList(sortedSubjects3));
 			int subjectNumber3 = getInput(sortedSubjects3.size());
 			exitCheck(String.valueOf(subjectNumber3));
 			Subject subject3 = sortedSubjects3.get(subjectNumber3 - 1);
 			System.out.println("Select teacher from the list:");
-			List<Teacher> sortedTeachers3 = sortTeachersByLastName(cathedra.getTeachers());
+			List<Teacher> sortedTeachers3 = sortTeachersByLastName(teacherDao.findAll());
 			System.out.println(formatter.formatTeacherList(sortedTeachers3));
 			int teacherNumber3 = getInput(sortedTeachers3.size());
 			exitCheck(String.valueOf(teacherNumber3));
 			Teacher teacher3 = sortedTeachers3.get(teacherNumber3 - 1);
-			subject3.getTeachers().add(teacher3);
-			teacher3.getSubjects().add(subject3);
+			teacherDao.updateSubject(teacher3, subject3);
 			System.out.println("Subject was set!");
 			break;
 		case 4:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select lecture from the list:");
-			List<Lecture> sortedLectures4 = sortLecturesByDate(cathedra.getLectures());
+			List<Lecture> test = lectureDao.findAll();
+			List<Lecture> sortedLectures4 = sortLecturesByDate(test);
 			System.out.println(formatter.formatLectureList(sortedLectures4));
 			int lectureNumber4 = getInput(sortedLectures4.size());
 			exitCheck(String.valueOf(lectureNumber4));
@@ -642,52 +643,55 @@ public class MenuCreator2 {
 			exitCheck(String.valueOf(audienceNumber4));
 			Audience audience4 = sortedAudiences4.get(audienceNumber4 - 1);
 			lecture4.setAudience(audience4);
+			lectureDao.update(lecture4);
 			System.out.println("Lecture audience was changed!");
 			break;
 		case 5:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select lecture from the list:");
-			List<Lecture> sortedLectures5 = sortLecturesByDate(cathedra.getLectures());
+			List<Lecture> sortedLectures5 = sortLecturesByDate(lectureDao.findAll());
 			System.out.println(formatter.formatLectureList(sortedLectures5));
 			int lectureNumber5 = getInput(sortedLectures5.size());
 			exitCheck(String.valueOf(lectureNumber5));
 			Lecture lecture5 = sortedLectures5.get(lectureNumber5 - 1);
 			System.out.println("Enter the lecture date separated by commas without spaces (YEAR,MONTH,DAY):");
 			lecture5.setDate(setupLocalDate());
+			lectureDao.update(lecture5);
 			System.out.println("Lecture date was changed!");
 			break;
 		case 6:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select lecture from the list:");
-			List<Lecture> sortedLectures6 = sortLecturesByDate(cathedra.getLectures());
+			List<Lecture> sortedLectures6 = sortLecturesByDate(lectureDao.findAll());
 			System.out.println(formatter.formatLectureList(sortedLectures6));
 			int lectureNumber6 = getInput(sortedLectures6.size());
 			exitCheck(String.valueOf(lectureNumber6));
 			Lecture lecture6 = sortedLectures6.get(lectureNumber6 - 1);
 			System.out.println("Set lecture time from the list:");
-			List<LectureTime> sortedLectureTimes6 = sortLectureTimesByTime(cathedra.getLectureTimes());
+			List<LectureTime> sortedLectureTimes6 = sortLectureTimesByTime(lectureTimeDao.findAll());
 			System.out.println(formatter.formatLectureTimesList(sortedLectureTimes6));
 			int lectureTimeNumber6 = getInput(sortedLectureTimes6.size());
 			exitCheck(String.valueOf(lectureTimeNumber6));
 			LectureTime lectureTime6 = sortedLectureTimes6.get(lectureTimeNumber6 - 1);
 			lecture6.setTime(lectureTime6);
+			lectureDao.update(lecture6);
 			System.out.println("Lecture time was changed!");
 			break;
 		case 7:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select lecture from the list:");
-			List<Lecture> sortedLectures7 = sortLecturesByDate(cathedra.getLectures());
+			List<Lecture> sortedLectures7 = sortLecturesByDate(lectureDao.findAll());
 			System.out.println(formatter.formatLectureList(sortedLectures7));
 			int lectureNumber7 = getInput(sortedLectures7.size());
 			exitCheck(String.valueOf(lectureNumber7));
 			Lecture lecture7 = sortedLectures7.get(lectureNumber7 - 1);
 			System.out.println("Select group from the list:");
-			List<Group> sortedGroups7 = sortGroupsByName(cathedra.getGroups());
+			List<Group> sortedGroups7 = sortGroupsByName(groupDao.findAll());
 			System.out.println(formatter.formatGroupList(sortedGroups7));
 			int groupNumber7 = getInput(sortedGroups7.size());
 			exitCheck(String.valueOf(groupNumber7));
 			Group group7 = sortedGroups7.get(groupNumber7 - 1);
-			lecture7.getGroups().add(group7);
+			lectureDao.updateGroups(lecture7, group7);
 			System.out.println("Group was set to lecture!");
 			break;
 		case 0:
@@ -843,13 +847,16 @@ public class MenuCreator2 {
 	}
 
 	private List<Lecture> sortLecturesByDate(List<Lecture> list) {
-		return list.stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate())).collect(Collectors.toList());
+		return list.stream()
+				.sorted(Comparator.comparing(Lecture::getDate)
+						.thenComparing((d1, d2) -> d1.getTime().getStart().compareTo(d2.getTime().getStart())))
+				.collect(Collectors.toList());
 	}
 
 	private List<Group> sortGroupsByName(List<Group> list) {
 		return list.stream().sorted((d1, d2) -> d1.getName().compareTo(d2.getName())).collect(Collectors.toList());
 	}
-	
+
 	private List<Cathedra> sortCathedrasByName(List<Cathedra> list) {
 		return list.stream().sorted((d1, d2) -> d1.getName().compareTo(d2.getName())).collect(Collectors.toList());
 	}

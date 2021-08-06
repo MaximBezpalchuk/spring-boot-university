@@ -21,7 +21,7 @@ public class GroupDao {
 	private final static String INSERT_GROUP = "INSERT INTO groups(name, cathedra_id) VALUES(?, ?)";
 	private final static String UPDATE_GROUP = "UPDATE groups SET name=?, cathedra_id=? WHERE id=?";
 	private final static String DELETE_GROUP = "DELETE FROM groups WHERE id = ?";
-	private final static String SELECT_BY_LECTURE_ID = "SELECT group_id FROM lectures_groups WHERE lecture_id = ?";
+	private final static String SELECT_BY_LECTURE_ID = "SELECT * FROM groups WHERE id IN (SELECT group_id FROM lectures_groups WHERE lecture_id =?)";
 
 	private final JdbcTemplate jdbcTemplate;
 	private GroupRowMapper rowMapper;
@@ -49,7 +49,8 @@ public class GroupDao {
 		if (group.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {
-				PreparedStatement statement = connection.prepareStatement(INSERT_GROUP, Statement.RETURN_GENERATED_KEYS);
+				PreparedStatement statement = connection.prepareStatement(INSERT_GROUP,
+						Statement.RETURN_GENERATED_KEYS);
 				statement.setString(1, group.getName());
 				statement.setInt(2, group.getCathedra().getId());
 				return statement;
@@ -65,7 +66,8 @@ public class GroupDao {
 		jdbcTemplate.update(DELETE_GROUP, id);
 	}
 
-	public List<Group> findByLecture(int id) {
-		return jdbcTemplate.query(SELECT_BY_LECTURE_ID, rowMapper);
+	@SuppressWarnings("deprecation")
+	public List<Group> findByLectureId(int id) {
+		return jdbcTemplate.query(SELECT_BY_LECTURE_ID, new Object[] { id }, rowMapper);
 	}
 }
