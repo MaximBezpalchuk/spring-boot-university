@@ -19,8 +19,8 @@ public class HolidayDao {
 
 	private final static String SELECT_ALL = "SELECT * FROM holidays";
 	private final static String SELECT_BY_ID = "SELECT * FROM holidays WHERE id = ?";
-	private final static String INSERT_HOLIDAY = "INSERT INTO holidays(name, date) VALUES(?, ?)";
-	private final static String UPDATE_HOLIDAY = "UPDATE holidays SET name=?, date=? WHERE id=?";
+	private final static String INSERT_HOLIDAY = "INSERT INTO holidays(name, date, cathedra_id) VALUES(?, ?, ?)";
+	private final static String UPDATE_HOLIDAY = "UPDATE holidays SET name=?, date=?, cathedra_id=? WHERE id=?";
 	private final static String DELETE_HOLIDAY = "DELETE FROM holidays WHERE id = ?";
 
 	private final JdbcTemplate jdbcTemplate;
@@ -49,11 +49,12 @@ public class HolidayDao {
 						Statement.RETURN_GENERATED_KEYS);
 				statement.setString(1, holiday.getName());
 				statement.setDate(2, java.sql.Date.valueOf(holiday.getDate()));
+				statement.setInt(3, cathedra.getId());
 				return statement;
 			}, keyHolder);
 			holiday.setId((int) keyHolder.getKeyList().get(0).get("id"));
 		} else {
-			jdbcTemplate.update(UPDATE_HOLIDAY, holiday.getName(), holiday.getDate(), holiday.getId());
+			jdbcTemplate.update(UPDATE_HOLIDAY, holiday.getName(), holiday.getDate(), cathedra.getId(), holiday.getId());
 		}
 	}
 

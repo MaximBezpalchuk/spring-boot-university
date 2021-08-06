@@ -1,9 +1,5 @@
-//TODO: delete teachers, asking teachers from teachers_subjects_table where subject_id=?
-
 package com.foxminded.university.model;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class Subject {
@@ -12,7 +8,6 @@ public class Subject {
 	private Cathedra cathedra;
 	private String name;
 	private String description;
-	private List<Teacher> teachers = new ArrayList<>();
 
 	public Subject(Cathedra cathedra, String name, String description) {
 		this.cathedra = cathedra;
@@ -44,17 +39,9 @@ public class Subject {
 		return description;
 	}
 
-	public List<Teacher> getTeachers() {
-		return teachers;
-	}
-
-	public void setTeachers(List<Teacher> teachers) {
-		this.teachers = teachers;
-	}
-
 	@Override
 	public int hashCode() {
-		return Objects.hash(cathedra, description, id, name, teachers);
+		return Objects.hash(cathedra, description, id, name);
 	}
 
 	@Override
@@ -67,7 +54,7 @@ public class Subject {
 			return false;
 		Subject other = (Subject) obj;
 		return Objects.equals(cathedra, other.cathedra) && Objects.equals(description, other.description)
-				&& id == other.id && Objects.equals(name, other.name) && Objects.equals(teachers, other.teachers);
+				&& id == other.id && Objects.equals(name, other.name);
 	}
 
 }

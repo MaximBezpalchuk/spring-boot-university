@@ -40,7 +40,6 @@ public class MenuCreator2 {
 
 	private boolean exit;
 	private BufferedReader reader;
-	private Cathedra cathedra;
 	Formatter formatter = new Formatter();
 	DataUpdater dataUpdater = new DataUpdater();
 	DataUpdater2 dataUpdater2 = new DataUpdater2();
@@ -56,9 +55,6 @@ public class MenuCreator2 {
 	HolidayDao holidayDao = BeanUtil.getBean(HolidayDao.class);
 	VacationDao vacationDao = BeanUtil.getBean(VacationDao.class);
 
-	public MenuCreator2(Cathedra cathedra) {
-		this.cathedra = cathedra;
-	}
 
 	private String printMainMenu() {
 		StringBuilder menu = new StringBuilder();
@@ -865,7 +861,7 @@ public class MenuCreator2 {
 	}
 
 	public List<Lecture> getTTForDay(Student student, MonthDay date) {
-		return cathedra.getLectures().stream()
+		return lectureDao.findAll().stream()
 				.sorted((d1, d2) -> d1.getTime().getStart().compareTo(d2.getTime().getStart()))
 				.filter(lecture -> lecture.getDate().getMonthValue() == date.getMonthValue()
 						&& lecture.getDate().getDayOfMonth() == date.getDayOfMonth())
@@ -873,7 +869,7 @@ public class MenuCreator2 {
 	}
 
 	public List<Lecture> getTTForDay(Teacher teacher, MonthDay date) {
-		return teacher.getCathedra().getLectures().stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
+		return lectureDao.findAll().stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
 				.filter(lecture -> lecture.getTeacher().equals(teacher)
 						&& (lecture.getDate().getMonthValue() == date.getMonthValue()
 								&& lecture.getDate().getDayOfMonth() == date.getDayOfMonth()))
@@ -881,13 +877,13 @@ public class MenuCreator2 {
 	}
 
 	public List<Lecture> getTTForMonth(Student student, Month date) {
-		return cathedra.getLectures().stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
+		return lectureDao.findAll().stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
 				.filter(lecture -> lecture.getDate().getMonth().equals(date))
 				.filter(lecture -> lecture.getGroups().contains(student.getGroup())).collect(Collectors.toList());
 	}
 
 	public List<Lecture> getTTForMonth(Teacher teacher, Month date) {
-		return teacher.getCathedra().getLectures().stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
+		return lectureDao.findAll().stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
 				.filter(lecture -> (lecture.getTeacher().equals(teacher) && lecture.getDate().getMonth().equals(date)))
 				.collect(Collectors.toList());
 	}

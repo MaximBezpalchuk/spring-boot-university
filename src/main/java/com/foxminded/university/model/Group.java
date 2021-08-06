@@ -1,9 +1,5 @@
 package com.foxminded.university.model;
 
-//TODO: delete student list, asking for students from student_table where group_id=?
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class Group {
@@ -11,7 +7,6 @@ public class Group {
 	private int id;
 	private String name;
 	private Cathedra cathedra;
-	private List<Student> students = new ArrayList<>();
 
 	public Group(String name, Cathedra cathedra) {
 		this.name = name;
@@ -30,21 +25,13 @@ public class Group {
 		return name;
 	}
 
-	public List<Student> getStudents() {
-		return students;
-	}
-
-	public void setStudents(List<Student> students) {
-		this.students = students;
-	}
-
 	public Cathedra getCathedra() {
 		return cathedra;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(cathedra, id, name, students);
+		return Objects.hash(cathedra, id, name);
 	}
 
 	@Override
@@ -56,8 +43,7 @@ public class Group {
 		if (getClass() != obj.getClass())
 			return false;
 		Group other = (Group) obj;
-		return Objects.equals(cathedra, other.cathedra) && id == other.id && Objects.equals(name, other.name)
-				&& Objects.equals(students, other.students);
+		return Objects.equals(cathedra, other.cathedra) && id == other.id && Objects.equals(name, other.name);
 	}
 
 }

@@ -1,5 +1,3 @@
-//TODO: delete vacations, asking vacation from vacation_table where teacher_id=?
-
 package com.foxminded.university.model;
 
 import java.time.LocalDate;
@@ -12,7 +10,6 @@ public class Teacher extends Person {
 	private int id;
 	private Cathedra cathedra;
 	private List<Subject> subjects = new ArrayList<>();
-	private List<Vacation> vacations = new ArrayList<>();
 	private Degree degree;
 
 	public Teacher(String firstName, String lastName, String phone, String address, String email, Gender gender,
@@ -41,14 +38,6 @@ public class Teacher extends Person {
 		this.subjects = subjects;
 	}
 
-	public List<Vacation> getVacations() {
-		return vacations;
-	}
-
-	public void setVacations(List<Vacation> vacations) {
-		this.vacations = vacations;
-	}
-
 	public Degree getDegree() {
 		return degree;
 	}
@@ -61,7 +50,7 @@ public class Teacher extends Person {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + Objects.hash(cathedra, degree, id, subjects, vacations);
+		result = prime * result + Objects.hash(cathedra, degree, id, subjects);
 		return result;
 	}
 
@@ -75,7 +64,7 @@ public class Teacher extends Person {
 			return false;
 		Teacher other = (Teacher) obj;
 		return Objects.equals(cathedra, other.cathedra) && degree == other.degree && id == other.id
-				&& Objects.equals(subjects, other.subjects) && Objects.equals(vacations, other.vacations);
+				&& Objects.equals(subjects, other.subjects);
 	}
 
 }
