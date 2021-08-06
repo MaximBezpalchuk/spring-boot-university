@@ -31,7 +31,7 @@ class FormatterTest {
 		Subject subject = new Subject(cathedra, "TestSubject", "Desc");
 		LocalDate date = LocalDate.of(2020, 1, 1);
 		LectureTime time = new LectureTime(LocalTime.of(10, 20), LocalTime.of(10, 21));
-		Audience audience = new Audience(1, 5);
+		Audience audience = new Audience(1, 5, cathedra);
 		Teacher teacher = new Teacher("Amigo", "Bueno", "999", "Puerto Rico", "dot@dot.com", Gender.FEMALE, "123", "none",
 				LocalDate.of(1999, 1, 1), cathedra);
 		lectures.add(new Lecture(cathedra, subject, date, time, audience, teacher));
@@ -66,8 +66,8 @@ class FormatterTest {
 
 	@Test
 	void formatAudienceListTest() {
-		Audience audience1 = new Audience(3, 5);
-		Audience audience2 = new Audience(1, 5);
+		Audience audience1 = new Audience(3, 5, cathedra);
+		Audience audience2 = new Audience(1, 5, cathedra);
 		List<Audience> audiences = new ArrayList<>();
 		audiences.add(audience1);
 		audiences.add(audience2);

@@ -7,13 +7,24 @@ public class Audience {
 	private int id;
 	private int room;
 	private int capacity;
+	private Cathedra cathedra;
 
-	public Audience(int room, int capacity) {
+	public Audience(int room, int capacity, Cathedra cathedra) {
 		this.room = room;
 		this.capacity = capacity;
+		this.cathedra = cathedra;
 	}
-	
-	public Audience() {}
+
+	public Audience() {
+	}
+
+	public Cathedra getCathedra() {
+		return cathedra;
+	}
+
+	public void setCathedra(Cathedra cathedra) {
+		this.cathedra = cathedra;
+	}
 
 	public int getId() {
 		return id;
@@ -33,7 +44,7 @@ public class Audience {
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(capacity, id, room);
+		return Objects.hash(capacity, cathedra, id, room);
 	}
 
 	@Override
@@ -45,7 +56,8 @@ public class Audience {
 		if (getClass() != obj.getClass())
 			return false;
 		Audience other = (Audience) obj;
-		return capacity == other.capacity && id == other.id && room == other.room;
+		return capacity == other.capacity && Objects.equals(cathedra, other.cathedra) && id == other.id
+				&& room == other.room;
 	}
 
 }

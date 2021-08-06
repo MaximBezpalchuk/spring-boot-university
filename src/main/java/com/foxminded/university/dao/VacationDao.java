@@ -2,6 +2,7 @@ package com.foxminded.university.dao;
 
 //TODO: update teacher_id from TeacherDao
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,13 +49,13 @@ public class VacationDao {
 		if (vacation.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {
-				PreparedStatement statement = connection.prepareStatement(INSERT_VACATION);
+				PreparedStatement statement = connection.prepareStatement(INSERT_VACATION, Statement.RETURN_GENERATED_KEYS);
 				statement.setDate(1, java.sql.Date.valueOf(vacation.getStart()));
 				statement.setDate(1, java.sql.Date.valueOf(vacation.getEnd()));
 				statement.setInt(3, vacation.getTeacher().getId());
 				return statement;
 			}, keyHolder);
-			vacation.setId((int) keyHolder.getKey());
+			vacation.setId((int) keyHolder.getKeyList().get(0).get("id"));
 		} else {
 			jdbcTemplate.update(UPDATE_VACATION, java.sql.Date.valueOf(vacation.getStart()),
 					java.sql.Date.valueOf(vacation.getEnd()), vacation.getTeacher().getId(), vacation.getId());

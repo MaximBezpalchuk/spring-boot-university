@@ -1,6 +1,7 @@
 package com.foxminded.university.dao;
 
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,12 +48,12 @@ public class LectureTimeDao {
 		if (lectureTime.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {
-				PreparedStatement statement = connection.prepareStatement(INSERT_LECTURE_TIME);
+				PreparedStatement statement = connection.prepareStatement(INSERT_LECTURE_TIME, Statement.RETURN_GENERATED_KEYS);
 				statement.setTime(1, java.sql.Time.valueOf(lectureTime.getStart()));
 				statement.setTime(2, java.sql.Time.valueOf(lectureTime.getEnd()));
 				return statement;
 			}, keyHolder);
-			lectureTime.setId((int) keyHolder.getKey());
+			lectureTime.setId((int) keyHolder.getKeyList().get(0).get("id"));
 		} else {
 			jdbcTemplate.update(UPDATE_LECTURE_TIME, lectureTime.getStart(), lectureTime.getEnd(), lectureTime.getId());
 		}

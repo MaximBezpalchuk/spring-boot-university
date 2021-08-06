@@ -1,6 +1,7 @@
 package com.foxminded.university.dao;
 
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,8 @@ public class AudienceDao {
 
 	private final static String SELECT_ALL = "SELECT * FROM audiences";
 	private final static String SELECT_BY_ID = "SELECT * FROM audiences WHERE id = ?";
-	private final static String INSERT_AUDIENCE = "INSERT INTO audiences(room, capacity) VALUES(?, ?)";
-	private final static String UPDATE_AUDIENCE = "UPDATE audiences SET room=?, capacity=? WHERE id=?";
+	private final static String INSERT_AUDIENCE = "INSERT INTO audiences(room, capacity, cathedra_id) VALUES(?, ?, ?)";
+	private final static String UPDATE_AUDIENCE = "UPDATE audiences SET room=?, capacity=?, cathedra_id=? WHERE id=?";
 	private final static String DELETE_AUDIENCE = "DELETE FROM audiences WHERE id = ?";
 
 	private final JdbcTemplate jdbcTemplate;
@@ -28,10 +29,6 @@ public class AudienceDao {
 	public AudienceDao(JdbcTemplate jdbcTemplate, AudienceRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.rowMapper = rowMapper;
-	}
-
-	public void create(Audience audience) {
-		jdbcTemplate.update(INSERT_AUDIENCE, audience.getRoom(), audience.getCapacity());
 	}
 
 	public List<Audience> findAll() {
@@ -47,14 +44,15 @@ public class AudienceDao {
 		if (audience.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {
-				PreparedStatement statement = connection.prepareStatement(INSERT_AUDIENCE);
+				PreparedStatement statement = connection.prepareStatement(INSERT_AUDIENCE, Statement.RETURN_GENERATED_KEYS);
 				statement.setInt(1, audience.getRoom());
 				statement.setInt(2, audience.getCapacity());
+				statement.setInt(3, audience.getCathedra().getId());
 				return statement;
 			}, keyHolder);
-			audience.setId((int) keyHolder.getKey());
+			audience.setId((int) keyHolder.getKeyList().get(0).get("id"));
 		} else {
-			jdbcTemplate.update(UPDATE_AUDIENCE, audience.getRoom(), audience.getCapacity(), audience.getId());
+			jdbcTemplate.update(UPDATE_AUDIENCE, audience.getRoom(), audience.getCapacity(), audience.getCathedra().getId(), audience.getId());
 		}
 
 	}

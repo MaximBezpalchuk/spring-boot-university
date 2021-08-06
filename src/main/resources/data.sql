@@ -47,9 +47,9 @@ INSERT INTO lecture_times(start, finish) VALUES('16:40:00', '18:10:00');
 INSERT INTO lecture_times(start, finish) VALUES('18:20:00', '19:50:00');
 INSERT INTO lecture_times(start, finish) VALUES('20:00:00', '21:30:00');
 
-INSERT INTO audiences(room, capacity) VALUES(1, 10);
-INSERT INTO audiences(room, capacity) VALUES(2, 30);
-INSERT INTO audiences(room, capacity) VALUES(3, 10);
+INSERT INTO audiences(room, capacity, cathedra_id) VALUES(1, 10, 1);
+INSERT INTO audiences(room, capacity, cathedra_id) VALUES(2, 30, 1);
+INSERT INTO audiences(room, capacity, cathedra_id) VALUES(3, 10, 1);
 
 --Monday - wt and ul - only killers
 INSERT INTO lectures(cathedra_id, subject_id, date, lecture_time_id, audience_id, teacher_id) 

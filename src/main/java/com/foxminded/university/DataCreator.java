@@ -154,9 +154,9 @@ public class DataCreator {
 	}
 
 	private void createAudiences() {
-		audiences.add(new Audience(1, 10));
-		audiences.add(new Audience(2, 30));
-		audiences.add(new Audience(3, 10));
+		audiences.add(new Audience(1, 10, cathedra));
+		audiences.add(new Audience(2, 30, cathedra));
+		audiences.add(new Audience(3, 10, cathedra));
 	}
 
 	private void createLectures() {

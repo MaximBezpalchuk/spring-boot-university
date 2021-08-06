@@ -1,3 +1,5 @@
+//TODO: delete teachers, asking teachers from teachers_subjects_table where subject_id=?
+
 package com.foxminded.university.model;
 
 import java.util.ArrayList;
