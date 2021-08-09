@@ -5,6 +5,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -35,7 +37,7 @@ public class AudienceDaoTest {
 	}
 
 	@Test
-	void givenExistingAudience_whenFindById_thenAudinceFound() {
+	void givenExistingAudience_whenFindById_thenAudienceFound() {
 		Cathedra cathedra = cathedraDao.findById(1);
 		Audience expected = new Audience(1, 10, cathedra);
 		expected.setId(1);
@@ -55,6 +57,7 @@ public class AudienceDaoTest {
 		assertTrue(actualMessage.contains(expectedMessage));
 	}
 
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void givenNewAudience_whenSaveAudience_thenAllExistingAudiencesFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
@@ -64,6 +67,7 @@ public class AudienceDaoTest {
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
 
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void givenExitstingAudience_whenChange_thenAllExistingAudiencesFound() {
 		int expected = countRowsInTable(template, TABLE_NAME);
@@ -75,6 +79,7 @@ public class AudienceDaoTest {
 		assertEquals(expected, actual);
 	}
 
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void whenDeleteExistingAudience_thenAllExistingAudiencesFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) - 1;

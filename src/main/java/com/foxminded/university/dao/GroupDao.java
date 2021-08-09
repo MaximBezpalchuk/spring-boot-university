@@ -50,7 +50,7 @@ public class GroupDao {
 			}, keyHolder);
 			group.setId((int) keyHolder.getKeyList().get(0).get("id"));
 		} else {
-			jdbcTemplate.update(UPDATE_GROUP, group.getName(), group.getCathedra().getId());
+			jdbcTemplate.update(UPDATE_GROUP, group.getName(), group.getCathedra().getId(), group.getId());
 		}
 
 	}

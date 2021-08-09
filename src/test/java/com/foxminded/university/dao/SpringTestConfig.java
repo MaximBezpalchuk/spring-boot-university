@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
-import org.springframework.test.context.jdbc.Sql;
 
 @Configuration
 @ComponentScan("com.foxminded.university")
@@ -19,7 +18,6 @@ public class SpringTestConfig {
 	}
 
 	@Bean
-	@Sql({"/schema.sql", "/data.sql"})
 	public EmbeddedDatabase embeddedDB() {
 		return new EmbeddedDatabaseBuilder().addDefaultScripts().setType(EmbeddedDatabaseType.H2).build();
 	}
