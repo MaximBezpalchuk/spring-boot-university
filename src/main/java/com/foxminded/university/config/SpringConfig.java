@@ -8,8 +8,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 @Configuration
 @ComponentScan("com.foxminded.university")
@@ -37,6 +40,12 @@ public class SpringConfig {
 		dataSource.setUsername(user);
 		dataSource.setUrl(url);
 		dataSource.setPassword(password);
+		Resource resource = new ClassPathResource("schema.sql");
+		ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator(resource);
+		databasePopulator.execute(dataSource);
+		resource = new ClassPathResource("data.sql");
+		databasePopulator = new ResourceDatabasePopulator(resource);
+		databasePopulator.execute(dataSource);
 		return dataSource;
 	}
 
