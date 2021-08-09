@@ -18,8 +18,8 @@ public class TeacherDao {
 
 	private final static String SELECT_ALL = "SELECT * FROM teachers";
 	private final static String SELECT_BY_ID = "SELECT * FROM teachers WHERE id = ?";
-	private final static String INSERT_TEACHER = "INSERT INTO teachers(id, first_name, last_name, phone, address, email, gender, postalcode, education, birthdate, cathedra_id,  degree) VALUES(DEFAULT, ?, ?, ?, ?, ?, ?::\"gender\", ?, ?, ?, ?, ?::\"degree\")";
-	private final static String UPDATE_TEACHER = "UPDATE teachers SET first_name=?, last_name=?, phone=?, address=?, email=?, gender=?::\"gender\", postalcode=?, education=?, birthdate=?, cathedra_id=?, degree=?::\"degree\" WHERE id=?";
+	private final static String INSERT_TEACHER = "INSERT INTO teachers(id, first_name, last_name, phone, address, email, gender, postalcode, education, birthdate, cathedra_id,  degree) VALUES(DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	private final static String UPDATE_TEACHER = "UPDATE teachers SET first_name=?, last_name=?, phone=?, address=?, email=?, gender=?, postalcode=?, education=?, birthdate=?, cathedra_id=?, degree=? WHERE id=?";
 	private final static String DELETE_TEACHER = "DELETE FROM teachers WHERE id = ?";
 	private final static String INSERT_SUBJECT = "INSERT INTO subjects_teachers(teacher_id, subject_id) VALUES(?, ?)";
 
