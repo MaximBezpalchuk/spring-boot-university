@@ -17,9 +17,9 @@ public class CathedraDao {
 
 	private final static String SELECT_ALL = "SELECT * FROM cathedras";
 	private final static String SELECT_BY_ID = "SELECT * FROM cathedras WHERE id = ?";
-	private final static String INSERT_CATHEDRA = "INSERT INTO cathedra VALUES(?)";
-	private final static String UPDATE_CATHEDRA = "UPDATE cathedra SET name=? WHERE id=?";
-	private final static String DELETE_CATHEDRA = "DELETE FROM cathedra WHERE id = ?";
+	private final static String INSERT_CATHEDRA = "INSERT INTO cathedras(name) VALUES(?)";
+	private final static String UPDATE_CATHEDRA = "UPDATE cathedras SET name=? WHERE id=?";
+	private final static String DELETE_CATHEDRA = "DELETE FROM cathedras WHERE id = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private CathedraRowMapper rowMapper;
