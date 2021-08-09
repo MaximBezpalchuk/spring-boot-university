@@ -4,8 +4,8 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 public class Holiday {
-	private int id;
 
+	private int id;
 	private String name;
 	private LocalDate date;
 	private Cathedra cathedra;

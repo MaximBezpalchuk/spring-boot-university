@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -27,7 +26,6 @@ public class LectureDao {
 	private final JdbcTemplate jdbcTemplate;
 	private LectureRowMapper rowMapper;
 
-	@Autowired
 	public LectureDao(JdbcTemplate jdbcTemplate, LectureRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.rowMapper = rowMapper;
@@ -37,12 +35,11 @@ public class LectureDao {
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
 
-	@SuppressWarnings("deprecation")
 	public Lecture findById(int id) {
-		return jdbcTemplate.query(SELECT_BY_ID, new Object[] { id }, rowMapper).stream().findAny().orElse(null);
+		return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
 	}
 
-	public void update(Lecture lecture) {
+	public void save(Lecture lecture) {
 		if (lecture.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {

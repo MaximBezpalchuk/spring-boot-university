@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -22,12 +21,10 @@ public class SubjectDao {
 	private final static String UPDATE_SUBJECT = "UPDATE subjects SET name=?, description=?, cathedra_id=? WHERE id=?";
 	private final static String DELETE_SUBJECT = "DELETE FROM subjects WHERE id = ?";
 	private final static String SELECT_BY_TEACHER_ID = "SELECT * FROM subjects WHERE id IN (SELECT subject_id FROM subjects_teachers WHERE teacher_id =?)";
-	
 
 	private final JdbcTemplate jdbcTemplate;
 	private SubjectRowMapper rowMapper;
 
-	@Autowired
 	public SubjectDao(JdbcTemplate jdbcTemplate, SubjectRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.rowMapper = rowMapper;
@@ -37,12 +34,11 @@ public class SubjectDao {
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
 
-	@SuppressWarnings("deprecation")
 	public Subject findById(int id) {
-		return jdbcTemplate.query(SELECT_BY_ID, new Object[] { id }, rowMapper).stream().findAny().orElse(null);
+		return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
 	}
 
-	public void update(Subject subject) {
+	public void save(Subject subject) {
 		if (subject.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {
@@ -65,9 +61,8 @@ public class SubjectDao {
 		jdbcTemplate.update(DELETE_SUBJECT, id);
 	}
 
-	@SuppressWarnings("deprecation")
 	public List<Subject> findByTeacherId(int id) {
-		return jdbcTemplate.query(SELECT_BY_TEACHER_ID, new Object[] { id }, rowMapper);
+		return jdbcTemplate.query(SELECT_BY_TEACHER_ID, rowMapper, id);
 	}
 
 }

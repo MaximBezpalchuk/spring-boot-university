@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -26,7 +25,6 @@ public class GroupDao {
 	private final JdbcTemplate jdbcTemplate;
 	private GroupRowMapper rowMapper;
 
-	@Autowired
 	public GroupDao(JdbcTemplate jdbcTemplate, GroupRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.rowMapper = rowMapper;
@@ -36,12 +34,11 @@ public class GroupDao {
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
 
-	@SuppressWarnings("deprecation")
 	public Group findById(int id) {
-		return jdbcTemplate.query(SELECT_BY_ID, new Object[] { id }, rowMapper).stream().findAny().orElse(null);
+		return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
 	}
 
-	public void update(Group group) {
+	public void save(Group group) {
 		if (group.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {
@@ -62,8 +59,7 @@ public class GroupDao {
 		jdbcTemplate.update(DELETE_GROUP, id);
 	}
 
-	@SuppressWarnings("deprecation")
 	public List<Group> findByLectureId(int id) {
-		return jdbcTemplate.query(SELECT_BY_LECTURE_ID, new Object[] { id }, rowMapper);
+		return jdbcTemplate.query(SELECT_BY_LECTURE_ID, rowMapper, id);
 	}
 }

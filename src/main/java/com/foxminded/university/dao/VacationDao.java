@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -26,7 +25,6 @@ public class VacationDao {
 	private final JdbcTemplate jdbcTemplate;
 	private VacationRowMapper rowMapper;
 
-	@Autowired
 	public VacationDao(JdbcTemplate jdbcTemplate, VacationRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.rowMapper = rowMapper;
@@ -36,12 +34,11 @@ public class VacationDao {
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
 
-	@SuppressWarnings("deprecation")
 	public Vacation findById(int id) {
-		return jdbcTemplate.query(SELECT_BY_ID, new Object[] { id }, rowMapper).stream().findAny().orElse(null);
+		return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
 	}
 
-	public void update(Vacation vacation) {
+	public void save(Vacation vacation) {
 		if (vacation.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {
@@ -64,8 +61,7 @@ public class VacationDao {
 		jdbcTemplate.update(DELETE_VACATION, id);
 	}
 
-	@SuppressWarnings("deprecation")
 	public List<Vacation> findByTeacherId(int id) {
-		return jdbcTemplate.query(SELECT_BY_TEACHER_ID, new Object[] { id }, rowMapper);
+		return jdbcTemplate.query(SELECT_BY_TEACHER_ID, rowMapper, id);
 	}
 }

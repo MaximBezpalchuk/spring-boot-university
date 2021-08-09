@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -24,8 +23,7 @@ public class StudentDao {
 
 	private final JdbcTemplate jdbcTemplate;
 	private StudentRowMapper rowMapper;
-	
-	@Autowired
+
 	public StudentDao(JdbcTemplate jdbcTemplate, StudentRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.rowMapper = rowMapper;
@@ -35,16 +33,16 @@ public class StudentDao {
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
 
-	@SuppressWarnings("deprecation")
 	public Student findById(int id) {
-		return jdbcTemplate.query(SELECT_BY_ID, new Object[] { id }, rowMapper).stream().findAny().orElse(null);
+		return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
 	}
 
-	public void update(Student student) {
+	public void save(Student student) {
 		if (student.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {
-				PreparedStatement statement = connection.prepareStatement(INSERT_STUDENT, Statement.RETURN_GENERATED_KEYS);
+				PreparedStatement statement = connection.prepareStatement(INSERT_STUDENT,
+						Statement.RETURN_GENERATED_KEYS);
 				statement.setString(1, student.getFirstName());
 				statement.setString(2, student.getLastName());
 				statement.setString(3, student.getPhone());

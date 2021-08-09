@@ -289,7 +289,7 @@ public class MenuCreator {
 			exitCheck(String.valueOf(groupNumber1));
 			Group group1 = sortedGroups1.get(groupNumber1 - 1);
 
-			studentDao.update(dataUpdater2.createStudent(firstName1, lastName1, phone1, address1, email1, gender1,
+			studentDao.save(dataUpdater2.createStudent(firstName1, lastName1, phone1, address1, email1, gender1,
 					postalCode1, education1, birthDate1, group1));
 			System.out.println("Student added!");
 			break;
@@ -347,7 +347,7 @@ public class MenuCreator {
 			}
 			Teacher teacher12 = dataUpdater2.createTeacher(firstName2, lastName2, phone2, address2, email2, gender2,
 					postalCode2, education2, birthDate2, degree2, cathedraDao.findById(1));
-			teacherDao.update(teacher12);
+			teacherDao.save(teacher12);
 			for (Subject subject : subjects2) {
 				if (!teacher12.getSubjects().contains(subject)) {
 					teacherDao.updateSubject(teacher12, subject);
@@ -363,7 +363,7 @@ public class MenuCreator {
 			System.out.println("Enter subject description:");
 			String subjectDescription3 = reader.readLine();
 			exitCheck(subjectDescription3);
-			subjectDao.update(new Subject(cathedraDao.findById(1), subjectName3, subjectDescription3));
+			subjectDao.save(new Subject(cathedraDao.findById(1), subjectName3, subjectDescription3));
 			System.out.println("Subject added!");
 			break;
 		case 4:
@@ -371,7 +371,7 @@ public class MenuCreator {
 			System.out.println("Enter group name:");
 			String groupName4 = reader.readLine();
 			exitCheck(groupName4);
-			groupDao.update(new Group(groupName4, cathedraDao.findById(1)));
+			groupDao.save(new Group(groupName4, cathedraDao.findById(1)));
 			System.out.println("Group added!");
 			break;
 		case 5:
@@ -402,7 +402,7 @@ public class MenuCreator {
 			int lectureTimeNumber5 = getInput(sortedLectureTimes5.size());
 			exitCheck(String.valueOf(lectureTimeNumber5));
 			LectureTime lectureTime5 = sortedLectureTimes5.get(lectureTimeNumber5 - 1);
-			lectureDao.update(
+			lectureDao.save(
 					new Lecture(cathedraDao.findById(1), subject5, lectureDate5, lectureTime5, audience5, teacher5));
 			System.out.println("Lecture added!");
 			break;
@@ -421,7 +421,7 @@ public class MenuCreator {
 			exitCheck(String.valueOf(cathedraNumber6));
 			Cathedra cathedra6 = sortedCathedras6.get(cathedraNumber6 - 1);
 			Holiday holiday6 = new Holiday(holidayDescription6, holidayDate5, cathedra6);
-			holidayDao.update(holiday6, cathedraDao.findById(1));
+			holidayDao.save(holiday6, cathedraDao.findById(1));
 			System.out.println("Holiday created!");
 			break;
 		case 7:
@@ -434,7 +434,7 @@ public class MenuCreator {
 			exitCheck(audienceCapacity7);
 			Audience audience7 = new Audience(Integer.parseInt(audienceRoom7), Integer.parseInt(audienceCapacity7),
 					cathedraDao.findById(1));
-			audienceDao.update(audience7);
+			audienceDao.save(audience7);
 			System.out.println("Audience created!");
 			break;
 		case 0:
@@ -585,7 +585,7 @@ public class MenuCreator {
 			exitCheck(String.valueOf(groupNumber1));
 			Group group1 = sortedGroups1.get(groupNumber1 - 1);
 			student1.setGroup(group1);
-			studentDao.update(student1);
+			studentDao.save(student1);
 			System.out.println("Student group was changed!");
 			break;
 		case 2:
@@ -601,7 +601,7 @@ public class MenuCreator {
 			System.out.println("Enter vacation end date separated by commas without spaces (YEAR,MONTH,DAY):");
 			LocalDate vacationEndDate2 = setupLocalDate();
 			Vacation vacation2 = new Vacation(vacationStartDate2, vacationEndDate2, teacher2);
-			vacationDao.update(vacation2);
+			vacationDao.save(vacation2);
 			System.out.println("Vacation added!");
 			break;
 		case 3:
@@ -637,7 +637,7 @@ public class MenuCreator {
 			exitCheck(String.valueOf(audienceNumber4));
 			Audience audience4 = sortedAudiences4.get(audienceNumber4 - 1);
 			lecture4.setAudience(audience4);
-			lectureDao.update(lecture4);
+			lectureDao.save(lecture4);
 			System.out.println("Lecture audience was changed!");
 			break;
 		case 5:
@@ -650,7 +650,7 @@ public class MenuCreator {
 			Lecture lecture5 = sortedLectures5.get(lectureNumber5 - 1);
 			System.out.println("Enter the lecture date separated by commas without spaces (YEAR,MONTH,DAY):");
 			lecture5.setDate(setupLocalDate());
-			lectureDao.update(lecture5);
+			lectureDao.save(lecture5);
 			System.out.println("Lecture date was changed!");
 			break;
 		case 6:
@@ -668,7 +668,7 @@ public class MenuCreator {
 			exitCheck(String.valueOf(lectureTimeNumber6));
 			LectureTime lectureTime6 = sortedLectureTimes6.get(lectureTimeNumber6 - 1);
 			lecture6.setTime(lectureTime6);
-			lectureDao.update(lecture6);
+			lectureDao.save(lecture6);
 			System.out.println("Lecture time was changed!");
 			break;
 		case 7:

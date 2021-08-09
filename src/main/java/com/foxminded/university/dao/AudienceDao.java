@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -25,7 +24,6 @@ public class AudienceDao {
 	private final JdbcTemplate jdbcTemplate;
 	private AudienceRowMapper rowMapper;
 
-	@Autowired
 	public AudienceDao(JdbcTemplate jdbcTemplate, AudienceRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.rowMapper = rowMapper;
@@ -35,16 +33,16 @@ public class AudienceDao {
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
 
-	@SuppressWarnings("deprecation")
 	public Audience findById(int id) {
-		return jdbcTemplate.query(SELECT_BY_ID, new Object[] { id }, rowMapper).stream().findAny().orElse(null);
+		return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
 	}
 
-	public void update(Audience audience) {
+	public void save(Audience audience) {
 		if (audience.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {
-				PreparedStatement statement = connection.prepareStatement(INSERT_AUDIENCE, Statement.RETURN_GENERATED_KEYS);
+				PreparedStatement statement = connection.prepareStatement(INSERT_AUDIENCE,
+						Statement.RETURN_GENERATED_KEYS);
 				statement.setInt(1, audience.getRoom());
 				statement.setInt(2, audience.getCapacity());
 				statement.setInt(3, audience.getCathedra().getId());
@@ -52,7 +50,8 @@ public class AudienceDao {
 			}, keyHolder);
 			audience.setId((int) keyHolder.getKeyList().get(0).get("id"));
 		} else {
-			jdbcTemplate.update(UPDATE_AUDIENCE, audience.getRoom(), audience.getCapacity(), audience.getCathedra().getId(), audience.getId());
+			jdbcTemplate.update(UPDATE_AUDIENCE, audience.getRoom(), audience.getCapacity(),
+					audience.getCathedra().getId(), audience.getId());
 		}
 
 	}
