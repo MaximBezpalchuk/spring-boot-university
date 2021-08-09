@@ -17,8 +17,8 @@ public class StudentDao {
 
 	private final static String SELECT_ALL = "SELECT * FROM students";
 	private final static String SELECT_BY_ID = "SELECT * FROM students WHERE id = ?";
-	private final static String INSERT_STUDENT = "INSERT INTO students(first_name, last_name, phone, address, email, gender, postalcode, education, birthdate, group_id) VALUES(?, ?, ?, ?, ?, ?::\"gender\", ?, ?, ?, ?)";
-	private final static String UPDATE_STUDENT = "UPDATE students SET first_name=?, last_name=?, phone=?, address=?, email=?, gender=?::\"gender\", postalcode=?, education=?, birthdate=?, group_id=? WHERE id=?";
+	private final static String INSERT_STUDENT = "INSERT INTO students(first_name, last_name, phone, address, email, gender, postalcode, education, birthdate, group_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	private final static String UPDATE_STUDENT = "UPDATE students SET first_name=?, last_name=?, phone=?, address=?, email=?, gender=?, postalcode=?, education=?, birthdate=?, group_id=? WHERE id=?";
 	private final static String DELETE_STUDENT = "DELETE FROM students WHERE id = ?";
 
 	private final JdbcTemplate jdbcTemplate;
