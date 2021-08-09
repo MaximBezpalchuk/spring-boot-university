@@ -25,7 +25,7 @@ public class StudentRowMapper implements RowMapper<Student> {
 				resultSet.getString("phone"), resultSet.getString("address"), resultSet.getString("email"),
 				Gender.valueOf(resultSet.getString("gender")), resultSet.getString("postalcode"),
 				resultSet.getString("education"),
-				new java.sql.Date(resultSet.getDate("birthdate").getTime()).toLocalDate());
+				resultSet.getTimestamp("birthdate").toLocalDateTime().toLocalDate());
 		student.setGroup(groupDao.findById(resultSet.getInt("group_id")));
 		student.setId(resultSet.getInt("id"));
 		return student;

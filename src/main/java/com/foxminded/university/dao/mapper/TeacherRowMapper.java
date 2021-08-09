@@ -32,7 +32,7 @@ public class TeacherRowMapper implements RowMapper<Teacher> {
 				resultSet.getString("phone"), resultSet.getString("address"), resultSet.getString("email"),
 				Gender.valueOf(resultSet.getString("gender")), resultSet.getString("postalcode"),
 				resultSet.getString("education"),
-				new java.sql.Date(resultSet.getDate("birthdate").getTime()).toLocalDate(),
+				resultSet.getTimestamp("birthdate").toLocalDateTime().toLocalDate(),
 				cathedraDao.findById(resultSet.getInt("cathedra_id")));
 		teacher.setDegree(Degree.valueOf(resultSet.getString("degree")));
 		teacher.setId(resultSet.getInt("id"));

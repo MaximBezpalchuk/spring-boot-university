@@ -41,7 +41,7 @@ public class LectureRowMapper implements RowMapper<Lecture> {
 
 		Lecture lecture = new Lecture(cathedraDao.findById(resultSet.getInt("cathedra_id")),
 				subjectDao.findById(resultSet.getInt("subject_id")),
-				new java.sql.Date(resultSet.getDate("date").getTime()).toLocalDate(),
+				resultSet.getTimestamp("date").toLocalDateTime().toLocalDate(),
 				lectureTimeDao.findById(resultSet.getInt("lecture_time_id")),
 				audienceDao.findById(resultSet.getInt("audience_id")), 
 				teacherDao.findById(resultSet.getInt("teacher_id")));
