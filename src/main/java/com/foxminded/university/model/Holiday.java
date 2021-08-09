@@ -16,6 +16,14 @@ public class Holiday {
 		this.cathedra = cathedra;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setDate(LocalDate date) {
+		this.date = date;
+	}
+
 	public Cathedra getCathedra() {
 		return cathedra;
 	}
