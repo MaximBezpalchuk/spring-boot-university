@@ -1,6 +1,7 @@
 package com.foxminded.university.model;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Student extends Person {
 
@@ -23,7 +24,7 @@ public class Student extends Person {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((group == null) ? 0 : group.hashCode());
+		result = prime * result + Objects.hash(group);
 		return result;
 	}
 
@@ -36,12 +37,7 @@ public class Student extends Person {
 		if (getClass() != obj.getClass())
 			return false;
 		Student other = (Student) obj;
-		if (group == null) {
-			if (other.group != null)
-				return false;
-		} else if (!group.equals(other.group))
-			return false;
-		return true;
+		return Objects.equals(group, other.group);
 	}
 
 }

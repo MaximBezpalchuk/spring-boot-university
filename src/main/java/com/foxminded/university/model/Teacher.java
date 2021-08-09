@@ -7,7 +7,6 @@ import java.util.Objects;
 
 public class Teacher extends Person {
 
-	private int id;
 	private Cathedra cathedra;
 	private List<Subject> subjects = new ArrayList<>();
 	private Degree degree;
@@ -16,14 +15,6 @@ public class Teacher extends Person {
 			String postalCode, String education, LocalDate birthDate, Cathedra cathedra) {
 		super(firstName, lastName, phone, address, email, gender, postalCode, education, birthDate);
 		this.cathedra = cathedra;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public Cathedra getCathedra() {
@@ -50,7 +41,7 @@ public class Teacher extends Person {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + Objects.hash(cathedra, degree, id, subjects);
+		result = prime * result + Objects.hash(cathedra, degree, subjects);
 		return result;
 	}
 
@@ -63,7 +54,7 @@ public class Teacher extends Person {
 		if (getClass() != obj.getClass())
 			return false;
 		Teacher other = (Teacher) obj;
-		return Objects.equals(cathedra, other.cathedra) && degree == other.degree && id == other.id
+		return Objects.equals(cathedra, other.cathedra) && degree == other.degree
 				&& Objects.equals(subjects, other.subjects);
 	}
 

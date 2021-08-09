@@ -18,6 +18,14 @@ public class Audience {
 	public Audience() {
 	}
 
+	public void setRoom(int room) {
+		this.room = room;
+	}
+
+	public void setCapacity(int capacity) {
+		this.capacity = capacity;
+	}
+
 	public Cathedra getCathedra() {
 		return cathedra;
 	}
