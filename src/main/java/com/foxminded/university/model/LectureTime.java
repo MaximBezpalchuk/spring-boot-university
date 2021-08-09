@@ -14,6 +14,14 @@ public class LectureTime {
 		this.end = end;
 	}
 
+	public void setStart(LocalTime start) {
+		this.start = start;
+	}
+
+	public void setEnd(LocalTime end) {
+		this.end = end;
+	}
+
 	public int getId() {
 		return id;
 	}
