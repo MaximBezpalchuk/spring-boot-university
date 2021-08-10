@@ -14,14 +14,19 @@ public class Audience {
 		this.capacity = capacity;
 		this.cathedra = cathedra;
 	}
-
-	public Audience() {
+	
+	private Audience(Builder builder) {
+		this.id = builder.id;
+		this.room = builder.room;
+		this.capacity = builder.capacity;
+		this.cathedra = builder.cathedra;
 	}
 
 	public void setRoom(int room) {
 		this.room = room;
 	}
 
+	
 	public void setCapacity(int capacity) {
 		this.capacity = capacity;
 	}
@@ -48,6 +53,29 @@ public class Audience {
 
 	public int getCapacity() {
 		return capacity;
+	}
+
+	public static class Builder {
+
+		private int id;
+		private final int room; // required field
+		private final int capacity; // required field
+		private final Cathedra cathedra; // required field
+
+		public Builder(int room, int capacity, Cathedra cathedra) {
+			this.room = room;
+			this.capacity = capacity;
+			this.cathedra = cathedra;
+		}
+
+		public Builder setId(int id) {
+			this.id = id;
+			return this;
+		}
+
+		public Audience build() {
+			return new Audience(this);
+		}
 	}
 
 	@Override

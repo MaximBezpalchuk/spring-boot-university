@@ -14,8 +14,7 @@ public class DataUpdater {
 	public Student createStudent(String firstName, String lastName, String phone, String address, String email,
 			Gender gender, String postalCode, String education, LocalDate birthDate, Group group) {
 		Student student = new Student.Builder(firstName, lastName, address, gender, birthDate).setPhone(phone)
-				.setEmail(email).setGender(gender).setPostalCode(postalCode).setEducation(education).setGroup(group)
-				.build();
+				.setEmail(email).setPostalCode(postalCode).setEducation(education).setGroup(group).build();
 		return student;
 	}
 

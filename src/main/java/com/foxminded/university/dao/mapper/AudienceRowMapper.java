@@ -11,17 +11,17 @@ import com.foxminded.university.model.Audience;
 
 @Component
 public class AudienceRowMapper implements RowMapper<Audience> {
-	
+
 	private CathedraDao cathedraDao;
-	
+
 	public AudienceRowMapper(CathedraDao cathedraDao) {
 		this.cathedraDao = cathedraDao;
 	}
 
 	@Override
 	public Audience mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-		Audience audience = new Audience(resultSet.getInt("room"), resultSet.getInt("capacity"), cathedraDao.findById(resultSet.getInt("cathedra_id")));
-		audience.setId(resultSet.getInt("id"));
+		Audience audience = new Audience.Builder(resultSet.getInt("room"), resultSet.getInt("capacity"),
+				cathedraDao.findById(resultSet.getInt("cathedra_id"))).setId(resultSet.getInt("id")).build();
 		return audience;
 	}
 

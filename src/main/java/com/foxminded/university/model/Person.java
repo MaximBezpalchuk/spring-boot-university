@@ -114,15 +114,15 @@ public class Person {
 		public abstract T getThis();
 
 		private int id;
-		private String firstName; // required field
-		private String lastName; // required field
+		private final String firstName; // required field
+		private final String lastName; // required field
 		private String phone;
-		private String address; // required field
+		private final String address; // required field
 		private String email;
-		private Gender gender; // required field
+		private final Gender gender; // required field
 		private String postalCode;
 		private String education;
-		private LocalDate birthDate; // required field
+		private final LocalDate birthDate; // required field
 
 		public Builder(String firstName, String lastName, String address, Gender gender, LocalDate birthDate) {
 			this.firstName = firstName;
@@ -132,33 +132,13 @@ public class Person {
 			this.birthDate = birthDate;
 		}
 
-		public T setFirstName(String firstName) {
-			this.firstName = firstName;
-			return this.getThis();
-		}
-
-		public T setLastName(String lastName) {
-			this.lastName = lastName;
-			return this.getThis();
-		}
-
 		public T setPhone(String phone) {
 			this.phone = phone;
 			return this.getThis();
 		}
 
-		public T setAddress(String address) {
-			this.address = address;
-			return this.getThis();
-		}
-
 		public T setEmail(String email) {
 			this.email = email;
-			return this.getThis();
-		}
-
-		public T setGender(Gender gender) {
-			this.gender = gender;
 			return this.getThis();
 		}
 
@@ -169,11 +149,6 @@ public class Person {
 
 		public T setEducation(String education) {
 			this.education = education;
-			return this.getThis();
-		}
-
-		public T setBirthDate(LocalDate birthDate) {
-			this.birthDate = birthDate;
 			return this.getThis();
 		}
 
