@@ -109,31 +109,28 @@ public class Person {
 		return birthDate;
 	}
 
-	// Builder
-
 	public abstract static class Builder<T extends Builder<T>> {
 
 		public abstract T getThis();
 
 		private int id;
-		private String firstName;
-		private String lastName;
+		private String firstName; // required field
+		private String lastName; // required field
 		private String phone;
-		private String address;
+		private String address; // required field
 		private String email;
-		private Gender gender;
+		private Gender gender; // required field
 		private String postalCode;
 		private String education;
-		private LocalDate birthDate;
-		
-		/*
+		private LocalDate birthDate; // required field
+
 		public Builder(String firstName, String lastName, String address, Gender gender, LocalDate birthDate) {
 			this.firstName = firstName;
-            this.lastName = lastName;
-            this.address = address;
-            this.gender = gender;
-            this.birthDate = birthDate;
-		}*/
+			this.lastName = lastName;
+			this.address = address;
+			this.gender = gender;
+			this.birthDate = birthDate;
+		}
 
 		public T setFirstName(String firstName) {
 			this.firstName = firstName;

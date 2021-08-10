@@ -1,14 +1,15 @@
 package com.foxminded.university.model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Teacher extends Person {
 
-	private Cathedra cathedra;
+	private Cathedra cathedra; //required field
 	private List<Subject> subjects = new ArrayList<>();
-	private Degree degree;
+	private Degree degree; //required field
 
 	public Teacher(Builder builder) {
 		super(builder);
@@ -17,7 +18,14 @@ public class Teacher extends Person {
 		this.degree = builder.degree;
 	}
 
+
 	public static class Builder extends Person.Builder<Builder> {
+
+		public Builder(String firstName, String lastName, String address, Gender gender, LocalDate birthDate, Cathedra cathedra, Degree degree) {
+			super(firstName, lastName, address, gender, birthDate);
+			this.cathedra = cathedra;
+			this.degree = degree;
+		}
 
 		private Cathedra cathedra;
 		private List<Subject> subjects = new ArrayList<>();

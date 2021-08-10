@@ -42,10 +42,9 @@ public class StudentDaoTest {
 
 	@Test
 	void givenExistingStudent_whenFindById_thenStudentFound() {
-		Student expected = new Student.Builder().setFirstName("Petr").setLastName("Orlov").setPhone("888005353535")
-				.setAddress("Empty Street 8").setEmail("1@owl.com").setGender(Gender.MALE).setPostalCode("999")
-				.setEducation("General secondary education").setBirthDate(LocalDate.of(1994, 3, 3))
-				.setGroup(groupDao.findById(1)).setId(1).build();
+		Student expected = new Student.Builder("Petr", "Orlov", "Empty Street 8", Gender.MALE, LocalDate.of(1994, 3, 3))
+				.setPhone("888005353535").setEmail("1@owl.com").setPostalCode("999")
+				.setEducation("General secondary education").setGroup(groupDao.findById(1)).setId(1).build();
 		Student actual = studentDao.findById(1);
 
 		assertEquals(expected, actual);
@@ -66,10 +65,9 @@ public class StudentDaoTest {
 	@Test
 	void givenNewStudent_whenSaveStudent_thenAllExistingStudentsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		Student student = new Student.Builder().setFirstName("Petr123").setLastName("Orlov123").setPhone("888005353535")
-				.setAddress("Empty Street 8").setEmail("1@owl.com").setGender(Gender.MALE).setPostalCode("999")
-				.setEducation("General secondary education").setBirthDate(LocalDate.of(1994, 3, 3))
-				.setGroup(groupDao.findById(1)).build();
+		Student student = new Student.Builder("Petr123", "Orlov123", "Empty Street 8", Gender.MALE,
+				LocalDate.of(1994, 3, 3)).setPhone("888005353535").setEmail("1@owl.com").setPostalCode("999")
+						.setEducation("General secondary education").setGroup(groupDao.findById(1)).build();
 		studentDao.save(student);
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));

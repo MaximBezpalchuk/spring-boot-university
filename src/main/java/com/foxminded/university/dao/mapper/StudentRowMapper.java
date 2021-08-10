@@ -22,19 +22,13 @@ public class StudentRowMapper implements RowMapper<Student> {
 
 	@Override
 	public Student mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-		Student student = new Student.Builder()
-				.setFirstName(resultSet.getString("first_name"))
-				.setLastName(resultSet.getString("last_name"))
-				.setPhone(resultSet.getString("phone"))
-				.setAddress(resultSet.getString("address"))
-				.setEmail(resultSet.getString("email"))
-				.setGender(Gender.valueOf(resultSet.getString("gender")))
-				.setPostalCode(resultSet.getString("postal_code"))
-				.setEducation(resultSet.getString("education"))
-				.setBirthDate(resultSet.getObject("birth_date", LocalDate.class))
-				.setGroup(groupDao.findById(resultSet.getInt("group_id")))
-				.setId(resultSet.getInt("id"))
-				.build();
+		Student student = new Student.Builder(resultSet.getString("first_name"), resultSet.getString("last_name"),
+				resultSet.getString("address"), Gender.valueOf(resultSet.getString("gender")),
+				resultSet.getObject("birth_date", LocalDate.class)).setPhone(resultSet.getString("phone"))
+						.setEmail(resultSet.getString("email")).setPostalCode(resultSet.getString("postal_code"))
+						.setEducation(resultSet.getString("education"))
+						.setGroup(groupDao.findById(resultSet.getInt("group_id"))).setId(resultSet.getInt("id"))
+						.build();
 		return student;
 	}
 }

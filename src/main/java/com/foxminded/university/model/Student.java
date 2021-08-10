@@ -12,14 +12,21 @@ public class Student extends Person {
 		this.group = builder.group;
 	}
 
+	public Group getGroup() {
+		return group;
+	}
+
+	public void setGroup(Group group) {
+		this.group = group;
+	}
+
 	public static class Builder extends Person.Builder<Builder> {
-		/*
-		public Builder(String firstName, String lastName, String address, Gender gender, LocalDate birthDate) {
-			super(firstName, lastName, address, gender, birthDate);
-			// TODO Auto-generated constructor stub
-		}*/
 
 		private Group group;
+
+		public Builder(String firstName, String lastName, String address, Gender gender, LocalDate birthDate) {
+			super(firstName, lastName, address, gender, birthDate);
+		}
 
 		@Override
 		public Builder getThis() {
@@ -35,14 +42,6 @@ public class Student extends Person {
 			return new Student(this);
 		}
 
-	}
-
-	public Group getGroup() {
-		return group;
-	}
-
-	public void setGroup(Group group) {
-		this.group = group;
 	}
 
 	@Override

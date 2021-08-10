@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Cathedra;
+import com.foxminded.university.model.Degree;
 import com.foxminded.university.model.Gender;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Holiday;
@@ -32,9 +33,9 @@ class FormatterTest {
 		LocalDate date = LocalDate.of(2020, 1, 1);
 		LectureTime time = new LectureTime(LocalTime.of(10, 20), LocalTime.of(10, 21));
 		Audience audience = new Audience(1, 5, cathedra);
-		Teacher teacher = new Teacher.Builder().setFirstName("Amigo").setLastName("Bueno").setPhone("999")
-				.setAddress("Puerto Rico").setEmail("dot@dot.com").setGender(Gender.FEMALE).setPostalCode("123")
-				.setEducation("none").setBirthDate(LocalDate.of(1999, 1, 1)).setCathedra(cathedra).build();
+		Teacher teacher = new Teacher.Builder("Amigo", "Bueno", "Puerto Rico", Gender.FEMALE, LocalDate.of(1999, 1, 1),
+				cathedra, Degree.PROFESSOR).setPhone("999").setEmail("dot@dot.com").setPostalCode("123")
+						.setEducation("none").build();
 
 		lectures.add(new Lecture(cathedra, subject, date, time, audience, teacher));
 
@@ -62,9 +63,9 @@ class FormatterTest {
 	@Test
 	void formatTeacherListTest() {
 		List<Teacher> teachers = new ArrayList<>();
-		teachers.add(new Teacher.Builder().setFirstName("Amigo").setLastName("Bueno").setPhone("999")
-				.setAddress("Puerto Rico").setEmail("dot@dot.com").setGender(Gender.FEMALE).setPostalCode("123")
-				.setEducation("none").setBirthDate(LocalDate.of(1999, 1, 1)).setCathedra(cathedra).build());
+		teachers.add(new Teacher.Builder("Amigo", "Bueno", "Puerto Rico", Gender.FEMALE, LocalDate.of(1999, 1, 1),
+				cathedra, Degree.PROFESSOR).setPhone("999").setEmail("dot@dot.com").setPostalCode("123")
+						.setEducation("none").build());
 		assertEquals("1.  Name: Bueno Amigo", formatter.formatTeacherList(teachers));
 	}
 
@@ -84,9 +85,9 @@ class FormatterTest {
 		List<Student> students = new ArrayList<>();
 		Group group = new Group("name", cathedra);
 
-		Student student = new Student.Builder().setFirstName("Amigo").setLastName("Bueno").setPhone("999")
-				.setAddress("Puerto Rico").setEmail("dot@dot.com").setGender(Gender.FEMALE).setPostalCode("123")
-				.setEducation("none").setBirthDate(LocalDate.of(1999, 1, 1)).setGroup(group).build();
+		Student student = new Student.Builder("Amigo", "Bueno", "Puerto Rico", Gender.FEMALE, LocalDate.of(1999, 1, 1))
+				.setPhone("999").setEmail("dot@dot.com").setPostalCode("123").setEducation("none").setGroup(group)
+				.build();
 		students.add(student);
 		assertEquals("1.  Name: Bueno Amigo | Group: name", formatter.formatStudentList(students));
 	}
