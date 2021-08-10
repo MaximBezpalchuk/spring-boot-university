@@ -371,7 +371,7 @@ public class MenuCreator {
 			System.out.println("Enter group name:");
 			String groupName4 = reader.readLine();
 			exitCheck(groupName4);
-			groupDao.save(new Group(groupName4, cathedraDao.findById(1)));
+			groupDao.save(new Group.Builder(groupName4, cathedraDao.findById(1)).build());
 			System.out.println("Group added!");
 			break;
 		case 5:

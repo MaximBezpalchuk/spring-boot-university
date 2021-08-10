@@ -8,9 +8,10 @@ public class Group {
 	private String name;
 	private Cathedra cathedra;
 
-	public Group(String name, Cathedra cathedra) {
-		this.name = name;
-		this.cathedra = cathedra;
+	private Group(Builder builder) {
+		this.id = builder.id;
+		this.name = builder.name;
+		this.cathedra = builder.cathedra;
 	}
 
 	public void setName(String name) {
@@ -31,6 +32,27 @@ public class Group {
 
 	public Cathedra getCathedra() {
 		return cathedra;
+	}
+
+	public static class Builder {
+
+		private int id;
+		private final String name; // required field
+		private final Cathedra cathedra; // required field
+
+		public Builder(String name, Cathedra cathedra) {
+			this.name = name;
+			this.cathedra = cathedra;
+		}
+
+		public Builder setId(int id) {
+			this.id = id;
+			return this;
+		}
+
+		public Group build() {
+			return new Group(this);
+		}
 	}
 
 	@Override

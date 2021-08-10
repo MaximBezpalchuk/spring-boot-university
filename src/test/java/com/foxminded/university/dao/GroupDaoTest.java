@@ -41,8 +41,7 @@ public class GroupDaoTest {
 	@Test
 	void givenExistingGroup_whenFindById_thenGroupFound() {
 		Cathedra cathedra = cathedraDao.findById(1);
-		Group expected = new Group("Killers", cathedra);
-		expected.setId(1);
+		Group expected = new Group.Builder("Killers", cathedra).setId(1).build();
 		Group actual = groupDao.findById(1);
 
 		assertEquals(expected, actual);
@@ -64,7 +63,7 @@ public class GroupDaoTest {
 	void givenNewGroup_whenSaveGroup_thenAllExistingGroupsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
 		Cathedra cathedra = cathedraDao.findById(1);
-		groupDao.save(new Group("Test Name", cathedra));
+		groupDao.save(new Group.Builder("Test Name", cathedra).build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
@@ -82,7 +81,7 @@ public class GroupDaoTest {
 				"DROP TABLE cathedras, audiences, groups, lectures, students, subjects, teachers, vacations, holidays, lecture_times, subjects_teachers, lectures_groups");
 		assertEquals(expected, actual);
 	}
-	
+
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void whenDeleteExistingGroup_thenAllExistingGroupsFound() {
