@@ -9,12 +9,6 @@ public class Audience {
 	private int capacity;
 	private Cathedra cathedra;
 
-	public Audience(int room, int capacity, Cathedra cathedra) {
-		this.room = room;
-		this.capacity = capacity;
-		this.cathedra = cathedra;
-	}
-	
 	private Audience(Builder builder) {
 		this.id = builder.id;
 		this.room = builder.room;
@@ -26,7 +20,6 @@ public class Audience {
 		this.room = room;
 	}
 
-	
 	public void setCapacity(int capacity) {
 		this.capacity = capacity;
 	}
