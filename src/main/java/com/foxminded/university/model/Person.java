@@ -111,15 +111,6 @@ public class Person {
 
 	// Builder
 
-	public static Builder builder() {
-		return new Builder() {
-			@Override
-			public Builder getThis() {
-				return this;
-			}
-		};
-	}
-
 	public abstract static class Builder<T extends Builder<T>> {
 
 		public abstract T getThis();
@@ -134,6 +125,15 @@ public class Person {
 		private String postalCode;
 		private String education;
 		private LocalDate birthDate;
+		
+		/*
+		public Builder(String firstName, String lastName, String address, Gender gender, LocalDate birthDate) {
+			this.firstName = firstName;
+            this.lastName = lastName;
+            this.address = address;
+            this.gender = gender;
+            this.birthDate = birthDate;
+		}*/
 
 		public T setFirstName(String firstName) {
 			this.firstName = firstName;

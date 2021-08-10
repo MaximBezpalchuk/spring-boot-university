@@ -17,10 +17,6 @@ public class Teacher extends Person {
 		this.degree = builder.degree;
 	}
 
-	public static Builder builder() {
-		return new Builder();
-	}
-
 	public static class Builder extends Person.Builder<Builder> {
 
 		private Cathedra cathedra;

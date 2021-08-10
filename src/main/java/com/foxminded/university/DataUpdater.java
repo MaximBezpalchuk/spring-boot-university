@@ -13,7 +13,7 @@ public class DataUpdater {
 
 	public Student createStudent(String firstName, String lastName, String phone, String address, String email,
 			Gender gender, String postalCode, String education, LocalDate birthDate, Group group) {
-		Student student = Student.builder().setFirstName(firstName).setLastName(lastName).setPhone(phone)
+		Student student = new Student.Builder().setFirstName(firstName).setLastName(lastName).setPhone(phone)
 				.setAddress(address).setEmail(email).setGender(gender).setPostalCode(postalCode).setEducation(education)
 				.setBirthDate(birthDate).setGroup(group).build();
 		return student;
@@ -21,7 +21,7 @@ public class DataUpdater {
 
 	public Teacher createTeacher(String firstName, String lastName, String phone, String address, String email,
 			Gender gender, String postalCode, String education, LocalDate birthDate, Degree degree, Cathedra cathedra) {
-		Teacher teacher = Teacher.builder().setFirstName(firstName).setLastName(lastName).setPhone(phone)
+		Teacher teacher = new Teacher.Builder().setFirstName(firstName).setLastName(lastName).setPhone(phone)
 				.setAddress(address).setEmail(email).setGender(gender).setPostalCode(postalCode).setEducation(education)
 				.setBirthDate(birthDate).setCathedra(cathedra).setDegree(degree).build();
 		return teacher;

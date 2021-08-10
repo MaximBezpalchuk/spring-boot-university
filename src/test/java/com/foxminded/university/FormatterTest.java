@@ -32,7 +32,7 @@ class FormatterTest {
 		LocalDate date = LocalDate.of(2020, 1, 1);
 		LectureTime time = new LectureTime(LocalTime.of(10, 20), LocalTime.of(10, 21));
 		Audience audience = new Audience(1, 5, cathedra);
-		Teacher teacher = Teacher.builder().setFirstName("Amigo").setLastName("Bueno").setPhone("999")
+		Teacher teacher = new Teacher.Builder().setFirstName("Amigo").setLastName("Bueno").setPhone("999")
 				.setAddress("Puerto Rico").setEmail("dot@dot.com").setGender(Gender.FEMALE).setPostalCode("123")
 				.setEducation("none").setBirthDate(LocalDate.of(1999, 1, 1)).setCathedra(cathedra).build();
 
@@ -62,7 +62,7 @@ class FormatterTest {
 	@Test
 	void formatTeacherListTest() {
 		List<Teacher> teachers = new ArrayList<>();
-		teachers.add(Teacher.builder().setFirstName("Amigo").setLastName("Bueno").setPhone("999")
+		teachers.add(new Teacher.Builder().setFirstName("Amigo").setLastName("Bueno").setPhone("999")
 				.setAddress("Puerto Rico").setEmail("dot@dot.com").setGender(Gender.FEMALE).setPostalCode("123")
 				.setEducation("none").setBirthDate(LocalDate.of(1999, 1, 1)).setCathedra(cathedra).build());
 		assertEquals("1.  Name: Bueno Amigo", formatter.formatTeacherList(teachers));
@@ -84,7 +84,7 @@ class FormatterTest {
 		List<Student> students = new ArrayList<>();
 		Group group = new Group("name", cathedra);
 
-		Student student = Student.builder().setFirstName("Amigo").setLastName("Bueno").setPhone("999")
+		Student student = new Student.Builder().setFirstName("Amigo").setLastName("Bueno").setPhone("999")
 				.setAddress("Puerto Rico").setEmail("dot@dot.com").setGender(Gender.FEMALE).setPostalCode("123")
 				.setEducation("none").setBirthDate(LocalDate.of(1999, 1, 1)).setGroup(group).build();
 		students.add(student);

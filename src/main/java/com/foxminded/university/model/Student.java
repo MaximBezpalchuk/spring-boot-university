@@ -1,5 +1,6 @@
 package com.foxminded.university.model;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class Student extends Person {
@@ -11,11 +12,12 @@ public class Student extends Person {
 		this.group = builder.group;
 	}
 
-	public static Builder builder() {
-		return new Builder();
-	}
-
 	public static class Builder extends Person.Builder<Builder> {
+		/*
+		public Builder(String firstName, String lastName, String address, Gender gender, LocalDate birthDate) {
+			super(firstName, lastName, address, gender, birthDate);
+			// TODO Auto-generated constructor stub
+		}*/
 
 		private Group group;
 

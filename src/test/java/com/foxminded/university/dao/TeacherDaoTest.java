@@ -48,7 +48,7 @@ public class TeacherDaoTest {
 
 	@Test
 	void givenExistingTeacher_whenFindById_thenTeacherFound() {
-		Teacher expected = Teacher.builder().setFirstName("Daniel").setLastName("Morpheus").setPhone("1")
+		Teacher expected = new Teacher.Builder().setFirstName("Daniel").setLastName("Morpheus").setPhone("1")
 				.setAddress("Virtual Reality Capsule no 1").setEmail("1@bigowl.com").setGender(Gender.MALE)
 				.setPostalCode("12345").setEducation("Higher education").setBirthDate(LocalDate.of(1970, 1, 1))
 				.setCathedra(cathedraDao.findById(1)).setDegree(Degree.PROFESSOR).setId(1).build();
@@ -78,7 +78,7 @@ public class TeacherDaoTest {
 	@Test
 	void givenNewTeacher_whenSaveTeacher_thenAllExistingTeachersFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		Teacher teacher =Teacher.builder().setFirstName("Test").setLastName("Test").setPhone("1")
+		Teacher teacher = new Teacher.Builder().setFirstName("Test").setLastName("Test").setPhone("1")
 				.setAddress("Virtual Reality Capsule no 1").setEmail("1@bigowl.com").setGender(Gender.MALE)
 				.setPostalCode("12345").setEducation("Higher education").setBirthDate(LocalDate.of(1970, 1, 1))
 				.setCathedra(cathedraDao.findById(1)).setDegree(Degree.PROFESSOR).build();

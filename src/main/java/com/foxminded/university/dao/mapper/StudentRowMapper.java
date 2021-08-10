@@ -22,7 +22,7 @@ public class StudentRowMapper implements RowMapper<Student> {
 
 	@Override
 	public Student mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-		Student student = Student.builder()
+		Student student = new Student.Builder()
 				.setFirstName(resultSet.getString("first_name"))
 				.setLastName(resultSet.getString("last_name"))
 				.setPhone(resultSet.getString("phone"))

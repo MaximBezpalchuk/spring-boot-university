@@ -29,7 +29,7 @@ public class TeacherRowMapper implements RowMapper<Teacher> {
 	@Override
 	public Teacher mapRow(ResultSet resultSet, int rowNum) throws SQLException {
 
-		Teacher teacher = Teacher.builder().setFirstName(resultSet.getString("first_name"))
+		Teacher teacher = new Teacher.Builder().setFirstName(resultSet.getString("first_name"))
 				.setLastName(resultSet.getString("last_name")).setPhone(resultSet.getString("phone"))
 				.setAddress(resultSet.getString("address")).setEmail(resultSet.getString("email"))
 				.setGender(Gender.valueOf(resultSet.getString("gender")))

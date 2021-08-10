@@ -42,7 +42,7 @@ public class StudentDaoTest {
 
 	@Test
 	void givenExistingStudent_whenFindById_thenStudentFound() {
-		Student expected = Student.builder().setFirstName("Petr").setLastName("Orlov").setPhone("888005353535")
+		Student expected = new Student.Builder().setFirstName("Petr").setLastName("Orlov").setPhone("888005353535")
 				.setAddress("Empty Street 8").setEmail("1@owl.com").setGender(Gender.MALE).setPostalCode("999")
 				.setEducation("General secondary education").setBirthDate(LocalDate.of(1994, 3, 3))
 				.setGroup(groupDao.findById(1)).setId(1).build();
@@ -66,7 +66,7 @@ public class StudentDaoTest {
 	@Test
 	void givenNewStudent_whenSaveStudent_thenAllExistingStudentsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		Student student = Student.builder().setFirstName("Petr123").setLastName("Orlov123").setPhone("888005353535")
+		Student student = new Student.Builder().setFirstName("Petr123").setLastName("Orlov123").setPhone("888005353535")
 				.setAddress("Empty Street 8").setEmail("1@owl.com").setGender(Gender.MALE).setPostalCode("999")
 				.setEducation("General secondary education").setBirthDate(LocalDate.of(1994, 3, 3))
 				.setGroup(groupDao.findById(1)).build();
