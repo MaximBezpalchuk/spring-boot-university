@@ -43,8 +43,7 @@ public class HolidayDaoTest {
 	@Test
 	void givenExistingHoliday_whenFindById_thenHolidayFound() {
 		Cathedra cathedra = cathedraDao.findById(1);
-		Holiday expected = new Holiday("Christmas", LocalDate.of(2021, 12, 25), cathedra);
-		expected.setId(1);
+		Holiday expected = new Holiday.Builder("Christmas", LocalDate.of(2021, 12, 25), cathedra).setId(1).build();
 		Holiday actual = holidayDao.findById(1);
 
 		assertEquals(expected, actual);
@@ -66,7 +65,7 @@ public class HolidayDaoTest {
 	void givenNewHoliday_whenSaveHoliday_thenAllExistingHolidaysFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
 		Cathedra cathedra = cathedraDao.findById(1);
-		Holiday holiday = new Holiday("Christmas2", LocalDate.of(2021, 12, 25), cathedra);
+		Holiday holiday = new Holiday.Builder("Christmas2", LocalDate.of(2021, 12, 25), cathedra).build();
 		holidayDao.save(holiday, cathedra);
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));

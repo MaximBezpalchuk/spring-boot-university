@@ -10,10 +10,11 @@ public class Holiday {
 	private LocalDate date;
 	private Cathedra cathedra;
 
-	public Holiday(String name, LocalDate date, Cathedra cathedra) {
-		this.name = name;
-		this.date = date;
-		this.cathedra = cathedra;
+	private Holiday(Builder builder) {
+		this.id = builder.id;
+		this.name = builder.name;
+		this.date = builder.date;
+		this.cathedra = builder.cathedra;
 	}
 
 	public void setName(String name) {
@@ -46,6 +47,29 @@ public class Holiday {
 
 	public LocalDate getDate() {
 		return date;
+	}
+
+	public static class Builder {
+
+		private int id;
+		private final String name; // required field
+		private final LocalDate date; // required field
+		private final Cathedra cathedra; // required field
+
+		public Builder(String name, LocalDate date, Cathedra cathedra) {
+			this.name = name;
+			this.date = date;
+			this.cathedra = cathedra;
+		}
+
+		public Builder setId(int id) {
+			this.id = id;
+			return this;
+		}
+
+		public Holiday build() {
+			return new Holiday(this);
+		}
 	}
 
 	@Override
