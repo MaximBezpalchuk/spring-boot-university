@@ -48,10 +48,10 @@ public class TeacherDaoTest {
 
 	@Test
 	void givenExistingTeacher_whenFindById_thenTeacherFound() {
-		Teacher expected = new Teacher("Daniel", "Morpheus", "1", "Virtual Reality Capsule no 1", "1@bigowl.com",
-				Gender.MALE, "12345", "Higher education", LocalDate.of(1970, 1, 1), cathedraDao.findById(1));
-		expected.setId(1);
-		expected.setDegree(Degree.PROFESSOR);
+		Teacher expected = Teacher.builder().setFirstName("Daniel").setLastName("Morpheus").setPhone("1")
+				.setAddress("Virtual Reality Capsule no 1").setEmail("1@bigowl.com").setGender(Gender.MALE)
+				.setPostalCode("12345").setEducation("Higher education").setBirthDate(LocalDate.of(1970, 1, 1))
+				.setCathedra(cathedraDao.findById(1)).setDegree(Degree.PROFESSOR).setId(1).build();
 		List<Subject> subjects = new ArrayList<>();
 		Subject subject = new Subject(cathedraDao.findById(1), "Weapon Tactics",
 				"Learning how to use heavy weapon and guerrilla tactics");
@@ -78,9 +78,10 @@ public class TeacherDaoTest {
 	@Test
 	void givenNewTeacher_whenSaveTeacher_thenAllExistingTeachersFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		Teacher teacher = new Teacher("Test", "Test", "1", "Virtual Reality Capsule no 1", "1@bigowl.com", Gender.MALE,
-				"12345", "Higher education", LocalDate.of(1970, 1, 1), cathedraDao.findById(1));
-		teacher.setDegree(Degree.PROFESSOR);
+		Teacher teacher =Teacher.builder().setFirstName("Test").setLastName("Test").setPhone("1")
+				.setAddress("Virtual Reality Capsule no 1").setEmail("1@bigowl.com").setGender(Gender.MALE)
+				.setPostalCode("12345").setEducation("Higher education").setBirthDate(LocalDate.of(1970, 1, 1))
+				.setCathedra(cathedraDao.findById(1)).setDegree(Degree.PROFESSOR).build();
 		List<Subject> subjects = new ArrayList<>();
 		Subject subject = new Subject(cathedraDao.findById(1), "Weapon Tactics",
 				"Learning how to use heavy weapon and guerrilla tactics");

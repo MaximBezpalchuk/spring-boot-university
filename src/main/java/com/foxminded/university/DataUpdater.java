@@ -13,17 +13,17 @@ public class DataUpdater {
 
 	public Student createStudent(String firstName, String lastName, String phone, String address, String email,
 			Gender gender, String postalCode, String education, LocalDate birthDate, Group group) {
-		Student student = new Student(firstName, lastName, phone, address, email, gender, postalCode, education,
-				birthDate);
-		student.setGroup(group);
+		Student student = Student.builder().setFirstName(firstName).setLastName(lastName).setPhone(phone)
+				.setAddress(address).setEmail(email).setGender(gender).setPostalCode(postalCode).setEducation(education)
+				.setBirthDate(birthDate).setGroup(group).build();
 		return student;
 	}
 
 	public Teacher createTeacher(String firstName, String lastName, String phone, String address, String email,
 			Gender gender, String postalCode, String education, LocalDate birthDate, Degree degree, Cathedra cathedra) {
-		Teacher teacher = new Teacher(firstName, lastName, phone, address, email, gender, postalCode, education,
-				birthDate, cathedra);
-		teacher.setDegree(degree);
+		Teacher teacher = Teacher.builder().setFirstName(firstName).setLastName(lastName).setPhone(phone)
+				.setAddress(address).setEmail(email).setGender(gender).setPostalCode(postalCode).setEducation(education)
+				.setBirthDate(birthDate).setCathedra(cathedra).setDegree(degree).build();
 		return teacher;
 	}
 }

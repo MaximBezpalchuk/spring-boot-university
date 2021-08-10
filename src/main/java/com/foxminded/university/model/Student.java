@@ -1,15 +1,38 @@
 package com.foxminded.university.model;
 
-import java.time.LocalDate;
 import java.util.Objects;
 
 public class Student extends Person {
 
 	private Group group;
 
-	public Student(String firstName, String lastName, String phone, String address, String email, Gender gender,
-			String postalCode, String education, LocalDate birthDate) {
-		super(firstName, lastName, phone, address, email, gender, postalCode, education, birthDate);
+	public Student(Builder builder) {
+		super(builder);
+		this.group = builder.group;
+	}
+
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public static class Builder extends Person.Builder<Builder> {
+
+		private Group group;
+
+		@Override
+		public Builder getThis() {
+			return this;
+		}
+
+		public Builder setGroup(Group group) {
+			this.group = group;
+			return this;
+		}
+
+		public Student build() {
+			return new Student(this);
+		}
+
 	}
 
 	public Group getGroup() {

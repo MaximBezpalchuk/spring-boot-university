@@ -19,7 +19,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.foxminded.university.model.Student;
 import com.foxminded.university.model.Gender;
-import com.foxminded.university.model.Group;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = { SpringTestConfig.class })
@@ -43,11 +42,10 @@ public class StudentDaoTest {
 
 	@Test
 	void givenExistingStudent_whenFindById_thenStudentFound() {
-		Student expected = new Student("Petr", "Orlov", "888005353535", "Empty Street 8", "1@owl.com", Gender.MALE,
-				"999", "General secondary education", LocalDate.of(1994, 3, 3));
-		Group group = groupDao.findById(1);
-		expected.setId(1);
-		expected.setGroup(group);
+		Student expected = Student.builder().setFirstName("Petr").setLastName("Orlov").setPhone("888005353535")
+				.setAddress("Empty Street 8").setEmail("1@owl.com").setGender(Gender.MALE).setPostalCode("999")
+				.setEducation("General secondary education").setBirthDate(LocalDate.of(1994, 3, 3))
+				.setGroup(groupDao.findById(1)).setId(1).build();
 		Student actual = studentDao.findById(1);
 
 		assertEquals(expected, actual);
@@ -68,10 +66,10 @@ public class StudentDaoTest {
 	@Test
 	void givenNewStudent_whenSaveStudent_thenAllExistingStudentsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		Student student = new Student("Petr123", "Orlov123", "888005353535", "Empty Street 8", "1@owl.com", Gender.MALE,
-				"999", "General secondary education", LocalDate.of(1994, 3, 3));
-		Group group = groupDao.findById(1);
-		student.setGroup(group);
+		Student student = Student.builder().setFirstName("Petr123").setLastName("Orlov123").setPhone("888005353535")
+				.setAddress("Empty Street 8").setEmail("1@owl.com").setGender(Gender.MALE).setPostalCode("999")
+				.setEducation("General secondary education").setBirthDate(LocalDate.of(1994, 3, 3))
+				.setGroup(groupDao.findById(1)).build();
 		studentDao.save(student);
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
@@ -89,13 +87,15 @@ public class StudentDaoTest {
 
 		assertEquals(expected, actual);
 	}
-	
-	  @DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
-	  
-	  @Test void whenDeleteExistingStudent_thenAllExistingStudentsFound() { int
-	  expected = countRowsInTable(template, TABLE_NAME) - 1;
-	  studentDao.deleteById(3);
-	  
-	  assertEquals(expected, countRowsInTable(template, TABLE_NAME)); }
-	 
+
+	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+
+	@Test
+	void whenDeleteExistingStudent_thenAllExistingStudentsFound() {
+		int expected = countRowsInTable(template, TABLE_NAME) - 1;
+		studentDao.deleteById(3);
+
+		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
+	}
+
 }

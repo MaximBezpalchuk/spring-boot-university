@@ -22,12 +22,19 @@ public class StudentRowMapper implements RowMapper<Student> {
 
 	@Override
 	public Student mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-		Student student = new Student(resultSet.getString("first_name"), resultSet.getString("last_name"),
-				resultSet.getString("phone"), resultSet.getString("address"), resultSet.getString("email"),
-				Gender.valueOf(resultSet.getString("gender")), resultSet.getString("postal_code"),
-				resultSet.getString("education"), resultSet.getObject("birth_date", LocalDate.class));
-		student.setGroup(groupDao.findById(resultSet.getInt("group_id")));
-		student.setId(resultSet.getInt("id"));
+		Student student = Student.builder()
+				.setFirstName(resultSet.getString("first_name"))
+				.setLastName(resultSet.getString("last_name"))
+				.setPhone(resultSet.getString("phone"))
+				.setAddress(resultSet.getString("address"))
+				.setEmail(resultSet.getString("email"))
+				.setGender(Gender.valueOf(resultSet.getString("gender")))
+				.setPostalCode(resultSet.getString("postal_code"))
+				.setEducation(resultSet.getString("education"))
+				.setBirthDate(resultSet.getObject("birth_date", LocalDate.class))
+				.setGroup(groupDao.findById(resultSet.getInt("group_id")))
+				.setId(resultSet.getInt("id"))
+				.build();
 		return student;
 	}
 }

@@ -16,17 +16,17 @@ public class Person {
 	private String education;
 	private LocalDate birthDate;
 
-	protected Person(String firstName, String lastName, String phone, String address, String email, Gender gender,
-			String postalCode, String education, LocalDate birthDate) {
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.phone = phone;
-		this.address = address;
-		this.email = email;
-		this.gender = gender;
-		this.postalCode = postalCode;
-		this.education = education;
-		this.birthDate = birthDate;
+	protected Person(Builder<?> builder) {
+		this.id = builder.id;
+		this.firstName = builder.firstName;
+		this.lastName = builder.lastName;
+		this.phone = builder.phone;
+		this.address = builder.address;
+		this.email = builder.email;
+		this.gender = builder.gender;
+		this.postalCode = builder.postalCode;
+		this.education = builder.education;
+		this.birthDate = builder.birthDate;
 	}
 
 	public void setFirstName(String firstName) {
@@ -107,6 +107,87 @@ public class Person {
 
 	public LocalDate getBirthDate() {
 		return birthDate;
+	}
+
+	// Builder
+
+	public static Builder builder() {
+		return new Builder() {
+			@Override
+			public Builder getThis() {
+				return this;
+			}
+		};
+	}
+
+	public abstract static class Builder<T extends Builder<T>> {
+
+		public abstract T getThis();
+
+		private int id;
+		private String firstName;
+		private String lastName;
+		private String phone;
+		private String address;
+		private String email;
+		private Gender gender;
+		private String postalCode;
+		private String education;
+		private LocalDate birthDate;
+
+		public T setFirstName(String firstName) {
+			this.firstName = firstName;
+			return this.getThis();
+		}
+
+		public T setLastName(String lastName) {
+			this.lastName = lastName;
+			return this.getThis();
+		}
+
+		public T setPhone(String phone) {
+			this.phone = phone;
+			return this.getThis();
+		}
+
+		public T setAddress(String address) {
+			this.address = address;
+			return this.getThis();
+		}
+
+		public T setEmail(String email) {
+			this.email = email;
+			return this.getThis();
+		}
+
+		public T setGender(Gender gender) {
+			this.gender = gender;
+			return this.getThis();
+		}
+
+		public T setPostalCode(String postalCode) {
+			this.postalCode = postalCode;
+			return this.getThis();
+		}
+
+		public T setEducation(String education) {
+			this.education = education;
+			return this.getThis();
+		}
+
+		public T setBirthDate(LocalDate birthDate) {
+			this.birthDate = birthDate;
+			return this.getThis();
+		}
+
+		public T setId(int id) {
+			this.id = id;
+			return this.getThis();
+		}
+
+		public Person build() {
+			return new Person(this);
+		}
 	}
 
 	@Override
