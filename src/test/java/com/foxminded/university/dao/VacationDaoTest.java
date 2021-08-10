@@ -43,8 +43,8 @@ public class VacationDaoTest {
 
 	@Test
 	void givenExistingVacation_whenFindById_thenVacationFound() {
-		Vacation expected = new Vacation(LocalDate.of(2021, 1, 15), LocalDate.of(2021, 1, 29), teacherDao.findById(1));
-		expected.setId(1);
+		Vacation expected = new Vacation.Builder(LocalDate.of(2021, 1, 15), LocalDate.of(2021, 1, 29),
+				teacherDao.findById(1)).setId(1).build();
 		Vacation actual = vacationDao.findById(1);
 
 		assertEquals(expected, actual);
@@ -65,7 +65,9 @@ public class VacationDaoTest {
 	@Test
 	void givenNewVacation_whenSaveVacation_thenAllExistingVacationsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		vacationDao.save(new Vacation(LocalDate.of(2021, 1, 31), LocalDate.of(2021, 3, 29), teacherDao.findById(2)));
+		vacationDao
+				.save(new Vacation.Builder(LocalDate.of(2021, 1, 31), LocalDate.of(2021, 3, 29), teacherDao.findById(2))
+						.build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
@@ -94,10 +96,10 @@ public class VacationDaoTest {
 	@Test
 	void givenExistingVacation_whenFindByTeacherId_thenVacationFound() {
 		List<Vacation> expected = new ArrayList<>();
-		Vacation vacation1 = new Vacation(LocalDate.of(2021, 1, 15), LocalDate.of(2021, 1, 29), teacherDao.findById(1));
-		vacation1.setId(1);
-		Vacation vacation2 = new Vacation(LocalDate.of(2021, 6, 15), LocalDate.of(2021, 6, 29), teacherDao.findById(1));
-		vacation2.setId(2);
+		Vacation vacation1 = new Vacation.Builder(LocalDate.of(2021, 1, 15), LocalDate.of(2021, 1, 29),
+				teacherDao.findById(1)).setId(1).build();
+		Vacation vacation2 = new Vacation.Builder(LocalDate.of(2021, 6, 15), LocalDate.of(2021, 6, 29),
+				teacherDao.findById(1)).setId(2).build();
 		expected.add(vacation1);
 		expected.add(vacation2);
 		List<Vacation> actual = vacationDao.findByTeacherId(1);

@@ -53,9 +53,8 @@ public class TeacherDaoTest {
 						.setEmail("1@bigowl.com").setPostalCode("12345").setEducation("Higher education").setId(1)
 						.build();
 		List<Subject> subjects = new ArrayList<>();
-		Subject subject = new Subject(cathedraDao.findById(1), "Weapon Tactics",
-				"Learning how to use heavy weapon and guerrilla tactics");
-		subject.setId(1);
+		Subject subject = new Subject.Builder(cathedraDao.findById(1), "Weapon Tactics",
+				"Learning how to use heavy weapon and guerrilla tactics").setId(1).build();
 		subjects.add(subject);
 		expected.setSubjects(subjects);
 		Teacher actual = teacherDao.findById(1);
@@ -82,9 +81,8 @@ public class TeacherDaoTest {
 				LocalDate.of(1970, 1, 1), cathedraDao.findById(1), Degree.PROFESSOR).setPhone("1")
 						.setEmail("1@bigowl.com").setPostalCode("12345").setEducation("Higher education").build();
 		List<Subject> subjects = new ArrayList<>();
-		Subject subject = new Subject(cathedraDao.findById(1), "Weapon Tactics",
-				"Learning how to use heavy weapon and guerrilla tactics");
-		subject.setId(1);
+		Subject subject = new Subject.Builder(cathedraDao.findById(1), "Weapon Tactics",
+				"Learning how to use heavy weapon and guerrilla tactics").setId(1).build();
 		subjects.add(subject);
 		teacher.setSubjects(subjects);
 		teacherDao.save(teacher);

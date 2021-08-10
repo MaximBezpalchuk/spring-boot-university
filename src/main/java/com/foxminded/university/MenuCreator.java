@@ -362,7 +362,7 @@ public class MenuCreator {
 			System.out.println("Enter subject description:");
 			String subjectDescription3 = reader.readLine();
 			exitCheck(subjectDescription3);
-			subjectDao.save(new Subject(cathedraDao.findById(1), subjectName3, subjectDescription3));
+			subjectDao.save(new Subject.Builder(cathedraDao.findById(1), subjectName3, subjectDescription3).build());
 			System.out.println("Subject added!");
 			break;
 		case 4:
@@ -599,7 +599,7 @@ public class MenuCreator {
 			LocalDate vacationStartDate2 = setupLocalDate();
 			System.out.println("Enter vacation end date separated by commas without spaces (YEAR,MONTH,DAY):");
 			LocalDate vacationEndDate2 = setupLocalDate();
-			Vacation vacation2 = new Vacation(vacationStartDate2, vacationEndDate2, teacher2);
+			Vacation vacation2 = new Vacation.Builder(vacationStartDate2, vacationEndDate2, teacher2).build();
 			vacationDao.save(vacation2);
 			System.out.println("Vacation added!");
 			break;

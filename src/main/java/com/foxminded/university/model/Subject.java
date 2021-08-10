@@ -9,10 +9,11 @@ public class Subject {
 	private String name;
 	private String description;
 
-	public Subject(Cathedra cathedra, String name, String description) {
-		this.cathedra = cathedra;
-		this.name = name;
-		this.description = description;
+	private Subject(Builder builder) {
+		this.id = builder.id;
+		this.cathedra = builder.cathedra;
+		this.name = builder.name;
+		this.description = builder.description;
 	}
 
 	public void setName(String name) {
@@ -45,6 +46,29 @@ public class Subject {
 
 	public String getDescription() {
 		return description;
+	}
+
+	public static class Builder {
+
+		private int id;
+		private final String name; // required field
+		private final String description; // required field
+		private final Cathedra cathedra; // required field
+
+		public Builder(Cathedra cathedra, String name, String description) {
+			this.cathedra = cathedra;
+			this.name = name;
+			this.description = description;
+		}
+
+		public Builder setId(int id) {
+			this.id = id;
+			return this;
+		}
+
+		public Subject build() {
+			return new Subject(this);
+		}
 	}
 
 	@Override

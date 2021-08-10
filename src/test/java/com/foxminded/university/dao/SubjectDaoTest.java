@@ -44,9 +44,8 @@ public class SubjectDaoTest {
 	@Test
 	void givenExistingSubject_whenFindById_thenSubjectFound() {
 		Cathedra cathedra = cathedraDao.findById(1);
-		Subject expected = new Subject(cathedra, "Weapon Tactics",
-				"Learning how to use heavy weapon and guerrilla tactics");
-		expected.setId(1);
+		Subject expected = new Subject.Builder(cathedra, "Weapon Tactics",
+				"Learning how to use heavy weapon and guerrilla tactics").setId(1).build();
 		Subject actual = subjectDao.findById(1);
 
 		assertEquals(expected, actual);
@@ -68,8 +67,8 @@ public class SubjectDaoTest {
 	void givenNewSubject_whenSaveSubject_thenAllExistingSubjectsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
 		Cathedra cathedra = cathedraDao.findById(1);
-		subjectDao.save(new Subject(cathedra, "Weapon Tactics123",
-				"Learning how to use heavy weapon and guerrilla tactics123"));
+		subjectDao.save(new Subject.Builder(cathedra, "Weapon Tactics123",
+				"Learning how to use heavy weapon and guerrilla tactics123").build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
@@ -99,9 +98,8 @@ public class SubjectDaoTest {
 	void givenExistingSubject_whenFindByTeacherId_thenSubjectFound() {
 		List<Subject> expected = new ArrayList<>();
 		Cathedra cathedra = cathedraDao.findById(1);
-		Subject subject1 = new Subject(cathedra, "Weapon Tactics",
-				"Learning how to use heavy weapon and guerrilla tactics");
-		subject1.setId(1);
+		Subject subject1 = new Subject.Builder(cathedra, "Weapon Tactics",
+				"Learning how to use heavy weapon and guerrilla tactics").setId(1).build();
 		expected.add(subject1);
 		List<Subject> actual = subjectDao.findByTeacherId(1);
 		assertEquals(expected, actual);

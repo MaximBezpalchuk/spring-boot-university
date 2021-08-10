@@ -29,7 +29,7 @@ class FormatterTest {
 	@Test
 	void formatLectureListTest() {
 		List<Lecture> lectures = new ArrayList<>();
-		Subject subject = new Subject(cathedra, "TestSubject", "Desc");
+		Subject subject = new Subject.Builder(cathedra, "TestSubject", "Desc").build();
 		LocalDate date = LocalDate.of(2020, 1, 1);
 		LectureTime time = new LectureTime.Builder(LocalTime.of(10, 20), LocalTime.of(10, 21)).build();
 		Audience audience = new Audience.Builder(1, 5, cathedra).build();
@@ -55,7 +55,7 @@ class FormatterTest {
 	@Test
 	void formatSubjectListTest() {
 		List<Subject> subjects = new ArrayList<>();
-		Subject subject = new Subject(cathedra, "TestSubject", "Desc");
+		Subject subject = new Subject.Builder(cathedra, "TestSubject", "Desc").build();
 		subjects.add(subject);
 		assertEquals("1.  Name: TestSubject | Description: Desc", formatter.formatSubjectList(subjects));
 	}
@@ -102,7 +102,7 @@ class FormatterTest {
 	@Test
 	void formatVacationListTest() {
 		List<Vacation> vacations = new ArrayList<>();
-		vacations.add(new Vacation(LocalDate.of(1999, 1, 1), LocalDate.of(2000, 1, 1), null));
+		vacations.add(new Vacation.Builder(LocalDate.of(1999, 1, 1), LocalDate.of(2000, 1, 1), null).build());
 		assertEquals("1.  Dates: 1999-01-01 to 2000-01-01", formatter.formatVacationList(vacations));
 	}
 

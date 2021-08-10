@@ -10,10 +10,11 @@ public class Vacation {
 	private LocalDate end;
 	private Teacher teacher;
 
-	public Vacation(LocalDate start, LocalDate end, Teacher teacher) {
-		this.start = start;
-		this.end = end;
-		this.teacher = teacher;
+	private Vacation(Builder builder) {
+		this.id = builder.id;
+		this.start = builder.start;
+		this.end = builder.end;
+		this.teacher = builder.teacher;
 	}
 
 	public int getId() {
@@ -38,6 +39,29 @@ public class Vacation {
 
 	public LocalDate getEnd() {
 		return end;
+	}
+
+	public static class Builder {
+
+		private int id;
+		private final LocalDate start; // required field
+		private final LocalDate end; // required field
+		private final Teacher teacher; // required field
+
+		public Builder(LocalDate start, LocalDate end, Teacher teacher) {
+			this.start = start;
+			this.end = end;
+			this.teacher = teacher;
+		}
+
+		public Builder setId(int id) {
+			this.id = id;
+			return this;
+		}
+
+		public Vacation build() {
+			return new Vacation(this);
+		}
 	}
 
 	@Override
