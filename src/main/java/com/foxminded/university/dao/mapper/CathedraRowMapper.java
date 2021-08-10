@@ -10,12 +10,9 @@ import com.foxminded.university.model.Cathedra;
 
 @Component
 public class CathedraRowMapper implements RowMapper<Cathedra> {
-	
+
 	@Override
 	public Cathedra mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-		Cathedra cathedra = new Cathedra(resultSet.getString("name"));
-		cathedra.setId(resultSet.getInt("id"));
-		return cathedra;
+		return new Cathedra.Builder(resultSet.getString("name")).setId(resultSet.getInt("id")).build();
 	}
-
 }

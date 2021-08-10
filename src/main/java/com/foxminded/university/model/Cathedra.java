@@ -3,9 +3,14 @@ package com.foxminded.university.model;
 import java.util.Objects;
 
 public class Cathedra {
-	private int id;
 
+	private int id;
 	private String name;
+
+	private Cathedra(Builder builder) {
+		this.id = builder.id;
+		this.name = builder.name;
+	}
 
 	public int getId() {
 		return id;
@@ -15,16 +20,30 @@ public class Cathedra {
 		this.id = id;
 	}
 
-	public Cathedra(String name) {
-		this.name = name;
-	}
-
 	public String getName() {
 		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public static class Builder {
+		private int id;
+		private final String name; // required field
+
+		public Builder(String name) {
+			this.name = name;
+		}
+
+		public Builder setId(int id) {
+			this.id = id;
+			return this;
+		}
+
+		public Cathedra build() {
+			return new Cathedra(this);
+		}
 	}
 
 	@Override
