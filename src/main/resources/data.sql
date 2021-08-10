@@ -3,20 +3,20 @@ INSERT INTO cathedras(name) VALUES ('Fantastic Cathedra');
 INSERT INTO groups(name, cathedra_id) VALUES ('Killers', (SELECT id FROM cathedras WHERE name = 'Fantastic Cathedra'));
 INSERT INTO groups(name, cathedra_id) VALUES ('Mages', (SELECT id FROM cathedras WHERE name = 'Fantastic Cathedra'));
 
-INSERT INTO students(first_name, last_name, phone, address, email, gender, postalCode, education, birthDate, group_id)
+INSERT INTO students(first_name, last_name, phone, address, email, gender, postal_code, education, birth_date, group_id)
 VALUES ('Petr', 'Orlov', '888005353535', 'Empty Street 8', '1@owl.com', 'MALE', '999', 'General secondary education', '1994-3-3', (SELECT id FROM groups WHERE name = 'Killers'));
-INSERT INTO students(first_name, last_name, phone, address, email, gender, postalCode, education, birthDate, group_id) 
+INSERT INTO students(first_name, last_name, phone, address, email, gender, postal_code, education, birth_date, group_id) 
 VALUES ('Oleg', 'Krasnov', '2247582', 'Empty Street 8-2', '2@owl.com', 'MALE', '999', 'General secondary education', '1994-5-13', (SELECT id FROM groups WHERE name = 'Killers'));
-INSERT INTO students(first_name, last_name, phone, address, email, gender, postalCode, education, birthDate, group_id)
+INSERT INTO students(first_name, last_name, phone, address, email, gender, postal_code, education, birth_date, group_id)
 VALUES ('Margot', 'Robbie', '9999999999', 'Holywood Street 1', '3@owl.com', 'FEMALE', '254826', 'General tecnical education', '1990-2-7', (SELECT id FROM groups WHERE name = 'Killers'));
-INSERT INTO students(first_name, last_name, phone, address, email, gender, postalCode, education, birthDate, group_id)
+INSERT INTO students(first_name, last_name, phone, address, email, gender, postal_code, education, birth_date, group_id)
 VALUES ('Kim', 'Cattrall', '312-555-0690:00', 'Virtual Reality Capsule no 2', '4@owl.com','FEMALE', '12345', 'College education', '1956-8-21', (SELECT id FROM groups WHERE name = 'Mages'));
-INSERT INTO students(first_name, last_name, phone, address, email, gender, postalCode, education, birthDate, group_id)
+INSERT INTO students(first_name, last_name, phone, address, email, gender, postal_code, education, birth_date, group_id)
 VALUES ('Thomas', 'Anderson', '312-555-5555', 'Virtual Reality Capsule no 3', '5@owl.com', 'MALE', '12345', 'College education', '1962-3-11', (SELECT id FROM groups WHERE name = 'Mages'));
 
-INSERT INTO teachers(first_name, last_name, phone, address, email, gender, postalCode, education, birthDate, cathedra_id, degree)
+INSERT INTO teachers(first_name, last_name, phone, address, email, gender, postal_code, education, birth_date, cathedra_id, degree)
 VALUES('Daniel', 'Morpheus', '1', 'Virtual Reality Capsule no 1', '1@bigowl.com', 'MALE', '12345', 'Higher education', '1970-01-01', (SELECT id FROM cathedras WHERE name = 'Fantastic Cathedra'), 'PROFESSOR');
-INSERT INTO teachers(first_name, last_name, phone, address, email, gender, postalCode, education, birthDate, cathedra_id, degree)
+INSERT INTO teachers(first_name, last_name, phone, address, email, gender, postal_code, education, birth_date, cathedra_id, degree)
 VALUES('Bane', 'Smith', '1', 'Virtual Reality', '0@bigowl.com', 'MALE', 'none', 'none', '1970-01-01', (SELECT id FROM cathedras WHERE name = 'Fantastic Cathedra'), 'PROFESSOR');
 
 INSERT INTO subjects(name, description, cathedra_id) 

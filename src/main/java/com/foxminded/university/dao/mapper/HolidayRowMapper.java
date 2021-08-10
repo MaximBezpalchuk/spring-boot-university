@@ -2,6 +2,7 @@ package com.foxminded.university.dao.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -20,8 +21,7 @@ public class HolidayRowMapper implements RowMapper<Holiday> {
 
 	@Override
 	public Holiday mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-		Holiday holiday = new Holiday(resultSet.getString("name"),
-				resultSet.getTimestamp("date").toLocalDateTime().toLocalDate(),
+		Holiday holiday = new Holiday(resultSet.getString("name"), resultSet.getObject("date", LocalDate.class),
 				cathedraDao.findById(resultSet.getInt("cathedra_id")));
 		holiday.setId(resultSet.getInt("id"));
 		return holiday;

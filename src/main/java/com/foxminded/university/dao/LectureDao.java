@@ -47,7 +47,7 @@ public class LectureDao {
 						Statement.RETURN_GENERATED_KEYS);
 				statement.setInt(1, lecture.getCathedra().getId());
 				statement.setInt(2, lecture.getSubject().getId());
-				statement.setDate(3, java.sql.Date.valueOf(lecture.getDate()));
+				statement.setObject(3, lecture.getDate());
 				statement.setInt(4, lecture.getTime().getId());
 				statement.setInt(5, lecture.getAudience().getId());
 				statement.setInt(6, lecture.getTeacher().getId());
@@ -56,7 +56,7 @@ public class LectureDao {
 			lecture.setId((int) keyHolder.getKeyList().get(0).get("id"));
 		} else {
 			jdbcTemplate.update(UPDATE_LECTURE, lecture.getCathedra().getId(), lecture.getSubject().getId(),
-					java.sql.Date.valueOf(lecture.getDate()), lecture.getTime().getId(), lecture.getAudience().getId(),
+					lecture.getDate(), lecture.getTime().getId(), lecture.getAudience().getId(),
 					lecture.getTeacher().getId(), lecture.getId());
 		}
 

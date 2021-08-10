@@ -43,8 +43,8 @@ public class LectureTimeDao {
 			jdbcTemplate.update(connection -> {
 				PreparedStatement statement = connection.prepareStatement(INSERT_LECTURE_TIME,
 						Statement.RETURN_GENERATED_KEYS);
-				statement.setTime(1, java.sql.Time.valueOf(lectureTime.getStart()));
-				statement.setTime(2, java.sql.Time.valueOf(lectureTime.getEnd()));
+				statement.setObject(1, lectureTime.getStart());
+				statement.setObject(2, lectureTime.getEnd());
 				return statement;
 			}, keyHolder);
 			lectureTime.setId((int) keyHolder.getKeyList().get(0).get("id"));

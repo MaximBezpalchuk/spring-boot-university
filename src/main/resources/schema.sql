@@ -28,9 +28,9 @@ CREATE TABLE IF NOT EXISTS students (
 	address VARCHAR(50) NOT NULL,
 	email VARCHAR(50),
 	gender VARCHAR(10) NOT NULL,
-	postalCode VARCHAR(50),
+	postal_code VARCHAR(50),
 	education  VARCHAR(50),
-	birthDate TIMESTAMP NOT NULL,
+	birth_date TIMESTAMP NOT NULL,
 	group_id int,
 	foreign key (group_id) REFERENCES groups(id) ON DELETE CASCADE
 );
@@ -51,9 +51,9 @@ CREATE TABLE IF NOT EXISTS teachers (
 	address VARCHAR(50) NOT NULL,
 	email VARCHAR(50),
 	gender VARCHAR(10) NOT NULL,
-	postalCode VARCHAR(50),
+	postal_code VARCHAR(50),
 	education  VARCHAR(50),
-	birthDate TIMESTAMP NOT NULL,
+	birth_date TIMESTAMP NOT NULL,
 	cathedra_id int NOT NULL,
 	foreign key (cathedra_id) REFERENCES cathedras(id) ON DELETE CASCADE,
 	degree VARCHAR(50) NOT NULL

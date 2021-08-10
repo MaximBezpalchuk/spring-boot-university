@@ -45,7 +45,7 @@ public class HolidayDao {
 				PreparedStatement statement = connection.prepareStatement(INSERT_HOLIDAY,
 						Statement.RETURN_GENERATED_KEYS);
 				statement.setString(1, holiday.getName());
-				statement.setDate(2, java.sql.Date.valueOf(holiday.getDate()));
+				statement.setObject(2, holiday.getDate());
 				statement.setInt(3, cathedra.getId());
 				return statement;
 			}, keyHolder);

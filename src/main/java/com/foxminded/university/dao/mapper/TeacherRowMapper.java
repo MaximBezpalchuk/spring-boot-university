@@ -2,6 +2,7 @@ package com.foxminded.university.dao.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.jdbc.core.RowMapper;
@@ -30,9 +31,8 @@ public class TeacherRowMapper implements RowMapper<Teacher> {
 
 		Teacher teacher = new Teacher(resultSet.getString("first_name"), resultSet.getString("last_name"),
 				resultSet.getString("phone"), resultSet.getString("address"), resultSet.getString("email"),
-				Gender.valueOf(resultSet.getString("gender")), resultSet.getString("postalcode"),
-				resultSet.getString("education"),
-				resultSet.getTimestamp("birthdate").toLocalDateTime().toLocalDate(),
+				Gender.valueOf(resultSet.getString("gender")), resultSet.getString("postal_code"),
+				resultSet.getString("education"), resultSet.getObject("birth_date", LocalDate.class),
 				cathedraDao.findById(resultSet.getInt("cathedra_id")));
 		teacher.setDegree(Degree.valueOf(resultSet.getString("degree")));
 		teacher.setId(resultSet.getInt("id"));
