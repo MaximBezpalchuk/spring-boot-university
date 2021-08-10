@@ -16,14 +16,15 @@ public class Lecture {
 	private Subject subject;
 	private LectureTime time;
 
-	public Lecture(Cathedra cathedra, Subject subject, LocalDate date, LectureTime time, Audience audience,
-			Teacher teacher) {
-		this.cathedra = cathedra;
-		this.subject = subject;
-		this.date = date;
-		this.time = time;
-		this.audience = audience;
-		this.teacher = teacher;
+	private Lecture(Builder builder) {
+		this.id = builder.id;
+		this.cathedra = builder.cathedra;
+		this.teacher = builder.teacher;
+		this.audience = builder.audience;
+		this.date = builder.date;
+		this.subject = builder.subject;
+		this.time = builder.time;
+		this.groups = builder.groups;
 	}
 
 	public int getId() {
@@ -76,6 +77,42 @@ public class Lecture {
 
 	public LectureTime getTime() {
 		return time;
+	}
+
+	public static class Builder {
+
+		private int id;
+		private final Cathedra cathedra; // required field
+		private List<Group> groups;
+		private final Teacher teacher; // required field
+		private final Audience audience; // required field
+		private final LocalDate date; // required field
+		private final Subject subject; // required field
+		private final LectureTime time; // required field
+
+		public Builder(Cathedra cathedra, Subject subject, LocalDate date, LectureTime time, Audience audience,
+				Teacher teacher) {
+			this.cathedra = cathedra;
+			this.subject = subject;
+			this.date = date;
+			this.time = time;
+			this.audience = audience;
+			this.teacher = teacher;
+		}
+
+		public Builder setId(int id) {
+			this.id = id;
+			return this;
+		}
+
+		public Builder setGroup(List<Group> groups) {
+			this.groups = groups;
+			return this;
+		}
+
+		public Lecture build() {
+			return new Lecture(this);
+		}
 	}
 
 	@Override

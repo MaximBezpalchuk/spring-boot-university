@@ -37,7 +37,7 @@ class FormatterTest {
 				cathedra, Degree.PROFESSOR).setPhone("999").setEmail("dot@dot.com").setPostalCode("123")
 						.setEducation("none").build();
 
-		lectures.add(new Lecture(cathedra, subject, date, time, audience, teacher));
+		lectures.add(new Lecture.Builder(cathedra, subject, date, time, audience, teacher).build());
 
 		assertEquals(
 				"1.  Date: 2020-01-01 | Subject: TestSubject | Audience: 1 | Teacher: Amigo Bueno | Lecture start: 10:20, Lecture end: 10:21",

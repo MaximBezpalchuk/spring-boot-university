@@ -64,11 +64,10 @@ public class LectureDaoTest {
 		LectureTime lectureTime = lectureTimeDao.findById(1);
 		Audience audience = audienceDao.findById(1);
 		Teacher teacher = teacherDao.findById(1);
-		Lecture expected = new Lecture(cathedra, subject, LocalDate.of(2021, 4, 4), lectureTime, audience, teacher);
-		expected.setId(1);
 		List<Group> groups = new ArrayList<>();
 		groups.add(groupDao.findById(1));
-		expected.setGroups(groups);
+		Lecture expected = new Lecture.Builder(cathedra, subject, LocalDate.of(2021, 4, 4), lectureTime, audience,
+				teacher).setId(1).setGroup(groups).build();
 		Lecture actual = lectureDao.findById(1);
 
 		assertEquals(expected, actual);
@@ -94,7 +93,8 @@ public class LectureDaoTest {
 		LectureTime lectureTime = lectureTimeDao.findById(1);
 		Audience audience = audienceDao.findById(2);
 		Teacher teacher = teacherDao.findById(2);
-		lectureDao.save(new Lecture(cathedra, subject, LocalDate.of(2021, 4, 4), lectureTime, audience, teacher));
+		lectureDao.save(new Lecture.Builder(cathedra, subject, LocalDate.of(2021, 4, 4), lectureTime, audience, teacher)
+				.build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}

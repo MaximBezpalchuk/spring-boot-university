@@ -53,7 +53,6 @@ public class MenuCreator {
 	HolidayDao holidayDao = BeanUtil.getBean(HolidayDao.class);
 	VacationDao vacationDao = BeanUtil.getBean(VacationDao.class);
 
-
 	private String printMainMenu() {
 		StringBuilder menu = new StringBuilder();
 		menu.append("=================");
@@ -402,8 +401,8 @@ public class MenuCreator {
 			int lectureTimeNumber5 = getInput(sortedLectureTimes5.size());
 			exitCheck(String.valueOf(lectureTimeNumber5));
 			LectureTime lectureTime5 = sortedLectureTimes5.get(lectureTimeNumber5 - 1);
-			lectureDao.save(
-					new Lecture(cathedraDao.findById(1), subject5, lectureDate5, lectureTime5, audience5, teacher5));
+			lectureDao.save(new Lecture.Builder(cathedraDao.findById(1), subject5, lectureDate5, lectureTime5,
+					audience5, teacher5).build());
 			System.out.println("Lecture added!");
 			break;
 		case 6:
@@ -432,8 +431,8 @@ public class MenuCreator {
 			System.out.println("Enter audience capacity");
 			String audienceCapacity7 = reader.readLine();
 			exitCheck(audienceCapacity7);
-			Audience audience7 = new Audience.Builder(Integer.parseInt(audienceRoom7), Integer.parseInt(audienceCapacity7),
-					cathedraDao.findById(1)).build();
+			Audience audience7 = new Audience.Builder(Integer.parseInt(audienceRoom7),
+					Integer.parseInt(audienceCapacity7), cathedraDao.findById(1)).build();
 			audienceDao.save(audience7);
 			System.out.println("Audience created!");
 			break;
