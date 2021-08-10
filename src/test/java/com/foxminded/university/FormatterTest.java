@@ -31,7 +31,7 @@ class FormatterTest {
 		List<Lecture> lectures = new ArrayList<>();
 		Subject subject = new Subject(cathedra, "TestSubject", "Desc");
 		LocalDate date = LocalDate.of(2020, 1, 1);
-		LectureTime time = new LectureTime(LocalTime.of(10, 20), LocalTime.of(10, 21));
+		LectureTime time = new LectureTime.Builder(LocalTime.of(10, 20), LocalTime.of(10, 21)).build();
 		Audience audience = new Audience.Builder(1, 5, cathedra).build();
 		Teacher teacher = new Teacher.Builder("Amigo", "Bueno", "Puerto Rico", Gender.FEMALE, LocalDate.of(1999, 1, 1),
 				cathedra, Degree.PROFESSOR).setPhone("999").setEmail("dot@dot.com").setPostalCode("123")
@@ -109,7 +109,7 @@ class FormatterTest {
 	@Test
 	void formatLectureTimesListTest() {
 		List<LectureTime> lectureTimes = new ArrayList<>();
-		lectureTimes.add(new LectureTime(LocalTime.of(10, 20), LocalTime.of(10, 21)));
+		lectureTimes.add(new LectureTime.Builder(LocalTime.of(10, 20), LocalTime.of(10, 21)).build());
 		assertEquals("1.  Time: 10:20 to 10:21", formatter.formatLectureTimesList(lectureTimes));
 	}
 

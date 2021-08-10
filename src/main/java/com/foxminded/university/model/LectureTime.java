@@ -9,9 +9,10 @@ public class LectureTime {
 	private LocalTime start;
 	private LocalTime end;
 
-	public LectureTime(LocalTime start, LocalTime end) {
-		this.start = start;
-		this.end = end;
+	private LectureTime(Builder builder) {
+		this.id = builder.id;
+		this.start = builder.start;
+		this.end = builder.end;
 	}
 
 	public void setStart(LocalTime start) {
@@ -36,6 +37,27 @@ public class LectureTime {
 
 	public LocalTime getEnd() {
 		return end;
+	}
+
+	public static class Builder {
+
+		private int id;
+		private final LocalTime start; // required field
+		private final LocalTime end; // required field
+
+		public Builder(LocalTime start, LocalTime end) {
+			this.start = start;
+			this.end = end;
+		}
+
+		public Builder setId(int id) {
+			this.id = id;
+			return this;
+		}
+
+		public LectureTime build() {
+			return new LectureTime(this);
+		}
 	}
 
 	@Override

@@ -39,8 +39,7 @@ public class LectureTimeDaoTest {
 
 	@Test
 	void givenExistingLectureTime_whenFindById_thenLectureTimeFound() {
-		LectureTime expected = new LectureTime(LocalTime.of(8, 0, 0), LocalTime.of(9, 30, 0));
-		expected.setId(1);
+		LectureTime expected = new LectureTime.Builder(LocalTime.of(8, 0, 0), LocalTime.of(9, 30, 0)).setId(1).build();
 		LectureTime actual = lectureTimeDao.findById(1);
 
 		assertEquals(expected, actual);
@@ -61,7 +60,7 @@ public class LectureTimeDaoTest {
 	@Test
 	void givenNewLectureTime_whenSaveLectureTime_thenAllExistingLectureTimesFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		lectureTimeDao.save(new LectureTime(LocalTime.of(21, 0, 0), LocalTime.of(22, 30, 0)));
+		lectureTimeDao.save(new LectureTime.Builder(LocalTime.of(21, 0, 0), LocalTime.of(22, 30, 0)).build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
