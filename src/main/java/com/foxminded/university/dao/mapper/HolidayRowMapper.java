@@ -7,15 +7,15 @@ import java.time.LocalDate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
-import com.foxminded.university.dao.CathedraDao;
+import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
 import com.foxminded.university.model.Holiday;
 
 @Component
 public class HolidayRowMapper implements RowMapper<Holiday> {
 
-	private CathedraDao cathedraDao;
+	private JdbcCathedraDao cathedraDao;
 
-	public HolidayRowMapper(CathedraDao cathedraDao) {
+	public HolidayRowMapper(JdbcCathedraDao cathedraDao) {
 		this.cathedraDao = cathedraDao;
 	}
 

@@ -10,6 +10,9 @@ import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.foxminded.university.SpringTestConfig;
+import com.foxminded.university.dao.jdbc.JdbcAudienceDao;
+import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Cathedra;
 
@@ -24,9 +27,9 @@ public class AudienceDaoTest {
 	@Autowired
 	private JdbcTemplate template;
 	@Autowired
-	private AudienceDao audienceDao;
+	private JdbcAudienceDao audienceDao;
 	@Autowired
-	private CathedraDao cathedraDao;
+	private JdbcCathedraDao cathedraDao;
 
 	@Test
 	void whenFindAll_thenAllExistingAudiencesFound() {

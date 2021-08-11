@@ -1,4 +1,4 @@
-package com.foxminded.university.dao;
+package com.foxminded.university.dao.jdbc;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -9,12 +9,13 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
+import com.foxminded.university.dao.JdbcDao;
 import com.foxminded.university.dao.mapper.LectureRowMapper;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Lecture;
 
 @Component
-public class LectureDao {
+public class JdbcLectureDao implements JdbcDao<Lecture> {
 
 	private final static String SELECT_ALL = "SELECT * FROM lectures";
 	private final static String SELECT_BY_ID = "SELECT * FROM lectures WHERE id = ?";
@@ -26,19 +27,22 @@ public class LectureDao {
 	private final JdbcTemplate jdbcTemplate;
 	private LectureRowMapper rowMapper;
 
-	public LectureDao(JdbcTemplate jdbcTemplate, LectureRowMapper rowMapper) {
+	public JdbcLectureDao(JdbcTemplate jdbcTemplate, LectureRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.rowMapper = rowMapper;
 	}
 
+	@Override
 	public List<Lecture> findAll() {
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
 
+	@Override
 	public Lecture findById(int id) {
 		return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
 	}
 
+	@Override
 	public void save(Lecture lecture) {
 		if (lecture.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -68,6 +72,7 @@ public class LectureDao {
 
 	}
 
+	@Override
 	public void deleteById(int id) {
 		jdbcTemplate.update(DELETE_LECTURE, id);
 	}

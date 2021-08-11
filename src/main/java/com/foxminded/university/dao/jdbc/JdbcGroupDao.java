@@ -1,4 +1,4 @@
-package com.foxminded.university.dao;
+package com.foxminded.university.dao.jdbc;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -9,11 +9,12 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
+import com.foxminded.university.dao.JdbcDao;
 import com.foxminded.university.dao.mapper.GroupRowMapper;
 import com.foxminded.university.model.Group;
 
 @Component
-public class GroupDao {
+public class JdbcGroupDao implements JdbcDao<Group> {
 
 	private final static String SELECT_ALL = "SELECT * FROM groups";
 	private final static String SELECT_BY_ID = "SELECT * FROM groups WHERE id = ?";
@@ -25,19 +26,22 @@ public class GroupDao {
 	private final JdbcTemplate jdbcTemplate;
 	private GroupRowMapper rowMapper;
 
-	public GroupDao(JdbcTemplate jdbcTemplate, GroupRowMapper rowMapper) {
+	public JdbcGroupDao(JdbcTemplate jdbcTemplate, GroupRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.rowMapper = rowMapper;
 	}
 
+	@Override
 	public List<Group> findAll() {
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
 
+	@Override
 	public Group findById(int id) {
 		return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
 	}
 
+	@Override
 	public void save(Group group) {
 		if (group.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -55,6 +59,7 @@ public class GroupDao {
 
 	}
 
+	@Override
 	public void deleteById(int id) {
 		jdbcTemplate.update(DELETE_GROUP, id);
 	}

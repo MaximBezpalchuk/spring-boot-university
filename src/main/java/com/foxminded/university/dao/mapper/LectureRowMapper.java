@@ -9,26 +9,26 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import com.foxminded.university.dao.jdbc.JdbcAudienceDao;
-import com.foxminded.university.dao.CathedraDao;
-import com.foxminded.university.dao.GroupDao;
-import com.foxminded.university.dao.LectureTimeDao;
-import com.foxminded.university.dao.SubjectDao;
-import com.foxminded.university.dao.TeacherDao;
+import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
+import com.foxminded.university.dao.jdbc.JdbcGroupDao;
+import com.foxminded.university.dao.jdbc.JdbcLectureTimeDao;
+import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
+import com.foxminded.university.dao.jdbc.JdbcTeacherDao;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Lecture;
 
 @Component
 public class LectureRowMapper implements RowMapper<Lecture> {
 
-	private CathedraDao cathedraDao;
-	private GroupDao groupDao;
+	private JdbcCathedraDao cathedraDao;
+	private JdbcGroupDao groupDao;
 	private JdbcAudienceDao audienceDao;
-	private LectureTimeDao lectureTimeDao;
-	private TeacherDao teacherDao;
-	private SubjectDao subjectDao;
+	private JdbcLectureTimeDao lectureTimeDao;
+	private JdbcTeacherDao teacherDao;
+	private JdbcSubjectDao subjectDao;
 
-	public LectureRowMapper(CathedraDao cathedraDao, GroupDao groupDao, AudienceDao audienceDao,
-			LectureTimeDao lectureTimeDao, TeacherDao teacherDao, SubjectDao subjectDao) {
+	public LectureRowMapper(JdbcCathedraDao cathedraDao, JdbcGroupDao groupDao, JdbcAudienceDao audienceDao,
+			JdbcLectureTimeDao lectureTimeDao, JdbcTeacherDao teacherDao, JdbcSubjectDao subjectDao) {
 		this.cathedraDao = cathedraDao;
 		this.groupDao = groupDao;
 		this.audienceDao = audienceDao;

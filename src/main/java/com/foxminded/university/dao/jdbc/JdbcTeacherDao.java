@@ -1,4 +1,4 @@
-package com.foxminded.university.dao;
+package com.foxminded.university.dao.jdbc;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -9,12 +9,13 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
+import com.foxminded.university.dao.JdbcDao;
 import com.foxminded.university.dao.mapper.TeacherRowMapper;
 import com.foxminded.university.model.Subject;
 import com.foxminded.university.model.Teacher;
 
 @Component
-public class TeacherDao {
+public class JdbcTeacherDao implements JdbcDao<Teacher> {
 
 	private final static String SELECT_ALL = "SELECT * FROM teachers";
 	private final static String SELECT_BY_ID = "SELECT * FROM teachers WHERE id = ?";
@@ -26,19 +27,22 @@ public class TeacherDao {
 	private final JdbcTemplate jdbcTemplate;
 	private TeacherRowMapper rowMapper;
 
-	public TeacherDao(JdbcTemplate jdbcTemplate, TeacherRowMapper rowMapper) {
+	public JdbcTeacherDao(JdbcTemplate jdbcTemplate, TeacherRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.rowMapper = rowMapper;
 	}
 
+	@Override
 	public List<Teacher> findAll() {
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
 
+	@Override
 	public Teacher findById(int id) {
 		return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
 	}
 
+	@Override
 	public void save(Teacher teacher) {
 		if (teacher.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -75,6 +79,7 @@ public class TeacherDao {
 
 	}
 
+	@Override
 	public void deleteById(int id) {
 		jdbcTemplate.update(DELETE_TEACHER, id);
 	}

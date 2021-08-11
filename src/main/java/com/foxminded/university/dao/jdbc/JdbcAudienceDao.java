@@ -1,4 +1,4 @@
-package com.foxminded.university.dao;
+package com.foxminded.university.dao.jdbc;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -9,11 +9,12 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
+import com.foxminded.university.dao.JdbcDao;
 import com.foxminded.university.dao.mapper.AudienceRowMapper;
 import com.foxminded.university.model.Audience;
 
 @Component
-public class AudienceDao {
+public class JdbcAudienceDao implements JdbcDao<Audience> {
 
 	private final static String SELECT_ALL = "SELECT * FROM audiences";
 	private final static String SELECT_BY_ID = "SELECT * FROM audiences WHERE id = ?";
@@ -24,19 +25,22 @@ public class AudienceDao {
 	private final JdbcTemplate jdbcTemplate;
 	private AudienceRowMapper rowMapper;
 
-	public AudienceDao(JdbcTemplate jdbcTemplate, AudienceRowMapper rowMapper) {
+	public JdbcAudienceDao(JdbcTemplate jdbcTemplate, AudienceRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.rowMapper = rowMapper;
 	}
 
+	@Override
 	public List<Audience> findAll() {
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
 
+	@Override
 	public Audience findById(int id) {
 		return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
 	}
 
+	@Override
 	public void save(Audience audience) {
 		if (audience.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -56,6 +60,7 @@ public class AudienceDao {
 
 	}
 
+	@Override
 	public void deleteById(int id) {
 		jdbcTemplate.update(DELETE_AUDIENCE, id);
 	}

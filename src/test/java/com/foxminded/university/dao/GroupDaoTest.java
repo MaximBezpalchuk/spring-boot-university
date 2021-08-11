@@ -16,6 +16,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.foxminded.university.model.Group;
+import com.foxminded.university.SpringTestConfig;
+import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
+import com.foxminded.university.dao.jdbc.JdbcGroupDao;
 import com.foxminded.university.model.Cathedra;
 
 @ExtendWith(SpringExtension.class)
@@ -26,9 +29,9 @@ public class GroupDaoTest {
 	@Autowired
 	private JdbcTemplate template;
 	@Autowired
-	private GroupDao groupDao;
+	private JdbcGroupDao groupDao;
 	@Autowired
-	private CathedraDao cathedraDao;
+	private JdbcCathedraDao cathedraDao;
 
 	@Test
 	void whenFindAll_thenAllExistingGroupsFound() {

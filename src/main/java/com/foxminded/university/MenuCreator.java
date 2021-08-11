@@ -16,16 +16,16 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.foxminded.university.config.SpringConfig;
-import com.foxminded.university.dao.AudienceDao;
-import com.foxminded.university.dao.CathedraDao;
-import com.foxminded.university.dao.GroupDao;
-import com.foxminded.university.dao.HolidayDao;
-import com.foxminded.university.dao.LectureDao;
-import com.foxminded.university.dao.LectureTimeDao;
-import com.foxminded.university.dao.StudentDao;
-import com.foxminded.university.dao.SubjectDao;
-import com.foxminded.university.dao.TeacherDao;
-import com.foxminded.university.dao.VacationDao;
+import com.foxminded.university.dao.jdbc.JdbcAudienceDao;
+import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
+import com.foxminded.university.dao.jdbc.JdbcGroupDao;
+import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
+import com.foxminded.university.dao.jdbc.JdbcLectureDao;
+import com.foxminded.university.dao.jdbc.JdbcLectureTimeDao;
+import com.foxminded.university.dao.jdbc.JdbcStudentDao;
+import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
+import com.foxminded.university.dao.jdbc.JdbcTeacherDao;
+import com.foxminded.university.dao.jdbc.JdbcVacationDao;
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Degree;
@@ -46,16 +46,16 @@ public class MenuCreator {
 	private BufferedReader reader;
 	private Formatter formatter = new Formatter();
 	private DataUpdater dataUpdater2 = new DataUpdater();
-	private AudienceDao audienceDao = context.getBean(AudienceDao.class);
-	private CathedraDao cathedraDao = context.getBean(CathedraDao.class);
-	private GroupDao groupDao = context.getBean(GroupDao.class);
-	private StudentDao studentDao = context.getBean(StudentDao.class);
-	private SubjectDao subjectDao = context.getBean(SubjectDao.class);
-	private TeacherDao teacherDao = context.getBean(TeacherDao.class);
-	private LectureDao lectureDao = context.getBean(LectureDao.class);
-	private LectureTimeDao lectureTimeDao = context.getBean(LectureTimeDao.class);
-	private HolidayDao holidayDao = context.getBean(HolidayDao.class);
-	private VacationDao vacationDao = context.getBean(VacationDao.class);
+	private JdbcAudienceDao audienceDao = context.getBean(JdbcAudienceDao.class);
+	private JdbcCathedraDao cathedraDao = context.getBean(JdbcCathedraDao.class);
+	private JdbcGroupDao groupDao = context.getBean(JdbcGroupDao.class);
+	private JdbcStudentDao studentDao = context.getBean(JdbcStudentDao.class);
+	private JdbcSubjectDao subjectDao = context.getBean(JdbcSubjectDao.class);
+	private JdbcTeacherDao teacherDao = context.getBean(JdbcTeacherDao.class);
+	private JdbcLectureDao lectureDao = context.getBean(JdbcLectureDao.class);
+	private JdbcLectureTimeDao lectureTimeDao = context.getBean(JdbcLectureTimeDao.class);
+	private JdbcHolidayDao holidayDao = context.getBean(JdbcHolidayDao.class);
+	private JdbcVacationDao vacationDao = context.getBean(JdbcVacationDao.class);
 
 	private String printMainMenu() {
 		StringBuilder menu = new StringBuilder();
@@ -424,7 +424,7 @@ public class MenuCreator {
 			exitCheck(String.valueOf(cathedraNumber6));
 			Cathedra cathedra6 = sortedCathedras6.get(cathedraNumber6 - 1);
 			Holiday holiday6 = new Holiday.Builder(holidayDescription6, holidayDate5, cathedra6).build();
-			holidayDao.save(holiday6, cathedraDao.findById(1));
+			holidayDao.save(holiday6);
 			System.out.println("Holiday created!");
 			break;
 		case 7:

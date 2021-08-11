@@ -1,4 +1,4 @@
-package com.foxminded.university.dao;
+package com.foxminded.university.dao.jdbc;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -9,11 +9,12 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
+import com.foxminded.university.dao.JdbcDao;
 import com.foxminded.university.dao.mapper.SubjectRowMapper;
 import com.foxminded.university.model.Subject;
 
 @Component
-public class SubjectDao {
+public class JdbcSubjectDao implements JdbcDao<Subject> {
 
 	private final static String SELECT_ALL = "SELECT * FROM subjects";
 	private final static String SELECT_BY_ID = "SELECT * FROM subjects WHERE id = ?";
@@ -25,19 +26,22 @@ public class SubjectDao {
 	private final JdbcTemplate jdbcTemplate;
 	private SubjectRowMapper rowMapper;
 
-	public SubjectDao(JdbcTemplate jdbcTemplate, SubjectRowMapper rowMapper) {
+	public JdbcSubjectDao(JdbcTemplate jdbcTemplate, SubjectRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.rowMapper = rowMapper;
 	}
 
+	@Override
 	public List<Subject> findAll() {
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
 
+	@Override
 	public Subject findById(int id) {
 		return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
 	}
 
+	@Override
 	public void save(Subject subject) {
 		if (subject.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -57,6 +61,7 @@ public class SubjectDao {
 
 	}
 
+	@Override
 	public void deleteById(int id) {
 		jdbcTemplate.update(DELETE_SUBJECT, id);
 	}

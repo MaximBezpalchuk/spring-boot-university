@@ -6,15 +6,15 @@ import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
-import com.foxminded.university.dao.CathedraDao;
+import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
 import com.foxminded.university.model.Subject;
 
 @Component
 public class SubjectRowMapper implements RowMapper<Subject> {
 
-	private CathedraDao cathedraDao;
+	private JdbcCathedraDao cathedraDao;
 
-	public SubjectRowMapper(CathedraDao cathedraDao) {
+	public SubjectRowMapper(JdbcCathedraDao cathedraDao) {
 		this.cathedraDao = cathedraDao;
 	}
 

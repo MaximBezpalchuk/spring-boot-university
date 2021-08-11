@@ -1,4 +1,4 @@
-package com.foxminded.university.dao;
+package com.foxminded.university.dao.jdbc;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -9,11 +9,12 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
+import com.foxminded.university.dao.JdbcDao;
 import com.foxminded.university.dao.mapper.CathedraRowMapper;
 import com.foxminded.university.model.Cathedra;
 
 @Component
-public class CathedraDao {
+public class JdbcCathedraDao implements JdbcDao<Cathedra> {
 
 	private final static String SELECT_ALL = "SELECT * FROM cathedras";
 	private final static String SELECT_BY_ID = "SELECT * FROM cathedras WHERE id = ?";
@@ -24,19 +25,22 @@ public class CathedraDao {
 	private final JdbcTemplate jdbcTemplate;
 	private CathedraRowMapper rowMapper;
 
-	public CathedraDao(JdbcTemplate jdbcTemplate, CathedraRowMapper rowMapper) {
+	public JdbcCathedraDao(JdbcTemplate jdbcTemplate, CathedraRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.rowMapper = rowMapper;
 	}
 
+	@Override
 	public List<Cathedra> findAll() {
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
 
+	@Override
 	public Cathedra findById(int id) {
 		return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
 	}
 
+	@Override
 	public void save(Cathedra cathedra) {
 		if (cathedra.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -53,6 +57,7 @@ public class CathedraDao {
 
 	}
 
+	@Override
 	public void deleteById(int id) {
 		jdbcTemplate.update(DELETE_CATHEDRA, id);
 	}

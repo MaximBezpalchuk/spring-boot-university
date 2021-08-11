@@ -8,8 +8,8 @@ import java.util.List;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
-import com.foxminded.university.dao.CathedraDao;
-import com.foxminded.university.dao.SubjectDao;
+import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
+import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
 import com.foxminded.university.model.Degree;
 import com.foxminded.university.model.Gender;
 import com.foxminded.university.model.Subject;
@@ -18,10 +18,10 @@ import com.foxminded.university.model.Teacher;
 @Component
 public class TeacherRowMapper implements RowMapper<Teacher> {
 
-	private CathedraDao cathedraDao;
-	private SubjectDao subjectDao;
+	private JdbcCathedraDao cathedraDao;
+	private JdbcSubjectDao subjectDao;
 
-	public TeacherRowMapper(CathedraDao cathedraDao, SubjectDao subjectDao) {
+	public TeacherRowMapper(JdbcCathedraDao cathedraDao, JdbcSubjectDao subjectDao) {
 		this.subjectDao = subjectDao;
 		this.cathedraDao = cathedraDao;
 	}

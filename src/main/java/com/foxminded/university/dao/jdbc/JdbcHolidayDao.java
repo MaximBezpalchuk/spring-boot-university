@@ -1,4 +1,4 @@
-package com.foxminded.university.dao;
+package com.foxminded.university.dao.jdbc;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -9,12 +9,12 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
+import com.foxminded.university.dao.JdbcDao;
 import com.foxminded.university.dao.mapper.HolidayRowMapper;
-import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Holiday;
 
 @Component
-public class HolidayDao {
+public class JdbcHolidayDao implements JdbcDao<Holiday> {
 
 	private final static String SELECT_ALL = "SELECT * FROM holidays";
 	private final static String SELECT_BY_ID = "SELECT * FROM holidays WHERE id = ?";
@@ -25,20 +25,23 @@ public class HolidayDao {
 	private final JdbcTemplate jdbcTemplate;
 	private HolidayRowMapper rowMapper;
 
-	public HolidayDao(JdbcTemplate jdbcTemplate, HolidayRowMapper rowMapper) {
+	public JdbcHolidayDao(JdbcTemplate jdbcTemplate, HolidayRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.rowMapper = rowMapper;
 	}
 
+	@Override
 	public List<Holiday> findAll() {
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
 
+	@Override
 	public Holiday findById(int id) {
 		return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
 	}
 
-	public void save(Holiday holiday, Cathedra cathedra) {
+	@Override
+	public void save(Holiday holiday) {
 		if (holiday.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {
@@ -46,16 +49,17 @@ public class HolidayDao {
 						Statement.RETURN_GENERATED_KEYS);
 				statement.setString(1, holiday.getName());
 				statement.setObject(2, holiday.getDate());
-				statement.setInt(3, cathedra.getId());
+				statement.setInt(3, holiday.getCathedra().getId());
 				return statement;
 			}, keyHolder);
 			holiday.setId((int) keyHolder.getKeyList().get(0).get("id"));
 		} else {
-			jdbcTemplate.update(UPDATE_HOLIDAY, holiday.getName(), holiday.getDate(), cathedra.getId(),
+			jdbcTemplate.update(UPDATE_HOLIDAY, holiday.getName(), holiday.getDate(), holiday.getCathedra().getId(),
 					holiday.getId());
 		}
 	}
 
+	@Override
 	public void deleteById(int id) {
 		jdbcTemplate.update(DELETE_HOLIDAY, id);
 	}

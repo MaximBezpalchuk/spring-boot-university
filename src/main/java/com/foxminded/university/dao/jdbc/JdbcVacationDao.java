@@ -1,4 +1,4 @@
-package com.foxminded.university.dao;
+package com.foxminded.university.dao.jdbc;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -9,11 +9,12 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
+import com.foxminded.university.dao.JdbcDao;
 import com.foxminded.university.dao.mapper.VacationRowMapper;
 import com.foxminded.university.model.Vacation;
 
 @Component
-public class VacationDao {
+public class JdbcVacationDao implements JdbcDao<Vacation> {
 
 	private final static String SELECT_ALL = "SELECT * FROM vacations";
 	private final static String SELECT_BY_ID = "SELECT * FROM vacations WHERE id = ?";
@@ -25,19 +26,22 @@ public class VacationDao {
 	private final JdbcTemplate jdbcTemplate;
 	private VacationRowMapper rowMapper;
 
-	public VacationDao(JdbcTemplate jdbcTemplate, VacationRowMapper rowMapper) {
+	public JdbcVacationDao(JdbcTemplate jdbcTemplate, VacationRowMapper rowMapper) {
 		this.jdbcTemplate = jdbcTemplate;
 		this.rowMapper = rowMapper;
 	}
 
+	@Override
 	public List<Vacation> findAll() {
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
 
+	@Override
 	public Vacation findById(int id) {
 		return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
 	}
 
+	@Override
 	public void save(Vacation vacation) {
 		if (vacation.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -57,6 +61,7 @@ public class VacationDao {
 
 	}
 
+	@Override
 	public void deleteById(int id) {
 		jdbcTemplate.update(DELETE_VACATION, id);
 	}

@@ -19,6 +19,10 @@ import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.foxminded.university.SpringTestConfig;
+import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
+import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
+import com.foxminded.university.dao.jdbc.JdbcTeacherDao;
 import com.foxminded.university.model.Degree;
 import com.foxminded.university.model.Gender;
 import com.foxminded.university.model.Subject;
@@ -32,11 +36,11 @@ public class TeacherDaoTest {
 	@Autowired
 	private JdbcTemplate template;
 	@Autowired
-	private TeacherDao teacherDao;
+	private JdbcTeacherDao teacherDao;
 	@Autowired
-	private CathedraDao cathedraDao;
+	private JdbcCathedraDao cathedraDao;
 	@Autowired
-	private SubjectDao subjectDao;
+	private JdbcSubjectDao subjectDao;
 
 	@Test
 	void whenFindAll_thenAllExistingTeachersFound() {

@@ -17,6 +17,8 @@ import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.foxminded.university.SpringTestConfig;
+import com.foxminded.university.dao.jdbc.JdbcLectureTimeDao;
 import com.foxminded.university.model.LectureTime;
 
 @ExtendWith(SpringExtension.class)
@@ -27,7 +29,7 @@ public class LectureTimeDaoTest {
 	@Autowired
 	private JdbcTemplate template;
 	@Autowired
-	private LectureTimeDao lectureTimeDao;
+	private JdbcLectureTimeDao lectureTimeDao;
 
 	@Test
 	void whenFindAll_thenAllExistingLectureTimesFound() {

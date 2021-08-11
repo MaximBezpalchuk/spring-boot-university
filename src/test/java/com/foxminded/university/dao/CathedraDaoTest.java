@@ -15,6 +15,8 @@ import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.foxminded.university.SpringTestConfig;
+import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
 import com.foxminded.university.model.Cathedra;
 
 @ExtendWith(SpringExtension.class)
@@ -25,7 +27,7 @@ public class CathedraDaoTest {
 	@Autowired
 	private JdbcTemplate template;
 	@Autowired
-	private CathedraDao cathedraDao;
+	private JdbcCathedraDao cathedraDao;
 
 	@Test
 	void whenFindAll_thenAllExistingCathedrasFound() {

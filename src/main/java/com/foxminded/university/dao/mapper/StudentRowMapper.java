@@ -7,16 +7,16 @@ import java.time.LocalDate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
-import com.foxminded.university.dao.GroupDao;
+import com.foxminded.university.dao.jdbc.JdbcGroupDao;
 import com.foxminded.university.model.Gender;
 import com.foxminded.university.model.Student;
 
 @Component
 public class StudentRowMapper implements RowMapper<Student> {
 
-	private GroupDao groupDao;
+	private JdbcGroupDao groupDao;
 
-	public StudentRowMapper(GroupDao groupDao) {
+	public StudentRowMapper(JdbcGroupDao groupDao) {
 		this.groupDao = groupDao;
 	}
 

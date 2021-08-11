@@ -83,7 +83,7 @@ public class Lecture {
 
 		private int id;
 		private final Cathedra cathedra; // required field
-		private List<Group> groups;
+		private List<Group> groups = new ArrayList<>();
 		private final Teacher teacher; // required field
 		private final Audience audience; // required field
 		private final LocalDate date; // required field

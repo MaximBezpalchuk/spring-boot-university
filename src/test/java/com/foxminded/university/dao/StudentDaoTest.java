@@ -18,6 +18,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.foxminded.university.model.Student;
+import com.foxminded.university.SpringTestConfig;
+import com.foxminded.university.dao.jdbc.JdbcGroupDao;
+import com.foxminded.university.dao.jdbc.JdbcStudentDao;
 import com.foxminded.university.model.Gender;
 
 @ExtendWith(SpringExtension.class)
@@ -28,9 +31,9 @@ public class StudentDaoTest {
 	@Autowired
 	private JdbcTemplate template;
 	@Autowired
-	private StudentDao studentDao;
+	private JdbcStudentDao studentDao;
 	@Autowired
-	private GroupDao groupDao;
+	private JdbcGroupDao groupDao;
 
 	@Test
 	void whenFindAll_thenAllExistingStudentsFound() {

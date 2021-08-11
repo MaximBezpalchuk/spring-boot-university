@@ -19,6 +19,9 @@ import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.foxminded.university.SpringTestConfig;
+import com.foxminded.university.dao.jdbc.JdbcTeacherDao;
+import com.foxminded.university.dao.jdbc.JdbcVacationDao;
 import com.foxminded.university.model.Vacation;
 
 @ExtendWith(SpringExtension.class)
@@ -29,9 +32,9 @@ public class VacationDaoTest {
 	@Autowired
 	private JdbcTemplate template;
 	@Autowired
-	private VacationDao vacationDao;
+	private JdbcVacationDao vacationDao;
 	@Autowired
-	private TeacherDao teacherDao;
+	private JdbcTeacherDao teacherDao;
 
 	@Test
 	void whenFindAll_thenAllExistingVacationsFound() {

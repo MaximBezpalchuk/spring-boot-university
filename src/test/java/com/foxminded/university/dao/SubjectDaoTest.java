@@ -19,6 +19,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.foxminded.university.model.Subject;
+import com.foxminded.university.SpringTestConfig;
+import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
+import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
 import com.foxminded.university.model.Cathedra;
 
 @ExtendWith(SpringExtension.class)
@@ -29,9 +32,9 @@ public class SubjectDaoTest {
 	@Autowired
 	private JdbcTemplate template;
 	@Autowired
-	private SubjectDao subjectDao;
+	private JdbcSubjectDao subjectDao;
 	@Autowired
-	private CathedraDao cathedraDao;
+	private JdbcCathedraDao cathedraDao;
 
 	@Test
 	void whenFindAll_thenAllExistingSubjectsFound() {

@@ -1,4 +1,4 @@
-package com.foxminded.university.dao;
+package com.foxminded.university;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

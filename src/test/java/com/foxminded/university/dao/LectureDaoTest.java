@@ -23,6 +23,14 @@ import com.foxminded.university.model.Lecture;
 import com.foxminded.university.model.LectureTime;
 import com.foxminded.university.model.Subject;
 import com.foxminded.university.model.Teacher;
+import com.foxminded.university.SpringTestConfig;
+import com.foxminded.university.dao.jdbc.JdbcAudienceDao;
+import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
+import com.foxminded.university.dao.jdbc.JdbcGroupDao;
+import com.foxminded.university.dao.jdbc.JdbcLectureDao;
+import com.foxminded.university.dao.jdbc.JdbcLectureTimeDao;
+import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
+import com.foxminded.university.dao.jdbc.JdbcTeacherDao;
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Group;
@@ -35,19 +43,19 @@ public class LectureDaoTest {
 	@Autowired
 	private JdbcTemplate template;
 	@Autowired
-	private LectureDao lectureDao;
+	private JdbcLectureDao lectureDao;
 	@Autowired
-	private CathedraDao cathedraDao;
+	private JdbcCathedraDao cathedraDao;
 	@Autowired
-	private SubjectDao subjectDao;
+	private JdbcSubjectDao subjectDao;
 	@Autowired
-	private LectureTimeDao lectureTimeDao;
+	private JdbcLectureTimeDao lectureTimeDao;
 	@Autowired
-	private AudienceDao audienceDao;
+	private JdbcAudienceDao audienceDao;
 	@Autowired
-	private TeacherDao teacherDao;
+	private JdbcTeacherDao teacherDao;
 	@Autowired
-	private GroupDao groupDao;
+	private JdbcGroupDao groupDao;
 
 	@Test
 	void whenFindAll_thenAllExistingLecturesFound() {
