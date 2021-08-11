@@ -350,12 +350,12 @@ public class MenuCreator {
 			}
 			Teacher teacher12 = dataUpdater2.createTeacher(firstName2, lastName2, phone2, address2, email2, gender2,
 					postalCode2, education2, birthDate2, degree2, cathedraDao.findById(1));
-			teacherDao.save(teacher12);
 			for (Subject subject : subjects2) {
 				if (!teacher12.getSubjects().contains(subject)) {
-					teacherDao.updateSubject(teacher12, subject);
+					teacher12.getSubjects().add(subject);
 				}
 			}
+			teacherDao.save(teacher12);
 			System.out.println("Teacher added!");
 			break;
 		case 3:
@@ -621,8 +621,13 @@ public class MenuCreator {
 			int teacherNumber3 = getInput(sortedTeachers3.size());
 			exitCheck(String.valueOf(teacherNumber3));
 			Teacher teacher3 = sortedTeachers3.get(teacherNumber3 - 1);
-			teacherDao.updateSubject(teacher3, subject3);
-			System.out.println("Subject was set!");
+			if (!teacher3.getSubjects().contains(subject3)) {
+				teacher3.getSubjects().add(subject3);
+				teacherDao.save(teacher3);
+				System.out.println("Subject was set!");
+			} else {
+				System.out.println("Teacher already have this subject");
+			}
 			break;
 		case 4:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -688,8 +693,13 @@ public class MenuCreator {
 			int groupNumber7 = getInput(sortedGroups7.size());
 			exitCheck(String.valueOf(groupNumber7));
 			Group group7 = sortedGroups7.get(groupNumber7 - 1);
-			lectureDao.updateGroups(lecture7, group7);
-			System.out.println("Group was set to lecture!");
+			if (!lecture7.getGroups().contains(group7)) {
+				lecture7.getGroups().add(group7);
+				lectureDao.save(lecture7);
+				System.out.println("Group was set to lecture!");
+			} else {
+				System.out.println("Lecture already have this group!");
+			}
 			break;
 		case 0:
 			break;

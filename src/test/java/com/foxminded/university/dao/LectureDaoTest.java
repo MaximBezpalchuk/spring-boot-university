@@ -120,15 +120,4 @@ public class LectureDaoTest {
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
-
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
-	@Test
-	void givenExitstingLecture_whenUpdateGroups_thenAllExistingLecturesFound() {
-		int expected = countRowsInTable(template, "lectures_groups") + 1;
-		lectureDao.updateGroups(lectureDao.findById(1), groupDao.findById(2));
-		int actual = countRowsInTable(template, "lectures_groups");
-
-		assertEquals(expected, actual);
-	}
-
 }

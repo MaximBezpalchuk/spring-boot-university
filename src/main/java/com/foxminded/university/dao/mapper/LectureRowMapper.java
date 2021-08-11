@@ -8,7 +8,7 @@ import java.util.List;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
-import com.foxminded.university.dao.AudienceDao;
+import com.foxminded.university.dao.jdbc.JdbcAudienceDao;
 import com.foxminded.university.dao.CathedraDao;
 import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.LectureTimeDao;
@@ -22,7 +22,7 @@ public class LectureRowMapper implements RowMapper<Lecture> {
 
 	private CathedraDao cathedraDao;
 	private GroupDao groupDao;
-	private AudienceDao audienceDao;
+	private JdbcAudienceDao audienceDao;
 	private LectureTimeDao lectureTimeDao;
 	private TeacherDao teacherDao;
 	private SubjectDao subjectDao;
@@ -49,7 +49,6 @@ public class LectureRowMapper implements RowMapper<Lecture> {
 		if (!groups.isEmpty()) {
 			lecture.setGroups(groups);
 		}
-
 		return lecture;
 	}
 }

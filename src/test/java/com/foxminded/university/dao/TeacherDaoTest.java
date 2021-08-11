@@ -115,7 +115,9 @@ public class TeacherDaoTest {
 	@Test
 	void givenExitstingTeacher_whenUpdateSubjects_thenAllExistingTeachersFound() {
 		int expected = countRowsInTable(template, "subjects_teachers") + 1;
-		teacherDao.updateSubject(teacherDao.findById(1), subjectDao.findById(2));
+		Teacher teacher = teacherDao.findById(1);
+		teacher.getSubjects().add(subjectDao.findById(2));
+		teacherDao.save(teacher);
 		int actual = countRowsInTable(template, "subjects_teachers");
 
 		assertEquals(expected, actual);

@@ -21,7 +21,7 @@ public class TeacherDao {
 	private final static String INSERT_TEACHER = "INSERT INTO teachers(id, first_name, last_name, phone, address, email, gender, postal_code, education, birth_date, cathedra_id,  degree) VALUES(DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	private final static String UPDATE_TEACHER = "UPDATE teachers SET first_name=?, last_name=?, phone=?, address=?, email=?, gender=?, postal_code=?, education=?, birth_date=?, cathedra_id=?, degree=? WHERE id=?";
 	private final static String DELETE_TEACHER = "DELETE FROM teachers WHERE id = ?";
-	private final static String INSERT_SUBJECT = "INSERT INTO subjects_teachers(teacher_id, subject_id) VALUES(?, ?)";
+	private final static String INSERT_SUBJECT = "INSERT INTO subjects_teachers(subject_id,teacher_id) SELECT ?, ? WHERE NOT EXISTS(SELECT 1 FROM subjects_teachers WHERE subject_id = ? AND teacher_id = ?)";
 
 	private final JdbcTemplate jdbcTemplate;
 	private TeacherRowMapper rowMapper;
@@ -59,11 +59,18 @@ public class TeacherDao {
 				return statement;
 			}, keyHolder);
 			teacher.setId((int) keyHolder.getKeyList().get(0).get("id"));
+			for (Subject subject : teacher.getSubjects()) {
+				jdbcTemplate.update(INSERT_SUBJECT, subject.getId(), teacher.getId(), subject.getId(), teacher.getId());
+			}
 		} else {
 			jdbcTemplate.update(UPDATE_TEACHER, teacher.getFirstName(), teacher.getLastName(), teacher.getPhone(),
 					teacher.getAddress(), teacher.getEmail(), teacher.getGender().toString(), teacher.getPostalCode(),
 					teacher.getEducation(), teacher.getBirthDate(), teacher.getCathedra().getId(),
 					teacher.getDegree().toString(), teacher.getId());
+
+			for (Subject subject : teacher.getSubjects()) {
+				jdbcTemplate.update(INSERT_SUBJECT, subject.getId(), teacher.getId(), subject.getId(), teacher.getId());
+			}
 		}
 
 	}
@@ -71,9 +78,4 @@ public class TeacherDao {
 	public void deleteById(int id) {
 		jdbcTemplate.update(DELETE_TEACHER, id);
 	}
-
-	public void updateSubject(Teacher teacher, Subject subject) {
-		jdbcTemplate.update(INSERT_SUBJECT, teacher.getId(), subject.getId());
-	}
-
 }

@@ -28,7 +28,7 @@ public class Teacher extends Person {
 		}
 
 		private final Cathedra cathedra; // required field
-		private List<Subject> subjects;
+		private List<Subject> subjects = new ArrayList<>();
 		private final Degree degree; // required field
 
 		@Override
