@@ -26,7 +26,7 @@ public class Formatter {
 	}
 
 	public String formatLectureList(List<Lecture> lectures) {
-		if(lectures.isEmpty()) {
+		if (lectures.isEmpty()) {
 			return "No such lectures this period";
 		}
 		AtomicInteger index = new AtomicInteger();
@@ -36,15 +36,13 @@ public class Formatter {
 		int teacherNameFieldLength = getMaxFieldLength(lectures, lecture -> lecture.getTeacher().getFirstName())
 				+ getMaxFieldLength(lectures, lecture -> lecture.getTeacher().getLastName()) + 1;
 
-		return lectures.stream()
-				.map(lecture -> String.format(
-						"%-3s Date: %s | Subject: %-" + subjectNameFieldLength + "s | Audience: %"
-								+ lectureAudienceFieldLength + "d | Teacher: %-" + teacherNameFieldLength + "s |" + " Lecture start: %s, Lecture end: %s",
-						index.incrementAndGet() + ".", lecture.getDate(), lecture.getSubject().getName(),
-						lecture.getAudience().getRoom(),
-						lecture.getTeacher().getFirstName() + " " + lecture.getTeacher().getLastName(),
-						lecture.getTime().getStart(),
-						lecture.getTime().getEnd()))
+		return lectures.stream().map(lecture -> String.format(
+				"%-3s Date: %s | Subject: %-" + subjectNameFieldLength + "s | Audience: %" + lectureAudienceFieldLength
+						+ "d | Teacher: %-" + teacherNameFieldLength + "s |" + " Lecture start: %s, Lecture end: %s",
+				index.incrementAndGet() + ".", lecture.getDate(), lecture.getSubject().getName(),
+				lecture.getAudience().getRoom(),
+				lecture.getTeacher().getFirstName() + " " + lecture.getTeacher().getLastName(),
+				lecture.getTime().getStart(), lecture.getTime().getEnd()))
 				.collect(Collectors.joining(System.lineSeparator()));
 	}
 
@@ -55,13 +53,15 @@ public class Formatter {
 		return groups.stream().map(group -> String.format("%-3s %-" + nameFieldLength + "s",
 				index.incrementAndGet() + ".", group.getName())).collect(Collectors.joining(System.lineSeparator()));
 	}
-	
+
 	public String formatCathedraList(List<Cathedra> cathedras) {
 		AtomicInteger index = new AtomicInteger();
 		int nameFieldLength = getMaxFieldLength(cathedras, Cathedra::getName);
 
-		return cathedras.stream().map(cathedra -> String.format("%-3s %-" + nameFieldLength + "s",
-				index.incrementAndGet() + ".", cathedra.getName())).collect(Collectors.joining(System.lineSeparator()));
+		return cathedras
+				.stream().map(cathedra -> String.format("%-3s %-" + nameFieldLength + "s",
+						index.incrementAndGet() + ".", cathedra.getName()))
+				.collect(Collectors.joining(System.lineSeparator()));
 	}
 
 	public String formatSubjectList(List<Subject> subjects) {
@@ -103,13 +103,17 @@ public class Formatter {
 		AtomicInteger index = new AtomicInteger();
 		int nameFieldLength = getMaxFieldLength(students, Student::getFirstName)
 				+ getMaxFieldLength(students, Student::getLastName) + 1;
-		int groupNameFieldLength = getMaxFieldLength(students, student -> student.getGroup().getName());
+
+		int groupNameFieldLength = getMaxFieldLength(students, student -> {
+			return (student.getGroup() != null ? student.getGroup().getName() : "NULL");
+
+		});
 
 		return students.stream()
 				.map(student -> String.format(
 						"%-3s Name: %-" + nameFieldLength + "s | Group: %-" + groupNameFieldLength + "s",
 						index.incrementAndGet() + ".", student.getLastName() + " " + student.getFirstName(),
-						student.getGroup().getName()))
+						(student.getGroup() != null ? student.getGroup().getName() : "NULL")))
 				.collect(Collectors.joining(System.lineSeparator()));
 	}
 

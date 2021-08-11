@@ -285,15 +285,8 @@ public class MenuCreator {
 			exitCheck(education1);
 			System.out.println("Enter the date of birth separated by commas without spaces (YEAR,MONTH,DAY):");
 			LocalDate birthDate1 = setupLocalDate();
-			System.out.println("Set group from list:");
-			List<Group> sortedGroups1 = sortGroupsByName(groupDao.findAll());
-			System.out.println(formatter.formatGroupList(sortedGroups1));
-			int groupNumber1 = getInput(sortedGroups1.size());
-			exitCheck(String.valueOf(groupNumber1));
-			Group group1 = sortedGroups1.get(groupNumber1 - 1);
-
 			studentDao.save(dataUpdater2.createStudent(firstName1, lastName1, phone1, address1, email1, gender1,
-					postalCode1, education1, birthDate1, group1));
+					postalCode1, education1, birthDate1));
 			System.out.println("Student added!");
 			break;
 		case 2:

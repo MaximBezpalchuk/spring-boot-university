@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.foxminded.university.dao.JdbcDao;
 import com.foxminded.university.dao.mapper.StudentRowMapper;
+import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Student;
 
 @Component
@@ -44,6 +45,7 @@ public class JdbcStudentDao implements JdbcDao<Student> {
 	public void save(Student student) {
 		if (student.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
+			Group group = student.getGroup();
 			jdbcTemplate.update(connection -> {
 				PreparedStatement statement = connection.prepareStatement(INSERT_STUDENT,
 						Statement.RETURN_GENERATED_KEYS);
@@ -56,14 +58,43 @@ public class JdbcStudentDao implements JdbcDao<Student> {
 				statement.setString(7, student.getPostalCode());
 				statement.setString(8, student.getEducation());
 				statement.setObject(9, student.getBirthDate());
-				statement.setInt(10, student.getGroup().getId());
+				if (group != null) {
+					statement.setInt(10, student.getGroup().getId());
+				} else {
+					statement.setObject(10, group);
+				}
 				return statement;
 			}, keyHolder);
 			student.setId((int) keyHolder.getKeyList().get(0).get("id"));
 		} else {
-			jdbcTemplate.update(UPDATE_STUDENT, student.getFirstName(), student.getLastName(), student.getPhone(),
-					student.getAddress(), student.getEmail(), student.getGender().toString(), student.getPostalCode(),
-					student.getEducation(), student.getBirthDate(), student.getGroup().getId(), student.getId());
+
+			Group group = student.getGroup();
+			jdbcTemplate.update(connection -> {
+				PreparedStatement statement = connection.prepareStatement(UPDATE_STUDENT);
+				statement.setString(1, student.getFirstName());
+				statement.setString(2, student.getLastName());
+				statement.setString(3, student.getPhone());
+				statement.setString(4, student.getAddress());
+				statement.setString(5, student.getEmail());
+				statement.setString(6, student.getGender().toString());
+				statement.setString(7, student.getPostalCode());
+				statement.setString(8, student.getEducation());
+				statement.setObject(9, student.getBirthDate());
+				if (group != null) {
+					statement.setInt(10, student.getGroup().getId());
+				} else {
+					statement.setObject(10, group);
+				}
+				statement.setInt(11, student.getId());
+				return statement;
+			});
+			/*
+			 * jdbcTemplate.update(UPDATE_STUDENT, student.getFirstName(),
+			 * student.getLastName(), student.getPhone(), student.getAddress(),
+			 * student.getEmail(), student.getGender().toString(), student.getPostalCode(),
+			 * student.getEducation(), student.getBirthDate(), student.getGroup().getId(),
+			 * student.getId());
+			 */
 		}
 
 	}

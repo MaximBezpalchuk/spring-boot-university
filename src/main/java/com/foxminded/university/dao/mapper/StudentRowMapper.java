@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import com.foxminded.university.dao.jdbc.JdbcGroupDao;
 import com.foxminded.university.model.Gender;
+import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Student;
 
 @Component
@@ -26,9 +27,12 @@ public class StudentRowMapper implements RowMapper<Student> {
 				resultSet.getString("address"), Gender.valueOf(resultSet.getString("gender")),
 				resultSet.getObject("birth_date", LocalDate.class)).setPhone(resultSet.getString("phone"))
 						.setEmail(resultSet.getString("email")).setPostalCode(resultSet.getString("postal_code"))
-						.setEducation(resultSet.getString("education"))
-						.setGroup(groupDao.findById(resultSet.getInt("group_id"))).setId(resultSet.getInt("id"))
-						.build();
+						.setEducation(resultSet.getString("education")).setId(resultSet.getInt("id")).build();
+		Object group_id = resultSet.getObject("group_id");
+		if (group_id != null) {
+			Group group = groupDao.findById((int) group_id);
+			student.setGroup(group);
+		}
 		return student;
 	}
 }
