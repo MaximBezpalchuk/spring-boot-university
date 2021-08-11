@@ -88,13 +88,6 @@ public class JdbcStudentDao implements JdbcDao<Student> {
 				statement.setInt(11, student.getId());
 				return statement;
 			});
-			/*
-			 * jdbcTemplate.update(UPDATE_STUDENT, student.getFirstName(),
-			 * student.getLastName(), student.getPhone(), student.getAddress(),
-			 * student.getEmail(), student.getGender().toString(), student.getPostalCode(),
-			 * student.getEducation(), student.getBirthDate(), student.getGroup().getId(),
-			 * student.getId());
-			 */
 		}
 
 	}
