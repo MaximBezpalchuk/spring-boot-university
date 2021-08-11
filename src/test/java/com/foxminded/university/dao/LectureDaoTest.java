@@ -23,7 +23,7 @@ import com.foxminded.university.model.Lecture;
 import com.foxminded.university.model.LectureTime;
 import com.foxminded.university.model.Subject;
 import com.foxminded.university.model.Teacher;
-import com.foxminded.university.SpringTestConfig;
+import com.foxminded.university.config.SpringTestConfig;
 import com.foxminded.university.dao.jdbc.JdbcAudienceDao;
 import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
 import com.foxminded.university.dao.jdbc.JdbcGroupDao;

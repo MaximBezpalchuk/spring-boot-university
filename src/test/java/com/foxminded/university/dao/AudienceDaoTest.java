@@ -10,7 +10,7 @@ import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.foxminded.university.SpringTestConfig;
+import com.foxminded.university.config.SpringTestConfig;
 import com.foxminded.university.dao.jdbc.JdbcAudienceDao;
 import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
 import com.foxminded.university.model.Audience;

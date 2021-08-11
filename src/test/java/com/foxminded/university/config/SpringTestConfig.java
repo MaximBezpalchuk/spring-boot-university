@@ -1,4 +1,4 @@
-package com.foxminded.university;
+package com.foxminded.university.config;
 
 import javax.sql.DataSource;
 
@@ -6,8 +6,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
-
-import com.foxminded.university.config.SpringConfig;
 
 @Configuration
 @ComponentScan("com.foxminded.university")
