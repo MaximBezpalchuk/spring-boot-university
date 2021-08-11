@@ -8,7 +8,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -27,6 +26,10 @@ public class SpringConfig {
 	public String password;
 	@Value("${driverClass}")
 	public String driverClass;
+	@Value("schema.sql")
+	Resource schema;
+	@Value("data.sql")
+	Resource data;
 
 	@Bean
 	public JdbcTemplate jdbcTemplate(DataSource dataSource) {
@@ -40,13 +43,21 @@ public class SpringConfig {
 		dataSource.setUsername(user);
 		dataSource.setUrl(url);
 		dataSource.setPassword(password);
-		Resource resource = new ClassPathResource("schema.sql");
-		ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator(resource);
-		databasePopulator.execute(dataSource);
-		resource = new ClassPathResource("data.sql");
-		databasePopulator = new ResourceDatabasePopulator(resource);
-		databasePopulator.execute(dataSource);
+
+		createSchema(dataSource);
+		createData(dataSource);
+
 		return dataSource;
+	}
+
+	private void createSchema(DriverManagerDataSource dataSource) {
+		ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator(schema);
+		databasePopulator.execute(dataSource);
+	}
+
+	private void createData(DriverManagerDataSource dataSource) {
+		ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator(data);
+		databasePopulator.execute(dataSource);
 	}
 
 	@Bean
