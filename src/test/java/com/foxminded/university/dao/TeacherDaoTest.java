@@ -29,7 +29,7 @@ import com.foxminded.university.model.Subject;
 import com.foxminded.university.model.Teacher;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { SpringTestConfig.class })
+@ContextConfiguration(classes = SpringTestConfig.class)
 public class TeacherDaoTest {
 
 	private final static String TABLE_NAME = "teachers";

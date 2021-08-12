@@ -22,7 +22,7 @@ import com.foxminded.university.dao.jdbc.JdbcLectureTimeDao;
 import com.foxminded.university.model.LectureTime;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { SpringTestConfig.class })
+@ContextConfiguration(classes = SpringTestConfig.class)
 public class LectureTimeDaoTest {
 
 	private final static String TABLE_NAME = "lecture_times";

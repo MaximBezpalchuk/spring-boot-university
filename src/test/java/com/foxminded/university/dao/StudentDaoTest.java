@@ -24,7 +24,7 @@ import com.foxminded.university.dao.jdbc.JdbcStudentDao;
 import com.foxminded.university.model.Gender;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { SpringTestConfig.class })
+@ContextConfiguration(classes = SpringTestConfig.class)
 public class StudentDaoTest {
 
 	private final static String TABLE_NAME = "students";

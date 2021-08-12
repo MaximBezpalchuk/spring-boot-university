@@ -25,7 +25,7 @@ import com.foxminded.university.dao.jdbc.JdbcVacationDao;
 import com.foxminded.university.model.Vacation;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { SpringTestConfig.class })
+@ContextConfiguration(classes = SpringTestConfig.class)
 public class VacationDaoTest {
 
 	private final static String TABLE_NAME = "vacations";

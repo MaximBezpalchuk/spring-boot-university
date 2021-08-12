@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { SpringTestConfig.class })
+@ContextConfiguration(classes = SpringTestConfig.class)
 public class AudienceDaoTest {
 
 	private final static String TABLE_NAME = "audiences";

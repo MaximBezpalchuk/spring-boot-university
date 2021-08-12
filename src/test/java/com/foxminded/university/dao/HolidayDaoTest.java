@@ -24,7 +24,7 @@ import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Holiday;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { SpringTestConfig.class })
+@ContextConfiguration(classes = SpringTestConfig.class)
 public class HolidayDaoTest {
 
 	private final static String TABLE_NAME = "holidays";

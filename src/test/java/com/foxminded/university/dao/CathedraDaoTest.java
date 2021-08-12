@@ -20,7 +20,7 @@ import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
 import com.foxminded.university.model.Cathedra;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { SpringTestConfig.class })
+@ContextConfiguration(classes = SpringTestConfig.class)
 public class CathedraDaoTest {
 
 	private final static String TABLE_NAME = "cathedras";

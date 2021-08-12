@@ -36,7 +36,7 @@ import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Group;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { SpringTestConfig.class })
+@ContextConfiguration(classes = SpringTestConfig.class)
 public class LectureDaoTest {
 
 	private final static String TABLE_NAME = "lectures";

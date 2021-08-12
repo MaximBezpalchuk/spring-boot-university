@@ -22,7 +22,7 @@ import com.foxminded.university.dao.jdbc.JdbcGroupDao;
 import com.foxminded.university.model.Cathedra;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = { SpringTestConfig.class })
+@ContextConfiguration(classes = SpringTestConfig.class)
 public class GroupDaoTest {
 
 	private final static String TABLE_NAME = "groups";
