@@ -3,6 +3,7 @@ package com.foxminded.university.dao.jdbc;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -62,12 +63,19 @@ public class JdbcLectureDao implements JdbcDao<Lecture> {
 				jdbcTemplate.update(INSERT_GROUPS, group.getId(), lecture.getId(), group.getId(), lecture.getId());
 			}
 		} else {
+
 			jdbcTemplate.update(UPDATE_LECTURE, lecture.getCathedra().getId(), lecture.getSubject().getId(),
 					lecture.getDate(), lecture.getTime().getId(), lecture.getAudience().getId(),
 					lecture.getTeacher().getId(), lecture.getId());
-			for (Group group : lecture.getGroups()) {
+			List<Group> groups = lecture.getGroups();
+			for (Group group : groups) {
 				jdbcTemplate.update(INSERT_GROUPS, group.getId(), lecture.getId(), group.getId(), lecture.getId());
 			}
+			jdbcTemplate
+					.update(String.format("DELETE FROM lectures_groups WHERE lecture_id = %s AND group_id NOT IN (%s)",
+							lecture.getId(), groups.stream().map(group -> group.getId()).map(Object::toString)
+									.collect(Collectors.joining(", "))));
+
 		}
 
 	}
