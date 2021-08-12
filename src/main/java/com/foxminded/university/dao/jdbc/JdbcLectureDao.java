@@ -24,6 +24,7 @@ public class JdbcLectureDao implements JdbcDao<Lecture> {
 	private final static String UPDATE_LECTURE = "UPDATE lectures SET cathedra_id=?, subject_id=?, date=?, lecture_time_id=?, audience_id=?, teacher_id=? WHERE id=?";
 	private final static String DELETE_LECTURE = "DELETE FROM lectures WHERE id = ?";
 	private final static String INSERT_GROUPS = "INSERT INTO lectures_groups(group_id,lecture_id) SELECT ?, ? WHERE NOT EXISTS(SELECT 1 FROM lectures_groups WHERE group_id = ? AND lecture_id = ?)";
+	private final static String DELETE_GROUPS_NOT_IN_LECTURE = "DELETE FROM lectures_groups WHERE lecture_id = %s AND group_id NOT IN (%s)";
 
 	private final JdbcTemplate jdbcTemplate;
 	private LectureRowMapper rowMapper;
@@ -45,6 +46,7 @@ public class JdbcLectureDao implements JdbcDao<Lecture> {
 
 	@Override
 	public void save(Lecture lecture) {
+		List<Group> groups = lecture.getGroups();
 		if (lecture.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {
@@ -62,22 +64,22 @@ public class JdbcLectureDao implements JdbcDao<Lecture> {
 			for (Group group : lecture.getGroups()) {
 				jdbcTemplate.update(INSERT_GROUPS, group.getId(), lecture.getId(), group.getId(), lecture.getId());
 			}
+			if (!groups.isEmpty()) {
+				jdbcTemplate.update(String.format(DELETE_GROUPS_NOT_IN_LECTURE, lecture.getId(), groups.stream()
+						.map(group -> group.getId()).map(Object::toString).collect(Collectors.joining(", "))));
+			}
 		} else {
-
 			jdbcTemplate.update(UPDATE_LECTURE, lecture.getCathedra().getId(), lecture.getSubject().getId(),
 					lecture.getDate(), lecture.getTime().getId(), lecture.getAudience().getId(),
 					lecture.getTeacher().getId(), lecture.getId());
-			List<Group> groups = lecture.getGroups();
 			for (Group group : groups) {
 				jdbcTemplate.update(INSERT_GROUPS, group.getId(), lecture.getId(), group.getId(), lecture.getId());
 			}
-			jdbcTemplate
-					.update(String.format("DELETE FROM lectures_groups WHERE lecture_id = %s AND group_id NOT IN (%s)",
-							lecture.getId(), groups.stream().map(group -> group.getId()).map(Object::toString)
-									.collect(Collectors.joining(", "))));
-
+			if (!groups.isEmpty()) {
+				jdbcTemplate.update(String.format(DELETE_GROUPS_NOT_IN_LECTURE, lecture.getId(), groups.stream()
+						.map(group -> group.getId()).map(Object::toString).collect(Collectors.joining(", "))));
+			}
 		}
-
 	}
 
 	@Override
