@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,41 +17,43 @@ import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.foxminded.university.model.Student;
 import com.foxminded.university.config.SpringTestConfig;
-import com.foxminded.university.dao.jdbc.JdbcVacationDao;
-import com.foxminded.university.model.Vacation;
+import com.foxminded.university.dao.jdbc.JdbcStudentDao;
+import com.foxminded.university.model.Gender;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = SpringTestConfig.class)
-public class VacationDaoTest {
+public class JdbcStudentDaoTest {
 
-	private final static String TABLE_NAME = "vacations";
+	private final static String TABLE_NAME = "students";
 	@Autowired
 	private JdbcTemplate template;
 	@Autowired
-	private JdbcVacationDao vacationDao;
+	private JdbcStudentDao studentDao;
 
 	@Test
-	void whenFindAll_thenAllExistingVacationsFound() {
+	void whenFindAll_thenAllExistingStudentsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME);
-		int actual = vacationDao.findAll().size();
+		int actual = studentDao.findAll().size();
 
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	void givenExistingVacation_whenFindById_thenVacationFound() {
-		Vacation actual = vacationDao.findById(1);
-		Vacation expected = Vacation.build(LocalDate.of(2021, 1, 15), LocalDate.of(2021, 1, 29), actual.getTeacher())
-				.id(1).build();
+	void givenExistingStudent_whenFindById_thenStudentFound() {
+		Student actual = studentDao.findById(1);
+		Student expected = Student.build("Petr", "Orlov", "Empty Street 8", Gender.MALE, LocalDate.of(1994, 3, 3))
+				.phone("888005353535").email("1@owl.com").postalCode("999").education("General secondary education")
+				.group(actual.getGroup()).id(1).build();
 
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	void givenNotExistingVacation_whenFindOne_thenIncorrestResultSize() {
+	void givenNotExistingStudent_whenFindOne_thenIncorrestResultSize() {
 		Exception exception = assertThrows(EmptyResultDataAccessException.class, () -> {
-			vacationDao.findById(100);
+			studentDao.findById(100);
 		});
 		String expectedMessage = "Incorrect result size";
 		String actualMessage = exception.getMessage();
@@ -63,47 +63,38 @@ public class VacationDaoTest {
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
-	void givenNewVacation_whenSaveVacation_thenAllExistingVacationsFound() {
+	void givenNewStudent_whenSaveStudent_thenAllExistingStudentsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		Vacation actual = vacationDao.findById(1);
-		vacationDao.save(
-				Vacation.build(LocalDate.of(2021, 1, 31), LocalDate.of(2021, 3, 29), actual.getTeacher()).build());
+		Student actual = studentDao.findById(1);
+		Student student = Student.build("Petr123", "Orlov123", "Empty Street 8", Gender.MALE, LocalDate.of(1994, 3, 3))
+				.phone("888005353535").email("1@owl.com").postalCode("999").education("General secondary education")
+				.group(actual.getGroup()).build();
+		studentDao.save(student);
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+
 	@Test
-	void givenExitstingVacation_whenChange_thenAllExistingVacationsFound() {
+	void givenExitstingStudent_whenChange_thenAllExistingStudentsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME);
-		Vacation vacation = vacationDao.findById(1);
-		vacation.setTeacher(vacationDao.findById(2).getTeacher());
-		vacationDao.save(vacation);
+		Student student = studentDao.findById(1);
+		student.setFirstName("Test Name");
+		studentDao.save(student);
 		int actual = countRowsInTable(template, TABLE_NAME);
 
 		assertEquals(expected, actual);
 	}
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
+
 	@Test
-	void whenDeleteExistingVacation_thenAllExistingVacationsFound() {
+	void whenDeleteExistingStudent_thenAllExistingStudentsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) - 1;
-		vacationDao.deleteById(1);
+		studentDao.deleteById(3);
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
 
-	@Test
-	void givenExistingVacation_whenFindByTeacherId_thenVacationFound() {
-		List<Vacation> expected = new ArrayList<>();
-		List<Vacation> actual = vacationDao.findByTeacherId(1);
-		Vacation vacation1 = Vacation
-				.build(LocalDate.of(2021, 1, 15), LocalDate.of(2021, 1, 29), actual.get(0).getTeacher()).id(1).build();
-		Vacation vacation2 = Vacation
-				.build(LocalDate.of(2021, 6, 15), LocalDate.of(2021, 6, 29), actual.get(0).getTeacher()).id(2).build();
-		expected.add(vacation1);
-		expected.add(vacation2);
-
-		assertEquals(expected, actual);
-	}
 }

@@ -1,10 +1,5 @@
 package com.foxminded.university.dao;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,39 +11,42 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.foxminded.university.config.SpringTestConfig;
-import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
-import com.foxminded.university.model.Cathedra;
+import com.foxminded.university.dao.jdbc.JdbcAudienceDao;
+import com.foxminded.university.model.Audience;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = SpringTestConfig.class)
-public class CathedraDaoTest {
+public class JdbcAudienceDaoTest {
 
-	private final static String TABLE_NAME = "cathedras";
+	private final static String TABLE_NAME = "audiences";
 	@Autowired
 	private JdbcTemplate template;
 	@Autowired
-	private JdbcCathedraDao cathedraDao;
+	private JdbcAudienceDao audienceDao;
 
 	@Test
-	void whenFindAll_thenAllExistingCathedrasFound() {
+	void whenFindAll_thenAllExistingAudiencesFound() {
 		int expected = countRowsInTable(template, TABLE_NAME);
-		int actual = cathedraDao.findAll().size();
+		int actual = audienceDao.findAll().size();
 
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	void givenExistingCathedra_whenFindById_thenCathedraFound() {
-		Cathedra expected = Cathedra.build("Fantastic Cathedra").id(1).build();
-		Cathedra actual = cathedraDao.findById(1);
+	void givenExistingAudience_whenFindById_thenAudienceFound() {
+		Audience actual = audienceDao.findById(1);
+		Audience expected = Audience.build(1, 10, actual.getCathedra()).id(1).build();
 
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	void givenNotExistingCathedra_whenFindOne_thenIncorrestResultSize() {
+	void givenNotExistingAudience_whenFindOne_thenIncorrestResultSize() {
 		Exception exception = assertThrows(EmptyResultDataAccessException.class, () -> {
-			cathedraDao.findById(100);
+			audienceDao.findById(100);
 		});
 		String expectedMessage = "Incorrect result size";
 		String actualMessage = exception.getMessage();
@@ -58,21 +56,21 @@ public class CathedraDaoTest {
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
-	void givenNewCathedra_whenSaveCathedra_thenAllExistingCathedrasFound() {
+	void givenNewAudience_whenSaveAudience_thenAllExistingAudiencesFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		cathedraDao.save(Cathedra.build("Fantastic Cathedra 2").build());
+		Audience actual = audienceDao.findById(1);
+		audienceDao.save(Audience.build(100, 100, actual.getCathedra()).build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
-	void givenExitstingCathedra_whenChange_thenAllExistingCathedrasFound() {
+	void givenExitstingAudience_whenChange_thenAllExistingAudiencesFound() {
 		int expected = countRowsInTable(template, TABLE_NAME);
-		Cathedra cathedra = cathedraDao.findById(1);
-		cathedra.setName("TestName");
-		cathedra.setId(1);
-		cathedraDao.save(cathedra);
+		Audience audience = audienceDao.findById(1);
+		audience.setCapacity(100);
+		audienceDao.save(audience);
 		int actual = countRowsInTable(template, TABLE_NAME);
 
 		assertEquals(expected, actual);
@@ -80,9 +78,9 @@ public class CathedraDaoTest {
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
-	void whenDeleteExistingCathedra_thenAllExistingCathedrasFound() {
+	void whenDeleteExistingAudience_thenAllExistingAudiencesFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) - 1;
-		cathedraDao.deleteById(1);
+		audienceDao.deleteById(3);
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}

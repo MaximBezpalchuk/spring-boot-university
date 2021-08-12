@@ -5,8 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalTime;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,43 +17,40 @@ import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.foxminded.university.model.Subject;
 import com.foxminded.university.config.SpringTestConfig;
-import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
-import com.foxminded.university.model.Cathedra;
+import com.foxminded.university.dao.jdbc.JdbcLectureTimeDao;
+import com.foxminded.university.model.LectureTime;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = SpringTestConfig.class)
-public class SubjectDaoTest {
+public class JdbcLectureTimeDaoTest {
 
-	private final static String TABLE_NAME = "subjects";
+	private final static String TABLE_NAME = "lecture_times";
 	@Autowired
 	private JdbcTemplate template;
 	@Autowired
-	private JdbcSubjectDao subjectDao;
+	private JdbcLectureTimeDao lectureTimeDao;
 
 	@Test
-	void whenFindAll_thenAllExistingSubjectsFound() {
+	void whenFindAll_thenAllExistingLectureTimesFound() {
 		int expected = countRowsInTable(template, TABLE_NAME);
-		int actual = subjectDao.findAll().size();
+		int actual = lectureTimeDao.findAll().size();
 
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	void givenExistingSubject_whenFindById_thenSubjectFound() {
-		Subject actual = subjectDao.findById(1);
-		Subject expected = Subject
-				.build(actual.getCathedra(), "Weapon Tactics", "Learning how to use heavy weapon and guerrilla tactics")
-				.id(1).build();
+	void givenExistingLectureTime_whenFindById_thenLectureTimeFound() {
+		LectureTime expected = LectureTime.build(LocalTime.of(8, 0, 0), LocalTime.of(9, 30, 0)).id(1).build();
+		LectureTime actual = lectureTimeDao.findById(1);
 
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	void givenNotExistingSubject_whenFindOne_thenIncorrestResultSize() {
+	void givenNotExistingLectureTime_whenFindOne_thenIncorrestResultSize() {
 		Exception exception = assertThrows(EmptyResultDataAccessException.class, () -> {
-			subjectDao.findById(100);
+			lectureTimeDao.findById(100);
 		});
 		String expectedMessage = "Incorrect result size";
 		String actualMessage = exception.getMessage();
@@ -64,22 +60,20 @@ public class SubjectDaoTest {
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
-	void givenNewSubject_whenSaveSubject_thenAllExistingSubjectsFound() {
+	void givenNewLectureTime_whenSaveLectureTime_thenAllExistingLectureTimesFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		Subject actual = subjectDao.findById(1);
-		subjectDao.save(Subject.build(actual.getCathedra(), "Weapon Tactics123",
-				"Learning how to use heavy weapon and guerrilla tactics123").build());
+		lectureTimeDao.save(new LectureTime.Builder(LocalTime.of(21, 0, 0), LocalTime.of(22, 30, 0)).build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
-	void givenExitstingSubject_whenChange_thenAllExistingSubjectsFound() {
+	void givenExitstingLectureTime_whenChange_thenAllExistingLectureTimesFound() {
 		int expected = countRowsInTable(template, TABLE_NAME);
-		Subject subject = subjectDao.findById(1);
-		subject.setName("Test Name");
-		subjectDao.save(subject);
+		LectureTime lectureTime = lectureTimeDao.findById(1);
+		lectureTime.setStart(LocalTime.of(21, 0, 0));
+		lectureTimeDao.save(lectureTime);
 		int actual = countRowsInTable(template, TABLE_NAME);
 
 		assertEquals(expected, actual);
@@ -87,23 +81,11 @@ public class SubjectDaoTest {
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
-	void whenDeleteExistingSubject_thenAllExistingSubjectsFound() {
+	void whenDeleteExistingLectureTime_thenAllExistingLectureTimesFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) - 1;
-		subjectDao.deleteById(1);
+		lectureTimeDao.deleteById(3);
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
 
-	@Test
-	void givenExistingSubject_whenFindByTeacherId_thenSubjectFound() {
-		List<Subject> expected = new ArrayList<>();
-		List<Subject> actual = subjectDao.findByTeacherId(1);
-		Cathedra cathedra = actual.get(0).getCathedra();
-		Subject subject1 = Subject
-				.build(cathedra, "Weapon Tactics", "Learning how to use heavy weapon and guerrilla tactics").id(1)
-				.build();
-		expected.add(subject1);
-
-		assertEquals(expected, actual);
-	}
 }

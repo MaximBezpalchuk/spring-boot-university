@@ -5,7 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,40 +18,43 @@ import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.foxminded.university.model.Subject;
 import com.foxminded.university.config.SpringTestConfig;
-import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
-import com.foxminded.university.model.Holiday;
+import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
+import com.foxminded.university.model.Cathedra;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = SpringTestConfig.class)
-public class HolidayDaoTest {
+public class JdbcSubjectDaoTest {
 
-	private final static String TABLE_NAME = "holidays";
+	private final static String TABLE_NAME = "subjects";
 	@Autowired
 	private JdbcTemplate template;
 	@Autowired
-	private JdbcHolidayDao holidayDao;
+	private JdbcSubjectDao subjectDao;
 
 	@Test
-	void whenFindAll_thenAllExistingHolidaysFound() {
+	void whenFindAll_thenAllExistingSubjectsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME);
-		int actual = holidayDao.findAll().size();
+		int actual = subjectDao.findAll().size();
 
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	void givenExistingHoliday_whenFindById_thenHolidayFound() {
-		Holiday actual = holidayDao.findById(1);
-		Holiday expected = Holiday.build("Christmas", LocalDate.of(2021, 12, 25), actual.getCathedra()).id(1).build();
+	void givenExistingSubject_whenFindById_thenSubjectFound() {
+		Subject actual = subjectDao.findById(1);
+		Subject expected = Subject
+				.build(actual.getCathedra(), "Weapon Tactics", "Learning how to use heavy weapon and guerrilla tactics")
+				.id(1).build();
 
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	void givenNotExistingHoliday_whenFindOne_thenIncorrestResultSize() {
+	void givenNotExistingSubject_whenFindOne_thenIncorrestResultSize() {
 		Exception exception = assertThrows(EmptyResultDataAccessException.class, () -> {
-			holidayDao.findById(100);
+			subjectDao.findById(100);
 		});
 		String expectedMessage = "Incorrect result size";
 		String actualMessage = exception.getMessage();
@@ -60,22 +64,22 @@ public class HolidayDaoTest {
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
-	void givenNewHoliday_whenSaveHoliday_thenAllExistingHolidaysFound() {
+	void givenNewSubject_whenSaveSubject_thenAllExistingSubjectsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		Holiday actual = holidayDao.findById(1);
-		Holiday holiday = new Holiday.Builder("Christmas2", LocalDate.of(2021, 12, 25), actual.getCathedra()).build();
-		holidayDao.save(holiday);
+		Subject actual = subjectDao.findById(1);
+		subjectDao.save(Subject.build(actual.getCathedra(), "Weapon Tactics123",
+				"Learning how to use heavy weapon and guerrilla tactics123").build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
-	void givenExitstingHoliday_whenChange_thenAllExistingHolidaysFound() {
+	void givenExitstingSubject_whenChange_thenAllExistingSubjectsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME);
-		Holiday holiday = holidayDao.findById(1);
-		holiday.setName("Test Name");
-		holidayDao.save(holiday);
+		Subject subject = subjectDao.findById(1);
+		subject.setName("Test Name");
+		subjectDao.save(subject);
 		int actual = countRowsInTable(template, TABLE_NAME);
 
 		assertEquals(expected, actual);
@@ -83,10 +87,23 @@ public class HolidayDaoTest {
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
-	void whenDeleteExistingHoliday_thenAllExistingHolidaysFound() {
+	void whenDeleteExistingSubject_thenAllExistingSubjectsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) - 1;
-		holidayDao.deleteById(3);
+		subjectDao.deleteById(1);
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
+	}
+
+	@Test
+	void givenExistingSubject_whenFindByTeacherId_thenSubjectFound() {
+		List<Subject> expected = new ArrayList<>();
+		List<Subject> actual = subjectDao.findByTeacherId(1);
+		Cathedra cathedra = actual.get(0).getCathedra();
+		Subject subject1 = Subject
+				.build(cathedra, "Weapon Tactics", "Learning how to use heavy weapon and guerrilla tactics").id(1)
+				.build();
+		expected.add(subject1);
+
+		assertEquals(expected, actual);
 	}
 }

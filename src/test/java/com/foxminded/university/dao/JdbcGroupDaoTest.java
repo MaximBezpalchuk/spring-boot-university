@@ -5,8 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 
-import java.time.LocalTime;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,40 +15,40 @@ import org.springframework.test.annotation.DirtiesContext.MethodMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.foxminded.university.model.Group;
 import com.foxminded.university.config.SpringTestConfig;
-import com.foxminded.university.dao.jdbc.JdbcLectureTimeDao;
-import com.foxminded.university.model.LectureTime;
+import com.foxminded.university.dao.jdbc.JdbcGroupDao;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = SpringTestConfig.class)
-public class LectureTimeDaoTest {
+public class JdbcGroupDaoTest {
 
-	private final static String TABLE_NAME = "lecture_times";
+	private final static String TABLE_NAME = "groups";
 	@Autowired
 	private JdbcTemplate template;
 	@Autowired
-	private JdbcLectureTimeDao lectureTimeDao;
+	private JdbcGroupDao groupDao;
 
 	@Test
-	void whenFindAll_thenAllExistingLectureTimesFound() {
+	void whenFindAll_thenAllExistingGroupsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME);
-		int actual = lectureTimeDao.findAll().size();
+		int actual = groupDao.findAll().size();
 
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	void givenExistingLectureTime_whenFindById_thenLectureTimeFound() {
-		LectureTime expected = LectureTime.build(LocalTime.of(8, 0, 0), LocalTime.of(9, 30, 0)).id(1).build();
-		LectureTime actual = lectureTimeDao.findById(1);
+	void givenExistingGroup_whenFindById_thenGroupFound() {
+		Group actual = groupDao.findById(1);
+		Group expected = Group.build("Killers", actual.getCathedra()).id(1).build();
 
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	void givenNotExistingLectureTime_whenFindOne_thenIncorrestResultSize() {
+	void givenNotExistingGroup_whenFindOne_thenIncorrestResultSize() {
 		Exception exception = assertThrows(EmptyResultDataAccessException.class, () -> {
-			lectureTimeDao.findById(100);
+			groupDao.findById(100);
 		});
 		String expectedMessage = "Incorrect result size";
 		String actualMessage = exception.getMessage();
@@ -60,32 +58,34 @@ public class LectureTimeDaoTest {
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
-	void givenNewLectureTime_whenSaveLectureTime_thenAllExistingLectureTimesFound() {
+	void givenNewGroup_whenSaveGroup_thenAllExistingGroupsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		lectureTimeDao.save(new LectureTime.Builder(LocalTime.of(21, 0, 0), LocalTime.of(22, 30, 0)).build());
+		Group actual = groupDao.findById(1);
+		groupDao.save(Group.build("Test Name", actual.getCathedra()).build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
-	void givenExitstingLectureTime_whenChange_thenAllExistingLectureTimesFound() {
+	void givenExitstingGroup_whenChange_thenAllExistingGroupsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME);
-		LectureTime lectureTime = lectureTimeDao.findById(1);
-		lectureTime.setStart(LocalTime.of(21, 0, 0));
-		lectureTimeDao.save(lectureTime);
+		Group group = groupDao.findById(1);
+		group.setName("Killers 2");
+		groupDao.save(group);
 		int actual = countRowsInTable(template, TABLE_NAME);
 
+		template.update(
+				"DROP TABLE cathedras, audiences, groups, lectures, students, subjects, teachers, vacations, holidays, lecture_times, subjects_teachers, lectures_groups");
 		assertEquals(expected, actual);
 	}
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
-	void whenDeleteExistingLectureTime_thenAllExistingLectureTimesFound() {
+	void whenDeleteExistingGroup_thenAllExistingGroupsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) - 1;
-		lectureTimeDao.deleteById(3);
+		groupDao.deleteById(1);
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
-
 }

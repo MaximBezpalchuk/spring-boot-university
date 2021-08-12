@@ -23,7 +23,7 @@ import com.foxminded.university.dao.jdbc.JdbcLectureDao;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = SpringTestConfig.class)
-public class LectureDaoTest {
+public class JdbcLectureDaoTest {
 
 	private final static String TABLE_NAME = "lectures";
 	@Autowired

@@ -1,5 +1,12 @@
 package com.foxminded.university.dao;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
+
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,42 +18,39 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.foxminded.university.config.SpringTestConfig;
-import com.foxminded.university.dao.jdbc.JdbcAudienceDao;
-import com.foxminded.university.model.Audience;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
+import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
+import com.foxminded.university.model.Holiday;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = SpringTestConfig.class)
-public class AudienceDaoTest {
+public class JdbcHolidayDaoTest {
 
-	private final static String TABLE_NAME = "audiences";
+	private final static String TABLE_NAME = "holidays";
 	@Autowired
 	private JdbcTemplate template;
 	@Autowired
-	private JdbcAudienceDao audienceDao;
+	private JdbcHolidayDao holidayDao;
 
 	@Test
-	void whenFindAll_thenAllExistingAudiencesFound() {
+	void whenFindAll_thenAllExistingHolidaysFound() {
 		int expected = countRowsInTable(template, TABLE_NAME);
-		int actual = audienceDao.findAll().size();
+		int actual = holidayDao.findAll().size();
 
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	void givenExistingAudience_whenFindById_thenAudienceFound() {
-		Audience actual = audienceDao.findById(1);
-		Audience expected = Audience.build(1, 10, actual.getCathedra()).id(1).build();
+	void givenExistingHoliday_whenFindById_thenHolidayFound() {
+		Holiday actual = holidayDao.findById(1);
+		Holiday expected = Holiday.build("Christmas", LocalDate.of(2021, 12, 25), actual.getCathedra()).id(1).build();
 
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	void givenNotExistingAudience_whenFindOne_thenIncorrestResultSize() {
+	void givenNotExistingHoliday_whenFindOne_thenIncorrestResultSize() {
 		Exception exception = assertThrows(EmptyResultDataAccessException.class, () -> {
-			audienceDao.findById(100);
+			holidayDao.findById(100);
 		});
 		String expectedMessage = "Incorrect result size";
 		String actualMessage = exception.getMessage();
@@ -56,21 +60,22 @@ public class AudienceDaoTest {
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
-	void givenNewAudience_whenSaveAudience_thenAllExistingAudiencesFound() {
+	void givenNewHoliday_whenSaveHoliday_thenAllExistingHolidaysFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		Audience actual = audienceDao.findById(1);
-		audienceDao.save(Audience.build(100, 100, actual.getCathedra()).build());
+		Holiday actual = holidayDao.findById(1);
+		Holiday holiday = new Holiday.Builder("Christmas2", LocalDate.of(2021, 12, 25), actual.getCathedra()).build();
+		holidayDao.save(holiday);
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
-	void givenExitstingAudience_whenChange_thenAllExistingAudiencesFound() {
+	void givenExitstingHoliday_whenChange_thenAllExistingHolidaysFound() {
 		int expected = countRowsInTable(template, TABLE_NAME);
-		Audience audience = audienceDao.findById(1);
-		audience.setCapacity(100);
-		audienceDao.save(audience);
+		Holiday holiday = holidayDao.findById(1);
+		holiday.setName("Test Name");
+		holidayDao.save(holiday);
 		int actual = countRowsInTable(template, TABLE_NAME);
 
 		assertEquals(expected, actual);
@@ -78,11 +83,10 @@ public class AudienceDaoTest {
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
-	void whenDeleteExistingAudience_thenAllExistingAudiencesFound() {
+	void whenDeleteExistingHoliday_thenAllExistingHolidaysFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) - 1;
-		audienceDao.deleteById(3);
+		holidayDao.deleteById(3);
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
-
 }

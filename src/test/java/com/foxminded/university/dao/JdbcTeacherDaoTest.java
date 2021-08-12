@@ -28,7 +28,7 @@ import com.foxminded.university.model.Teacher;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = SpringTestConfig.class)
-public class TeacherDaoTest {
+public class JdbcTeacherDaoTest {
 
 	private final static String TABLE_NAME = "teachers";
 	@Autowired
