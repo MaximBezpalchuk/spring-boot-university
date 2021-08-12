@@ -44,7 +44,7 @@ public class GroupDaoTest {
 	@Test
 	void givenExistingGroup_whenFindById_thenGroupFound() {
 		Cathedra cathedra = cathedraDao.findById(1);
-		Group expected = Group.build("Killers", cathedra).setId(1).build();
+		Group expected = Group.build("Killers", cathedra).id(1).build();
 		Group actual = groupDao.findById(1);
 
 		assertEquals(expected, actual);

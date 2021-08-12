@@ -39,7 +39,7 @@ public class CathedraDaoTest {
 
 	@Test
 	void givenExistingCathedra_whenFindById_thenCathedraFound() {
-		Cathedra expected = Cathedra.build("Fantastic Cathedra").setId(1).build();
+		Cathedra expected = Cathedra.build("Fantastic Cathedra").id(1).build();
 		Cathedra actual = cathedraDao.findById(1);
 
 		assertEquals(expected, actual);

@@ -48,7 +48,7 @@ public class SubjectDaoTest {
 	void givenExistingSubject_whenFindById_thenSubjectFound() {
 		Cathedra cathedra = cathedraDao.findById(1);
 		Subject expected = Subject
-				.build(cathedra, "Weapon Tactics", "Learning how to use heavy weapon and guerrilla tactics").setId(1)
+				.build(cathedra, "Weapon Tactics", "Learning how to use heavy weapon and guerrilla tactics").id(1)
 				.build();
 		Subject actual = subjectDao.findById(1);
 
@@ -104,7 +104,7 @@ public class SubjectDaoTest {
 		List<Subject> expected = new ArrayList<>();
 		Cathedra cathedra = cathedraDao.findById(1);
 		Subject subject1 = Subject
-				.build(cathedra, "Weapon Tactics", "Learning how to use heavy weapon and guerrilla tactics").setId(1)
+				.build(cathedra, "Weapon Tactics", "Learning how to use heavy weapon and guerrilla tactics").id(1)
 				.build();
 		expected.add(subject1);
 		List<Subject> actual = subjectDao.findByTeacherId(1);

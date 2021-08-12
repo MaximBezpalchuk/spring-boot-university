@@ -37,7 +37,7 @@ public class Student extends Person {
 			return this;
 		}
 
-		public Builder setGroup(Group group) {
+		public Builder group(Group group) {
 			this.group = group;
 			return this;
 		}

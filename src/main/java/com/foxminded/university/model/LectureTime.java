@@ -54,7 +54,7 @@ public class LectureTime {
 			this.end = end;
 		}
 
-		public Builder setId(int id) {
+		public Builder id(int id) {
 			this.id = id;
 			return this;
 		}

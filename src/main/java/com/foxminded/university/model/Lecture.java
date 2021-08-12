@@ -105,12 +105,12 @@ public class Lecture {
 			this.teacher = teacher;
 		}
 
-		public Builder setId(int id) {
+		public Builder id(int id) {
 			this.id = id;
 			return this;
 		}
 
-		public Builder setGroup(List<Group> groups) {
+		public Builder group(List<Group> groups) {
 			this.groups = groups;
 			return this;
 		}

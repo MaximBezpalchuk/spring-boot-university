@@ -47,7 +47,7 @@ public class VacationDaoTest {
 	@Test
 	void givenExistingVacation_whenFindById_thenVacationFound() {
 		Vacation expected = Vacation.build(LocalDate.of(2021, 1, 15), LocalDate.of(2021, 1, 29), teacherDao.findById(1))
-				.setId(1).build();
+				.id(1).build();
 		Vacation actual = vacationDao.findById(1);
 
 		assertEquals(expected, actual);
@@ -99,9 +99,9 @@ public class VacationDaoTest {
 	void givenExistingVacation_whenFindByTeacherId_thenVacationFound() {
 		List<Vacation> expected = new ArrayList<>();
 		Vacation vacation1 = Vacation
-				.build(LocalDate.of(2021, 1, 15), LocalDate.of(2021, 1, 29), teacherDao.findById(1)).setId(1).build();
+				.build(LocalDate.of(2021, 1, 15), LocalDate.of(2021, 1, 29), teacherDao.findById(1)).id(1).build();
 		Vacation vacation2 = Vacation
-				.build(LocalDate.of(2021, 6, 15), LocalDate.of(2021, 6, 29), teacherDao.findById(1)).setId(2).build();
+				.build(LocalDate.of(2021, 6, 15), LocalDate.of(2021, 6, 29), teacherDao.findById(1)).id(2).build();
 		expected.add(vacation1);
 		expected.add(vacation2);
 		List<Vacation> actual = vacationDao.findByTeacherId(1);

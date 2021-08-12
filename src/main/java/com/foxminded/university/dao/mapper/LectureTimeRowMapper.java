@@ -16,6 +16,6 @@ public class LectureTimeRowMapper implements RowMapper<LectureTime> {
 	public LectureTime mapRow(ResultSet resultSet, int rowNum) throws SQLException {
 		return LectureTime
 				.build(resultSet.getObject("start", LocalTime.class), resultSet.getObject("finish", LocalTime.class))
-				.setId(resultSet.getInt("id")).build();
+				.id(resultSet.getInt("id")).build();
 	}
 }

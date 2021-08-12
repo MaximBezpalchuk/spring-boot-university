@@ -55,11 +55,10 @@ public class TeacherDaoTest {
 		Teacher expected = Teacher
 				.build("Daniel", "Morpheus", "Virtual Reality Capsule no 1", Gender.MALE, LocalDate.of(1970, 1, 1),
 						cathedraDao.findById(1), Degree.PROFESSOR)
-				.setPhone("1").setEmail("1@bigowl.com").setPostalCode("12345").setEducation("Higher education").setId(1)
-				.build();
+				.phone("1").email("1@bigowl.com").postalCode("12345").education("Higher education").id(1).build();
 		List<Subject> subjects = new ArrayList<>();
 		Subject subject = Subject.build(cathedraDao.findById(1), "Weapon Tactics",
-				"Learning how to use heavy weapon and guerrilla tactics").setId(1).build();
+				"Learning how to use heavy weapon and guerrilla tactics").id(1).build();
 		subjects.add(subject);
 		expected.setSubjects(subjects);
 		Teacher actual = teacherDao.findById(1);
@@ -85,10 +84,10 @@ public class TeacherDaoTest {
 		Teacher teacher = Teacher
 				.build("Test", "Test", "Virtual Reality Capsule no 1", Gender.MALE, LocalDate.of(1970, 1, 1),
 						cathedraDao.findById(1), Degree.PROFESSOR)
-				.setPhone("1").setEmail("1@bigowl.com").setPostalCode("12345").setEducation("Higher education").build();
+				.phone("1").email("1@bigowl.com").postalCode("12345").education("Higher education").build();
 		List<Subject> subjects = new ArrayList<>();
 		Subject subject = Subject.build(cathedraDao.findById(1), "Weapon Tactics",
-				"Learning how to use heavy weapon and guerrilla tactics").setId(1).build();
+				"Learning how to use heavy weapon and guerrilla tactics").id(1).build();
 		subjects.add(subject);
 		teacher.setSubjects(subjects);
 		teacherDao.save(teacher);

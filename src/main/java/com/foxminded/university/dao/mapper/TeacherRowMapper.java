@@ -35,9 +35,9 @@ public class TeacherRowMapper implements RowMapper<Teacher> {
 						resultSet.getObject("birth_date", LocalDate.class),
 						cathedraDao.findById(resultSet.getInt("cathedra_id")),
 						Degree.valueOf(resultSet.getString("degree")))
-				.setPhone(resultSet.getString("phone")).setEmail(resultSet.getString("email"))
-				.setPostalCode(resultSet.getString("postal_code")).setEducation(resultSet.getString("education"))
-				.setId(resultSet.getInt("id")).build();
+				.phone(resultSet.getString("phone")).email(resultSet.getString("email"))
+				.postalCode(resultSet.getString("postal_code")).education(resultSet.getString("education"))
+				.id(resultSet.getInt("id")).build();
 		List<Subject> subjects = subjectDao.findByTeacherId(teacher.getId());
 		if (!subjects.isEmpty()) {
 			teacher.setSubjects(subjects);

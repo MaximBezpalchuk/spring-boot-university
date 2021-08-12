@@ -23,7 +23,7 @@ public class VacationRowMapper implements RowMapper<Vacation> {
 	public Vacation mapRow(ResultSet resultSet, int rowNum) throws SQLException {
 		return Vacation.build(resultSet.getObject("start", LocalDate.class),
 				resultSet.getObject("finish", LocalDate.class), teacherDao.findById(resultSet.getInt("teacher_id")))
-						.setId(resultSet.getInt("id")).build();
+				.id(resultSet.getInt("id")).build();
 	}
 
 }

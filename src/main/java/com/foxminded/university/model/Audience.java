@@ -65,7 +65,7 @@ public class Audience {
 			this.cathedra = cathedra;
 		}
 
-		public Builder setId(int id) {
+		public Builder id(int id) {
 			this.id = id;
 			return this;
 		}

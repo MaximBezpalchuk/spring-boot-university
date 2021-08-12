@@ -44,7 +44,7 @@ public class LectureRowMapper implements RowMapper<Lecture> {
 				subjectDao.findById(resultSet.getInt("subject_id")), resultSet.getObject("date", LocalDate.class),
 				lectureTimeDao.findById(resultSet.getInt("lecture_time_id")),
 				audienceDao.findById(resultSet.getInt("audience_id")),
-				teacherDao.findById(resultSet.getInt("teacher_id"))).setId(resultSet.getInt("id")).build();
+				teacherDao.findById(resultSet.getInt("teacher_id"))).id(resultSet.getInt("id")).build();
 		List<Group> groups = groupDao.findByLectureId(lecture.getId());
 		lecture.setGroups(groups);
 		return lecture;

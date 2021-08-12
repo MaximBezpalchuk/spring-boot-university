@@ -132,27 +132,27 @@ public class Person {
 			this.birthDate = birthDate;
 		}
 
-		public T setPhone(String phone) {
+		public T phone(String phone) {
 			this.phone = phone;
 			return this.getThis();
 		}
 
-		public T setEmail(String email) {
+		public T email(String email) {
 			this.email = email;
 			return this.getThis();
 		}
 
-		public T setPostalCode(String postalCode) {
+		public T postalCode(String postalCode) {
 			this.postalCode = postalCode;
 			return this.getThis();
 		}
 
-		public T setEducation(String education) {
+		public T education(String education) {
 			this.education = education;
 			return this.getThis();
 		}
 
-		public T setId(int id) {
+		public T id(int id) {
 			this.id = id;
 			return this.getThis();
 		}

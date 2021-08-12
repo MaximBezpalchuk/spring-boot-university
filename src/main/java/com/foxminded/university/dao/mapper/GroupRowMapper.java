@@ -21,6 +21,6 @@ public class GroupRowMapper implements RowMapper<Group> {
 	@Override
 	public Group mapRow(ResultSet resultSet, int rowNum) throws SQLException {
 		return Group.build(resultSet.getString("name"), cathedraDao.findById(resultSet.getInt("cathedra_id")))
-				.setId(resultSet.getInt("id")).build();
+				.id(resultSet.getInt("id")).build();
 	}
 }

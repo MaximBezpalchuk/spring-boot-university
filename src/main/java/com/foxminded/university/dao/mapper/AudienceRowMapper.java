@@ -21,7 +21,7 @@ public class AudienceRowMapper implements RowMapper<Audience> {
 	@Override
 	public Audience mapRow(ResultSet resultSet, int rowNum) throws SQLException {
 		Audience audience = Audience.build(resultSet.getInt("room"), resultSet.getInt("capacity"),
-				cathedraDao.findById(resultSet.getInt("cathedra_id"))).setId(resultSet.getInt("id")).build();
+				cathedraDao.findById(resultSet.getInt("cathedra_id"))).id(resultSet.getInt("id")).build();
 		return audience;
 	}
 

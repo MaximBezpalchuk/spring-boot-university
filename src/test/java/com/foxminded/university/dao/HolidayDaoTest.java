@@ -46,7 +46,7 @@ public class HolidayDaoTest {
 	@Test
 	void givenExistingHoliday_whenFindById_thenHolidayFound() {
 		Cathedra cathedra = cathedraDao.findById(1);
-		Holiday expected = Holiday.build("Christmas", LocalDate.of(2021, 12, 25), cathedra).setId(1).build();
+		Holiday expected = Holiday.build("Christmas", LocalDate.of(2021, 12, 25), cathedra).id(1).build();
 		Holiday actual = holidayDao.findById(1);
 
 		assertEquals(expected, actual);

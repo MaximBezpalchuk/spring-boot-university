@@ -33,10 +33,9 @@ class FormatterTest {
 		LocalDate date = LocalDate.of(2020, 1, 1);
 		LectureTime time = LectureTime.build(LocalTime.of(10, 20), LocalTime.of(10, 21)).build();
 		Audience audience = Audience.build(1, 5, cathedra).build();
-		Teacher teacher = Teacher
-				.build("Amigo", "Bueno", "Puerto Rico", Gender.FEMALE, LocalDate.of(1999, 1, 1), cathedra,
-						Degree.PROFESSOR)
-				.setPhone("999").setEmail("dot@dot.com").setPostalCode("123").setEducation("none").build();
+		Teacher teacher = Teacher.build("Amigo", "Bueno", "Puerto Rico", Gender.FEMALE, LocalDate.of(1999, 1, 1),
+				cathedra, Degree.PROFESSOR).phone("999").email("dot@dot.com").postalCode("123").education("none")
+				.build();
 
 		lectures.add(Lecture.build(cathedra, subject, date, time, audience, teacher).build());
 
@@ -67,7 +66,7 @@ class FormatterTest {
 		teachers.add(Teacher
 				.build("Amigo", "Bueno", "Puerto Rico", Gender.FEMALE, LocalDate.of(1999, 1, 1), cathedra,
 						Degree.PROFESSOR)
-				.setPhone("999").setEmail("dot@dot.com").setPostalCode("123").setEducation("none").build());
+				.phone("999").email("dot@dot.com").postalCode("123").education("none").build());
 		assertEquals("1.  Name: Bueno Amigo", formatter.formatTeacherList(teachers));
 	}
 
@@ -88,8 +87,7 @@ class FormatterTest {
 		Group group = new Group.Builder("name", cathedra).build();
 
 		Student student = Student.build("Amigo", "Bueno", "Puerto Rico", Gender.FEMALE, LocalDate.of(1999, 1, 1))
-				.setPhone("999").setEmail("dot@dot.com").setPostalCode("123").setEducation("none").setGroup(group)
-				.build();
+				.phone("999").email("dot@dot.com").postalCode("123").education("none").group(group).build();
 		students.add(student);
 		assertEquals("1.  Name: Bueno Amigo | Group: name", formatter.formatStudentList(students));
 	}

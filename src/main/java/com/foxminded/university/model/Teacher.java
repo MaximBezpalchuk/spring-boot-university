@@ -41,7 +41,7 @@ public class Teacher extends Person {
 			return this;
 		}
 
-		public Builder setSubjects(List<Subject> subjects) {
+		public Builder subjects(List<Subject> subjects) {
 			this.subjects = subjects;
 			return this;
 		}

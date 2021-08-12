@@ -42,7 +42,7 @@ public class AudienceDaoTest {
 	@Test
 	void givenExistingAudience_whenFindById_thenAudienceFound() {
 		Cathedra cathedra = cathedraDao.findById(1);
-		Audience expected = Audience.build(1, 10, cathedra).setId(1).build();
+		Audience expected = Audience.build(1, 10, cathedra).id(1).build();
 		Audience actual = audienceDao.findById(1);
 
 		assertEquals(expected, actual);
