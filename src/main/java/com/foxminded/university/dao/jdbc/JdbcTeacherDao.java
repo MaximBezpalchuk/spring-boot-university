@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.foxminded.university.dao.JdbcDao;
-import com.foxminded.university.dao.mapper.TeacherRowMapper;
+import com.foxminded.university.dao.jdbc.mapper.TeacherRowMapper;
 import com.foxminded.university.model.Subject;
 import com.foxminded.university.model.Teacher;
 

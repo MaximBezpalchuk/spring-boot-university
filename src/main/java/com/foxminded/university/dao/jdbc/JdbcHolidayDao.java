@@ -10,7 +10,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import com.foxminded.university.dao.JdbcDao;
-import com.foxminded.university.dao.mapper.HolidayRowMapper;
+import com.foxminded.university.dao.jdbc.mapper.HolidayRowMapper;
 import com.foxminded.university.model.Holiday;
 
 @Component

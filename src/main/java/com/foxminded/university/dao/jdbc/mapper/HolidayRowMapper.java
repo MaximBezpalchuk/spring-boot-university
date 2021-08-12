@@ -1,4 +1,4 @@
-package com.foxminded.university.dao.mapper;
+package com.foxminded.university.dao.jdbc.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
