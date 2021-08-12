@@ -8,7 +8,7 @@ public interface JdbcDao<T> {
 
 	T findById(int id);
 
-	void save(T object);
+	void save(T entity);
 
 	void deleteById(int id);
 }

@@ -171,6 +171,10 @@ public class MenuCreator {
 		menu.append(System.lineSeparator());
 		menu.append("8  - Delete holiday");
 		menu.append(System.lineSeparator());
+		menu.append("9  - Delete group from lecture");
+		menu.append(System.lineSeparator());
+		menu.append("10  - Delete subject from teacher");
+		menu.append(System.lineSeparator());
 		menu.append("0  - Go to the main menu");
 
 		return menu.toString();
@@ -701,7 +705,7 @@ public class MenuCreator {
 
 	private void submenuDelete() throws IOException {
 		System.out.println(printDeleteMenu());
-		int choise = getInput(8);
+		int choise = getInput(10);
 		switch (choise) {
 		case 1:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -812,6 +816,50 @@ public class MenuCreator {
 			Holiday holiday = sortedHolidays8.get(holidayNumber8 - 1);
 			holidayDao.deleteById(holiday.getId());
 			System.out.println("Holiday was deleted!");
+			break;
+		case 9:
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
+			System.out.println("Select lecture from the list:");
+			List<Lecture> sortedLectures9 = sortLecturesByDate(lectureDao.findAll());
+			System.out.println(formatter.formatLectureList(sortedLectures9));
+			int lectureNumber9 = getInput(sortedLectures9.size());
+			exitCheck(String.valueOf(lectureNumber9));
+			Lecture lecture9 = sortedLectures9.get(lectureNumber9 - 1);
+			if(lecture9.getGroups().isEmpty()) {
+				System.out.println("No groups on this lecture!");
+				break;
+			}
+			System.out.println("Select group from the list:");
+			List<Group> sortedGroups9 = sortGroupsByName(lecture9.getGroups());
+			System.out.println(formatter.formatGroupList(sortedGroups9));
+			int groupNumber9 = getInput(sortedGroups9.size());
+			exitCheck(String.valueOf(groupNumber9));
+			Group group9 = sortedGroups9.get(groupNumber9 - 1);
+			lecture9.getGroups().remove(group9);
+			lectureDao.save(lecture9);
+			System.out.println("Group was deleted from lecture!");
+			break;
+		case 10:
+			System.out.println("If you want to cancel, type 0 or nothing at any stage");
+			System.out.println("Select teacher from the list:");
+			List<Teacher> sortedTeachers10 = sortTeachersByLastName(teacherDao.findAll());
+			System.out.println(formatter.formatTeacherList(sortedTeachers10));
+			int teacherNumber10 = getInput(sortedTeachers10.size());
+			exitCheck(String.valueOf(teacherNumber10));
+			Teacher teacher10 = sortedTeachers10.get(teacherNumber10 - 1);
+			if(teacher10.getSubjects().isEmpty()) {
+				System.out.println("No subjects on this teacher");
+				break;
+			}
+			System.out.println("Select subject from the list:");
+			List<Subject> sortedSubjects10 = sortSubjectsByName(teacher10.getSubjects());
+			System.out.println(formatter.formatSubjectList(sortedSubjects10));
+			int subjectNumber10 = getInput(sortedSubjects10.size());
+			exitCheck(String.valueOf(subjectNumber10));
+			Subject subject10 = sortedSubjects10.get(subjectNumber10 - 1);
+			teacher10.getSubjects().remove(subject10);
+			teacherDao.save(teacher10);
+			System.out.println("Subject was deleted from teacher!");
 			break;
 		case 0:
 			break;
