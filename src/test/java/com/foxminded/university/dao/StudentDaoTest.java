@@ -19,7 +19,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.foxminded.university.model.Student;
 import com.foxminded.university.config.SpringTestConfig;
-import com.foxminded.university.dao.jdbc.JdbcGroupDao;
 import com.foxminded.university.dao.jdbc.JdbcStudentDao;
 import com.foxminded.university.model.Gender;
 
@@ -32,8 +31,6 @@ public class StudentDaoTest {
 	private JdbcTemplate template;
 	@Autowired
 	private JdbcStudentDao studentDao;
-	@Autowired
-	private JdbcGroupDao groupDao;
 
 	@Test
 	void whenFindAll_thenAllExistingStudentsFound() {
@@ -45,10 +42,10 @@ public class StudentDaoTest {
 
 	@Test
 	void givenExistingStudent_whenFindById_thenStudentFound() {
+		Student actual = studentDao.findById(1);
 		Student expected = Student.build("Petr", "Orlov", "Empty Street 8", Gender.MALE, LocalDate.of(1994, 3, 3))
 				.phone("888005353535").email("1@owl.com").postalCode("999").education("General secondary education")
-				.group(groupDao.findById(1)).id(1).build();
-		Student actual = studentDao.findById(1);
+				.group(actual.getGroup()).id(1).build();
 
 		assertEquals(expected, actual);
 	}
@@ -68,9 +65,10 @@ public class StudentDaoTest {
 	@Test
 	void givenNewStudent_whenSaveStudent_thenAllExistingStudentsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
+		Student actual = studentDao.findById(1);
 		Student student = Student.build("Petr123", "Orlov123", "Empty Street 8", Gender.MALE, LocalDate.of(1994, 3, 3))
 				.phone("888005353535").email("1@owl.com").postalCode("999").education("General secondary education")
-				.group(groupDao.findById(1)).build();
+				.group(actual.getGroup()).build();
 		studentDao.save(student);
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));

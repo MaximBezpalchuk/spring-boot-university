@@ -20,7 +20,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.foxminded.university.config.SpringTestConfig;
-import com.foxminded.university.dao.jdbc.JdbcTeacherDao;
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
 import com.foxminded.university.model.Vacation;
 
@@ -33,8 +32,6 @@ public class VacationDaoTest {
 	private JdbcTemplate template;
 	@Autowired
 	private JdbcVacationDao vacationDao;
-	@Autowired
-	private JdbcTeacherDao teacherDao;
 
 	@Test
 	void whenFindAll_thenAllExistingVacationsFound() {
@@ -46,9 +43,9 @@ public class VacationDaoTest {
 
 	@Test
 	void givenExistingVacation_whenFindById_thenVacationFound() {
-		Vacation expected = Vacation.build(LocalDate.of(2021, 1, 15), LocalDate.of(2021, 1, 29), teacherDao.findById(1))
-				.id(1).build();
 		Vacation actual = vacationDao.findById(1);
+		Vacation expected = Vacation.build(LocalDate.of(2021, 1, 15), LocalDate.of(2021, 1, 29), actual.getTeacher())
+				.id(1).build();
 
 		assertEquals(expected, actual);
 	}
@@ -68,8 +65,9 @@ public class VacationDaoTest {
 	@Test
 	void givenNewVacation_whenSaveVacation_thenAllExistingVacationsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
+		Vacation actual = vacationDao.findById(1);
 		vacationDao.save(
-				Vacation.build(LocalDate.of(2021, 1, 31), LocalDate.of(2021, 3, 29), teacherDao.findById(2)).build());
+				Vacation.build(LocalDate.of(2021, 1, 31), LocalDate.of(2021, 3, 29), actual.getTeacher()).build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
@@ -79,7 +77,7 @@ public class VacationDaoTest {
 	void givenExitstingVacation_whenChange_thenAllExistingVacationsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME);
 		Vacation vacation = vacationDao.findById(1);
-		vacation.setTeacher(teacherDao.findById(2));
+		vacation.setTeacher(vacationDao.findById(2).getTeacher());
 		vacationDao.save(vacation);
 		int actual = countRowsInTable(template, TABLE_NAME);
 
@@ -98,13 +96,14 @@ public class VacationDaoTest {
 	@Test
 	void givenExistingVacation_whenFindByTeacherId_thenVacationFound() {
 		List<Vacation> expected = new ArrayList<>();
+		List<Vacation> actual = vacationDao.findByTeacherId(1);
 		Vacation vacation1 = Vacation
-				.build(LocalDate.of(2021, 1, 15), LocalDate.of(2021, 1, 29), teacherDao.findById(1)).id(1).build();
+				.build(LocalDate.of(2021, 1, 15), LocalDate.of(2021, 1, 29), actual.get(0).getTeacher()).id(1).build();
 		Vacation vacation2 = Vacation
-				.build(LocalDate.of(2021, 6, 15), LocalDate.of(2021, 6, 29), teacherDao.findById(1)).id(2).build();
+				.build(LocalDate.of(2021, 6, 15), LocalDate.of(2021, 6, 29), actual.get(0).getTeacher()).id(2).build();
 		expected.add(vacation1);
 		expected.add(vacation2);
-		List<Vacation> actual = vacationDao.findByTeacherId(1);
+
 		assertEquals(expected, actual);
 	}
 }

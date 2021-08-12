@@ -17,9 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.foxminded.university.model.Group;
 import com.foxminded.university.config.SpringTestConfig;
-import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
 import com.foxminded.university.dao.jdbc.JdbcGroupDao;
-import com.foxminded.university.model.Cathedra;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = SpringTestConfig.class)
@@ -30,8 +28,6 @@ public class GroupDaoTest {
 	private JdbcTemplate template;
 	@Autowired
 	private JdbcGroupDao groupDao;
-	@Autowired
-	private JdbcCathedraDao cathedraDao;
 
 	@Test
 	void whenFindAll_thenAllExistingGroupsFound() {
@@ -43,9 +39,8 @@ public class GroupDaoTest {
 
 	@Test
 	void givenExistingGroup_whenFindById_thenGroupFound() {
-		Cathedra cathedra = cathedraDao.findById(1);
-		Group expected = Group.build("Killers", cathedra).id(1).build();
 		Group actual = groupDao.findById(1);
+		Group expected = Group.build("Killers", actual.getCathedra()).id(1).build();
 
 		assertEquals(expected, actual);
 	}
@@ -65,8 +60,8 @@ public class GroupDaoTest {
 	@Test
 	void givenNewGroup_whenSaveGroup_thenAllExistingGroupsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		Cathedra cathedra = cathedraDao.findById(1);
-		groupDao.save(Group.build("Test Name", cathedra).build());
+		Group actual = groupDao.findById(1);
+		groupDao.save(Group.build("Test Name", actual.getCathedra()).build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}

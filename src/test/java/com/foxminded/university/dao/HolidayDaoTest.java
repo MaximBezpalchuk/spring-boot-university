@@ -18,9 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.foxminded.university.config.SpringTestConfig;
-import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
 import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
-import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Holiday;
 
 @ExtendWith(SpringExtension.class)
@@ -32,8 +30,6 @@ public class HolidayDaoTest {
 	private JdbcTemplate template;
 	@Autowired
 	private JdbcHolidayDao holidayDao;
-	@Autowired
-	private JdbcCathedraDao cathedraDao;
 
 	@Test
 	void whenFindAll_thenAllExistingHolidaysFound() {
@@ -45,9 +41,8 @@ public class HolidayDaoTest {
 
 	@Test
 	void givenExistingHoliday_whenFindById_thenHolidayFound() {
-		Cathedra cathedra = cathedraDao.findById(1);
-		Holiday expected = Holiday.build("Christmas", LocalDate.of(2021, 12, 25), cathedra).id(1).build();
 		Holiday actual = holidayDao.findById(1);
+		Holiday expected = Holiday.build("Christmas", LocalDate.of(2021, 12, 25), actual.getCathedra()).id(1).build();
 
 		assertEquals(expected, actual);
 	}
@@ -67,8 +62,8 @@ public class HolidayDaoTest {
 	@Test
 	void givenNewHoliday_whenSaveHoliday_thenAllExistingHolidaysFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		Cathedra cathedra = cathedraDao.findById(1);
-		Holiday holiday = new Holiday.Builder("Christmas2", LocalDate.of(2021, 12, 25), cathedra).build();
+		Holiday actual = holidayDao.findById(1);
+		Holiday holiday = new Holiday.Builder("Christmas2", LocalDate.of(2021, 12, 25), actual.getCathedra()).build();
 		holidayDao.save(holiday);
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));

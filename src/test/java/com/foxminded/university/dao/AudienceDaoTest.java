@@ -12,9 +12,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.foxminded.university.config.SpringTestConfig;
 import com.foxminded.university.dao.jdbc.JdbcAudienceDao;
-import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
 import com.foxminded.university.model.Audience;
-import com.foxminded.university.model.Cathedra;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
@@ -28,8 +26,6 @@ public class AudienceDaoTest {
 	private JdbcTemplate template;
 	@Autowired
 	private JdbcAudienceDao audienceDao;
-	@Autowired
-	private JdbcCathedraDao cathedraDao;
 
 	@Test
 	void whenFindAll_thenAllExistingAudiencesFound() {
@@ -41,9 +37,8 @@ public class AudienceDaoTest {
 
 	@Test
 	void givenExistingAudience_whenFindById_thenAudienceFound() {
-		Cathedra cathedra = cathedraDao.findById(1);
-		Audience expected = Audience.build(1, 10, cathedra).id(1).build();
 		Audience actual = audienceDao.findById(1);
+		Audience expected = Audience.build(1, 10, actual.getCathedra()).id(1).build();
 
 		assertEquals(expected, actual);
 	}
@@ -63,8 +58,8 @@ public class AudienceDaoTest {
 	@Test
 	void givenNewAudience_whenSaveAudience_thenAllExistingAudiencesFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		Cathedra cathedra = cathedraDao.findById(1);
-		audienceDao.save(Audience.build(100, 100, cathedra).build());
+		Audience actual = audienceDao.findById(1);
+		audienceDao.save(Audience.build(100, 100, actual.getCathedra()).build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}

@@ -20,7 +20,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.foxminded.university.model.Subject;
 import com.foxminded.university.config.SpringTestConfig;
-import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
 import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
 import com.foxminded.university.model.Cathedra;
 
@@ -33,8 +32,6 @@ public class SubjectDaoTest {
 	private JdbcTemplate template;
 	@Autowired
 	private JdbcSubjectDao subjectDao;
-	@Autowired
-	private JdbcCathedraDao cathedraDao;
 
 	@Test
 	void whenFindAll_thenAllExistingSubjectsFound() {
@@ -46,11 +43,10 @@ public class SubjectDaoTest {
 
 	@Test
 	void givenExistingSubject_whenFindById_thenSubjectFound() {
-		Cathedra cathedra = cathedraDao.findById(1);
-		Subject expected = Subject
-				.build(cathedra, "Weapon Tactics", "Learning how to use heavy weapon and guerrilla tactics").id(1)
-				.build();
 		Subject actual = subjectDao.findById(1);
+		Subject expected = Subject
+				.build(actual.getCathedra(), "Weapon Tactics", "Learning how to use heavy weapon and guerrilla tactics")
+				.id(1).build();
 
 		assertEquals(expected, actual);
 	}
@@ -70,10 +66,9 @@ public class SubjectDaoTest {
 	@Test
 	void givenNewSubject_whenSaveSubject_thenAllExistingSubjectsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		Cathedra cathedra = cathedraDao.findById(1);
-		subjectDao.save(Subject
-				.build(cathedra, "Weapon Tactics123", "Learning how to use heavy weapon and guerrilla tactics123")
-				.build());
+		Subject actual = subjectDao.findById(1);
+		subjectDao.save(Subject.build(actual.getCathedra(), "Weapon Tactics123",
+				"Learning how to use heavy weapon and guerrilla tactics123").build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
@@ -102,12 +97,13 @@ public class SubjectDaoTest {
 	@Test
 	void givenExistingSubject_whenFindByTeacherId_thenSubjectFound() {
 		List<Subject> expected = new ArrayList<>();
-		Cathedra cathedra = cathedraDao.findById(1);
+		List<Subject> actual = subjectDao.findByTeacherId(1);
+		Cathedra cathedra = actual.get(0).getCathedra();
 		Subject subject1 = Subject
 				.build(cathedra, "Weapon Tactics", "Learning how to use heavy weapon and guerrilla tactics").id(1)
 				.build();
 		expected.add(subject1);
-		List<Subject> actual = subjectDao.findByTeacherId(1);
+
 		assertEquals(expected, actual);
 	}
 }

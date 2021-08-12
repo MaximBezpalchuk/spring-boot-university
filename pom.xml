@@ -6,7 +6,8 @@
 	<artifactId>university</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>UniversityProject</name>
-	<description>Application for non-existent university using jdbcTemplate, Spring Framework</description>
+	<description>Application for non-existent university using
+		jdbcTemplate, Spring Framework</description>
 
 	<properties>
 		<maven.compiler.target>8</maven.compiler.target>

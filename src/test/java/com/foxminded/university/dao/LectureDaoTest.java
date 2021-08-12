@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,20 +18,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.foxminded.university.model.Lecture;
-import com.foxminded.university.model.LectureTime;
-import com.foxminded.university.model.Subject;
-import com.foxminded.university.model.Teacher;
 import com.foxminded.university.config.SpringTestConfig;
-import com.foxminded.university.dao.jdbc.JdbcAudienceDao;
-import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
-import com.foxminded.university.dao.jdbc.JdbcGroupDao;
 import com.foxminded.university.dao.jdbc.JdbcLectureDao;
-import com.foxminded.university.dao.jdbc.JdbcLectureTimeDao;
-import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
-import com.foxminded.university.dao.jdbc.JdbcTeacherDao;
-import com.foxminded.university.model.Audience;
-import com.foxminded.university.model.Cathedra;
-import com.foxminded.university.model.Group;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = SpringTestConfig.class)
@@ -44,18 +30,6 @@ public class LectureDaoTest {
 	private JdbcTemplate template;
 	@Autowired
 	private JdbcLectureDao lectureDao;
-	@Autowired
-	private JdbcCathedraDao cathedraDao;
-	@Autowired
-	private JdbcSubjectDao subjectDao;
-	@Autowired
-	private JdbcLectureTimeDao lectureTimeDao;
-	@Autowired
-	private JdbcAudienceDao audienceDao;
-	@Autowired
-	private JdbcTeacherDao teacherDao;
-	@Autowired
-	private JdbcGroupDao groupDao;
 
 	@Test
 	void whenFindAll_thenAllExistingLecturesFound() {
@@ -67,16 +41,9 @@ public class LectureDaoTest {
 
 	@Test
 	void givenExistingLecture_whenFindById_thenLectureFound() {
-		Cathedra cathedra = cathedraDao.findById(1);
-		Subject subject = subjectDao.findById(1);
-		LectureTime lectureTime = lectureTimeDao.findById(1);
-		Audience audience = audienceDao.findById(1);
-		Teacher teacher = teacherDao.findById(1);
-		List<Group> groups = new ArrayList<>();
-		groups.add(groupDao.findById(1));
-		Lecture expected = Lecture.build(cathedra, subject, LocalDate.of(2021, 4, 4), lectureTime, audience, teacher)
-				.id(1).group(groups).build();
 		Lecture actual = lectureDao.findById(1);
+		Lecture expected = Lecture.build(actual.getCathedra(), actual.getSubject(), LocalDate.of(2021, 4, 4),
+				actual.getTime(), actual.getAudience(), actual.getTeacher()).id(1).group(actual.getGroups()).build();
 
 		assertEquals(expected, actual);
 	}
@@ -96,13 +63,9 @@ public class LectureDaoTest {
 	@Test
 	void givenNewLecture_whenSaveLecture_thenAllExistingLecturesFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		Cathedra cathedra = cathedraDao.findById(1);
-		Subject subject = subjectDao.findById(1);
-		LectureTime lectureTime = lectureTimeDao.findById(1);
-		Audience audience = audienceDao.findById(2);
-		Teacher teacher = teacherDao.findById(2);
-		lectureDao.save(new Lecture.Builder(cathedra, subject, LocalDate.of(2021, 4, 4), lectureTime, audience, teacher)
-				.build());
+		Lecture actual = lectureDao.findById(1);
+		lectureDao.save(Lecture.build(actual.getCathedra(), actual.getSubject(), LocalDate.of(2021, 4, 4),
+				actual.getTime(), actual.getAudience(), actual.getTeacher()).build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
@@ -112,8 +75,7 @@ public class LectureDaoTest {
 	void givenExitstingLecture_whenChange_thenAllExistingLecturesFound() {
 		int expected = countRowsInTable(template, TABLE_NAME);
 		Lecture lecture = lectureDao.findById(1);
-		LectureTime lectureTime = lectureTimeDao.findById(6);
-		lecture.setTime(lectureTime);
+		lecture.setTime(lecture.getTime());
 		lectureDao.save(lecture);
 		int actual = countRowsInTable(template, TABLE_NAME);
 
