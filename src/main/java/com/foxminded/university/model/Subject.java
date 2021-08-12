@@ -47,6 +47,10 @@ public class Subject {
 	public String getDescription() {
 		return description;
 	}
+	
+	public static Builder build(Cathedra cathedra, String name, String description) {
+		return new Builder(cathedra, name, description);
+	}
 
 	public static class Builder {
 

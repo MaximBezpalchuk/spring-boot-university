@@ -39,7 +39,7 @@ public class CathedraDaoTest {
 
 	@Test
 	void givenExistingCathedra_whenFindById_thenCathedraFound() {
-		Cathedra expected = new Cathedra.Builder("Fantastic Cathedra").setId(1).build();
+		Cathedra expected = Cathedra.build("Fantastic Cathedra").setId(1).build();
 		Cathedra actual = cathedraDao.findById(1);
 
 		assertEquals(expected, actual);
@@ -60,7 +60,7 @@ public class CathedraDaoTest {
 	@Test
 	void givenNewCathedra_whenSaveCathedra_thenAllExistingCathedrasFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		cathedraDao.save(new Cathedra.Builder("Fantastic Cathedra 2").build());
+		cathedraDao.save(Cathedra.build("Fantastic Cathedra 2").build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}

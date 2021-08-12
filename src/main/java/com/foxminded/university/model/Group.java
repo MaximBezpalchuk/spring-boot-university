@@ -34,6 +34,10 @@ public class Group {
 		return cathedra;
 	}
 
+	public static Builder build(String name, Cathedra cathedra) {
+		return new Builder(name, cathedra);
+	}
+
 	public static class Builder {
 
 		private int id;

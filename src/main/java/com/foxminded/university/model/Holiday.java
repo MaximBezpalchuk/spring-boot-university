@@ -48,6 +48,10 @@ public class Holiday {
 	public LocalDate getDate() {
 		return date;
 	}
+	
+	public static Builder build(String name, LocalDate date, Cathedra cathedra) {
+		return new Builder(name, date, cathedra);
+	}
 
 	public static class Builder {
 

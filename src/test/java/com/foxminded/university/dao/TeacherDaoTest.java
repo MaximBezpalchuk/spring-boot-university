@@ -52,12 +52,13 @@ public class TeacherDaoTest {
 
 	@Test
 	void givenExistingTeacher_whenFindById_thenTeacherFound() {
-		Teacher expected = new Teacher.Builder("Daniel", "Morpheus", "Virtual Reality Capsule no 1", Gender.MALE,
-				LocalDate.of(1970, 1, 1), cathedraDao.findById(1), Degree.PROFESSOR).setPhone("1")
-						.setEmail("1@bigowl.com").setPostalCode("12345").setEducation("Higher education").setId(1)
-						.build();
+		Teacher expected = Teacher
+				.build("Daniel", "Morpheus", "Virtual Reality Capsule no 1", Gender.MALE, LocalDate.of(1970, 1, 1),
+						cathedraDao.findById(1), Degree.PROFESSOR)
+				.setPhone("1").setEmail("1@bigowl.com").setPostalCode("12345").setEducation("Higher education").setId(1)
+				.build();
 		List<Subject> subjects = new ArrayList<>();
-		Subject subject = new Subject.Builder(cathedraDao.findById(1), "Weapon Tactics",
+		Subject subject = Subject.build(cathedraDao.findById(1), "Weapon Tactics",
 				"Learning how to use heavy weapon and guerrilla tactics").setId(1).build();
 		subjects.add(subject);
 		expected.setSubjects(subjects);
@@ -81,11 +82,12 @@ public class TeacherDaoTest {
 	@Test
 	void givenNewTeacher_whenSaveTeacher_thenAllExistingTeachersFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		Teacher teacher = new Teacher.Builder("Test", "Test", "Virtual Reality Capsule no 1", Gender.MALE,
-				LocalDate.of(1970, 1, 1), cathedraDao.findById(1), Degree.PROFESSOR).setPhone("1")
-						.setEmail("1@bigowl.com").setPostalCode("12345").setEducation("Higher education").build();
+		Teacher teacher = Teacher
+				.build("Test", "Test", "Virtual Reality Capsule no 1", Gender.MALE, LocalDate.of(1970, 1, 1),
+						cathedraDao.findById(1), Degree.PROFESSOR)
+				.setPhone("1").setEmail("1@bigowl.com").setPostalCode("12345").setEducation("Higher education").build();
 		List<Subject> subjects = new ArrayList<>();
-		Subject subject = new Subject.Builder(cathedraDao.findById(1), "Weapon Tactics",
+		Subject subject = Subject.build(cathedraDao.findById(1), "Weapon Tactics",
 				"Learning how to use heavy weapon and guerrilla tactics").setId(1).build();
 		subjects.add(subject);
 		teacher.setSubjects(subjects);

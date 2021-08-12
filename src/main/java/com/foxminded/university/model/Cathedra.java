@@ -28,6 +28,10 @@ public class Cathedra {
 		this.name = name;
 	}
 
+	public static Builder build(String name) {
+		return new Builder(name);
+	}
+
 	public static class Builder {
 		private int id;
 		private final String name; // required field

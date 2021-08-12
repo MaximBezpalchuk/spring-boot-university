@@ -45,7 +45,7 @@ public class StudentDaoTest {
 
 	@Test
 	void givenExistingStudent_whenFindById_thenStudentFound() {
-		Student expected = new Student.Builder("Petr", "Orlov", "Empty Street 8", Gender.MALE, LocalDate.of(1994, 3, 3))
+		Student expected = Student.build("Petr", "Orlov", "Empty Street 8", Gender.MALE, LocalDate.of(1994, 3, 3))
 				.setPhone("888005353535").setEmail("1@owl.com").setPostalCode("999")
 				.setEducation("General secondary education").setGroup(groupDao.findById(1)).setId(1).build();
 		Student actual = studentDao.findById(1);
@@ -68,9 +68,9 @@ public class StudentDaoTest {
 	@Test
 	void givenNewStudent_whenSaveStudent_thenAllExistingStudentsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		Student student = new Student.Builder("Petr123", "Orlov123", "Empty Street 8", Gender.MALE,
-				LocalDate.of(1994, 3, 3)).setPhone("888005353535").setEmail("1@owl.com").setPostalCode("999")
-						.setEducation("General secondary education").setGroup(groupDao.findById(1)).build();
+		Student student = Student.build("Petr123", "Orlov123", "Empty Street 8", Gender.MALE, LocalDate.of(1994, 3, 3))
+				.setPhone("888005353535").setEmail("1@owl.com").setPostalCode("999")
+				.setEducation("General secondary education").setGroup(groupDao.findById(1)).build();
 		studentDao.save(student);
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));

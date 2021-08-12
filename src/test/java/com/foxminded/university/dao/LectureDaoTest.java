@@ -74,7 +74,7 @@ public class LectureDaoTest {
 		Teacher teacher = teacherDao.findById(1);
 		List<Group> groups = new ArrayList<>();
 		groups.add(groupDao.findById(1));
-		Lecture expected = new Lecture.Builder(cathedra, subject, LocalDate.of(2021, 4, 4), lectureTime, audience,
+		Lecture expected = Lecture.build(cathedra, subject, LocalDate.of(2021, 4, 4), lectureTime, audience,
 				teacher).setId(1).setGroup(groups).build();
 		Lecture actual = lectureDao.findById(1);
 

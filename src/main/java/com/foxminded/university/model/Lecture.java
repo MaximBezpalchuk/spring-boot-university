@@ -79,6 +79,11 @@ public class Lecture {
 		return time;
 	}
 
+	public static Builder build(Cathedra cathedra, Subject subject, LocalDate date, LectureTime time, Audience audience,
+			Teacher teacher) {
+		return new Builder(cathedra, subject, date, time, audience, teacher);
+	}
+
 	public static class Builder {
 
 		private int id;

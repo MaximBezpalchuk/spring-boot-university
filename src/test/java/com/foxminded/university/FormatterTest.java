@@ -29,15 +29,16 @@ class FormatterTest {
 	@Test
 	void formatLectureListTest() {
 		List<Lecture> lectures = new ArrayList<>();
-		Subject subject = new Subject.Builder(cathedra, "TestSubject", "Desc").build();
+		Subject subject = Subject.build(cathedra, "TestSubject", "Desc").build();
 		LocalDate date = LocalDate.of(2020, 1, 1);
-		LectureTime time = new LectureTime.Builder(LocalTime.of(10, 20), LocalTime.of(10, 21)).build();
-		Audience audience = new Audience.Builder(1, 5, cathedra).build();
-		Teacher teacher = new Teacher.Builder("Amigo", "Bueno", "Puerto Rico", Gender.FEMALE, LocalDate.of(1999, 1, 1),
-				cathedra, Degree.PROFESSOR).setPhone("999").setEmail("dot@dot.com").setPostalCode("123")
-						.setEducation("none").build();
+		LectureTime time = LectureTime.build(LocalTime.of(10, 20), LocalTime.of(10, 21)).build();
+		Audience audience = Audience.build(1, 5, cathedra).build();
+		Teacher teacher = Teacher
+				.build("Amigo", "Bueno", "Puerto Rico", Gender.FEMALE, LocalDate.of(1999, 1, 1), cathedra,
+						Degree.PROFESSOR)
+				.setPhone("999").setEmail("dot@dot.com").setPostalCode("123").setEducation("none").build();
 
-		lectures.add(new Lecture.Builder(cathedra, subject, date, time, audience, teacher).build());
+		lectures.add(Lecture.build(cathedra, subject, date, time, audience, teacher).build());
 
 		assertEquals(
 				"1.  Date: 2020-01-01 | Subject: TestSubject | Audience: 1 | Teacher: Amigo Bueno | Lecture start: 10:20, Lecture end: 10:21",
@@ -55,7 +56,7 @@ class FormatterTest {
 	@Test
 	void formatSubjectListTest() {
 		List<Subject> subjects = new ArrayList<>();
-		Subject subject = new Subject.Builder(cathedra, "TestSubject", "Desc").build();
+		Subject subject = Subject.build(cathedra, "TestSubject", "Desc").build();
 		subjects.add(subject);
 		assertEquals("1.  Name: TestSubject | Description: Desc", formatter.formatSubjectList(subjects));
 	}
@@ -63,16 +64,17 @@ class FormatterTest {
 	@Test
 	void formatTeacherListTest() {
 		List<Teacher> teachers = new ArrayList<>();
-		teachers.add(new Teacher.Builder("Amigo", "Bueno", "Puerto Rico", Gender.FEMALE, LocalDate.of(1999, 1, 1),
-				cathedra, Degree.PROFESSOR).setPhone("999").setEmail("dot@dot.com").setPostalCode("123")
-						.setEducation("none").build());
+		teachers.add(Teacher
+				.build("Amigo", "Bueno", "Puerto Rico", Gender.FEMALE, LocalDate.of(1999, 1, 1), cathedra,
+						Degree.PROFESSOR)
+				.setPhone("999").setEmail("dot@dot.com").setPostalCode("123").setEducation("none").build());
 		assertEquals("1.  Name: Bueno Amigo", formatter.formatTeacherList(teachers));
 	}
 
 	@Test
 	void formatAudienceListTest() {
-		Audience audience1 = new Audience.Builder(3, 5, cathedra).build();
-		Audience audience2 = new Audience.Builder(1, 5, cathedra).build();
+		Audience audience1 = Audience.build(3, 5, cathedra).build();
+		Audience audience2 = Audience.build(1, 5, cathedra).build();
 		List<Audience> audiences = new ArrayList<>();
 		audiences.add(audience1);
 		audiences.add(audience2);
@@ -85,7 +87,7 @@ class FormatterTest {
 		List<Student> students = new ArrayList<>();
 		Group group = new Group.Builder("name", cathedra).build();
 
-		Student student = new Student.Builder("Amigo", "Bueno", "Puerto Rico", Gender.FEMALE, LocalDate.of(1999, 1, 1))
+		Student student = Student.build("Amigo", "Bueno", "Puerto Rico", Gender.FEMALE, LocalDate.of(1999, 1, 1))
 				.setPhone("999").setEmail("dot@dot.com").setPostalCode("123").setEducation("none").setGroup(group)
 				.build();
 		students.add(student);
@@ -95,21 +97,21 @@ class FormatterTest {
 	@Test
 	void formatHolidayListTest() {
 		List<Holiday> holidays = new ArrayList<>();
-		holidays.add(new Holiday.Builder("Test", LocalDate.of(1999, 1, 1), cathedra).build());
+		holidays.add(Holiday.build("Test", LocalDate.of(1999, 1, 1), cathedra).build());
 		assertEquals("1.  Name: Test | Date: 1999-01-01", formatter.formatHolidayList(holidays));
 	}
 
 	@Test
 	void formatVacationListTest() {
 		List<Vacation> vacations = new ArrayList<>();
-		vacations.add(new Vacation.Builder(LocalDate.of(1999, 1, 1), LocalDate.of(2000, 1, 1), null).build());
+		vacations.add(Vacation.build(LocalDate.of(1999, 1, 1), LocalDate.of(2000, 1, 1), null).build());
 		assertEquals("1.  Dates: 1999-01-01 to 2000-01-01", formatter.formatVacationList(vacations));
 	}
 
 	@Test
 	void formatLectureTimesListTest() {
 		List<LectureTime> lectureTimes = new ArrayList<>();
-		lectureTimes.add(new LectureTime.Builder(LocalTime.of(10, 20), LocalTime.of(10, 21)).build());
+		lectureTimes.add(LectureTime.build(LocalTime.of(10, 20), LocalTime.of(10, 21)).build());
 		assertEquals("1.  Time: 10:20 to 10:21", formatter.formatLectureTimesList(lectureTimes));
 	}
 

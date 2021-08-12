@@ -38,6 +38,10 @@ public class LectureTime {
 	public LocalTime getEnd() {
 		return end;
 	}
+	
+	public static Builder build(LocalTime start, LocalTime end) {
+		return new Builder(start, end);
+	}
 
 	public static class Builder {
 

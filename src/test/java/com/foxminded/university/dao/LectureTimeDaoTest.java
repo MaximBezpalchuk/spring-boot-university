@@ -41,7 +41,7 @@ public class LectureTimeDaoTest {
 
 	@Test
 	void givenExistingLectureTime_whenFindById_thenLectureTimeFound() {
-		LectureTime expected = new LectureTime.Builder(LocalTime.of(8, 0, 0), LocalTime.of(9, 30, 0)).setId(1).build();
+		LectureTime expected = LectureTime.build(LocalTime.of(8, 0, 0), LocalTime.of(9, 30, 0)).setId(1).build();
 		LectureTime actual = lectureTimeDao.findById(1);
 
 		assertEquals(expected, actual);

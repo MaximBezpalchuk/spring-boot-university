@@ -18,6 +18,11 @@ public class Teacher extends Person {
 		this.degree = builder.degree;
 	}
 
+	public static Builder build(String firstName, String lastName, String address, Gender gender, LocalDate birthDate,
+			Cathedra cathedra, Degree degree) {
+		return new Builder(firstName, lastName, address, gender, birthDate, cathedra, degree);
+	}
+
 	public static class Builder extends Person.Builder<Builder> {
 
 		public Builder(String firstName, String lastName, String address, Gender gender, LocalDate birthDate,

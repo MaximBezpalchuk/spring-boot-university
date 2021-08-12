@@ -42,7 +42,7 @@ public class AudienceDaoTest {
 	@Test
 	void givenExistingAudience_whenFindById_thenAudienceFound() {
 		Cathedra cathedra = cathedraDao.findById(1);
-		Audience expected = new Audience.Builder(1, 10, cathedra).setId(1).build();
+		Audience expected = Audience.build(1, 10, cathedra).setId(1).build();
 		Audience actual = audienceDao.findById(1);
 
 		assertEquals(expected, actual);
@@ -64,7 +64,7 @@ public class AudienceDaoTest {
 	void givenNewAudience_whenSaveAudience_thenAllExistingAudiencesFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
 		Cathedra cathedra = cathedraDao.findById(1);
-		audienceDao.save(new Audience.Builder(100, 100, cathedra).build());
+		audienceDao.save(Audience.build(100, 100, cathedra).build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}

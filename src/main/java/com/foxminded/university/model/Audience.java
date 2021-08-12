@@ -48,6 +48,10 @@ public class Audience {
 		return capacity;
 	}
 
+	public static Builder build(int room, int capacity, Cathedra cathedra) {
+		return new Builder(room, capacity, cathedra);
+	}
+
 	public static class Builder {
 
 		private int id;

@@ -41,6 +41,10 @@ public class Vacation {
 		return end;
 	}
 
+	public static Builder build(LocalDate start, LocalDate end, Teacher teacher) {
+		return new Builder(start, end, teacher);
+	}
+
 	public static class Builder {
 
 		private int id;

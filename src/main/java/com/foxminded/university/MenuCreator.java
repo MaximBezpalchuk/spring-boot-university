@@ -363,7 +363,7 @@ public class MenuCreator {
 			System.out.println("Enter subject description:");
 			String subjectDescription3 = reader.readLine();
 			exitCheck(subjectDescription3);
-			subjectDao.save(new Subject.Builder(cathedraDao.findById(1), subjectName3, subjectDescription3).build());
+			subjectDao.save(Subject.build(cathedraDao.findById(1), subjectName3, subjectDescription3).build());
 			System.out.println("Subject added!");
 			break;
 		case 4:
@@ -371,7 +371,7 @@ public class MenuCreator {
 			System.out.println("Enter group name:");
 			String groupName4 = reader.readLine();
 			exitCheck(groupName4);
-			groupDao.save(new Group.Builder(groupName4, cathedraDao.findById(1)).build());
+			groupDao.save(Group.build(groupName4, cathedraDao.findById(1)).build());
 			System.out.println("Group added!");
 			break;
 		case 5:
@@ -402,8 +402,8 @@ public class MenuCreator {
 			int lectureTimeNumber5 = getInput(sortedLectureTimes5.size());
 			exitCheck(String.valueOf(lectureTimeNumber5));
 			LectureTime lectureTime5 = sortedLectureTimes5.get(lectureTimeNumber5 - 1);
-			lectureDao.save(new Lecture.Builder(cathedraDao.findById(1), subject5, lectureDate5, lectureTime5,
-					audience5, teacher5).build());
+			lectureDao.save(Lecture
+					.build(cathedraDao.findById(1), subject5, lectureDate5, lectureTime5, audience5, teacher5).build());
 			System.out.println("Lecture added!");
 			break;
 		case 6:
@@ -420,7 +420,7 @@ public class MenuCreator {
 			int cathedraNumber6 = getInput(sortedCathedras6.size());
 			exitCheck(String.valueOf(cathedraNumber6));
 			Cathedra cathedra6 = sortedCathedras6.get(cathedraNumber6 - 1);
-			Holiday holiday6 = new Holiday.Builder(holidayDescription6, holidayDate5, cathedra6).build();
+			Holiday holiday6 = Holiday.build(holidayDescription6, holidayDate5, cathedra6).build();
 			holidayDao.save(holiday6);
 			System.out.println("Holiday created!");
 			break;
@@ -432,8 +432,8 @@ public class MenuCreator {
 			System.out.println("Enter audience capacity");
 			String audienceCapacity7 = reader.readLine();
 			exitCheck(audienceCapacity7);
-			Audience audience7 = new Audience.Builder(Integer.parseInt(audienceRoom7),
-					Integer.parseInt(audienceCapacity7), cathedraDao.findById(1)).build();
+			Audience audience7 = Audience.build(Integer.parseInt(audienceRoom7), Integer.parseInt(audienceCapacity7),
+					cathedraDao.findById(1)).build();
 			audienceDao.save(audience7);
 			System.out.println("Audience created!");
 			break;
@@ -600,7 +600,7 @@ public class MenuCreator {
 			LocalDate vacationStartDate2 = setupLocalDate();
 			System.out.println("Enter vacation end date separated by commas without spaces (YEAR,MONTH,DAY):");
 			LocalDate vacationEndDate2 = setupLocalDate();
-			Vacation vacation2 = new Vacation.Builder(vacationStartDate2, vacationEndDate2, teacher2).build();
+			Vacation vacation2 = Vacation.build(vacationStartDate2, vacationEndDate2, teacher2).build();
 			vacationDao.save(vacation2);
 			System.out.println("Vacation added!");
 			break;
@@ -825,7 +825,7 @@ public class MenuCreator {
 			int lectureNumber9 = getInput(sortedLectures9.size());
 			exitCheck(String.valueOf(lectureNumber9));
 			Lecture lecture9 = sortedLectures9.get(lectureNumber9 - 1);
-			if(lecture9.getGroups().isEmpty()) {
+			if (lecture9.getGroups().isEmpty()) {
 				System.out.println("No groups on this lecture!");
 				break;
 			}
@@ -847,7 +847,7 @@ public class MenuCreator {
 			int teacherNumber10 = getInput(sortedTeachers10.size());
 			exitCheck(String.valueOf(teacherNumber10));
 			Teacher teacher10 = sortedTeachers10.get(teacherNumber10 - 1);
-			if(teacher10.getSubjects().isEmpty()) {
+			if (teacher10.getSubjects().isEmpty()) {
 				System.out.println("No subjects on this teacher");
 				break;
 			}

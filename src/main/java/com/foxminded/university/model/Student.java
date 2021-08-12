@@ -20,6 +20,10 @@ public class Student extends Person {
 		this.group = group;
 	}
 
+	public static Builder build(String firstName, String lastName, String address, Gender gender, LocalDate birthDate) {
+		return new Builder(firstName, lastName, address, gender, birthDate);
+	}
+
 	public static class Builder extends Person.Builder<Builder> {
 
 		private Group group;
