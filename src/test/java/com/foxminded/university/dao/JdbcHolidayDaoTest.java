@@ -63,7 +63,7 @@ public class JdbcHolidayDaoTest {
 	void givenNewHoliday_whenSaveHoliday_thenAllExistingHolidaysFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
 		Holiday actual = holidayDao.findById(1);
-		Holiday holiday = new Holiday.Builder("Christmas2", LocalDate.of(2021, 12, 25), actual.getCathedra()).build();
+		Holiday holiday = Holiday.build("Christmas2", LocalDate.of(2021, 12, 25), actual.getCathedra()).build();
 		holidayDao.save(holiday);
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));

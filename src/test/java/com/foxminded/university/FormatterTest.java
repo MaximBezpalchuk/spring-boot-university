@@ -24,7 +24,7 @@ import com.foxminded.university.model.Vacation;
 
 class FormatterTest {
 	private Formatter formatter = new Formatter();
-	private Cathedra cathedra = new Cathedra.Builder("Fantastic Cathedra").build();
+	private Cathedra cathedra = Cathedra.build("Fantastic Cathedra").build();
 
 	@Test
 	void formatLectureListTest() {
@@ -47,7 +47,7 @@ class FormatterTest {
 	@Test
 	void formatGroupListTest() {
 		List<Group> groups = new ArrayList<>();
-		Group group = new Group.Builder("name", cathedra).build();
+		Group group = Group.build("name", cathedra).build();
 		groups.add(group);
 		assertEquals("1.  name", formatter.formatGroupList(groups));
 	}
@@ -84,7 +84,7 @@ class FormatterTest {
 	@Test
 	void formatStudentListTest() {
 		List<Student> students = new ArrayList<>();
-		Group group = new Group.Builder("name", cathedra).build();
+		Group group = Group.build("name", cathedra).build();
 
 		Student student = Student.build("Amigo", "Bueno", "Puerto Rico", Gender.FEMALE, LocalDate.of(1999, 1, 1))
 				.phone("999").email("dot@dot.com").postalCode("123").education("none").group(group).build();
