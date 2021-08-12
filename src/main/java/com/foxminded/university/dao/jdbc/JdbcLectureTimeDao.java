@@ -9,12 +9,12 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
-import com.foxminded.university.dao.JdbcDao;
+import com.foxminded.university.dao.GenericLectureTimeDao;
 import com.foxminded.university.dao.jdbc.mapper.LectureTimeRowMapper;
 import com.foxminded.university.model.LectureTime;
 
 @Component
-public class JdbcLectureTimeDao implements JdbcDao<LectureTime> {
+public class JdbcLectureTimeDao implements GenericLectureTimeDao {
 
 	private final static String SELECT_ALL = "SELECT * FROM lecture_times";
 	private final static String SELECT_BY_ID = "SELECT * FROM lecture_times WHERE id = ?";

@@ -9,12 +9,12 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
-import com.foxminded.university.dao.JdbcDao;
+import com.foxminded.university.dao.GenericVacationDao;
 import com.foxminded.university.dao.jdbc.mapper.VacationRowMapper;
 import com.foxminded.university.model.Vacation;
 
 @Component
-public class JdbcVacationDao implements JdbcDao<Vacation> {
+public class JdbcVacationDao implements GenericVacationDao {
 
 	private final static String SELECT_ALL = "SELECT * FROM vacations";
 	private final static String SELECT_BY_ID = "SELECT * FROM vacations WHERE id = ?";
@@ -66,6 +66,7 @@ public class JdbcVacationDao implements JdbcDao<Vacation> {
 		jdbcTemplate.update(DELETE_VACATION, id);
 	}
 
+	@Override
 	public List<Vacation> findByTeacherId(int id) {
 		return jdbcTemplate.query(SELECT_BY_TEACHER_ID, rowMapper, id);
 	}

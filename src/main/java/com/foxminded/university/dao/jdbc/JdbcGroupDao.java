@@ -9,12 +9,12 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
-import com.foxminded.university.dao.JdbcDao;
+import com.foxminded.university.dao.GenericGroupDao;
 import com.foxminded.university.dao.jdbc.mapper.GroupRowMapper;
 import com.foxminded.university.model.Group;
 
 @Component
-public class JdbcGroupDao implements JdbcDao<Group> {
+public class JdbcGroupDao implements GenericGroupDao {
 
 	private final static String SELECT_ALL = "SELECT * FROM groups";
 	private final static String SELECT_BY_ID = "SELECT * FROM groups WHERE id = ?";
@@ -64,6 +64,7 @@ public class JdbcGroupDao implements JdbcDao<Group> {
 		jdbcTemplate.update(DELETE_GROUP, id);
 	}
 
+	@Override
 	public List<Group> findByLectureId(int id) {
 		return jdbcTemplate.query(SELECT_BY_LECTURE_ID, rowMapper, id);
 	}

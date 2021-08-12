@@ -9,13 +9,13 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
-import com.foxminded.university.dao.JdbcDao;
+import com.foxminded.university.dao.GenericStudentDao;
 import com.foxminded.university.dao.jdbc.mapper.StudentRowMapper;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Student;
 
 @Component
-public class JdbcStudentDao implements JdbcDao<Student> {
+public class JdbcStudentDao implements GenericStudentDao {
 
 	private final static String SELECT_ALL = "SELECT * FROM students";
 	private final static String SELECT_BY_ID = "SELECT * FROM students WHERE id = ?";

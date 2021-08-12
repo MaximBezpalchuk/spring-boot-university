@@ -9,12 +9,12 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
-import com.foxminded.university.dao.JdbcDao;
+import com.foxminded.university.dao.GenericSubjectDao;
 import com.foxminded.university.dao.jdbc.mapper.SubjectRowMapper;
 import com.foxminded.university.model.Subject;
 
 @Component
-public class JdbcSubjectDao implements JdbcDao<Subject> {
+public class JdbcSubjectDao implements GenericSubjectDao {
 
 	private final static String SELECT_ALL = "SELECT * FROM subjects";
 	private final static String SELECT_BY_ID = "SELECT * FROM subjects WHERE id = ?";
@@ -66,6 +66,7 @@ public class JdbcSubjectDao implements JdbcDao<Subject> {
 		jdbcTemplate.update(DELETE_SUBJECT, id);
 	}
 
+	@Override
 	public List<Subject> findByTeacherId(int id) {
 		return jdbcTemplate.query(SELECT_BY_TEACHER_ID, rowMapper, id);
 	}

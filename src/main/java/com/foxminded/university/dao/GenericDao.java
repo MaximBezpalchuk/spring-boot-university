@@ -2,7 +2,7 @@ package com.foxminded.university.dao;
 
 import java.util.List;
 
-public interface JdbcDao<T> {
+public interface GenericDao<T> {
 
 	List<T> findAll();
 
