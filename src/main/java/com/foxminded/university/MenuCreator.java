@@ -420,7 +420,8 @@ public class MenuCreator {
 			int cathedraNumber6 = getInput(sortedCathedras6.size());
 			exitCheck(String.valueOf(cathedraNumber6));
 			Cathedra cathedra6 = sortedCathedras6.get(cathedraNumber6 - 1);
-			Holiday holiday6 = Holiday.build(holidayDescription6, holidayDate5, cathedra6).build();
+			Holiday holiday6 = Holiday.builder().name(holidayDescription6).date(holidayDate5).cathedra(cathedra6)
+					.build();
 			holidayDao.save(holiday6);
 			System.out.println("Holiday created!");
 			break;

@@ -21,7 +21,8 @@ public class HolidayRowMapper implements RowMapper<Holiday> {
 
 	@Override
 	public Holiday mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-		return Holiday.build(resultSet.getString("name"), resultSet.getObject("date", LocalDate.class),
-				cathedraDao.findById(resultSet.getInt("cathedra_id"))).id(resultSet.getInt("id")).build();
+		return Holiday.builder().id(resultSet.getInt("id")).name(resultSet.getString("name"))
+				.date(resultSet.getObject("date", LocalDate.class))
+				.cathedra(cathedraDao.findById(resultSet.getInt("cathedra_id"))).build();
 	}
 }

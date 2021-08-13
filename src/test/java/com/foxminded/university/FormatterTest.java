@@ -95,7 +95,7 @@ class FormatterTest {
 	@Test
 	void formatHolidayListTest() {
 		List<Holiday> holidays = new ArrayList<>();
-		holidays.add(Holiday.build("Test", LocalDate.of(1999, 1, 1), cathedra).build());
+		holidays.add(Holiday.builder().name("Test").date(LocalDate.of(1999, 1, 1)).cathedra(cathedra).build());
 		assertEquals("1.  Name: Test | Date: 1999-01-01", formatter.formatHolidayList(holidays));
 	}
 
