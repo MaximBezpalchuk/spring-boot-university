@@ -34,23 +34,28 @@ public class Group {
 		return cathedra;
 	}
 
-	public static Builder build(String name, Cathedra cathedra) {
-		return new Builder(name, cathedra);
+	public static Builder builder() {
+		return new Builder();
 	}
 
 	public static class Builder {
 
 		private int id;
-		private final String name; // required field
-		private final Cathedra cathedra; // required field
-
-		public Builder(String name, Cathedra cathedra) {
-			this.name = name;
-			this.cathedra = cathedra;
-		}
+		private String name;
+		private Cathedra cathedra;
 
 		public Builder id(int id) {
 			this.id = id;
+			return this;
+		}
+
+		public Builder name(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public Builder cathedra(Cathedra cathedra) {
+			this.cathedra = cathedra;
 			return this;
 		}
 

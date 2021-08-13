@@ -47,7 +47,7 @@ class FormatterTest {
 	@Test
 	void formatGroupListTest() {
 		List<Group> groups = new ArrayList<>();
-		Group group = Group.build("name", cathedra).build();
+		Group group = Group.builder().name("name").cathedra(cathedra).build();
 		groups.add(group);
 		assertEquals("1.  name", formatter.formatGroupList(groups));
 	}
@@ -84,7 +84,7 @@ class FormatterTest {
 	@Test
 	void formatStudentListTest() {
 		List<Student> students = new ArrayList<>();
-		Group group = Group.build("name", cathedra).build();
+		Group group = Group.builder().name("name").cathedra(cathedra).build();
 
 		Student student = Student.build("Amigo", "Bueno", "Puerto Rico", Gender.FEMALE, LocalDate.of(1999, 1, 1))
 				.phone("999").email("dot@dot.com").postalCode("123").education("none").group(group).build();
