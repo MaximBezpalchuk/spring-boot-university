@@ -38,20 +38,25 @@ public class LectureTime {
 	public LocalTime getEnd() {
 		return end;
 	}
-	
-	public static Builder build(LocalTime start, LocalTime end) {
-		return new Builder(start, end);
+
+	public static Builder builder() {
+		return new Builder();
 	}
 
 	public static class Builder {
 
 		private int id;
-		private final LocalTime start; // required field
-		private final LocalTime end; // required field
+		private LocalTime start;
+		private LocalTime end;
 
-		public Builder(LocalTime start, LocalTime end) {
+		public Builder start(LocalTime start) {
 			this.start = start;
+			return this;
+		}
+
+		public Builder end(LocalTime end) {
 			this.end = end;
+			return this;
 		}
 
 		public Builder id(int id) {

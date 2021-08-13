@@ -14,8 +14,7 @@ public class LectureTimeRowMapper implements RowMapper<LectureTime> {
 
 	@Override
 	public LectureTime mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-		return LectureTime
-				.build(resultSet.getObject("start", LocalTime.class), resultSet.getObject("finish", LocalTime.class))
-				.id(resultSet.getInt("id")).build();
+		return LectureTime.builder().id(resultSet.getInt("id")).start(resultSet.getObject("start", LocalTime.class))
+				.end(resultSet.getObject("finish", LocalTime.class)).build();
 	}
 }
