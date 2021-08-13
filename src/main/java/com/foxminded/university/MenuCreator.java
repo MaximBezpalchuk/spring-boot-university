@@ -432,8 +432,8 @@ public class MenuCreator {
 			System.out.println("Enter audience capacity");
 			String audienceCapacity7 = reader.readLine();
 			exitCheck(audienceCapacity7);
-			Audience audience7 = Audience.build(Integer.parseInt(audienceRoom7), Integer.parseInt(audienceCapacity7),
-					cathedraDao.findById(1)).build();
+			Audience audience7 = Audience.builder().room(Integer.parseInt(audienceRoom7))
+					.capacity(Integer.parseInt(audienceCapacity7)).cathedra(cathedraDao.findById(1)).build();
 			audienceDao.save(audience7);
 			System.out.println("Audience created!");
 			break;

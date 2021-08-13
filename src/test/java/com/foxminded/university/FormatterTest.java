@@ -32,7 +32,7 @@ class FormatterTest {
 		Subject subject = Subject.build(cathedra, "TestSubject", "Desc").build();
 		LocalDate date = LocalDate.of(2020, 1, 1);
 		LectureTime time = LectureTime.build(LocalTime.of(10, 20), LocalTime.of(10, 21)).build();
-		Audience audience = Audience.build(1, 5, cathedra).build();
+		Audience audience = Audience.builder().room(1).capacity(5).cathedra(cathedra).build();
 		Teacher teacher = Teacher.build("Amigo", "Bueno", "Puerto Rico", Gender.FEMALE, LocalDate.of(1999, 1, 1),
 				cathedra, Degree.PROFESSOR).phone("999").email("dot@dot.com").postalCode("123").education("none")
 				.build();
@@ -72,8 +72,8 @@ class FormatterTest {
 
 	@Test
 	void formatAudienceListTest() {
-		Audience audience1 = Audience.build(3, 5, cathedra).build();
-		Audience audience2 = Audience.build(1, 5, cathedra).build();
+		Audience audience1 = Audience.builder().room(3).capacity(5).cathedra(cathedra).build();
+		Audience audience2 = Audience.builder().room(1).capacity(5).cathedra(cathedra).build();
 		List<Audience> audiences = new ArrayList<>();
 		audiences.add(audience1);
 		audiences.add(audience2);

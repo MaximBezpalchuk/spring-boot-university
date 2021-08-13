@@ -38,7 +38,7 @@ public class JdbcAudienceDaoTest {
 	@Test
 	void givenExistingAudience_whenFindById_thenAudienceFound() {
 		Audience actual = audienceDao.findById(1);
-		Audience expected = Audience.build(1, 10, actual.getCathedra()).id(1).build();
+		Audience expected = Audience.builder().id(1).room(1).capacity(10).cathedra(actual.getCathedra()).build();
 
 		assertEquals(expected, actual);
 	}
@@ -59,7 +59,7 @@ public class JdbcAudienceDaoTest {
 	void givenNewAudience_whenSaveAudience_thenAllExistingAudiencesFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
 		Audience actual = audienceDao.findById(1);
-		audienceDao.save(Audience.build(100, 100, actual.getCathedra()).build());
+		audienceDao.save(Audience.builder().room(100).capacity(100).cathedra(actual.getCathedra()).build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
