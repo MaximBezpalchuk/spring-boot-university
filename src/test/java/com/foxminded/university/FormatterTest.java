@@ -24,7 +24,7 @@ import com.foxminded.university.model.Vacation;
 
 class FormatterTest {
 	private Formatter formatter = new Formatter();
-	private Cathedra cathedra = Cathedra.build("Fantastic Cathedra").build();
+	private Cathedra cathedra = Cathedra.builder().name("Fantastic Cathedra").build();
 
 	@Test
 	void formatLectureListTest() {

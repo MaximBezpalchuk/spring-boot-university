@@ -39,7 +39,7 @@ public class JdbcCathedraDaoTest {
 
 	@Test
 	void givenExistingCathedra_whenFindById_thenCathedraFound() {
-		Cathedra expected = Cathedra.build("Fantastic Cathedra").id(1).build();
+		Cathedra expected = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
 		Cathedra actual = cathedraDao.findById(1);
 
 		assertEquals(expected, actual);
@@ -60,7 +60,7 @@ public class JdbcCathedraDaoTest {
 	@Test
 	void givenNewCathedra_whenSaveCathedra_thenAllExistingCathedrasFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		cathedraDao.save(Cathedra.build("Fantastic Cathedra 2").build());
+		cathedraDao.save(Cathedra.builder().name("Fantastic Cathedra 2").build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
