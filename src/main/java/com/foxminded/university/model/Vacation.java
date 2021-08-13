@@ -52,8 +52,6 @@ public class Vacation {
 		private LocalDate end;
 		private Teacher teacher;
 
-		// .start().end().teacher()
-
 		public Builder id(int id) {
 			this.id = id;
 			return this;
