@@ -52,9 +52,8 @@ public class JdbcTeacherDaoTest {
 				.cathedra(actual.getCathedra()).degree(Degree.PROFESSOR).phone("1").email("1@bigowl.com")
 				.postalCode("12345").education("Higher education").id(1).build();
 		List<Subject> subjects = new ArrayList<>();
-		Subject subject = Subject
-				.build(actual.getCathedra(), "Weapon Tactics", "Learning how to use heavy weapon and guerrilla tactics")
-				.id(1).build();
+		Subject subject = Subject.builder().cathedra(actual.getCathedra()).name("Weapon Tactics")
+				.description("Learning how to use heavy weapon and guerrilla tactics").id(1).build();
 		subjects.add(subject);
 		expected.setSubjects(subjects);
 
@@ -82,9 +81,8 @@ public class JdbcTeacherDaoTest {
 				.degree(Degree.PROFESSOR).phone("1").email("1@bigowl.com").postalCode("12345")
 				.education("Higher education").build();
 		List<Subject> subjects = new ArrayList<>();
-		Subject subject = Subject
-				.build(actual.getCathedra(), "Weapon Tactics", "Learning how to use heavy weapon and guerrilla tactics")
-				.id(1).build();
+		Subject subject = Subject.builder().cathedra(actual.getCathedra()).name("Weapon Tactics")
+				.description("Learning how to use heavy weapon and guerrilla tactics").id(1).build();
 		subjects.add(subject);
 		teacher.setSubjects(subjects);
 		teacherDao.save(teacher);
@@ -118,10 +116,8 @@ public class JdbcTeacherDaoTest {
 	void givenExitstingTeacher_whenUpdateSubjects_thenAllExistingTeachersFound() {
 		int expected = countRowsInTable(template, "subjects_teachers") + 1;
 		Teacher teacher = teacherDao.findById(1);
-		teacher.getSubjects()
-				.add(Subject
-						.build(teacher.getCathedra(), "Wandless Magic", "Learning how to use spells without magic wand")
-						.id(2).build());
+		teacher.getSubjects().add(Subject.builder().cathedra(teacher.getCathedra()).name("Wandless Magic")
+				.description("Learning how to use spells without magic wand").id(2).build());
 		teacherDao.save(teacher);
 		int actual = countRowsInTable(template, "subjects_teachers");
 

@@ -363,7 +363,8 @@ public class MenuCreator {
 			System.out.println("Enter subject description:");
 			String subjectDescription3 = reader.readLine();
 			exitCheck(subjectDescription3);
-			subjectDao.save(Subject.build(cathedraDao.findById(1), subjectName3, subjectDescription3).build());
+			subjectDao.save(Subject.builder().cathedra(cathedraDao.findById(1)).name(subjectName3)
+					.description(subjectDescription3).build());
 			System.out.println("Subject added!");
 			break;
 		case 4:

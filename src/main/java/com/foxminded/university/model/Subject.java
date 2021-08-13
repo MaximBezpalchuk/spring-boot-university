@@ -47,26 +47,35 @@ public class Subject {
 	public String getDescription() {
 		return description;
 	}
-	
-	public static Builder build(Cathedra cathedra, String name, String description) {
-		return new Builder(cathedra, name, description);
+
+	public static Builder builder() {
+		return new Builder();
 	}
 
 	public static class Builder {
 
 		private int id;
-		private final String name; // required field
-		private final String description; // required field
-		private final Cathedra cathedra; // required field
-
-		public Builder(Cathedra cathedra, String name, String description) {
-			this.cathedra = cathedra;
-			this.name = name;
-			this.description = description;
-		}
+		private String name;
+		private String description;
+		private Cathedra cathedra;
 
 		public Builder id(int id) {
 			this.id = id;
+			return this;
+		}
+
+		public Builder name(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public Builder description(String description) {
+			this.description = description;
+			return this;
+		}
+
+		public Builder cathedra(Cathedra cathedra) {
+			this.cathedra = cathedra;
 			return this;
 		}
 

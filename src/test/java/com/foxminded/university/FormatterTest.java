@@ -29,7 +29,7 @@ class FormatterTest {
 	@Test
 	void formatLectureListTest() {
 		List<Lecture> lectures = new ArrayList<>();
-		Subject subject = Subject.build(cathedra, "TestSubject", "Desc").build();
+		Subject subject = Subject.builder().cathedra(cathedra).name("TestSubject").description("Desc").build();
 		LocalDate date = LocalDate.of(2020, 1, 1);
 		LectureTime time = LectureTime.builder().start(LocalTime.of(10, 20)).end(LocalTime.of(10, 21)).build();
 		Audience audience = Audience.builder().room(1).capacity(5).cathedra(cathedra).build();
@@ -56,7 +56,7 @@ class FormatterTest {
 	@Test
 	void formatSubjectListTest() {
 		List<Subject> subjects = new ArrayList<>();
-		Subject subject = Subject.build(cathedra, "TestSubject", "Desc").build();
+		Subject subject = Subject.builder().cathedra(cathedra).name("TestSubject").description("Desc").build();
 		subjects.add(subject);
 		assertEquals("1.  Name: TestSubject | Description: Desc", formatter.formatSubjectList(subjects));
 	}
