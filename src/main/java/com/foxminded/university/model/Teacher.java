@@ -1,6 +1,5 @@
 package com.foxminded.university.model;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -18,31 +17,33 @@ public class Teacher extends Person {
 		this.degree = builder.degree;
 	}
 
-	public static Builder build(String firstName, String lastName, String address, Gender gender, LocalDate birthDate,
-			Cathedra cathedra, Degree degree) {
-		return new Builder(firstName, lastName, address, gender, birthDate, cathedra, degree);
+	public static Builder builder() {
+		return new Builder();
 	}
 
 	public static class Builder extends Person.Builder<Builder> {
 
-		public Builder(String firstName, String lastName, String address, Gender gender, LocalDate birthDate,
-				Cathedra cathedra, Degree degree) {
-			super(firstName, lastName, address, gender, birthDate);
-			this.cathedra = cathedra;
-			this.degree = degree;
-		}
-
-		private final Cathedra cathedra; // required field
+		private Cathedra cathedra;
 		private List<Subject> subjects = new ArrayList<>();
-		private final Degree degree; // required field
+		private Degree degree;
 
 		@Override
 		public Builder getThis() {
 			return this;
 		}
 
+		public Builder cathedra(Cathedra cathedra) {
+			this.cathedra = cathedra;
+			return this;
+		}
+
 		public Builder subjects(List<Subject> subjects) {
 			this.subjects = subjects;
+			return this;
+		}
+
+		public Builder degree(Degree degree) {
+			this.degree = degree;
 			return this;
 		}
 

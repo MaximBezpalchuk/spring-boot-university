@@ -29,15 +29,14 @@ public class TeacherRowMapper implements RowMapper<Teacher> {
 	@Override
 	public Teacher mapRow(ResultSet resultSet, int rowNum) throws SQLException {
 
-		Teacher teacher = Teacher
-				.build(resultSet.getString("first_name"), resultSet.getString("last_name"),
-						resultSet.getString("address"), Gender.valueOf(resultSet.getString("gender")),
-						resultSet.getObject("birth_date", LocalDate.class),
-						cathedraDao.findById(resultSet.getInt("cathedra_id")),
-						Degree.valueOf(resultSet.getString("degree")))
-				.phone(resultSet.getString("phone")).email(resultSet.getString("email"))
-				.postalCode(resultSet.getString("postal_code")).education(resultSet.getString("education"))
-				.id(resultSet.getInt("id")).build();
+		Teacher teacher = Teacher.builder().firstName(resultSet.getString("first_name"))
+				.lastName(resultSet.getString("last_name")).address(resultSet.getString("address"))
+				.gender(Gender.valueOf(resultSet.getString("gender")))
+				.birthDate(resultSet.getObject("birth_date", LocalDate.class))
+				.cathedra(cathedraDao.findById(resultSet.getInt("cathedra_id")))
+				.degree(Degree.valueOf(resultSet.getString("degree"))).phone(resultSet.getString("phone"))
+				.email(resultSet.getString("email")).postalCode(resultSet.getString("postal_code"))
+				.education(resultSet.getString("education")).id(resultSet.getInt("id")).build();
 		List<Subject> subjects = subjectDao.findByTeacherId(teacher.getId());
 		if (!subjects.isEmpty()) {
 			teacher.setSubjects(subjects);

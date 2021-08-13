@@ -33,9 +33,9 @@ class FormatterTest {
 		LocalDate date = LocalDate.of(2020, 1, 1);
 		LectureTime time = LectureTime.builder().start(LocalTime.of(10, 20)).end(LocalTime.of(10, 21)).build();
 		Audience audience = Audience.builder().room(1).capacity(5).cathedra(cathedra).build();
-		Teacher teacher = Teacher.build("Amigo", "Bueno", "Puerto Rico", Gender.FEMALE, LocalDate.of(1999, 1, 1),
-				cathedra, Degree.PROFESSOR).phone("999").email("dot@dot.com").postalCode("123").education("none")
-				.build();
+		Teacher teacher = Teacher.builder().firstName("Amigo").lastName("Bueno").address("Puerto Rico")
+				.gender(Gender.FEMALE).birthDate(LocalDate.of(1999, 1, 1)).cathedra(cathedra).degree(Degree.PROFESSOR)
+				.phone("999").email("dot@dot.com").postalCode("123").education("none").build();
 
 		lectures.add(Lecture.builder().cathedra(cathedra).subject(subject).date(date).time(time).audience(audience)
 				.teacher(teacher).build());
@@ -64,10 +64,9 @@ class FormatterTest {
 	@Test
 	void formatTeacherListTest() {
 		List<Teacher> teachers = new ArrayList<>();
-		teachers.add(Teacher
-				.build("Amigo", "Bueno", "Puerto Rico", Gender.FEMALE, LocalDate.of(1999, 1, 1), cathedra,
-						Degree.PROFESSOR)
-				.phone("999").email("dot@dot.com").postalCode("123").education("none").build());
+		teachers.add(Teacher.builder().firstName("Amigo").lastName("Bueno").address("Puerto Rico").gender(Gender.FEMALE)
+				.birthDate(LocalDate.of(1999, 1, 1)).cathedra(cathedra).degree(Degree.PROFESSOR).phone("999")
+				.email("dot@dot.com").postalCode("123").education("none").build());
 		assertEquals("1.  Name: Bueno Amigo", formatter.formatTeacherList(teachers));
 	}
 
@@ -87,8 +86,9 @@ class FormatterTest {
 		List<Student> students = new ArrayList<>();
 		Group group = Group.builder().name("name").cathedra(cathedra).build();
 
-		Student student = Student.build("Amigo", "Bueno", "Puerto Rico", Gender.FEMALE, LocalDate.of(1999, 1, 1))
-				.phone("999").email("dot@dot.com").postalCode("123").education("none").group(group).build();
+		Student student = Student.builder().firstName("Amigo").lastName("Bueno").address("Puerto Rico")
+				.gender(Gender.FEMALE).birthDate(LocalDate.of(1999, 1, 1)).phone("999").email("dot@dot.com")
+				.postalCode("123").education("none").group(group).build();
 		students.add(student);
 		assertEquals("1.  Name: Bueno Amigo | Group: name", formatter.formatStudentList(students));
 	}

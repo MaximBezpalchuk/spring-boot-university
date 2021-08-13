@@ -23,13 +23,12 @@ public class StudentRowMapper implements RowMapper<Student> {
 
 	@Override
 	public Student mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-		Student student = Student
-				.build(resultSet.getString("first_name"), resultSet.getString("last_name"),
-						resultSet.getString("address"), Gender.valueOf(resultSet.getString("gender")),
-						resultSet.getObject("birth_date", LocalDate.class))
-				.phone(resultSet.getString("phone")).email(resultSet.getString("email"))
-				.postalCode(resultSet.getString("postal_code")).education(resultSet.getString("education"))
-				.id(resultSet.getInt("id")).build();
+		Student student = Student.builder().firstName(resultSet.getString("first_name"))
+				.lastName(resultSet.getString("last_name")).address(resultSet.getString("address"))
+				.gender(Gender.valueOf(resultSet.getString("gender")))
+				.birthDate(resultSet.getObject("birth_date", LocalDate.class)).phone(resultSet.getString("phone"))
+				.email(resultSet.getString("email")).postalCode(resultSet.getString("postal_code"))
+				.education(resultSet.getString("education")).id(resultSet.getInt("id")).build();
 		Object group_id = resultSet.getObject("group_id");
 		if (group_id != null) {
 			Group group = groupDao.findById((int) group_id);
