@@ -38,9 +38,7 @@ public class TeacherRowMapper implements RowMapper<Teacher> {
 				.email(resultSet.getString("email")).postalCode(resultSet.getString("postal_code"))
 				.education(resultSet.getString("education")).id(resultSet.getInt("id")).build();
 		List<Subject> subjects = subjectDao.findByTeacherId(teacher.getId());
-		if (!subjects.isEmpty()) {
-			teacher.setSubjects(subjects);
-		}
+		teacher.setSubjects(subjects);
 
 		return teacher;
 	}

@@ -58,7 +58,6 @@ public class JdbcVacationDao implements VacationDao {
 			jdbcTemplate.update(UPDATE_VACATION, vacation.getStart(), vacation.getEnd(), vacation.getTeacher().getId(),
 					vacation.getId());
 		}
-
 	}
 
 	@Override
