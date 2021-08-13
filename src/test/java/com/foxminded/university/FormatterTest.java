@@ -37,7 +37,8 @@ class FormatterTest {
 				cathedra, Degree.PROFESSOR).phone("999").email("dot@dot.com").postalCode("123").education("none")
 				.build();
 
-		lectures.add(Lecture.build(cathedra, subject, date, time, audience, teacher).build());
+		lectures.add(Lecture.builder().cathedra(cathedra).subject(subject).date(date).time(time).audience(audience)
+				.teacher(teacher).build());
 
 		assertEquals(
 				"1.  Date: 2020-01-01 | Subject: TestSubject | Audience: 1 | Teacher: Amigo Bueno | Lecture start: 10:20, Lecture end: 10:21",

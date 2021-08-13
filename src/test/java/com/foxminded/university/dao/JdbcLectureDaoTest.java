@@ -42,8 +42,9 @@ public class JdbcLectureDaoTest {
 	@Test
 	void givenExistingLecture_whenFindById_thenLectureFound() {
 		Lecture actual = lectureDao.findById(1);
-		Lecture expected = Lecture.build(actual.getCathedra(), actual.getSubject(), LocalDate.of(2021, 4, 4),
-				actual.getTime(), actual.getAudience(), actual.getTeacher()).id(1).group(actual.getGroups()).build();
+		Lecture expected = Lecture.builder().id(1).group(actual.getGroups()).cathedra(actual.getCathedra())
+				.subject(actual.getSubject()).date(LocalDate.of(2021, 4, 4)).time(actual.getTime())
+				.audience(actual.getAudience()).teacher(actual.getTeacher()).build();
 
 		assertEquals(expected, actual);
 	}
@@ -64,8 +65,9 @@ public class JdbcLectureDaoTest {
 	void givenNewLecture_whenSaveLecture_thenAllExistingLecturesFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
 		Lecture actual = lectureDao.findById(1);
-		lectureDao.save(Lecture.build(actual.getCathedra(), actual.getSubject(), LocalDate.of(2021, 4, 4),
-				actual.getTime(), actual.getAudience(), actual.getTeacher()).build());
+		lectureDao.save(Lecture.builder().cathedra(actual.getCathedra()).subject(actual.getSubject())
+				.date(LocalDate.of(2021, 4, 4)).time(actual.getTime()).audience(actual.getAudience())
+				.teacher(actual.getTeacher()).build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}

@@ -402,8 +402,8 @@ public class MenuCreator {
 			int lectureTimeNumber5 = getInput(sortedLectureTimes5.size());
 			exitCheck(String.valueOf(lectureTimeNumber5));
 			LectureTime lectureTime5 = sortedLectureTimes5.get(lectureTimeNumber5 - 1);
-			lectureDao.save(Lecture
-					.build(cathedraDao.findById(1), subject5, lectureDate5, lectureTime5, audience5, teacher5).build());
+			lectureDao.save(Lecture.builder().cathedra(cathedraDao.findById(1)).subject(subject5).date(lectureDate5)
+					.time(lectureTime5).audience(audience5).teacher(teacher5).build());
 			System.out.println("Lecture added!");
 			break;
 		case 6:

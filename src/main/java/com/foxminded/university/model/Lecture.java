@@ -79,34 +79,53 @@ public class Lecture {
 		return time;
 	}
 
-	public static Builder build(Cathedra cathedra, Subject subject, LocalDate date, LectureTime time, Audience audience,
-			Teacher teacher) {
-		return new Builder(cathedra, subject, date, time, audience, teacher);
+	public static Builder builder() {
+		return new Builder();
 	}
 
 	public static class Builder {
 
 		private int id;
-		private final Cathedra cathedra; // required field
+		private Cathedra cathedra;
 		private List<Group> groups = new ArrayList<>();
-		private final Teacher teacher; // required field
-		private final Audience audience; // required field
-		private final LocalDate date; // required field
-		private final Subject subject; // required field
-		private final LectureTime time; // required field
-
-		public Builder(Cathedra cathedra, Subject subject, LocalDate date, LectureTime time, Audience audience,
-				Teacher teacher) {
-			this.cathedra = cathedra;
-			this.subject = subject;
-			this.date = date;
-			this.time = time;
-			this.audience = audience;
-			this.teacher = teacher;
-		}
+		private Teacher teacher;
+		private Audience audience;
+		private LocalDate date;
+		private Subject subject;
+		private LectureTime time;
 
 		public Builder id(int id) {
 			this.id = id;
+			return this;
+		}
+
+		public Builder cathedra(Cathedra cathedra) {
+			this.cathedra = cathedra;
+			return this;
+		}
+
+		public Builder subject(Subject subject) {
+			this.subject = subject;
+			return this;
+		}
+
+		public Builder date(LocalDate date) {
+			this.date = date;
+			return this;
+		}
+
+		public Builder time(LectureTime time) {
+			this.time = time;
+			return this;
+		}
+
+		public Builder audience(Audience audience) {
+			this.audience = audience;
+			return this;
+		}
+
+		public Builder teacher(Teacher teacher) {
+			this.teacher = teacher;
 			return this;
 		}
 

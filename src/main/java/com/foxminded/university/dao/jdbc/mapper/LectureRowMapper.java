@@ -40,11 +40,13 @@ public class LectureRowMapper implements RowMapper<Lecture> {
 	@Override
 	public Lecture mapRow(ResultSet resultSet, int rowNum) throws SQLException {
 
-		Lecture lecture = Lecture.build(cathedraDao.findById(resultSet.getInt("cathedra_id")),
-				subjectDao.findById(resultSet.getInt("subject_id")), resultSet.getObject("date", LocalDate.class),
-				lectureTimeDao.findById(resultSet.getInt("lecture_time_id")),
-				audienceDao.findById(resultSet.getInt("audience_id")),
-				teacherDao.findById(resultSet.getInt("teacher_id"))).id(resultSet.getInt("id")).build();
+		Lecture lecture = Lecture.builder().id(resultSet.getInt("id"))
+				.cathedra(cathedraDao.findById(resultSet.getInt("cathedra_id")))
+				.subject(subjectDao.findById(resultSet.getInt("subject_id")))
+				.date(resultSet.getObject("date", LocalDate.class))
+				.time(lectureTimeDao.findById(resultSet.getInt("lecture_time_id")))
+				.audience(audienceDao.findById(resultSet.getInt("audience_id")))
+				.teacher(teacherDao.findById(resultSet.getInt("teacher_id"))).build();
 		List<Group> groups = groupDao.findByLectureId(lecture.getId());
 		lecture.setGroups(groups);
 		return lecture;
