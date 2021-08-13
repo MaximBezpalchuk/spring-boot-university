@@ -41,25 +41,36 @@ public class Vacation {
 		return end;
 	}
 
-	public static Builder build(LocalDate start, LocalDate end, Teacher teacher) {
-		return new Builder(start, end, teacher);
+	public static Builder builder() {
+		return new Builder();
 	}
 
 	public static class Builder {
 
 		private int id;
-		private final LocalDate start; // required field
-		private final LocalDate end; // required field
-		private final Teacher teacher; // required field
+		private LocalDate start;
+		private LocalDate end;
+		private Teacher teacher;
 
-		public Builder(LocalDate start, LocalDate end, Teacher teacher) {
-			this.start = start;
-			this.end = end;
-			this.teacher = teacher;
-		}
+		// .start().end().teacher()
 
 		public Builder id(int id) {
 			this.id = id;
+			return this;
+		}
+
+		public Builder start(LocalDate start) {
+			this.start = start;
+			return this;
+		}
+
+		public Builder end(LocalDate end) {
+			this.end = end;
+			return this;
+		}
+
+		public Builder teacher(Teacher teacher) {
+			this.teacher = teacher;
 			return this;
 		}
 

@@ -103,7 +103,8 @@ class FormatterTest {
 	@Test
 	void formatVacationListTest() {
 		List<Vacation> vacations = new ArrayList<>();
-		vacations.add(Vacation.build(LocalDate.of(1999, 1, 1), LocalDate.of(2000, 1, 1), null).build());
+		vacations.add(
+				Vacation.builder().start(LocalDate.of(1999, 1, 1)).end(LocalDate.of(2000, 1, 1)).teacher(null).build());
 		assertEquals("1.  Dates: 1999-01-01 to 2000-01-01", formatter.formatVacationList(vacations));
 	}
 
