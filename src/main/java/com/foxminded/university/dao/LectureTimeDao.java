@@ -2,6 +2,6 @@ package com.foxminded.university.dao;
 
 import com.foxminded.university.model.LectureTime;
 
-public interface GenericLectureTimeDao extends GenericDao<LectureTime> {
+public interface LectureTimeDao extends GenericDao<LectureTime> {
 
 }

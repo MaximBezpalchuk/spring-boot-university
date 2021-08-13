@@ -9,12 +9,12 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
-import com.foxminded.university.dao.GenericAudienceDao;
+import com.foxminded.university.dao.AudienceDao;
 import com.foxminded.university.dao.jdbc.mapper.AudienceRowMapper;
 import com.foxminded.university.model.Audience;
 
 @Component
-public class JdbcAudienceDao implements GenericAudienceDao {
+public class JdbcAudienceDao implements AudienceDao {
 
 	private final static String SELECT_ALL = "SELECT * FROM audiences";
 	private final static String SELECT_BY_ID = "SELECT * FROM audiences WHERE id = ?";

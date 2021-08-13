@@ -9,12 +9,12 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
-import com.foxminded.university.dao.GenericHolidayDao;
+import com.foxminded.university.dao.HolidayDao;
 import com.foxminded.university.dao.jdbc.mapper.HolidayRowMapper;
 import com.foxminded.university.model.Holiday;
 
 @Component
-public class JdbcHolidayDao implements GenericHolidayDao {
+public class JdbcHolidayDao implements HolidayDao {
 
 	private final static String SELECT_ALL = "SELECT * FROM holidays";
 	private final static String SELECT_BY_ID = "SELECT * FROM holidays WHERE id = ?";

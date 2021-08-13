@@ -9,12 +9,12 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
-import com.foxminded.university.dao.GenericSubjectDao;
+import com.foxminded.university.dao.SubjectDao;
 import com.foxminded.university.dao.jdbc.mapper.SubjectRowMapper;
 import com.foxminded.university.model.Subject;
 
 @Component
-public class JdbcSubjectDao implements GenericSubjectDao {
+public class JdbcSubjectDao implements SubjectDao {
 
 	private final static String SELECT_ALL = "SELECT * FROM subjects";
 	private final static String SELECT_BY_ID = "SELECT * FROM subjects WHERE id = ?";

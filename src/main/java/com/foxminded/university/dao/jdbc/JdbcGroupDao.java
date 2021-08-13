@@ -9,12 +9,12 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
-import com.foxminded.university.dao.GenericGroupDao;
+import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.jdbc.mapper.GroupRowMapper;
 import com.foxminded.university.model.Group;
 
 @Component
-public class JdbcGroupDao implements GenericGroupDao {
+public class JdbcGroupDao implements GroupDao {
 
 	private final static String SELECT_ALL = "SELECT * FROM groups";
 	private final static String SELECT_BY_ID = "SELECT * FROM groups WHERE id = ?";

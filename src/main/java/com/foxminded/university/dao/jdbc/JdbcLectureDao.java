@@ -11,13 +11,13 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.foxminded.university.dao.GenericLectureDao;
+import com.foxminded.university.dao.LectureDao;
 import com.foxminded.university.dao.jdbc.mapper.LectureRowMapper;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Lecture;
 
 @Component
-public class JdbcLectureDao implements GenericLectureDao {
+public class JdbcLectureDao implements LectureDao {
 
 	private final static String SELECT_ALL = "SELECT * FROM lectures";
 	private final static String SELECT_BY_ID = "SELECT * FROM lectures WHERE id = ?";
