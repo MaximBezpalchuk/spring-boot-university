@@ -24,9 +24,8 @@ public class JdbcTeacherDao implements TeacherDao {
 	private final static String INSERT_TEACHER = "INSERT INTO teachers(id, first_name, last_name, phone, address, email, gender, postal_code, education, birth_date, cathedra_id,  degree) VALUES(DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	private final static String UPDATE_TEACHER = "UPDATE teachers SET first_name=?, last_name=?, phone=?, address=?, email=?, gender=?, postal_code=?, education=?, birth_date=?, cathedra_id=?, degree=? WHERE id=?";
 	private final static String DELETE_TEACHER = "DELETE FROM teachers WHERE id = ?";
-	private final static String INSERT_SUBJECT = "INSERT INTO subjects_teachers(subject_id,teacher_id) SELECT ?, ? WHERE NOT EXISTS(SELECT 1 FROM subjects_teachers WHERE subject_id = ? AND teacher_id = ?)";
-	private final static String DELETE_SUBJECTS_NOT_IN_TEACHER = "DELETE FROM subjects_teachers WHERE teacher_id = %s AND subject_id NOT IN (%s)";
-	private final static String DELETE_ALL_SUBJECTS = "DELETE FROM subjects_teachers WHERE teacher_id = ?";
+	private final static String INSERT_SUBJECT = "INSERT INTO subjects_teachers(subject_id, teacher_id) VALUES (?,?)";
+	private final static String DELETE_SUBJECT = "DELETE FROM subjects_teachers WHERE subject_id = ? AND teacher_id = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private TeacherRowMapper rowMapper;
@@ -49,7 +48,6 @@ public class JdbcTeacherDao implements TeacherDao {
 	@Override
 	@Transactional
 	public void save(Teacher teacher) {
-		List<Subject> subjects = teacher.getSubjects();
 		if (teacher.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {
@@ -69,29 +67,33 @@ public class JdbcTeacherDao implements TeacherDao {
 				return statement;
 			}, keyHolder);
 			teacher.setId((int) keyHolder.getKeyList().get(0).get("id"));
-			for (Subject subject : teacher.getSubjects()) {
-				jdbcTemplate.update(INSERT_SUBJECT, subject.getId(), teacher.getId(), subject.getId(), teacher.getId());
-			}
 		} else {
 			jdbcTemplate.update(UPDATE_TEACHER, teacher.getFirstName(), teacher.getLastName(), teacher.getPhone(),
 					teacher.getAddress(), teacher.getEmail(), teacher.getGender().toString(), teacher.getPostalCode(),
 					teacher.getEducation(), teacher.getBirthDate(), teacher.getCathedra().getId(),
 					teacher.getDegree().toString(), teacher.getId());
-			if (!subjects.isEmpty()) {
-				for (Subject subject : subjects) {
-					jdbcTemplate.update(INSERT_SUBJECT, subject.getId(), teacher.getId(), subject.getId(),
-							teacher.getId());
-				}
-				jdbcTemplate.update(String.format(DELETE_SUBJECTS_NOT_IN_TEACHER, teacher.getId(), subjects.stream()
-						.map(subject -> subject.getId()).map(Object::toString).collect(Collectors.joining(", "))));
-			} else {
-				jdbcTemplate.update(DELETE_ALL_SUBJECTS, teacher.getId());
-			}
 		}
+		insertSubjects(teacher);
+		deleteSubjects(teacher);
 	}
 
 	@Override
 	public void deleteById(int id) {
 		jdbcTemplate.update(DELETE_TEACHER, id);
+	}
+
+	private void insertSubjects(Teacher teacher) {
+		for (Subject subject : teacher.getSubjects().stream()
+				.filter(subject -> !findById(teacher.getId()).getSubjects().contains(subject))
+				.collect(Collectors.toList())) {
+			jdbcTemplate.update(INSERT_SUBJECT, subject.getId(), teacher.getId());
+		}
+	}
+
+	private void deleteSubjects(Teacher teacher) {
+		for (Subject subject : findById(teacher.getId()).getSubjects().stream()
+				.filter(subject -> !teacher.getSubjects().contains(subject)).collect(Collectors.toList())) {
+			jdbcTemplate.update(DELETE_SUBJECT, subject.getId(), teacher.getId());
+		}
 	}
 }
