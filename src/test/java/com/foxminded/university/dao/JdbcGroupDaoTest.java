@@ -68,15 +68,12 @@ public class JdbcGroupDaoTest {
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
-	void givenExitstingGroup_whenChange_thenAllExistingGroupsFound() {
-		int expected = countRowsInTable(template, TABLE_NAME);
-		Group group = groupDao.findById(1);
-		group.setName("Killers 2");
-		groupDao.save(group);
-		int actual = countRowsInTable(template, TABLE_NAME);
+	void givenExitstingGroup_whenChange_thenChangesApplied() {
+		Group expected = groupDao.findById(1);
+		expected.setName("Killers 2");
+		groupDao.save(expected);
+		Group actual = groupDao.findById(1);
 
-		template.update(
-				"DROP TABLE cathedras, audiences, groups, lectures, students, subjects, teachers, vacations, holidays, lecture_times, subjects_teachers, lectures_groups");
 		assertEquals(expected, actual);
 	}
 

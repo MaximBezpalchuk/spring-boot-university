@@ -74,12 +74,11 @@ public class JdbcLectureDaoTest {
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
-	void givenExitstingLecture_whenChange_thenAllExistingLecturesFound() {
-		int expected = countRowsInTable(template, TABLE_NAME);
-		Lecture lecture = lectureDao.findById(1);
-		lecture.setTime(lecture.getTime());
-		lectureDao.save(lecture);
-		int actual = countRowsInTable(template, TABLE_NAME);
+	void givenExitstingLecture_whenChange_thenChangesApplied() {
+		Lecture expected = lectureDao.findById(1);
+		expected.setTime(lectureDao.findById(2).getTime());
+		lectureDao.save(expected);
+		Lecture actual = lectureDao.findById(1);
 
 		assertEquals(expected, actual);
 	}

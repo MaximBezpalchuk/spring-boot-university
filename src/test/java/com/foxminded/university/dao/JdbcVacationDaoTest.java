@@ -74,12 +74,11 @@ public class JdbcVacationDaoTest {
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
-	void givenExitstingVacation_whenChange_thenAllExistingVacationsFound() {
-		int expected = countRowsInTable(template, TABLE_NAME);
-		Vacation vacation = vacationDao.findById(1);
-		vacation.setTeacher(vacationDao.findById(2).getTeacher());
-		vacationDao.save(vacation);
-		int actual = countRowsInTable(template, TABLE_NAME);
+	void givenExitstingVacation_whenChange_thenChangesApplied() {
+		Vacation expected = vacationDao.findById(1);
+		expected.setTeacher(vacationDao.findById(2).getTeacher());
+		vacationDao.save(expected);
+		Vacation actual = vacationDao.findById(1);
 
 		assertEquals(expected, actual);
 	}

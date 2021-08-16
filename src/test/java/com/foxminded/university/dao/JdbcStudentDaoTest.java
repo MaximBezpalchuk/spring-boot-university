@@ -77,12 +77,11 @@ public class JdbcStudentDaoTest {
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 
 	@Test
-	void givenExitstingStudent_whenChange_thenAllExistingStudentsFound() {
-		int expected = countRowsInTable(template, TABLE_NAME);
-		Student student = studentDao.findById(1);
-		student.setFirstName("Test Name");
-		studentDao.save(student);
-		int actual = countRowsInTable(template, TABLE_NAME);
+	void givenExitstingStudent_whenChange_thenChangesApplied() {
+		Student expected = studentDao.findById(1);
+		expected.setFirstName("Test Name");
+		studentDao.save(expected);
+		Student actual = studentDao.findById(1);
 
 		assertEquals(expected, actual);
 	}

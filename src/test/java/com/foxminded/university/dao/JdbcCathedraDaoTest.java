@@ -67,13 +67,11 @@ public class JdbcCathedraDaoTest {
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
-	void givenExitstingCathedra_whenChange_thenAllExistingCathedrasFound() {
-		int expected = countRowsInTable(template, TABLE_NAME);
-		Cathedra cathedra = cathedraDao.findById(1);
-		cathedra.setName("TestName");
-		cathedra.setId(1);
-		cathedraDao.save(cathedra);
-		int actual = countRowsInTable(template, TABLE_NAME);
+	void givenExitstingCathedra_whenChange_thenChangesApplied() {
+		Cathedra expected = cathedraDao.findById(1);
+		expected.setName("TestName");
+		cathedraDao.save(expected);
+		Cathedra actual = cathedraDao.findById(1);
 
 		assertEquals(expected, actual);
 	}

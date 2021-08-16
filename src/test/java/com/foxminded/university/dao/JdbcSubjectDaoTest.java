@@ -74,12 +74,11 @@ public class JdbcSubjectDaoTest {
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
-	void givenExitstingSubject_whenChange_thenAllExistingSubjectsFound() {
-		int expected = countRowsInTable(template, TABLE_NAME);
-		Subject subject = subjectDao.findById(1);
-		subject.setName("Test Name");
-		subjectDao.save(subject);
-		int actual = countRowsInTable(template, TABLE_NAME);
+	void givenExitstingSubject_whenChange_thenChangesApplied() {
+		Subject expected = subjectDao.findById(1);
+		expected.setName("Test Name");
+		subjectDao.save(expected);
+		Subject actual = subjectDao.findById(1);
 
 		assertEquals(expected, actual);
 	}

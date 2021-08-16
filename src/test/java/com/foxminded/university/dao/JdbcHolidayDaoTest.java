@@ -73,12 +73,11 @@ public class JdbcHolidayDaoTest {
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
-	void givenExitstingHoliday_whenChange_thenAllExistingHolidaysFound() {
-		int expected = countRowsInTable(template, TABLE_NAME);
-		Holiday holiday = holidayDao.findById(1);
-		holiday.setName("Test Name");
-		holidayDao.save(holiday);
-		int actual = countRowsInTable(template, TABLE_NAME);
+	void givenExitstingHoliday_whenChange_thenChangesApplied() {
+		Holiday expected = holidayDao.findById(1);
+		expected.setName("Test Name");
+		holidayDao.save(expected);
+		Holiday actual = holidayDao.findById(1);
 
 		assertEquals(expected, actual);
 	}

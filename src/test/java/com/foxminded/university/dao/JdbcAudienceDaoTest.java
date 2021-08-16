@@ -66,12 +66,11 @@ public class JdbcAudienceDaoTest {
 
 	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
-	void givenExitstingAudience_whenChange_thenAllExistingAudiencesFound() {
-		int expected = countRowsInTable(template, TABLE_NAME);
-		Audience audience = audienceDao.findById(1);
-		audience.setCapacity(100);
-		audienceDao.save(audience);
-		int actual = countRowsInTable(template, TABLE_NAME);
+	void givenExitstingAudience_whenChange_thenChangesApplied() {
+		Audience expected = audienceDao.findById(1);
+		expected.setCapacity(100);
+		audienceDao.save(expected);
+		Audience actual = audienceDao.findById(1);
 
 		assertEquals(expected, actual);
 	}
