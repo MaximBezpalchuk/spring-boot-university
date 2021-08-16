@@ -24,9 +24,8 @@ public class JdbcLectureDao implements LectureDao {
 	private final static String INSERT_LECTURE = "INSERT INTO lectures(cathedra_id, subject_id, date, lecture_time_id, audience_id, teacher_id) VALUES(?, ?, ?, ?, ?, ?)";
 	private final static String UPDATE_LECTURE = "UPDATE lectures SET cathedra_id=?, subject_id=?, date=?, lecture_time_id=?, audience_id=?, teacher_id=? WHERE id=?";
 	private final static String DELETE_LECTURE = "DELETE FROM lectures WHERE id = ?";
-	private final static String INSERT_GROUPS = "INSERT INTO lectures_groups(group_id,lecture_id) SELECT ?, ? WHERE NOT EXISTS(SELECT 1 FROM lectures_groups WHERE group_id = ? AND lecture_id = ?)";
-	private final static String DELETE_GROUPS_NOT_IN_LECTURE = "DELETE FROM lectures_groups WHERE lecture_id = %s AND group_id NOT IN (%s)";
-	private final static String DELETE_ALL_GROUPS = "DELETE FROM lectures_groups WHERE lecture_id = ?";
+	private final static String INSERT_GROUP = "INSERT INTO lectures_groups(group_id, lecture_id) VALUES (?,?)";
+	private final static String DELETE_GROUP = "DELETE FROM lectures_groups WHERE group_id = ? AND lecture_id = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private LectureRowMapper rowMapper;
@@ -49,7 +48,6 @@ public class JdbcLectureDao implements LectureDao {
 	@Override
 	@Transactional
 	public void save(Lecture lecture) {
-		List<Group> groups = lecture.getGroups();
 		if (lecture.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {
@@ -64,27 +62,31 @@ public class JdbcLectureDao implements LectureDao {
 				return statement;
 			}, keyHolder);
 			lecture.setId((int) keyHolder.getKeyList().get(0).get("id"));
-			for (Group group : lecture.getGroups()) {
-				jdbcTemplate.update(INSERT_GROUPS, group.getId(), lecture.getId(), group.getId(), lecture.getId());
-			}
 		} else {
 			jdbcTemplate.update(UPDATE_LECTURE, lecture.getCathedra().getId(), lecture.getSubject().getId(),
 					lecture.getDate(), lecture.getTime().getId(), lecture.getAudience().getId(),
 					lecture.getTeacher().getId(), lecture.getId());
-			if (!groups.isEmpty()) {
-				for (Group group : groups) {
-					jdbcTemplate.update(INSERT_GROUPS, group.getId(), lecture.getId(), group.getId(), lecture.getId());
-				}
-				jdbcTemplate.update(String.format(DELETE_GROUPS_NOT_IN_LECTURE, lecture.getId(), groups.stream()
-						.map(group -> group.getId()).map(Object::toString).collect(Collectors.joining(", "))));
-			} else {
-				jdbcTemplate.update(DELETE_ALL_GROUPS, lecture.getId());
-			}
 		}
+		insertGroup(lecture);
+		deleteGroup(lecture);
 	}
 
 	@Override
 	public void deleteById(int id) {
 		jdbcTemplate.update(DELETE_LECTURE, id);
+	}
+
+	private void insertGroup(Lecture lecture) {
+		for (Group group : lecture.getGroups().stream()
+				.filter(group -> !findById(lecture.getId()).getGroups().contains(group)).collect(Collectors.toList())) {
+			jdbcTemplate.update(INSERT_GROUP, group.getId(), lecture.getId());
+		}
+	}
+
+	private void deleteGroup(Lecture lecture) {
+		for (Group group : findById(lecture.getId()).getGroups().stream()
+				.filter(group -> !lecture.getGroups().contains(group)).collect(Collectors.toList())) {
+			jdbcTemplate.update(DELETE_GROUP, group.getId(), lecture.getId());
+		}
 	}
 }
