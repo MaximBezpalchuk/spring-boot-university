@@ -3,7 +3,6 @@ package com.foxminded.university.dao.jdbc;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -13,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.foxminded.university.dao.TeacherDao;
 import com.foxminded.university.dao.jdbc.mapper.TeacherRowMapper;
-import com.foxminded.university.model.Subject;
 import com.foxminded.university.model.Teacher;
 
 @Component
@@ -83,17 +81,12 @@ public class JdbcTeacherDao implements TeacherDao {
 	}
 
 	private void insertSubjects(Teacher teacher) {
-		for (Subject subject : teacher.getSubjects().stream()
-				.filter(subject -> !findById(teacher.getId()).getSubjects().contains(subject))
-				.collect(Collectors.toList())) {
-			jdbcTemplate.update(INSERT_SUBJECT, subject.getId(), teacher.getId());
-		}
+		teacher.getSubjects().stream().filter(subject -> !findById(teacher.getId()).getSubjects().contains(subject))
+				.forEach(subject -> jdbcTemplate.update(INSERT_SUBJECT, subject.getId(), teacher.getId()));
 	}
 
 	private void deleteSubjects(Teacher teacher) {
-		for (Subject subject : findById(teacher.getId()).getSubjects().stream()
-				.filter(subject -> !teacher.getSubjects().contains(subject)).collect(Collectors.toList())) {
-			jdbcTemplate.update(DELETE_SUBJECT, subject.getId(), teacher.getId());
-		}
+		findById(teacher.getId()).getSubjects().stream().filter(subject -> !teacher.getSubjects().contains(subject))
+				.forEach(subject -> jdbcTemplate.update(DELETE_SUBJECT, subject.getId(), teacher.getId()));
 	}
 }
