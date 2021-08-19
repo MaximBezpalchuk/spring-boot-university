@@ -44,8 +44,12 @@ public class JdbcVacationDaoTest {
 	@Test
 	void givenExistingVacation_whenFindById_thenVacationFound() {
 		Vacation actual = vacationDao.findById(1);
-		Vacation expected = Vacation.builder().id(1).start(LocalDate.of(2021, 1, 15)).end(LocalDate.of(2021, 1, 29))
-				.teacher(actual.getTeacher()).build();
+		Vacation expected = Vacation.builder()
+				.id(1)
+				.start(LocalDate.of(2021, 1, 15))
+				.end(LocalDate.of(2021, 1, 29))
+				.teacher(actual.getTeacher())
+				.build();
 
 		assertEquals(expected, actual);
 	}
@@ -66,8 +70,11 @@ public class JdbcVacationDaoTest {
 	void givenNewVacation_whenSaveVacation_thenAllExistingVacationsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
 		Vacation actual = vacationDao.findById(1);
-		vacationDao.save(Vacation.builder().start(LocalDate.of(2021, 1, 31)).end(LocalDate.of(2021, 3, 29))
-				.teacher(actual.getTeacher()).build());
+		vacationDao.save(Vacation.builder()
+				.start(LocalDate.of(2021, 1, 31))
+				.end(LocalDate.of(2021, 3, 29))
+				.teacher(actual.getTeacher())
+				.build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
@@ -96,10 +103,18 @@ public class JdbcVacationDaoTest {
 	void givenExistingVacation_whenFindByTeacherId_thenVacationFound() {
 		List<Vacation> expected = new ArrayList<>();
 		List<Vacation> actual = vacationDao.findByTeacherId(1);
-		Vacation vacation1 = Vacation.builder().id(1).start(LocalDate.of(2021, 1, 15)).end(LocalDate.of(2021, 1, 29))
-				.teacher(actual.get(0).getTeacher()).build();
-		Vacation vacation2 = Vacation.builder().id(2).start(LocalDate.of(2021, 6, 15)).end(LocalDate.of(2021, 6, 29))
-				.teacher(actual.get(0).getTeacher()).build();
+		Vacation vacation1 = Vacation.builder()
+				.id(1)
+				.start(LocalDate.of(2021, 1, 15))
+				.end(LocalDate.of(2021, 1, 29))
+				.teacher(actual.get(0).getTeacher())
+				.build();
+		Vacation vacation2 = Vacation.builder()
+				.id(2)
+				.start(LocalDate.of(2021, 6, 15))
+				.end(LocalDate.of(2021, 6, 29))
+				.teacher(actual.get(0).getTeacher())
+				.build();
 		expected.add(vacation1);
 		expected.add(vacation2);
 

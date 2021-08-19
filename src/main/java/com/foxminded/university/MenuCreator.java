@@ -45,7 +45,6 @@ public class MenuCreator {
 	private boolean exit;
 	private BufferedReader reader;
 	private Formatter formatter = new Formatter();
-	private DataUpdater dataUpdater2 = new DataUpdater();
 	private JdbcAudienceDao audienceDao = context.getBean(JdbcAudienceDao.class);
 	private JdbcCathedraDao cathedraDao = context.getBean(JdbcCathedraDao.class);
 	private JdbcGroupDao groupDao = context.getBean(JdbcGroupDao.class);
@@ -289,8 +288,18 @@ public class MenuCreator {
 			exitCheck(education1);
 			System.out.println("Enter the date of birth separated by commas without spaces (YEAR,MONTH,DAY):");
 			LocalDate birthDate1 = setupLocalDate();
-			studentDao.save(dataUpdater2.createStudent(firstName1, lastName1, phone1, address1, email1, gender1,
-					postalCode1, education1, birthDate1));
+			Student student = Student.builder()
+					.firstName(firstName1)
+					.lastName(lastName1)
+					.address(address1)
+					.gender(gender1)
+					.birthDate(birthDate1)
+					.phone(phone1)
+					.email(email1)
+					.postalCode(postalCode1)
+					.education(education1)
+					.build();
+			studentDao.save(student);
 			System.out.println("Student added!");
 			break;
 		case 2:
@@ -345,14 +354,25 @@ public class MenuCreator {
 					System.out.println("Invalid selections. Please try again");
 				}
 			}
-			Teacher teacher12 = dataUpdater2.createTeacher(firstName2, lastName2, phone2, address2, email2, gender2,
-					postalCode2, education2, birthDate2, degree2, cathedraDao.findById(1));
+			Teacher teacher = Teacher.builder()
+					.firstName(firstName2)
+					.lastName(lastName2)
+					.address(address2)
+					.gender(gender2)
+					.birthDate(birthDate2)
+					.cathedra(cathedraDao.findById(1))
+					.degree(degree2)
+					.phone(phone2)
+					.email(email2)
+					.postalCode(postalCode2)
+					.education(education2)
+					.build();
 			for (Subject subject : subjects2) {
-				if (!teacher12.getSubjects().contains(subject)) {
-					teacher12.getSubjects().add(subject);
+				if (!teacher.getSubjects().contains(subject)) {
+					teacher.getSubjects().add(subject);
 				}
 			}
-			teacherDao.save(teacher12);
+			teacherDao.save(teacher);
 			System.out.println("Teacher added!");
 			break;
 		case 3:
@@ -363,8 +383,12 @@ public class MenuCreator {
 			System.out.println("Enter subject description:");
 			String subjectDescription3 = reader.readLine();
 			exitCheck(subjectDescription3);
-			subjectDao.save(Subject.builder().cathedra(cathedraDao.findById(1)).name(subjectName3)
-					.description(subjectDescription3).build());
+			subjectDao.save(
+					Subject.builder()
+					.cathedra(cathedraDao.findById(1))
+					.name(subjectName3)
+					.description(subjectDescription3)
+					.build());
 			System.out.println("Subject added!");
 			break;
 		case 4:
@@ -372,7 +396,11 @@ public class MenuCreator {
 			System.out.println("Enter group name:");
 			String groupName4 = reader.readLine();
 			exitCheck(groupName4);
-			groupDao.save(Group.builder().name(groupName4).cathedra(cathedraDao.findById(1)).build());
+			groupDao.save(
+					Group.builder()
+					.name(groupName4)
+					.cathedra(cathedraDao.findById(1))
+					.build());
 			System.out.println("Group added!");
 			break;
 		case 5:
@@ -403,8 +431,15 @@ public class MenuCreator {
 			int lectureTimeNumber5 = getInput(sortedLectureTimes5.size());
 			exitCheck(String.valueOf(lectureTimeNumber5));
 			LectureTime lectureTime5 = sortedLectureTimes5.get(lectureTimeNumber5 - 1);
-			lectureDao.save(Lecture.builder().cathedra(cathedraDao.findById(1)).subject(subject5).date(lectureDate5)
-					.time(lectureTime5).audience(audience5).teacher(teacher5).build());
+			lectureDao.save(
+					Lecture.builder()
+					.cathedra(cathedraDao.findById(1))
+					.subject(subject5)
+					.date(lectureDate5)
+					.time(lectureTime5)
+					.audience(audience5)
+					.teacher(teacher5)
+					.build());
 			System.out.println("Lecture added!");
 			break;
 		case 6:
@@ -421,7 +456,10 @@ public class MenuCreator {
 			int cathedraNumber6 = getInput(sortedCathedras6.size());
 			exitCheck(String.valueOf(cathedraNumber6));
 			Cathedra cathedra6 = sortedCathedras6.get(cathedraNumber6 - 1);
-			Holiday holiday6 = Holiday.builder().name(holidayDescription6).date(holidayDate5).cathedra(cathedra6)
+			Holiday holiday6 = Holiday.builder()
+					.name(holidayDescription6)
+					.date(holidayDate5)
+					.cathedra(cathedra6)
 					.build();
 			holidayDao.save(holiday6);
 			System.out.println("Holiday created!");
@@ -434,8 +472,11 @@ public class MenuCreator {
 			System.out.println("Enter audience capacity");
 			String audienceCapacity7 = reader.readLine();
 			exitCheck(audienceCapacity7);
-			Audience audience7 = Audience.builder().room(Integer.parseInt(audienceRoom7))
-					.capacity(Integer.parseInt(audienceCapacity7)).cathedra(cathedraDao.findById(1)).build();
+			Audience audience7 = Audience.builder()
+					.room(Integer.parseInt(audienceRoom7))
+					.capacity(Integer.parseInt(audienceCapacity7))
+					.cathedra(cathedraDao.findById(1))
+					.build();
 			audienceDao.save(audience7);
 			System.out.println("Audience created!");
 			break;
@@ -602,7 +643,10 @@ public class MenuCreator {
 			LocalDate vacationStartDate2 = setupLocalDate();
 			System.out.println("Enter vacation end date separated by commas without spaces (YEAR,MONTH,DAY):");
 			LocalDate vacationEndDate2 = setupLocalDate();
-			Vacation vacation2 = Vacation.builder().start(vacationStartDate2).end(vacationEndDate2).teacher(teacher2)
+			Vacation vacation2 = Vacation.builder()
+					.start(vacationStartDate2)
+					.end(vacationEndDate2)
+					.teacher(teacher2)
 					.build();
 			vacationDao.save(vacation2);
 			System.out.println("Vacation added!");

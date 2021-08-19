@@ -44,8 +44,12 @@ public class JdbcSubjectDaoTest {
 	@Test
 	void givenExistingSubject_whenFindById_thenSubjectFound() {
 		Subject actual = subjectDao.findById(1);
-		Subject expected = Subject.builder().cathedra(actual.getCathedra()).name("Weapon Tactics")
-				.description("Learning how to use heavy weapon and guerrilla tactics").id(1).build();
+		Subject expected = Subject.builder()
+				.cathedra(actual.getCathedra())
+				.name("Weapon Tactics")
+				.description("Learning how to use heavy weapon and guerrilla tactics")
+				.id(1)
+				.build();
 
 		assertEquals(expected, actual);
 	}
@@ -66,8 +70,11 @@ public class JdbcSubjectDaoTest {
 	void givenNewSubject_whenSaveSubject_thenAllExistingSubjectsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
 		Subject actual = subjectDao.findById(1);
-		subjectDao.save(Subject.builder().cathedra(actual.getCathedra()).name("Weapon Tactics123")
-				.description("Learning how to use heavy weapon and guerrilla tactics123").build());
+		subjectDao.save(Subject.builder()
+				.cathedra(actual.getCathedra())
+				.name("Weapon Tactics123")
+				.description("Learning how to use heavy weapon and guerrilla tactics123")
+				.build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
@@ -97,8 +104,11 @@ public class JdbcSubjectDaoTest {
 		List<Subject> expected = new ArrayList<>();
 		List<Subject> actual = subjectDao.findByTeacherId(1);
 		Cathedra cathedra = actual.get(0).getCathedra();
-		Subject subject1 = Subject.builder().id(1).cathedra(cathedra).name("Weapon Tactics")
-				.description("Learning how to use heavy weapon and guerrilla tactics").build();
+		Subject subject1 = Subject.builder()
+				.id(1).cathedra(cathedra)
+				.name("Weapon Tactics")
+				.description("Learning how to use heavy weapon and guerrilla tactics")
+				.build();
 		expected.add(subject1);
 
 		assertEquals(expected, actual);

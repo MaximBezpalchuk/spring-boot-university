@@ -13,6 +13,9 @@ public class CathedraRowMapper implements RowMapper<Cathedra> {
 
 	@Override
 	public Cathedra mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-		return Cathedra.builder().id(resultSet.getInt("id")).name(resultSet.getString("name")).build();
+		return Cathedra.builder()
+				.id(resultSet.getInt("id"))
+				.name(resultSet.getString("name"))
+				.build();
 	}
 }

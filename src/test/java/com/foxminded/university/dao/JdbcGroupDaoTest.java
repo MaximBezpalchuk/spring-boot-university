@@ -40,7 +40,11 @@ public class JdbcGroupDaoTest {
 	@Test
 	void givenExistingGroup_whenFindById_thenGroupFound() {
 		Group actual = groupDao.findById(1);
-		Group expected = Group.builder().id(1).name("Killers").cathedra(actual.getCathedra()).build();
+		Group expected = Group.builder()
+				.id(1)
+				.name("Killers")
+				.cathedra(actual.getCathedra())
+				.build();
 
 		assertEquals(expected, actual);
 	}

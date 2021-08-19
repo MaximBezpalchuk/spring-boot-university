@@ -38,7 +38,12 @@ public class JdbcAudienceDaoTest {
 	@Test
 	void givenExistingAudience_whenFindById_thenAudienceFound() {
 		Audience actual = audienceDao.findById(1);
-		Audience expected = Audience.builder().id(1).room(1).capacity(10).cathedra(actual.getCathedra()).build();
+		Audience expected = Audience.builder()
+				.id(1)
+				.room(1)
+				.capacity(10)
+				.cathedra(actual.getCathedra())
+				.build();
 
 		assertEquals(expected, actual);
 	}

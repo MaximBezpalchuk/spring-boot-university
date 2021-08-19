@@ -41,7 +41,9 @@ public class JdbcLectureTimeDaoTest {
 
 	@Test
 	void givenExistingLectureTime_whenFindById_thenLectureTimeFound() {
-		LectureTime expected = LectureTime.builder().id(1).start(LocalTime.of(8, 0, 0)).end(LocalTime.of(9, 30, 0))
+		LectureTime expected = LectureTime.builder()
+				.id(1).start(LocalTime.of(8, 0, 0))
+				.end(LocalTime.of(9, 30, 0))
 				.build();
 		LectureTime actual = lectureTimeDao.findById(1);
 
@@ -63,7 +65,9 @@ public class JdbcLectureTimeDaoTest {
 	@Test
 	void givenNewLectureTime_whenSaveLectureTime_thenAllExistingLectureTimesFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		lectureTimeDao.save(LectureTime.builder().start(LocalTime.of(21, 0, 0)).end(LocalTime.of(22, 30, 0)).build());
+		lectureTimeDao.save(LectureTime.builder()
+				.start(LocalTime.of(21, 0, 0))
+				.end(LocalTime.of(22, 30, 0)).build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}

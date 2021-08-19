@@ -43,9 +43,19 @@ public class JdbcStudentDaoTest {
 	@Test
 	void givenExistingStudent_whenFindById_thenStudentFound() {
 		Student actual = studentDao.findById(1);
-		Student expected = Student.builder().firstName("Petr").lastName("Orlov").address("Empty Street 8")
-				.gender(Gender.MALE).birthDate(LocalDate.of(1994, 3, 3)).phone("888005353535").email("1@owl.com")
-				.postalCode("999").education("General secondary education").group(actual.getGroup()).id(1).build();
+		Student expected = Student.builder()
+				.firstName("Petr")
+				.lastName("Orlov")
+				.address("Empty Street 8")
+				.gender(Gender.MALE)
+				.birthDate(LocalDate.of(1994, 3, 3))
+				.phone("888005353535")
+				.email("1@owl.com")
+				.postalCode("999")
+				.education("General secondary education")
+				.group(actual.getGroup())
+				.id(1)
+				.build();
 
 		assertEquals(expected, actual);
 	}
@@ -66,9 +76,18 @@ public class JdbcStudentDaoTest {
 	void givenNewStudent_whenSaveStudent_thenAllExistingStudentsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
 		Student actual = studentDao.findById(1);
-		Student student = Student.builder().firstName("Petr123").lastName("Orlov123").address("Empty Street 8")
-				.gender(Gender.MALE).birthDate(LocalDate.of(1994, 3, 3)).phone("888005353535").email("1@owl.com")
-				.postalCode("999").education("General secondary education").group(actual.getGroup()).build();
+		Student student = Student.builder()
+				.firstName("Petr123")
+				.lastName("Orlov123")
+				.address("Empty Street 8")
+				.gender(Gender.MALE)
+				.birthDate(LocalDate.of(1994, 3, 3))
+				.phone("888005353535")
+				.email("1@owl.com")
+				.postalCode("999")
+				.education("General secondary education")
+				.group(actual.getGroup())
+				.build();
 		studentDao.save(student);
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
