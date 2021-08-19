@@ -35,9 +35,9 @@ public class StudentRowMapper implements RowMapper<Student> {
 				.education(resultSet.getString("education"))
 				.id(resultSet.getInt("id"))
 				.build();
-		Object group_id = resultSet.getObject("group_id");
-		if (group_id != null) {
-			Group group = groupDao.findById((int) group_id);
+		int group_id = resultSet.getInt("group_id");
+		if (!resultSet.wasNull()) {
+			Group group = groupDao.findById(group_id);
 			student.setGroup(group);
 		}
 		return student;
