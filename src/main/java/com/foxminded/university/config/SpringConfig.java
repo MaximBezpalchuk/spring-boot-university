@@ -67,8 +67,8 @@ public class SpringConfig {
 	}
 
 	@Bean
-	public DataSourceTransactionManager txManager() {
-		return new DataSourceTransactionManager(dataSource());
+	public DataSourceTransactionManager txManager(DataSource dataSource) {
+		return new DataSourceTransactionManager(dataSource);
 	}
 
 }
