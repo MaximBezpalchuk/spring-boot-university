@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.MethodMode;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -23,6 +23,7 @@ import com.foxminded.university.model.LectureTime;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = SpringTestConfig.class)
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class JdbcLectureTimeDaoTest {
 
 	private final static String TABLE_NAME = "lecture_times";
@@ -61,7 +62,6 @@ public class JdbcLectureTimeDaoTest {
 		assertTrue(actualMessage.contains(expectedMessage));
 	}
 
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void givenNewLectureTime_whenSaveLectureTime_thenAllExistingLectureTimesFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
@@ -72,7 +72,6 @@ public class JdbcLectureTimeDaoTest {
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
 
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void givenExitstingLectureTime_whenChange_thenChangesApplied() {
 		LectureTime expected = lectureTimeDao.findById(1);
@@ -83,7 +82,6 @@ public class JdbcLectureTimeDaoTest {
 		assertEquals(expected, actual);
 	}
 
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void whenDeleteExistingLectureTime_thenAllExistingLectureTimesFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) - 1;

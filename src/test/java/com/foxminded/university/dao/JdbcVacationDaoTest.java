@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.MethodMode;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -25,6 +25,7 @@ import com.foxminded.university.model.Vacation;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = SpringTestConfig.class)
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class JdbcVacationDaoTest {
 
 	private final static String TABLE_NAME = "vacations";
@@ -65,7 +66,6 @@ public class JdbcVacationDaoTest {
 		assertTrue(actualMessage.contains(expectedMessage));
 	}
 
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void givenNewVacation_whenSaveVacation_thenAllExistingVacationsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
@@ -79,7 +79,6 @@ public class JdbcVacationDaoTest {
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
 
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void givenExitstingVacation_whenChange_thenChangesApplied() {
 		Vacation expected = vacationDao.findById(1);
@@ -90,7 +89,6 @@ public class JdbcVacationDaoTest {
 		assertEquals(expected, actual);
 	}
 
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void whenDeleteExistingVacation_thenAllExistingVacationsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) - 1;

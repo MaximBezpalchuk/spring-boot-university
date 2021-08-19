@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.MethodMode;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -25,6 +25,7 @@ import com.foxminded.university.model.Cathedra;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = SpringTestConfig.class)
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class JdbcSubjectDaoTest {
 
 	private final static String TABLE_NAME = "subjects";
@@ -65,7 +66,6 @@ public class JdbcSubjectDaoTest {
 		assertTrue(actualMessage.contains(expectedMessage));
 	}
 
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void givenNewSubject_whenSaveSubject_thenAllExistingSubjectsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
@@ -79,7 +79,6 @@ public class JdbcSubjectDaoTest {
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
 
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void givenExitstingSubject_whenChange_thenChangesApplied() {
 		Subject expected = subjectDao.findById(1);
@@ -90,7 +89,6 @@ public class JdbcSubjectDaoTest {
 		assertEquals(expected, actual);
 	}
 
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void whenDeleteExistingSubject_thenAllExistingSubjectsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) - 1;

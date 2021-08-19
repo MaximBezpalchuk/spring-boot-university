@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.MethodMode;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -24,6 +24,7 @@ import com.foxminded.university.model.Gender;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = SpringTestConfig.class)
+@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class JdbcStudentDaoTest {
 
 	private final static String TABLE_NAME = "students";
@@ -71,7 +72,6 @@ public class JdbcStudentDaoTest {
 		assertTrue(actualMessage.contains(expectedMessage));
 	}
 
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
 	@Test
 	void givenNewStudent_whenSaveStudent_thenAllExistingStudentsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
@@ -93,8 +93,6 @@ public class JdbcStudentDaoTest {
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
 
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
-
 	@Test
 	void givenExitstingStudent_whenChange_thenChangesApplied() {
 		Student expected = studentDao.findById(1);
@@ -105,8 +103,6 @@ public class JdbcStudentDaoTest {
 		assertEquals(expected, actual);
 	}
 
-	@DirtiesContext(methodMode = MethodMode.AFTER_METHOD)
-
 	@Test
 	void whenDeleteExistingStudent_thenAllExistingStudentsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) - 1;
@@ -114,5 +110,4 @@ public class JdbcStudentDaoTest {
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
-
 }
