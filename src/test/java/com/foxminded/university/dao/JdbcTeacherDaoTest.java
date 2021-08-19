@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +14,10 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
@@ -21,6 +25,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.foxminded.university.config.SpringTestConfig;
 import com.foxminded.university.dao.jdbc.JdbcTeacherDao;
+import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Degree;
 import com.foxminded.university.model.Gender;
 import com.foxminded.university.model.Subject;
@@ -72,7 +77,7 @@ public class JdbcTeacherDaoTest {
 	}
 
 	@Test
-	void givenNotExistingTeacher_whenFindOne_thenIncorrestResultSize() {
+	void givenNotExistingTeacher_whenFindById_thenIncorrestResultSize() {
 		Exception exception = assertThrows(EmptyResultDataAccessException.class, () -> {
 			teacherDao.findById(100);
 		});
@@ -85,14 +90,13 @@ public class JdbcTeacherDaoTest {
 	@Test
 	void givenNewTeacher_whenSaveTeacher_thenAllExistingTeachersFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		Teacher actual = teacherDao.findById(1);
 		Teacher teacher = Teacher.builder()
 				.firstName("Test")
 				.lastName("Test")
 				.address("Virtual Reality Capsule no 1")
 				.gender(Gender.MALE)
 				.birthDate(LocalDate.of(1970, 1, 1))
-				.cathedra(actual.getCathedra())
+				.cathedra(Cathedra.builder().id(1).build())
 				.degree(Degree.PROFESSOR)
 				.phone("1")
 				.email("1@bigowl.com")
@@ -100,8 +104,12 @@ public class JdbcTeacherDaoTest {
 				.education("Higher education")
 				.build();
 		List<Subject> subjects = new ArrayList<>();
-		Subject subject = Subject.builder().cathedra(actual.getCathedra()).name("Weapon Tactics")
-				.description("Learning how to use heavy weapon and guerrilla tactics").id(1).build();
+		Subject subject = Subject.builder()
+				.cathedra(Cathedra.builder().id(1).build())
+				.name("Weapon Tactics")
+				.description("Learning how to use heavy weapon and guerrilla tactics")
+				.id(1)
+				.build();
 		subjects.add(subject);
 		teacher.setSubjects(subjects);
 		teacherDao.save(teacher);
@@ -110,11 +118,73 @@ public class JdbcTeacherDaoTest {
 	}
 
 	@Test
-	void givenExitstingTeacher_whenChange_thenChangesApplied() {
-		Teacher expected = teacherDao.findById(1);
-		expected.setFirstName("Test Name");
+	void givenExitstingTeacher_whenSaveWithChanges_thenChangesApplied() {
+		Teacher expected = Teacher.builder()
+				.id(1)
+				.firstName("TestName")
+				.lastName("Test")
+				.address("Virtual Reality Capsule no 1")
+				.gender(Gender.MALE)
+				.birthDate(LocalDate.of(1970, 1, 1))
+				.cathedra(Cathedra.builder().id(1).build())
+				.degree(Degree.PROFESSOR)
+				.phone("1")
+				.email("1@bigowl.com")
+				.postalCode("12345")
+				.education("Higher education")
+				.build();
+		List<Subject> subjects = new ArrayList<>();
+		Subject subject = Subject.builder()
+				.cathedra(Cathedra.builder().id(1).build())
+				.name("Weapon Tactics")
+				.description("Learning how to use heavy weapon and guerrilla tactics")
+				.id(1)
+				.build();
+		subjects.add(subject);
+		expected.setSubjects(subjects);
 		teacherDao.save(expected);
-		Teacher actual = teacherDao.findById(1);
+		Teacher actual = template.query("SELECT * FROM teachers WHERE id = 1", new ResultSetExtractor<Teacher>() {
+			@Override
+			public Teacher extractData(ResultSet rs) throws SQLException, DataAccessException {
+				Teacher teacher = null;
+				while (rs.next()) {
+					teacher = Teacher.builder()
+			        		.id(rs.getInt("id"))
+			        		.firstName(rs.getString("first_name"))
+			        		.lastName(rs.getString("last_name"))
+			        		.address(rs.getString("address"))
+			        		.gender(Gender.valueOf(rs.getString("gender")))
+			        		.birthDate(rs.getObject("birth_date", LocalDate.class))
+			        		.cathedra(Cathedra.builder().id(rs.getInt("cathedra_id")).build())
+							.degree(Degree.valueOf(rs.getString("degree")))
+			        		.phone(rs.getString("phone"))
+							.email(rs.getString("email"))
+							.postalCode(rs.getString("postal_code"))
+							.education(rs.getString("education"))
+			        		.build();
+				}
+
+				List<Subject> subjects = template.query(
+						"SELECT * FROM subjects WHERE id IN (SELECT subject_id FROM subjects_teachers WHERE teacher_id =1)",
+						new ResultSetExtractor<List<Subject>>() {
+							@Override
+							public List<Subject> extractData(ResultSet rs) throws SQLException, DataAccessException {
+								List<Subject> subjects = new ArrayList<>();
+								while (rs.next()) {
+									subjects.add(Subject.builder()
+											.id(rs.getInt("id"))
+											.name(rs.getString("name"))
+											.description(rs.getString("description"))
+											.cathedra(Cathedra.builder().id(rs.getInt("cathedra_id")).build())
+											.build());
+								}
+								return subjects;
+							}
+						});
+				teacher.setSubjects(subjects);
+				return teacher;
+			}
+		});
 
 		assertEquals(expected, actual);
 	}

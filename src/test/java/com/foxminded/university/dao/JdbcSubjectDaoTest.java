@@ -56,7 +56,7 @@ public class JdbcSubjectDaoTest {
 	}
 
 	@Test
-	void givenNotExistingSubject_whenFindOne_thenIncorrestResultSize() {
+	void givenNotExistingSubject_whenFindById_thenIncorrestResultSize() {
 		Exception exception = assertThrows(EmptyResultDataAccessException.class, () -> {
 			subjectDao.findById(100);
 		});
@@ -80,13 +80,20 @@ public class JdbcSubjectDaoTest {
 	}
 
 	@Test
-	void givenExitstingSubject_whenChange_thenChangesApplied() {
-		Subject expected = subjectDao.findById(1);
-		expected.setName("Test Name");
+	void givenExitstingSubject_whenSaveWithChanges_thenChangesApplied() {
+		Subject expected = Subject.builder()
+				.id(1)
+				.name("Test Name")
+				.description("Test Description")
+				.cathedra(Cathedra.builder().id(1).build())
+				.build();
 		subjectDao.save(expected);
-		Subject actual = subjectDao.findById(1);
-
-		assertEquals(expected, actual);
+		
+		String name = template.queryForObject("SELECT name FROM subjects WHERE id = 1", String.class);
+		String description = template.queryForObject("SELECT description FROM subjects WHERE id = 1", String.class);
+		
+		assertEquals(expected.getName(), name);
+		assertEquals(expected.getDescription(), description);
 	}
 
 	@Test

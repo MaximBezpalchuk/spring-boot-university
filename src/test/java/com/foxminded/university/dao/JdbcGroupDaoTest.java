@@ -15,6 +15,7 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.config.SpringTestConfig;
 import com.foxminded.university.dao.jdbc.JdbcGroupDao;
@@ -51,7 +52,7 @@ public class JdbcGroupDaoTest {
 	}
 
 	@Test
-	void givenNotExistingGroup_whenFindOne_thenIncorrestResultSize() {
+	void givenNotExistingGroup_whenFindById_thenIncorrestResultSize() {
 		Exception exception = assertThrows(EmptyResultDataAccessException.class, () -> {
 			groupDao.findById(100);
 		});
@@ -64,20 +65,24 @@ public class JdbcGroupDaoTest {
 	@Test
 	void givenNewGroup_whenSaveGroup_thenAllExistingGroupsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		Group actual = groupDao.findById(1);
-		groupDao.save(Group.builder().name("Test Name").cathedra(actual.getCathedra()).build());
+		groupDao.save(Group.builder()
+				.name("Test Name")
+				.cathedra(Cathedra.builder()
+						.id(1)
+						.build())
+				.build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
 	
 	@Test
-	void givenExitstingGroup_whenChange_thenChangesApplied() {
+	void givenExitstingGroup_whenSaveWithChanges_thenChangesApplied() {
 		Group expected = groupDao.findById(1);
 		expected.setName("Killers 2");
 		groupDao.save(expected);
-		Group actual = groupDao.findById(1);
+		String name = template.queryForObject("SELECT name FROM groups WHERE id = 1", String.class);
 
-		assertEquals(expected, actual);
+		assertEquals(expected.getName(), name);
 	}
 	
 	@Test

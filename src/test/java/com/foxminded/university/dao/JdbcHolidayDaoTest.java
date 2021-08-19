@@ -19,6 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.foxminded.university.config.SpringTestConfig;
 import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
+import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Holiday;
 
 @ExtendWith(SpringExtension.class)
@@ -54,7 +55,7 @@ public class JdbcHolidayDaoTest {
 	}
 
 	@Test
-	void givenNotExistingHoliday_whenFindOne_thenIncorrestResultSize() {
+	void givenNotExistingHoliday_whenFindById_thenIncorrestResultSize() {
 		Exception exception = assertThrows(EmptyResultDataAccessException.class, () -> {
 			holidayDao.findById(100);
 		});
@@ -79,13 +80,21 @@ public class JdbcHolidayDaoTest {
 	}
 
 	@Test
-	void givenExitstingHoliday_whenChange_thenChangesApplied() {
-		Holiday expected = holidayDao.findById(1);
-		expected.setName("Test Name");
+	void givenExitstingHoliday_whenSaveWithChanges_thenChangesApplied() {
+		Holiday expected = Holiday.builder()
+				.id(1)
+				.name("Test Name")
+				.date(LocalDate.of(2021, 12, 26))
+				.cathedra(Cathedra.builder()
+						.id(1)
+						.build())
+				.build();
 		holidayDao.save(expected);
-		Holiday actual = holidayDao.findById(1);
-
-		assertEquals(expected, actual);
+		String name = template.queryForObject("SELECT name FROM holidays WHERE id = 1", String.class);
+		LocalDate date = template.queryForObject("SELECT date FROM holidays WHERE id = 1", LocalDate.class);
+		
+		assertEquals(expected.getName(), name);
+		assertEquals(expected.getDate(), date);
 	}
 
 	@Test

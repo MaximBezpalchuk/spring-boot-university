@@ -5,13 +5,17 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
@@ -21,6 +25,7 @@ import com.foxminded.university.model.Student;
 import com.foxminded.university.config.SpringTestConfig;
 import com.foxminded.university.dao.jdbc.JdbcStudentDao;
 import com.foxminded.university.model.Gender;
+import com.foxminded.university.model.Group;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = SpringTestConfig.class)
@@ -62,7 +67,7 @@ public class JdbcStudentDaoTest {
 	}
 
 	@Test
-	void givenNotExistingStudent_whenFindOne_thenIncorrestResultSize() {
+	void givenNotExistingStudent_whenFindById_thenIncorrestResultSize() {
 		Exception exception = assertThrows(EmptyResultDataAccessException.class, () -> {
 			studentDao.findById(100);
 		});
@@ -75,7 +80,6 @@ public class JdbcStudentDaoTest {
 	@Test
 	void givenNewStudent_whenSaveStudent_thenAllExistingStudentsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		Student actual = studentDao.findById(1);
 		Student student = Student.builder()
 				.firstName("Petr123")
 				.lastName("Orlov123")
@@ -86,7 +90,7 @@ public class JdbcStudentDaoTest {
 				.email("1@owl.com")
 				.postalCode("999")
 				.education("General secondary education")
-				.group(actual.getGroup())
+				.group(Group.builder().id(1).build())
 				.build();
 		studentDao.save(student);
 
@@ -94,12 +98,47 @@ public class JdbcStudentDaoTest {
 	}
 
 	@Test
-	void givenExitstingStudent_whenChange_thenChangesApplied() {
-		Student expected = studentDao.findById(1);
-		expected.setFirstName("Test Name");
+	void givenExitstingStudent_whenSaveWithChanges_thenChangesApplied() {
+		Student expected = Student.builder()
+		.id(1)
+		.firstName("Test Name")
+		.lastName("Orlov123")
+		.address("Empty Street 812312")
+		.gender(Gender.MALE)
+		.birthDate(LocalDate.of(1994, 3, 21))
+		.phone("888005353535321123")
+		.email("1123@owl.com")
+		.postalCode("999123123")
+		.education("General secondary education12321")
+		.group(Group.builder().id(1).build())
+		.build();
+		
 		studentDao.save(expected);
-		Student actual = studentDao.findById(1);
-
+		
+		Student actual = template.query("SELECT * FROM students WHERE id = 1", new ResultSetExtractor<Student>(){  
+		    @Override  
+		     public Student extractData(ResultSet rs) throws SQLException,  
+		            DataAccessException {
+		    	Student student = null;
+		        while(rs.next()){  
+		        student = Student.builder()
+		        		.id(rs.getInt("id"))
+		        		.firstName(rs.getString("first_name"))
+		        		.lastName(rs.getString("last_name"))
+		        		.address(rs.getString("address"))
+		        		.gender(Gender.valueOf(rs.getString("gender")))
+		        		.birthDate(rs.getObject("birth_date", LocalDate.class))
+		        		.phone(rs.getString("phone"))
+						.email(rs.getString("email"))
+						.postalCode(rs.getString("postal_code"))
+						.education(rs.getString("education"))
+						.group(Group.builder().id(rs.getInt("group_id")).build())
+		        		.build();
+		        }  
+		        return student;  
+		        }  
+		    }); 
+		
 		assertEquals(expected, actual);
 	}
 

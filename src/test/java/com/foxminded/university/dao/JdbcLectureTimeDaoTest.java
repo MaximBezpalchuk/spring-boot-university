@@ -52,7 +52,7 @@ public class JdbcLectureTimeDaoTest {
 	}
 
 	@Test
-	void givenNotExistingLectureTime_whenFindOne_thenIncorrestResultSize() {
+	void givenNotExistingLectureTime_whenFindById_thenIncorrestResultSize() {
 		Exception exception = assertThrows(EmptyResultDataAccessException.class, () -> {
 			lectureTimeDao.findById(100);
 		});
@@ -67,19 +67,25 @@ public class JdbcLectureTimeDaoTest {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
 		lectureTimeDao.save(LectureTime.builder()
 				.start(LocalTime.of(21, 0, 0))
-				.end(LocalTime.of(22, 30, 0)).build());
+				.end(LocalTime.of(22, 30, 0))
+				.build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
 
 	@Test
-	void givenExitstingLectureTime_whenChange_thenChangesApplied() {
-		LectureTime expected = lectureTimeDao.findById(1);
-		expected.setStart(LocalTime.of(21, 0, 0));
+	void givenExitstingLectureTime_whenSaveWithChanges_thenChangesApplied() {
+		LectureTime expected = LectureTime.builder()
+				.id(1)
+				.start(LocalTime.of(21, 0, 0))
+				.end(LocalTime.of(21, 0, 0))
+				.build();
 		lectureTimeDao.save(expected);
-		LectureTime actual = lectureTimeDao.findById(1);
+		LocalTime start = template.queryForObject("SELECT start FROM lecture_times WHERE id = 1", LocalTime.class);
+		LocalTime end = template.queryForObject("SELECT finish FROM lecture_times WHERE id = 1", LocalTime.class);
 
-		assertEquals(expected, actual);
+		assertEquals(expected.getStart(), start);
+		assertEquals(expected.getEnd(), end);
 	}
 
 	@Test

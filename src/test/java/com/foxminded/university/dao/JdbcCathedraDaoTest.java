@@ -40,14 +40,17 @@ public class JdbcCathedraDaoTest {
 
 	@Test
 	void givenExistingCathedra_whenFindById_thenCathedraFound() {
-		Cathedra expected = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+		Cathedra expected = Cathedra.builder()
+				.id(1)
+				.name("Fantastic Cathedra")
+				.build();
 		Cathedra actual = cathedraDao.findById(1);
 
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	void givenNotExistingCathedra_whenFindOne_thenIncorrestResultSize() {
+	void givenNotExistingCathedra_whenFindById_thenIncorrestResultSize() {
 		Exception exception = assertThrows(EmptyResultDataAccessException.class, () -> {
 			cathedraDao.findById(100);
 		});
@@ -60,19 +63,23 @@ public class JdbcCathedraDaoTest {
 	@Test
 	void givenNewCathedra_whenSaveCathedra_thenAllExistingCathedrasFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		cathedraDao.save(Cathedra.builder().name("Fantastic Cathedra 2").build());
+		cathedraDao.save(Cathedra.builder()
+				.name("Fantastic Cathedra 2")
+				.build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
 
 	@Test
-	void givenExitstingCathedra_whenChange_thenChangesApplied() {
-		Cathedra expected = cathedraDao.findById(1);
-		expected.setName("TestName");
+	void givenExitstingCathedra_whenSaveWithChanges_thenChangesApplied() {
+		Cathedra expected = Cathedra.builder()
+				.id(1)
+				.name("TestName")
+				.build();
 		cathedraDao.save(expected);
-		Cathedra actual = cathedraDao.findById(1);
+		String name = template.queryForObject("SELECT name FROM cathedras WHERE id = 1", String.class);
 
-		assertEquals(expected, actual);
+		assertEquals(expected.getName(), name);
 	}
 
 	@Test

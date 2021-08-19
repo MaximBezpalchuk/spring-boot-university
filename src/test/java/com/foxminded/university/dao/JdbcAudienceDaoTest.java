@@ -13,6 +13,7 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import com.foxminded.university.config.SpringTestConfig;
 import com.foxminded.university.dao.jdbc.JdbcAudienceDao;
 import com.foxminded.university.model.Audience;
+import com.foxminded.university.model.Cathedra;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
@@ -50,7 +51,7 @@ public class JdbcAudienceDaoTest {
 	}
 
 	@Test
-	void givenNotExistingAudience_whenFindOne_thenIncorrestResultSize() {
+	void givenNotExistingAudience_whenFindById_thenIncorrestResultSize() {
 		Exception exception = assertThrows(EmptyResultDataAccessException.class, () -> {
 			audienceDao.findById(100);
 		});
@@ -63,20 +64,30 @@ public class JdbcAudienceDaoTest {
 	@Test
 	void givenNewAudience_whenSaveAudience_thenAllExistingAudiencesFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		Audience actual = audienceDao.findById(1);
-		audienceDao.save(Audience.builder().room(100).capacity(100).cathedra(actual.getCathedra()).build());
+		audienceDao.save(Audience.builder()
+				.room(100)
+				.capacity(100)
+				.cathedra(Cathedra.builder()
+						.id(1)
+						.build())
+				.build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
 
 	@Test
-	void givenExitstingAudience_whenChange_thenChangesApplied() {
-		Audience expected = audienceDao.findById(1);
+	void givenExitstingAudience_whenSaveWithChanges_thenChangesApplied() {
+		Audience expected = Audience.builder().id(1).room(1).capacity(10)
+				.cathedra(Cathedra.builder()
+						.id(1)
+						.name("Fantastic Cathedra")
+						.build())
+				.build();
 		expected.setCapacity(100);
 		audienceDao.save(expected);
-		Audience actual = audienceDao.findById(1);
+		int capacity = template.queryForObject("SELECT capacity FROM audiences WHERE id = 1", Integer.class);
 
-		assertEquals(expected, actual);
+		assertEquals(expected.getCapacity(), capacity);
 	}
 
 	@Test

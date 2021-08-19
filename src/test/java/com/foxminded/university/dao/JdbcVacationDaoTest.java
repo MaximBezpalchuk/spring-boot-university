@@ -21,6 +21,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.foxminded.university.config.SpringTestConfig;
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
+import com.foxminded.university.model.Teacher;
 import com.foxminded.university.model.Vacation;
 
 @ExtendWith(SpringExtension.class)
@@ -56,7 +57,7 @@ public class JdbcVacationDaoTest {
 	}
 
 	@Test
-	void givenNotExistingVacation_whenFindOne_thenIncorrestResultSize() {
+	void givenNotExistingVacation_whenFindById_thenIncorrestResultSize() {
 		Exception exception = assertThrows(EmptyResultDataAccessException.class, () -> {
 			vacationDao.findById(100);
 		});
@@ -69,11 +70,10 @@ public class JdbcVacationDaoTest {
 	@Test
 	void givenNewVacation_whenSaveVacation_thenAllExistingVacationsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		Vacation actual = vacationDao.findById(1);
 		vacationDao.save(Vacation.builder()
 				.start(LocalDate.of(2021, 1, 31))
 				.end(LocalDate.of(2021, 3, 29))
-				.teacher(actual.getTeacher())
+				.teacher(Teacher.builder().id(1).build())
 				.build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
@@ -81,12 +81,20 @@ public class JdbcVacationDaoTest {
 
 	@Test
 	void givenExitstingVacation_whenChange_thenChangesApplied() {
-		Vacation expected = vacationDao.findById(1);
-		expected.setTeacher(vacationDao.findById(2).getTeacher());
+		Vacation expected = Vacation.builder()
+				.id(1)
+				.start(LocalDate.of(2021, 1, 1))
+				.end(LocalDate.of(2021, 1, 1))
+				.teacher(Teacher.builder().id(2).build())
+				.build();
 		vacationDao.save(expected);
-		Vacation actual = vacationDao.findById(1);
+		int teacher_id = template.queryForObject("SELECT teacher_id FROM vacations WHERE id = 1", Integer.class);
+		LocalDate start = template.queryForObject("SELECT start FROM vacations WHERE id = 1", LocalDate.class);
+		LocalDate end = template.queryForObject("SELECT finish FROM vacations WHERE id = 1", LocalDate.class);
 
-		assertEquals(expected, actual);
+		assertEquals(expected.getStart(), start);
+		assertEquals(expected.getEnd(), end);
+		assertEquals(expected.getTeacher().getId(), teacher_id);
 	}
 
 	@Test
