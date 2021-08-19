@@ -46,6 +46,7 @@ public class JdbcTeacherDao implements TeacherDao {
 	@Override
 	@Transactional
 	public void save(Teacher teacher) {
+		Teacher teacherOld = Teacher.builder().build();
 		if (teacher.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {
@@ -70,9 +71,11 @@ public class JdbcTeacherDao implements TeacherDao {
 					teacher.getAddress(), teacher.getEmail(), teacher.getGender().toString(), teacher.getPostalCode(),
 					teacher.getEducation(), teacher.getBirthDate(), teacher.getCathedra().getId(),
 					teacher.getDegree().toString(), teacher.getId());
+			
+			teacherOld = findById(teacher.getId());
+			deleteSubjects(teacherOld, teacher);
 		}
-		insertSubjects(teacher);
-		deleteSubjects(teacher);
+		insertSubjects(teacherOld, teacher);
 	}
 
 	@Override
@@ -80,13 +83,13 @@ public class JdbcTeacherDao implements TeacherDao {
 		jdbcTemplate.update(DELETE_TEACHER, id);
 	}
 
-	private void insertSubjects(Teacher teacher) {
-		teacher.getSubjects().stream().filter(subject -> !findById(teacher.getId()).getSubjects().contains(subject))
-				.forEach(subject -> jdbcTemplate.update(INSERT_SUBJECT, subject.getId(), teacher.getId()));
+	private void insertSubjects(Teacher teacherOld, Teacher teacherNew) {
+		teacherNew.getSubjects().stream().filter(subject -> !teacherOld.getSubjects().contains(subject))
+				.forEach(subject -> jdbcTemplate.update(INSERT_SUBJECT, subject.getId(), teacherNew.getId()));
 	}
 
-	private void deleteSubjects(Teacher teacher) {
-		findById(teacher.getId()).getSubjects().stream().filter(subject -> !teacher.getSubjects().contains(subject))
-				.forEach(subject -> jdbcTemplate.update(DELETE_SUBJECT, subject.getId(), teacher.getId()));
+	private void deleteSubjects(Teacher teacherOld, Teacher teacherNew) {
+		teacherOld.getSubjects().stream().filter(subject -> !teacherNew.getSubjects().contains(subject))
+				.forEach(subject -> jdbcTemplate.update(DELETE_SUBJECT, subject.getId(), teacherNew.getId()));
 	}
 }
