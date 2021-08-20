@@ -3,6 +3,7 @@ package com.foxminded.university.dao.jdbc;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -66,6 +67,7 @@ public class JdbcTeacherDao implements TeacherDao {
 				return statement;
 			}, keyHolder);
 			teacher.setId((int) keyHolder.getKeyList().get(0).get("id"));
+			teacher.getSubjects().stream().forEach(subject -> jdbcTemplate.update(INSERT_SUBJECT, subject.getId(), teacher.getId()));
 		} else {
 			jdbcTemplate.update(UPDATE_TEACHER, teacher.getFirstName(), teacher.getLastName(), teacher.getPhone(),
 					teacher.getAddress(), teacher.getEmail(), teacher.getGender().toString(), teacher.getPostalCode(),
@@ -73,9 +75,9 @@ public class JdbcTeacherDao implements TeacherDao {
 					teacher.getDegree().toString(), teacher.getId());
 			
 			teacherOld = findById(teacher.getId());
+			updateSubjects(teacherOld, teacher);
 			deleteSubjects(teacherOld, teacher);
 		}
-		insertSubjects(teacherOld, teacher);
 	}
 
 	@Override
@@ -83,13 +85,19 @@ public class JdbcTeacherDao implements TeacherDao {
 		jdbcTemplate.update(DELETE_TEACHER, id);
 	}
 
-	private void insertSubjects(Teacher teacherOld, Teacher teacherNew) {
-		teacherNew.getSubjects().stream().filter(subject -> !teacherOld.getSubjects().contains(subject))
-				.forEach(subject -> jdbcTemplate.update(INSERT_SUBJECT, subject.getId(), teacherNew.getId()));
+	private void updateSubjects(Teacher teacherOld, Teacher teacherNew) {
+		teacherNew.getSubjects().stream()
+								.filter(not(teacherOld.getSubjects()::contains))
+								.forEach(subject -> jdbcTemplate.update(INSERT_SUBJECT, subject.getId(), teacherNew.getId()));
 	}
 
 	private void deleteSubjects(Teacher teacherOld, Teacher teacherNew) {
-		teacherOld.getSubjects().stream().filter(subject -> !teacherNew.getSubjects().contains(subject))
-				.forEach(subject -> jdbcTemplate.update(DELETE_SUBJECT, subject.getId(), teacherNew.getId()));
+		teacherOld.getSubjects().stream()
+								.filter(not(teacherNew.getSubjects()::contains))
+								.forEach(subject -> jdbcTemplate.update(DELETE_SUBJECT, subject.getId(), teacherNew.getId()));
+	}
+	
+	public static <R> Predicate<R> not(Predicate<R> predicate) {
+	    return predicate.negate();
 	}
 }
