@@ -10,11 +10,11 @@ public class Holiday {
 	private LocalDate date;
 	private Cathedra cathedra;
 
-	private Holiday(Builder builder) {
-		this.id = builder.id;
-		this.name = builder.name;
-		this.date = builder.date;
-		this.cathedra = builder.cathedra;
+	private Holiday(int id, String name, LocalDate date, Cathedra cathedra) {
+		this.id = id;
+		this.name = name;
+		this.date = date;
+		this.cathedra = cathedra;
 	}
 
 	public void setName(String name) {
@@ -81,7 +81,7 @@ public class Holiday {
 		}
 
 		public Holiday build() {
-			return new Holiday(this);
+			return new Holiday(id, name, date, cathedra);
 		}
 	}
 

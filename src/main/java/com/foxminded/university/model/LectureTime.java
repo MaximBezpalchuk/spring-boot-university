@@ -9,10 +9,10 @@ public class LectureTime {
 	private LocalTime start;
 	private LocalTime end;
 
-	private LectureTime(Builder builder) {
-		this.id = builder.id;
-		this.start = builder.start;
-		this.end = builder.end;
+	private LectureTime(int id, LocalTime start, LocalTime end) {
+		this.id = id;
+		this.start = start;
+		this.end = end;
 	}
 
 	public void setStart(LocalTime start) {
@@ -65,7 +65,7 @@ public class LectureTime {
 		}
 
 		public LectureTime build() {
-			return new LectureTime(this);
+			return new LectureTime(id, start, end);
 		}
 	}
 

@@ -1,14 +1,16 @@
 package com.foxminded.university.model;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class Student extends Person {
 
 	private Group group;
 
-	public Student(Builder builder) {
-		super(builder);
-		this.group = builder.group;
+	public Student(int id, String firstName, String lastName, String phone, String address, String email,
+			Gender gender, String postalCode, String education, LocalDate birthDate, Group group) {
+		super(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate);
+		this.group = group;
 	}
 
 	public Group getGroup() {
@@ -38,7 +40,7 @@ public class Student extends Person {
 		}
 
 		public Student build() {
-			return new Student(this);
+			return new Student(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate, group);
 		}
 
 	}

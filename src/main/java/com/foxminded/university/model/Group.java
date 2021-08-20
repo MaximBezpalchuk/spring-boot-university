@@ -8,10 +8,10 @@ public class Group {
 	private String name;
 	private Cathedra cathedra;
 
-	private Group(Builder builder) {
-		this.id = builder.id;
-		this.name = builder.name;
-		this.cathedra = builder.cathedra;
+	private Group(int id, String name, Cathedra cathedra) {
+		this.id = id;
+		this.name = name;
+		this.cathedra = cathedra;
 	}
 
 	public void setName(String name) {
@@ -60,7 +60,7 @@ public class Group {
 		}
 
 		public Group build() {
-			return new Group(this);
+			return new Group(id, name, cathedra);
 		}
 	}
 

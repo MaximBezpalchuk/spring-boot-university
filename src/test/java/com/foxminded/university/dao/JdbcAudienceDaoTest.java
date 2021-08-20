@@ -17,6 +17,7 @@ import com.foxminded.university.model.Cathedra;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
+import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = SpringTestConfig.class)
@@ -85,9 +86,7 @@ public class JdbcAudienceDaoTest {
 				.build();
 		expected.setCapacity(100);
 		audienceDao.save(expected);
-		int capacity = template.queryForObject("SELECT capacity FROM audiences WHERE id = 1", Integer.class);
-
-		assertEquals(expected.getCapacity(), capacity);
+		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME, "id = 1 AND capacity = 100"));
 	}
 
 	@Test

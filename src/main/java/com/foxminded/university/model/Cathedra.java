@@ -7,9 +7,9 @@ public class Cathedra {
 	private int id;
 	private String name;
 
-	private Cathedra(Builder builder) {
-		this.id = builder.id;
-		this.name = builder.name;
+	private Cathedra(int id, String name) {
+		this.id = id;
+		this.name = name;
 	}
 
 	public int getId() {
@@ -47,7 +47,7 @@ public class Cathedra {
 		}
 
 		public Cathedra build() {
-			return new Cathedra(this);
+			return new Cathedra(id, name);
 		}
 	}
 

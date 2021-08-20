@@ -4,18 +4,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
+import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
@@ -112,34 +109,20 @@ public class JdbcStudentDaoTest {
 		.education("General secondary education12321")
 		.group(Group.builder().id(1).build())
 		.build();
-		
 		studentDao.save(expected);
 		
-		Student actual = template.query("SELECT * FROM students WHERE id = 1", new ResultSetExtractor<Student>(){  
-		    @Override  
-		     public Student extractData(ResultSet rs) throws SQLException,  
-		            DataAccessException {
-		    	Student student = null;
-		        while(rs.next()){  
-		        student = Student.builder()
-		        		.id(rs.getInt("id"))
-		        		.firstName(rs.getString("first_name"))
-		        		.lastName(rs.getString("last_name"))
-		        		.address(rs.getString("address"))
-		        		.gender(Gender.valueOf(rs.getString("gender")))
-		        		.birthDate(rs.getObject("birth_date", LocalDate.class))
-		        		.phone(rs.getString("phone"))
-						.email(rs.getString("email"))
-						.postalCode(rs.getString("postal_code"))
-						.education(rs.getString("education"))
-						.group(Group.builder().id(rs.getInt("group_id")).build())
-		        		.build();
-		        }  
-		        return student;  
-		        }  
-		    }); 
-		
-		assertEquals(expected, actual);
+		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME, 
+				"id = 1 "
+				+ "AND first_name = 'Test Name' "
+				+ "AND last_name = 'Orlov123' "
+				+ "AND address = 'Empty Street 812312' "
+				+ "AND gender = 'MALE' "
+				+ "AND birth_date = '1994-03-21' "
+				+ "AND phone = '888005353535321123' "
+				+ "AND email = '1123@owl.com' "
+				+ "AND postal_code = '999123123' "
+				+ "AND education = 'General secondary education12321'"
+				+ "AND group_id = 1"));
 	}
 
 	@Test

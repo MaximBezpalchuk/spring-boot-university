@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
+import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -88,13 +89,12 @@ public class JdbcVacationDaoTest {
 				.teacher(Teacher.builder().id(2).build())
 				.build();
 		vacationDao.save(expected);
-		int teacher_id = template.queryForObject("SELECT teacher_id FROM vacations WHERE id = 1", Integer.class);
-		LocalDate start = template.queryForObject("SELECT start FROM vacations WHERE id = 1", LocalDate.class);
-		LocalDate end = template.queryForObject("SELECT finish FROM vacations WHERE id = 1", LocalDate.class);
-
-		assertEquals(expected.getStart(), start);
-		assertEquals(expected.getEnd(), end);
-		assertEquals(expected.getTeacher().getId(), teacher_id);
+		
+		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME, 
+				"id = 1 "
+				+ "AND teacher_id = 2"
+				+ "AND start = '2021-01-01'"
+				+ "AND finish = '2021-01-01'"));
 	}
 
 	@Test

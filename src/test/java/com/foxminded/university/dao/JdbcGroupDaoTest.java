@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
+import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -80,9 +81,8 @@ public class JdbcGroupDaoTest {
 		Group expected = groupDao.findById(1);
 		expected.setName("Killers 2");
 		groupDao.save(expected);
-		String name = template.queryForObject("SELECT name FROM groups WHERE id = 1", String.class);
-
-		assertEquals(expected.getName(), name);
+		
+		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME, "id = 1 AND name = 'Killers 2'"));
 	}
 	
 	@Test

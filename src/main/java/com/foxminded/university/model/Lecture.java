@@ -16,15 +16,16 @@ public class Lecture {
 	private Subject subject;
 	private LectureTime time;
 
-	private Lecture(Builder builder) {
-		this.id = builder.id;
-		this.cathedra = builder.cathedra;
-		this.teacher = builder.teacher;
-		this.audience = builder.audience;
-		this.date = builder.date;
-		this.subject = builder.subject;
-		this.time = builder.time;
-		this.groups = builder.groups;
+	private Lecture(int id, Cathedra cathedra, List<Group> groups, Teacher teacher, Audience audience, LocalDate date,
+			Subject subject, LectureTime time) {
+		this.id = id;
+		this.cathedra = cathedra;
+		this.teacher = teacher;
+		this.audience = audience;
+		this.date = date;
+		this.subject = subject;
+		this.time = time;
+		this.groups = groups;
 	}
 
 	public int getId() {
@@ -135,7 +136,7 @@ public class Lecture {
 		}
 
 		public Lecture build() {
-			return new Lecture(this);
+			return new Lecture(id, cathedra, groups, teacher, audience, date, subject, time);
 		}
 	}
 

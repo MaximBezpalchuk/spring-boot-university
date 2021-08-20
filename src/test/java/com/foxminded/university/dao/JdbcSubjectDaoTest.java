@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
+import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,11 +90,7 @@ public class JdbcSubjectDaoTest {
 				.build();
 		subjectDao.save(expected);
 		
-		String name = template.queryForObject("SELECT name FROM subjects WHERE id = 1", String.class);
-		String description = template.queryForObject("SELECT description FROM subjects WHERE id = 1", String.class);
-		
-		assertEquals(expected.getName(), name);
-		assertEquals(expected.getDescription(), description);
+		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME, "id = 1 AND name = 'Test Name' AND description = 'Test Description'"));
 	}
 
 	@Test

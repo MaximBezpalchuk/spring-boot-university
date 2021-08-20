@@ -9,11 +9,11 @@ public class Audience {
 	private int capacity;
 	private Cathedra cathedra;
 
-	private Audience(Builder builder) {
-		this.id = builder.id;
-		this.room = builder.room;
-		this.capacity = builder.capacity;
-		this.cathedra = builder.cathedra;
+	private Audience(int id, int room, int capacity, Cathedra cathedra) {
+		this.id = id;
+		this.room = room;
+		this.capacity = capacity;
+		this.cathedra = cathedra;
 	}
 
 	public void setRoom(int room) {
@@ -80,7 +80,7 @@ public class Audience {
 		}
 
 		public Audience build() {
-			return new Audience(this);
+			return new Audience(id, room, capacity, cathedra);
 		}
 	}
 

@@ -4,20 +4,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
+import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
@@ -25,7 +21,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Cathedra;
-import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Lecture;
 import com.foxminded.university.model.LectureTime;
 import com.foxminded.university.model.Subject;
@@ -109,43 +104,16 @@ public class JdbcLectureDaoTest {
 				.group(new ArrayList<>()).build();
 		lectureDao.save(expected);
 
-		Lecture actual = template.query("SELECT * FROM lectures WHERE id = 1", new ResultSetExtractor<Lecture>() {
-			@Override
-			public Lecture extractData(ResultSet rs) throws SQLException, DataAccessException {
-				Lecture lecture = null;
-				while (rs.next()) {
-					lecture = Lecture.builder().id(rs.getInt("id"))
-							.cathedra(Cathedra.builder().id(rs.getInt("cathedra_id")).build())
-							.subject(Subject.builder().id(rs.getInt("subject_id")).build())
-							.date(rs.getObject("date", LocalDate.class))
-							.time(LectureTime.builder().id(rs.getInt("lecture_time_id")).build())
-							.audience(Audience.builder().id(rs.getInt("audience_id")).build())
-							.teacher(Teacher.builder().id(rs.getInt("teacher_id")).build())
-							.build();
-				}
+		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME, 
+				"id = 1 "
+				+ "AND cathedra_id = 1 "
+				+ "AND subject_id = 2 "
+				+ "AND date = '2021-04-05' "
+				+ "AND lecture_time_id = 2 "
+				+ "AND audience_id = 2 "
+				+ "AND teacher_id = 2"));
 
-				List<Group> groups = template.query(
-						"SELECT * FROM groups WHERE id IN (SELECT group_id FROM lectures_groups WHERE lecture_id =1)",
-						new ResultSetExtractor<List<Group>>() {
-							@Override
-							public List<Group> extractData(ResultSet rs) throws SQLException, DataAccessException {
-								List<Group> groups = new ArrayList<>();
-								while (rs.next()) {
-									groups.add(Group.builder()
-											.id(rs.getInt("id"))
-											.name(rs.getString("name"))
-											.cathedra(Cathedra.builder().id(rs.getInt("cathedra_id")).build())
-											.build());
-								}
-								return groups;
-							}
-						});
-				lecture.setGroups(groups);
-				return lecture;
-			}
-		});
-
-		assertEquals(expected, actual);
+		assertEquals(0, countRowsInTableWhere(template, "lectures_groups", "lecture_id = 1 "));
 	}
 
 	@Test

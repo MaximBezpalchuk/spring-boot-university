@@ -16,17 +16,18 @@ public class Person {
 	private String education;
 	private LocalDate birthDate;
 
-	protected Person(Builder<?> builder) {
-		this.id = builder.id;
-		this.firstName = builder.firstName;
-		this.lastName = builder.lastName;
-		this.phone = builder.phone;
-		this.address = builder.address;
-		this.email = builder.email;
-		this.gender = builder.gender;
-		this.postalCode = builder.postalCode;
-		this.education = builder.education;
-		this.birthDate = builder.birthDate;
+	protected Person(int id, String firstName, String lastName, String phone, String address, String email,
+			Gender gender, String postalCode, String education, LocalDate birthDate) {
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.phone = phone;
+		this.address = address;
+		this.email = email;
+		this.gender = gender;
+		this.postalCode = postalCode;
+		this.education = education;
+		this.birthDate = birthDate;
 	}
 
 	public void setFirstName(String firstName) {
@@ -113,16 +114,16 @@ public class Person {
 
 		public abstract T getThis();
 
-		private int id;
-		private String firstName;
-		private String lastName;
-		private String phone;
-		private String address;
-		private String email;
-		private Gender gender;
-		private String postalCode;
-		private String education;
-		private LocalDate birthDate;
+		protected int id;
+		protected String firstName;
+		protected String lastName;
+		protected String phone;
+		protected String address;
+		protected String email;
+		protected Gender gender;
+		protected String postalCode;
+		protected String education;
+		protected LocalDate birthDate;
 
 		public T phone(String phone) {
 			this.phone = phone;
@@ -175,7 +176,7 @@ public class Person {
 		}
 
 		public Person build() {
-			return new Person(this);
+			return new Person(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate);
 		}
 	}
 

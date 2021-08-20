@@ -10,11 +10,11 @@ public class Vacation {
 	private LocalDate end;
 	private Teacher teacher;
 
-	private Vacation(Builder builder) {
-		this.id = builder.id;
-		this.start = builder.start;
-		this.end = builder.end;
-		this.teacher = builder.teacher;
+	private Vacation(int id, LocalDate start, LocalDate end, Teacher teacher) {
+		this.id = id;
+		this.start = start;
+		this.end = end;
+		this.teacher = teacher;
 	}
 
 	public int getId() {
@@ -73,7 +73,7 @@ public class Vacation {
 		}
 
 		public Vacation build() {
-			return new Vacation(this);
+			return new Vacation(id, start, end, teacher);
 		}
 	}
 

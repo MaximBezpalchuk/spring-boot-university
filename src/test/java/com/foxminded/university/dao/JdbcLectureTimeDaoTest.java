@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
+import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
 import java.time.LocalTime;
 
@@ -81,11 +82,10 @@ public class JdbcLectureTimeDaoTest {
 				.end(LocalTime.of(21, 0, 0))
 				.build();
 		lectureTimeDao.save(expected);
-		LocalTime start = template.queryForObject("SELECT start FROM lecture_times WHERE id = 1", LocalTime.class);
-		LocalTime end = template.queryForObject("SELECT finish FROM lecture_times WHERE id = 1", LocalTime.class);
-
-		assertEquals(expected.getStart(), start);
-		assertEquals(expected.getEnd(), end);
+		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME, 
+				"id = 1 "
+				+ "AND start = '21:00:00' "
+				+ "AND finish = '21:00:00'"));
 	}
 
 	@Test

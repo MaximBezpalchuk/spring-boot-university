@@ -3,10 +3,10 @@ package com.foxminded.university.dao;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,10 +14,8 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
@@ -123,19 +121,22 @@ public class JdbcTeacherDaoTest {
 				.id(1)
 				.firstName("TestName")
 				.lastName("Test")
-				.address("Virtual Reality Capsule no 1")
+				.address("Virtual Reality Capsule no 2")
 				.gender(Gender.MALE)
 				.birthDate(LocalDate.of(1970, 1, 1))
 				.cathedra(Cathedra.builder().id(1).build())
 				.degree(Degree.PROFESSOR)
 				.phone("1")
-				.email("1@bigowl.com")
-				.postalCode("12345")
-				.education("Higher education")
+				.email("123@bigowl.com")
+				.postalCode("1234567")
+				.education("Higher education123")
 				.build();
 		List<Subject> subjects = new ArrayList<>();
 		Subject subject = Subject.builder()
-				.cathedra(Cathedra.builder().id(1).build())
+				.cathedra(Cathedra.builder()
+						.id(1)
+						.name("Fantastic Cathedra")
+						.build())
 				.name("Weapon Tactics")
 				.description("Learning how to use heavy weapon and guerrilla tactics")
 				.id(1)
@@ -143,50 +144,21 @@ public class JdbcTeacherDaoTest {
 		subjects.add(subject);
 		expected.setSubjects(subjects);
 		teacherDao.save(expected);
-		Teacher actual = template.query("SELECT * FROM teachers WHERE id = 1", new ResultSetExtractor<Teacher>() {
-			@Override
-			public Teacher extractData(ResultSet rs) throws SQLException, DataAccessException {
-				Teacher teacher = null;
-				while (rs.next()) {
-					teacher = Teacher.builder()
-			        		.id(rs.getInt("id"))
-			        		.firstName(rs.getString("first_name"))
-			        		.lastName(rs.getString("last_name"))
-			        		.address(rs.getString("address"))
-			        		.gender(Gender.valueOf(rs.getString("gender")))
-			        		.birthDate(rs.getObject("birth_date", LocalDate.class))
-			        		.cathedra(Cathedra.builder().id(rs.getInt("cathedra_id")).build())
-							.degree(Degree.valueOf(rs.getString("degree")))
-			        		.phone(rs.getString("phone"))
-							.email(rs.getString("email"))
-							.postalCode(rs.getString("postal_code"))
-							.education(rs.getString("education"))
-			        		.build();
-				}
 
-				List<Subject> subjects = template.query(
-						"SELECT * FROM subjects WHERE id IN (SELECT subject_id FROM subjects_teachers WHERE teacher_id =1)",
-						new ResultSetExtractor<List<Subject>>() {
-							@Override
-							public List<Subject> extractData(ResultSet rs) throws SQLException, DataAccessException {
-								List<Subject> subjects = new ArrayList<>();
-								while (rs.next()) {
-									subjects.add(Subject.builder()
-											.id(rs.getInt("id"))
-											.name(rs.getString("name"))
-											.description(rs.getString("description"))
-											.cathedra(Cathedra.builder().id(rs.getInt("cathedra_id")).build())
-											.build());
-								}
-								return subjects;
-							}
-						});
-				teacher.setSubjects(subjects);
-				return teacher;
-			}
-		});
-
-		assertEquals(expected, actual);
+		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME,
+				"id = 1 "
+				+ "AND first_name = 'TestName' "
+				+ "AND last_name = 'Test' "
+				+ "AND address = 'Virtual Reality Capsule no 2' "
+				+ "AND gender = 'MALE' "
+				+ "AND birth_date = '1970-01-01' "
+				+ "AND cathedra_id = 1 "
+				+ "AND degree = 'PROFESSOR' "
+				+ "AND phone = '1' "
+				+ "AND email = '123@bigowl.com' "
+				+ "AND postal_code = '1234567' AND education = 'Higher education123'"));
+		
+		assertEquals(1, countRowsInTableWhere(template, "subjects_teachers", "teacher_id = 1"));
 	}
 
 	@Test
