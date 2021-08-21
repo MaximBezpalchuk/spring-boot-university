@@ -3,9 +3,12 @@ package com.foxminded.university.model;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Lecture {
 
+	private int id;
+	private Cathedra cathedra;
 	private List<Group> groups = new ArrayList<>();
 	private Teacher teacher;
 	private Audience audience;
@@ -13,12 +16,28 @@ public class Lecture {
 	private Subject subject;
 	private LectureTime time;
 
-	public Lecture(Subject subject, LocalDate date, LectureTime time, Audience audience, Teacher teacher) {
-		this.subject = subject;
-		this.date = date;
-		this.time = time;
-		this.audience = audience;
+	private Lecture(int id, Cathedra cathedra, List<Group> groups, Teacher teacher, Audience audience, LocalDate date,
+			Subject subject, LectureTime time) {
+		this.id = id;
+		this.cathedra = cathedra;
 		this.teacher = teacher;
+		this.audience = audience;
+		this.date = date;
+		this.subject = subject;
+		this.time = time;
+		this.groups = groups;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Cathedra getCathedra() {
+		return cathedra;
 	}
 
 	public List<Group> getGroups() {
@@ -61,17 +80,69 @@ public class Lecture {
 		return time;
 	}
 
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public static class Builder {
+
+		private int id;
+		private Cathedra cathedra;
+		private List<Group> groups = new ArrayList<>();
+		private Teacher teacher;
+		private Audience audience;
+		private LocalDate date;
+		private Subject subject;
+		private LectureTime time;
+
+		public Builder id(int id) {
+			this.id = id;
+			return this;
+		}
+
+		public Builder cathedra(Cathedra cathedra) {
+			this.cathedra = cathedra;
+			return this;
+		}
+
+		public Builder subject(Subject subject) {
+			this.subject = subject;
+			return this;
+		}
+
+		public Builder date(LocalDate date) {
+			this.date = date;
+			return this;
+		}
+
+		public Builder time(LectureTime time) {
+			this.time = time;
+			return this;
+		}
+
+		public Builder audience(Audience audience) {
+			this.audience = audience;
+			return this;
+		}
+
+		public Builder teacher(Teacher teacher) {
+			this.teacher = teacher;
+			return this;
+		}
+
+		public Builder group(List<Group> groups) {
+			this.groups = groups;
+			return this;
+		}
+
+		public Lecture build() {
+			return new Lecture(id, cathedra, groups, teacher, audience, date, subject, time);
+		}
+	}
+
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((audience == null) ? 0 : audience.hashCode());
-		result = prime * result + ((date == null) ? 0 : date.hashCode());
-		result = prime * result + ((groups == null) ? 0 : groups.hashCode());
-		result = prime * result + ((subject == null) ? 0 : subject.hashCode());
-		result = prime * result + ((teacher == null) ? 0 : teacher.hashCode());
-		result = prime * result + ((time == null) ? 0 : time.hashCode());
-		return result;
+		return Objects.hash(audience, cathedra, date, groups, id, subject, teacher, time);
 	}
 
 	@Override
@@ -83,37 +154,10 @@ public class Lecture {
 		if (getClass() != obj.getClass())
 			return false;
 		Lecture other = (Lecture) obj;
-		if (audience == null) {
-			if (other.audience != null)
-				return false;
-		} else if (!audience.equals(other.audience))
-			return false;
-		if (date == null) {
-			if (other.date != null)
-				return false;
-		} else if (!date.equals(other.date))
-			return false;
-		if (groups == null) {
-			if (other.groups != null)
-				return false;
-		} else if (!groups.equals(other.groups))
-			return false;
-		if (subject == null) {
-			if (other.subject != null)
-				return false;
-		} else if (!subject.equals(other.subject))
-			return false;
-		if (teacher == null) {
-			if (other.teacher != null)
-				return false;
-		} else if (!teacher.equals(other.teacher))
-			return false;
-		if (time == null) {
-			if (other.time != null)
-				return false;
-		} else if (!time.equals(other.time))
-			return false;
-		return true;
+		return Objects.equals(audience, other.audience) && Objects.equals(cathedra, other.cathedra)
+				&& Objects.equals(date, other.date) && Objects.equals(groups, other.groups) && id == other.id
+				&& Objects.equals(subject, other.subject) && Objects.equals(teacher, other.teacher)
+				&& Objects.equals(time, other.time);
 	}
 
 }

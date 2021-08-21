@@ -1,15 +1,44 @@
 package com.foxminded.university.model;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Holiday {
 
+	private int id;
 	private String name;
 	private LocalDate date;
+	private Cathedra cathedra;
 
-	public Holiday(String name, LocalDate date) {
+	private Holiday(int id, String name, LocalDate date, Cathedra cathedra) {
+		this.id = id;
 		this.name = name;
 		this.date = date;
+		this.cathedra = cathedra;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setDate(LocalDate date) {
+		this.date = date;
+	}
+
+	public Cathedra getCathedra() {
+		return cathedra;
+	}
+
+	public void setCathedra(Cathedra cathedra) {
+		this.cathedra = cathedra;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getName() {
@@ -20,13 +49,45 @@ public class Holiday {
 		return date;
 	}
 
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public static class Builder {
+
+		private int id;
+		private String name;
+		private LocalDate date;
+		private Cathedra cathedra;
+
+		public Builder id(int id) {
+			this.id = id;
+			return this;
+		}
+
+		public Builder name(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public Builder date(LocalDate date) {
+			this.date = date;
+			return this;
+		}
+
+		public Builder cathedra(Cathedra cathedra) {
+			this.cathedra = cathedra;
+			return this;
+		}
+
+		public Holiday build() {
+			return new Holiday(id, name, date, cathedra);
+		}
+	}
+
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((date == null) ? 0 : date.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		return result;
+		return Objects.hash(cathedra, date, id, name);
 	}
 
 	@Override
@@ -38,17 +99,8 @@ public class Holiday {
 		if (getClass() != obj.getClass())
 			return false;
 		Holiday other = (Holiday) obj;
-		if (date == null) {
-			if (other.date != null)
-				return false;
-		} else if (!date.equals(other.date))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		return true;
+		return Objects.equals(cathedra, other.cathedra) && Objects.equals(date, other.date) && id == other.id
+				&& Objects.equals(name, other.name);
 	}
 
 }

@@ -1,86 +1,59 @@
 package com.foxminded.university.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 public class Cathedra {
 
-	private List<Group> groups = new ArrayList<>();
-	private List<Teacher> teachers = new ArrayList<>();
-	private List<Lecture> lectures = new ArrayList<>();
-	private List<Holiday> holidays = new ArrayList<>();
-	private List<Subject> subjects = new ArrayList<>();
-	private List<Audience> audiences = new ArrayList<>();
-	private List<LectureTime> lectureTimes = new ArrayList<>();
+	private int id;
+	private String name;
 
-	public List<LectureTime> getLectureTimes() {
-		return lectureTimes;
+	private Cathedra(int id, String name) {
+		this.id = id;
+		this.name = name;
 	}
 
-	public void setLectureTimes(List<LectureTime> lectureTimes) {
-		this.lectureTimes = lectureTimes;
+	public int getId() {
+		return id;
 	}
 
-	public List<Audience> getAudiences() {
-		return audiences;
+	public void setId(int id) {
+		this.id = id;
 	}
 
-	public void setAudiences(List<Audience> audiences) {
-		this.audiences = audiences;
+	public String getName() {
+		return name;
 	}
 
-	public List<Subject> getSubjects() {
-		return subjects;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public void setSubjects(List<Subject> subjects) {
-		this.subjects = subjects;
+	public static Builder builder() {
+		return new Builder();
 	}
 
-	public List<Group> getGroups() {
-		return groups;
-	}
+	public static class Builder {
+		private int id;
+		private String name;
 
-	public void setGroups(List<Group> groups) {
-		this.groups = groups;
-	}
+		public Builder id(int id) {
+			this.id = id;
+			return this;
+		}
 
-	public void setLectures(List<Lecture> lectures) {
-		this.lectures = lectures;
-	}
+		public Builder name(String name) {
+			this.name = name;
+			return this;
+		}
 
-	public void setHolidays(List<Holiday> holidays) {
-		this.holidays = holidays;
-	}
-
-	public List<Teacher> getTeachers() {
-		return teachers;
-	}
-
-	public void setTeachers(List<Teacher> teachers) {
-		this.teachers = teachers;
-	}
-
-	public List<Lecture> getLectures() {
-		return lectures;
-	}
-
-	public List<Holiday> getHolidays() {
-		return holidays;
+		public Cathedra build() {
+			return new Cathedra(id, name);
+		}
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((audiences == null) ? 0 : audiences.hashCode());
-		result = prime * result + ((groups == null) ? 0 : groups.hashCode());
-		result = prime * result + ((holidays == null) ? 0 : holidays.hashCode());
-		result = prime * result + ((lectureTimes == null) ? 0 : lectureTimes.hashCode());
-		result = prime * result + ((lectures == null) ? 0 : lectures.hashCode());
-		result = prime * result + ((subjects == null) ? 0 : subjects.hashCode());
-		result = prime * result + ((teachers == null) ? 0 : teachers.hashCode());
-		return result;
+		return Objects.hash(id, name);
 	}
 
 	@Override
@@ -92,42 +65,7 @@ public class Cathedra {
 		if (getClass() != obj.getClass())
 			return false;
 		Cathedra other = (Cathedra) obj;
-		if (audiences == null) {
-			if (other.audiences != null)
-				return false;
-		} else if (!audiences.equals(other.audiences))
-			return false;
-		if (groups == null) {
-			if (other.groups != null)
-				return false;
-		} else if (!groups.equals(other.groups))
-			return false;
-		if (holidays == null) {
-			if (other.holidays != null)
-				return false;
-		} else if (!holidays.equals(other.holidays))
-			return false;
-		if (lectureTimes == null) {
-			if (other.lectureTimes != null)
-				return false;
-		} else if (!lectureTimes.equals(other.lectureTimes))
-			return false;
-		if (lectures == null) {
-			if (other.lectures != null)
-				return false;
-		} else if (!lectures.equals(other.lectures))
-			return false;
-		if (subjects == null) {
-			if (other.subjects != null)
-				return false;
-		} else if (!subjects.equals(other.subjects))
-			return false;
-		if (teachers == null) {
-			if (other.teachers != null)
-				return false;
-		} else if (!teachers.equals(other.teachers))
-			return false;
-		return true;
+		return id == other.id && Objects.equals(name, other.name);
 	}
 
 }

@@ -1,13 +1,43 @@
 package com.foxminded.university.model;
 
+import java.util.Objects;
+
 public class Audience {
 
+	private int id;
 	private int room;
 	private int capacity;
+	private Cathedra cathedra;
 
-	public Audience(int room, int capacity) {
+	private Audience(int id, int room, int capacity, Cathedra cathedra) {
+		this.id = id;
 		this.room = room;
 		this.capacity = capacity;
+		this.cathedra = cathedra;
+	}
+
+	public void setRoom(int room) {
+		this.room = room;
+	}
+
+	public void setCapacity(int capacity) {
+		this.capacity = capacity;
+	}
+
+	public Cathedra getCathedra() {
+		return cathedra;
+	}
+
+	public void setCathedra(Cathedra cathedra) {
+		this.cathedra = cathedra;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public int getRoom() {
@@ -18,13 +48,45 @@ public class Audience {
 		return capacity;
 	}
 
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public static class Builder {
+
+		private int id;
+		private int room;
+		private int capacity;
+		private Cathedra cathedra;
+
+		public Builder id(int id) {
+			this.id = id;
+			return this;
+		}
+
+		public Builder room(int room) {
+			this.room = room;
+			return this;
+		}
+
+		public Builder capacity(int capacity) {
+			this.capacity = capacity;
+			return this;
+		}
+
+		public Builder cathedra(Cathedra cathedra) {
+			this.cathedra = cathedra;
+			return this;
+		}
+
+		public Audience build() {
+			return new Audience(id, room, capacity, cathedra);
+		}
+	}
+
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + capacity;
-		result = prime * result + room;
-		return result;
+		return Objects.hash(capacity, cathedra, id, room);
 	}
 
 	@Override
@@ -36,12 +98,8 @@ public class Audience {
 		if (getClass() != obj.getClass())
 			return false;
 		Audience other = (Audience) obj;
-		if (capacity != other.capacity)
-			return false;
-		if (room != other.room)
-			return false;
-		return true;
+		return capacity == other.capacity && Objects.equals(cathedra, other.cathedra) && id == other.id
+				&& room == other.room;
 	}
 
-	
 }

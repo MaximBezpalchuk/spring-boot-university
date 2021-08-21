@@ -1,17 +1,43 @@
 package com.foxminded.university.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 public class Subject {
 
+	private int id;
+	private Cathedra cathedra;
 	private String name;
 	private String description;
-	private List<Teacher> teachers = new ArrayList<>();
 
-	public Subject(String name, String description) {
+	private Subject(Builder builder) {
+		this.id = builder.id;
+		this.cathedra = builder.cathedra;
+		this.name = builder.name;
+		this.description = builder.description;
+	}
+
+	public void setName(String name) {
 		this.name = name;
+	}
+
+	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Cathedra getCathedra() {
+		return cathedra;
+	}
+
+	public void setCathedra(Cathedra cathedra) {
+		this.cathedra = cathedra;
 	}
 
 	public String getName() {
@@ -22,22 +48,45 @@ public class Subject {
 		return description;
 	}
 
-	public List<Teacher> getTeachers() {
-		return teachers;
+	public static Builder builder() {
+		return new Builder();
 	}
 
-	public void setTeachers(List<Teacher> teachers) {
-		this.teachers = teachers;
+	public static class Builder {
+
+		private int id;
+		private String name;
+		private String description;
+		private Cathedra cathedra;
+
+		public Builder id(int id) {
+			this.id = id;
+			return this;
+		}
+
+		public Builder name(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public Builder description(String description) {
+			this.description = description;
+			return this;
+		}
+
+		public Builder cathedra(Cathedra cathedra) {
+			this.cathedra = cathedra;
+			return this;
+		}
+
+		public Subject build() {
+			return new Subject(this);
+		}
 	}
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((description == null) ? 0 : description.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((teachers == null) ? 0 : teachers.hashCode());
-		return result;
+		return Objects.hash(cathedra, description, id, name);
 	}
 
 	@Override
@@ -49,22 +98,8 @@ public class Subject {
 		if (getClass() != obj.getClass())
 			return false;
 		Subject other = (Subject) obj;
-		if (description == null) {
-			if (other.description != null)
-				return false;
-		} else if (!description.equals(other.description))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (teachers == null) {
-			if (other.teachers != null)
-				return false;
-		} else if (!teachers.equals(other.teachers))
-			return false;
-		return true;
+		return Objects.equals(cathedra, other.cathedra) && Objects.equals(description, other.description)
+				&& id == other.id && Objects.equals(name, other.name);
 	}
 
 }

@@ -1,15 +1,36 @@
 package com.foxminded.university.model;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Vacation {
 
+	private int id;
 	private LocalDate start;
 	private LocalDate end;
+	private Teacher teacher;
 
-	public Vacation(LocalDate start, LocalDate end) {
+	private Vacation(int id, LocalDate start, LocalDate end, Teacher teacher) {
+		this.id = id;
 		this.start = start;
 		this.end = end;
+		this.teacher = teacher;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Teacher getTeacher() {
+		return teacher;
+	}
+
+	public void setTeacher(Teacher teacher) {
+		this.teacher = teacher;
 	}
 
 	public LocalDate getStart() {
@@ -20,13 +41,45 @@ public class Vacation {
 		return end;
 	}
 
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public static class Builder {
+
+		private int id;
+		private LocalDate start;
+		private LocalDate end;
+		private Teacher teacher;
+
+		public Builder id(int id) {
+			this.id = id;
+			return this;
+		}
+
+		public Builder start(LocalDate start) {
+			this.start = start;
+			return this;
+		}
+
+		public Builder end(LocalDate end) {
+			this.end = end;
+			return this;
+		}
+
+		public Builder teacher(Teacher teacher) {
+			this.teacher = teacher;
+			return this;
+		}
+
+		public Vacation build() {
+			return new Vacation(id, start, end, teacher);
+		}
+	}
+
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((end == null) ? 0 : end.hashCode());
-		result = prime * result + ((start == null) ? 0 : start.hashCode());
-		return result;
+		return Objects.hash(end, id, start, teacher);
 	}
 
 	@Override
@@ -38,17 +91,8 @@ public class Vacation {
 		if (getClass() != obj.getClass())
 			return false;
 		Vacation other = (Vacation) obj;
-		if (end == null) {
-			if (other.end != null)
-				return false;
-		} else if (!end.equals(other.end))
-			return false;
-		if (start == null) {
-			if (other.start != null)
-				return false;
-		} else if (!start.equals(other.start))
-			return false;
-		return true;
+		return Objects.equals(end, other.end) && id == other.id && Objects.equals(start, other.start)
+				&& Objects.equals(teacher, other.teacher);
 	}
 
 }

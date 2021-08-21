@@ -1,14 +1,16 @@
 package com.foxminded.university.model;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class Student extends Person {
 
 	private Group group;
 
-	public Student(String firstName, String lastName, String phone, String address, String email, Gender gender,
-			String postalCode, String education, LocalDate birthDate) {
-		super(firstName, lastName, phone, address, email, gender, postalCode, education, birthDate);
+	public Student(int id, String firstName, String lastName, String phone, String address, String email,
+			Gender gender, String postalCode, String education, LocalDate birthDate, Group group) {
+		super(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate);
+		this.group = group;
 	}
 
 	public Group getGroup() {
@@ -19,11 +21,35 @@ public class Student extends Person {
 		this.group = group;
 	}
 
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public static class Builder extends Person.Builder<Builder> {
+		
+		private Group group;
+
+		@Override
+		public Builder getThis() {
+			return this;
+		}
+
+		public Builder group(Group group) {
+			this.group = group;
+			return this;
+		}
+
+		public Student build() {
+			return new Student(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate, group);
+		}
+
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((group == null) ? 0 : group.hashCode());
+		result = prime * result + Objects.hash(group);
 		return result;
 	}
 
@@ -36,12 +62,7 @@ public class Student extends Person {
 		if (getClass() != obj.getClass())
 			return false;
 		Student other = (Student) obj;
-		if (group == null) {
-			if (other.group != null)
-				return false;
-		} else if (!group.equals(other.group))
-			return false;
-		return true;
+		return Objects.equals(group, other.group);
 	}
 
 }

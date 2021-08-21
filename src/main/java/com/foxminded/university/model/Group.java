@@ -1,42 +1,72 @@
 package com.foxminded.university.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Objects;
 
 public class Group {
+
+	private int id;
 	private String name;
 	private Cathedra cathedra;
-	private List<Student> students = new ArrayList<>();
 
-	public Group(String name, Cathedra cathedra) {
+	private Group(int id, String name, Cathedra cathedra) {
+		this.id = id;
 		this.name = name;
 		this.cathedra = cathedra;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public List<Student> getStudents() {
-		return students;
-	}
-
-	public void setStudents(List<Student> students) {
-		this.students = students;
-	}
-
 	public Cathedra getCathedra() {
 		return cathedra;
 	}
 
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public static class Builder {
+
+		private int id;
+		private String name;
+		private Cathedra cathedra;
+
+		public Builder id(int id) {
+			this.id = id;
+			return this;
+		}
+
+		public Builder name(String name) {
+			this.name = name;
+			return this;
+		}
+
+		public Builder cathedra(Cathedra cathedra) {
+			this.cathedra = cathedra;
+			return this;
+		}
+
+		public Group build() {
+			return new Group(id, name, cathedra);
+		}
+	}
+
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((cathedra == null) ? 0 : cathedra.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((students == null) ? 0 : students.hashCode());
-		return result;
+		return Objects.hash(cathedra, id, name);
 	}
 
 	@Override
@@ -48,22 +78,7 @@ public class Group {
 		if (getClass() != obj.getClass())
 			return false;
 		Group other = (Group) obj;
-		if (cathedra == null) {
-			if (other.cathedra != null)
-				return false;
-		} else if (!cathedra.equals(other.cathedra))
-			return false;
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		} else if (!name.equals(other.name))
-			return false;
-		if (students == null) {
-			if (other.students != null)
-				return false;
-		} else if (!students.equals(other.students))
-			return false;
-		return true;
+		return Objects.equals(cathedra, other.cathedra) && id == other.id && Objects.equals(name, other.name);
 	}
 
 }

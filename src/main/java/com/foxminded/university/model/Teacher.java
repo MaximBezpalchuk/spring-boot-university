@@ -3,18 +3,58 @@ package com.foxminded.university.model;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Teacher extends Person {
 
 	private Cathedra cathedra;
 	private List<Subject> subjects = new ArrayList<>();
-	private List<Vacation> vacations = new ArrayList<>();
 	private Degree degree;
 
-	public Teacher(String firstName, String lastName, String phone, String address, String email, Gender gender,
-			String postalCode, String education, LocalDate birthDate, Cathedra cathedra) {
-		super(firstName, lastName, phone, address, email, gender, postalCode, education, birthDate);
+	public Teacher(int id, String firstName, String lastName, String phone, String address, String email, Gender gender,
+			String postalCode, String education, LocalDate birthDate, Cathedra cathedra, List<Subject> subjects,
+			Degree degree) {
+		super(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate);
 		this.cathedra = cathedra;
+		this.subjects = subjects;
+		this.degree = degree;
+	}
+
+	public static Builder builder() {
+		return new Builder();
+	}
+
+	public static class Builder extends Person.Builder<Builder> {
+
+		private Cathedra cathedra;
+		private List<Subject> subjects = new ArrayList<>();
+		private Degree degree;
+
+		@Override
+		public Builder getThis() {
+			return this;
+		}
+
+		public Builder cathedra(Cathedra cathedra) {
+			this.cathedra = cathedra;
+			return this;
+		}
+
+		public Builder subjects(List<Subject> subjects) {
+			this.subjects = subjects;
+			return this;
+		}
+
+		public Builder degree(Degree degree) {
+			this.degree = degree;
+			return this;
+		}
+
+		public Teacher build() {
+			return new Teacher(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate,
+					cathedra, subjects, degree);
+		}
+
 	}
 
 	public Cathedra getCathedra() {
@@ -29,14 +69,6 @@ public class Teacher extends Person {
 		this.subjects = subjects;
 	}
 
-	public List<Vacation> getVacations() {
-		return vacations;
-	}
-
-	public void setVacations(List<Vacation> vacations) {
-		this.vacations = vacations;
-	}
-
 	public Degree getDegree() {
 		return degree;
 	}
@@ -49,10 +81,7 @@ public class Teacher extends Person {
 	public int hashCode() {
 		final int prime = 31;
 		int result = super.hashCode();
-		result = prime * result + ((cathedra == null) ? 0 : cathedra.hashCode());
-		result = prime * result + ((degree == null) ? 0 : degree.hashCode());
-		result = prime * result + ((subjects == null) ? 0 : subjects.hashCode());
-		result = prime * result + ((vacations == null) ? 0 : vacations.hashCode());
+		result = prime * result + Objects.hash(cathedra, degree, subjects);
 		return result;
 	}
 
@@ -65,24 +94,8 @@ public class Teacher extends Person {
 		if (getClass() != obj.getClass())
 			return false;
 		Teacher other = (Teacher) obj;
-		if (cathedra == null) {
-			if (other.cathedra != null)
-				return false;
-		} else if (!cathedra.equals(other.cathedra))
-			return false;
-		if (degree != other.degree)
-			return false;
-		if (subjects == null) {
-			if (other.subjects != null)
-				return false;
-		} else if (!subjects.equals(other.subjects))
-			return false;
-		if (vacations == null) {
-			if (other.vacations != null)
-				return false;
-		} else if (!vacations.equals(other.vacations))
-			return false;
-		return true;
+		return Objects.equals(cathedra, other.cathedra) && degree == other.degree
+				&& Objects.equals(subjects, other.subjects);
 	}
 
 }
