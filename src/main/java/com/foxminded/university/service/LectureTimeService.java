@@ -4,13 +4,17 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.foxminded.university.dao.LectureTimeDao;
+import com.foxminded.university.dao.jdbc.JdbcLectureTimeDao;
 import com.foxminded.university.model.LectureTime;
 
 @Service
 public class LectureTimeService {
 
-	private LectureTimeDao lectureTimeDao;
+	private JdbcLectureTimeDao lectureTimeDao;
+
+	public LectureTimeService(JdbcLectureTimeDao lectureTimeDao) {
+		this.lectureTimeDao = lectureTimeDao;
+	}
 
 	public List<LectureTime> findAll() {
 		return lectureTimeDao.findAll();

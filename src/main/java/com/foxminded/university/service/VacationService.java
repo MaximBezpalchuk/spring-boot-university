@@ -4,13 +4,17 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.foxminded.university.dao.VacationDao;
+import com.foxminded.university.dao.jdbc.JdbcVacationDao;
 import com.foxminded.university.model.Vacation;
 
 @Service
 public class VacationService {
 
-	private VacationDao vacationDao;
+	private JdbcVacationDao vacationDao;
+
+	public VacationService(JdbcVacationDao vacationDao) {
+		this.vacationDao = vacationDao;
+	}
 
 	public List<Vacation> findAll() {
 		return vacationDao.findAll();

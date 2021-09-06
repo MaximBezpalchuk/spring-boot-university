@@ -4,13 +4,17 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.foxminded.university.dao.GroupDao;
+import com.foxminded.university.dao.jdbc.JdbcGroupDao;
 import com.foxminded.university.model.Group;
 
 @Service
 public class GroupService {
 
-	private GroupDao groupDao;
+	private JdbcGroupDao groupDao;
+
+	public GroupService(JdbcGroupDao groupDao) {
+		this.groupDao = groupDao;
+	}
 
 	public List<Group> findAll() {
 		return groupDao.findAll();
