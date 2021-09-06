@@ -97,7 +97,7 @@ public class JdbcTeacherDao implements TeacherDao {
 								.forEach(subject -> jdbcTemplate.update(DELETE_SUBJECT, subject.getId(), teacherNew.getId()));
 	}
 	
-	public static <R> Predicate<R> not(Predicate<R> predicate) {
+	private static <R> Predicate<R> not(Predicate<R> predicate) {
 	    return predicate.negate();
 	}
 }
