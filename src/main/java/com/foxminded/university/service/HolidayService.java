@@ -4,13 +4,14 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.foxminded.university.dao.HolidayDao;
 import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
 import com.foxminded.university.model.Holiday;
 
 @Service
 public class HolidayService {
 
-	private JdbcHolidayDao holidayDao;
+	private HolidayDao holidayDao;
 
 	public HolidayService(JdbcHolidayDao holidayDao) {
 		this.holidayDao = holidayDao;

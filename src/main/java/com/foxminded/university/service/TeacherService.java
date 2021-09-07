@@ -4,13 +4,14 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.foxminded.university.dao.TeacherDao;
 import com.foxminded.university.dao.jdbc.JdbcTeacherDao;
 import com.foxminded.university.model.Teacher;
 
 @Service
 public class TeacherService {
 
-	private JdbcTeacherDao teacherDao;
+	private TeacherDao teacherDao;
 
 	public TeacherService(JdbcTeacherDao teacherDao) {
 		this.teacherDao = teacherDao;

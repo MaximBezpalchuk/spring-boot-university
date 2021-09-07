@@ -4,13 +4,14 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.foxminded.university.dao.AudienceDao;
 import com.foxminded.university.dao.jdbc.JdbcAudienceDao;
 import com.foxminded.university.model.Audience;
 
 @Service
 public class AudienceService {
 
-	private JdbcAudienceDao audienceDao;
+	private AudienceDao audienceDao;
 
 	public AudienceService(JdbcAudienceDao audienceDao) {
 		this.audienceDao = audienceDao;
