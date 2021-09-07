@@ -87,17 +87,13 @@ public class JdbcTeacherDao implements TeacherDao {
 
 	private void updateSubjects(Teacher teacherOld, Teacher teacherNew) {
 		teacherNew.getSubjects().stream()
-								.filter(not(teacherOld.getSubjects()::contains))
+								.filter(Predicate.not(teacherOld.getSubjects()::contains))
 								.forEach(subject -> jdbcTemplate.update(INSERT_SUBJECT, subject.getId(), teacherNew.getId()));
 	}
 
 	private void deleteSubjects(Teacher teacherOld, Teacher teacherNew) {
 		teacherOld.getSubjects().stream()
-								.filter(not(teacherNew.getSubjects()::contains))
+								.filter(Predicate.not(teacherNew.getSubjects()::contains))
 								.forEach(subject -> jdbcTemplate.update(DELETE_SUBJECT, subject.getId(), teacherNew.getId()));
-	}
-	
-	private static <R> Predicate<R> not(Predicate<R> predicate) {
-	    return predicate.negate();
 	}
 }
