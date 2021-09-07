@@ -2,9 +2,11 @@ package com.foxminded.university.dao.jdbc;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Predicate;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -25,6 +27,7 @@ public class JdbcTeacherDao implements TeacherDao {
 	private final static String DELETE_TEACHER = "DELETE FROM teachers WHERE id = ?";
 	private final static String INSERT_SUBJECT = "INSERT INTO subjects_teachers(subject_id, teacher_id) VALUES (?,?)";
 	private final static String DELETE_SUBJECT = "DELETE FROM subjects_teachers WHERE subject_id = ? AND teacher_id = ?";
+	private final static String SELECT_BY_FULL_NAME_AND_BIRTHDAY = "SELECT * FROM teachers WHERE first_name = ? AND last_name = ? AND birth_date = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private TeacherRowMapper rowMapper;
@@ -95,5 +98,14 @@ public class JdbcTeacherDao implements TeacherDao {
 		teacherOld.getSubjects().stream()
 								.filter(Predicate.not(teacherNew.getSubjects()::contains))
 								.forEach(subject -> jdbcTemplate.update(DELETE_SUBJECT, subject.getId(), teacherNew.getId()));
+	}
+	
+	@Override
+	public Teacher findByFullNameAndBirthDate(String firstName, String lastName, LocalDate birthDate) {
+		try {
+			return jdbcTemplate.queryForObject(SELECT_BY_FULL_NAME_AND_BIRTHDAY, rowMapper, firstName, lastName, birthDate);
+		} catch (DataAccessException e) {
+			return null;
+		}
 	}
 }

@@ -25,8 +25,17 @@ public class AudienceService {
 		return audienceDao.findById(id);
 	}
 
-	public void save(Audience audience) {
-		audienceDao.save(audience);
+	public String save(Audience audience) {
+		Audience existingAudience = audienceDao.findByRoom(audience.getRoom());
+		if (existingAudience == null) {
+			audienceDao.save(audience);
+			return "Audience added!";
+		} else if (existingAudience.getId() == audience.getId()) {
+			audienceDao.save(audience);
+			return "Audience updated!";
+		}
+
+		return "Audience with such room number already exists!";
 	}
 
 	public void deleteById(int id) {

@@ -477,8 +477,7 @@ public class MenuCreator {
 					.capacity(Integer.parseInt(audienceCapacity7))
 					.cathedra(cathedraService.findById(1))
 					.build();
-			audienceService.save(audience7);
-			System.out.println("Audience created!");
+			System.out.println(audienceService.save(audience7));
 			break;
 		case 0:
 			break;

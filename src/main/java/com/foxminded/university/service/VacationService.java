@@ -1,5 +1,7 @@
 package com.foxminded.university.service;
 
+import java.time.Duration;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -25,8 +27,23 @@ public class VacationService {
 		return vacationDao.findById(id);
 	}
 
-	public void save(Vacation vacation) {
-		vacationDao.save(vacation);
+	public String save(Vacation vacation) {
+		LocalDate start = vacation.getStart();
+		LocalDate end = vacation.getEnd();
+		Vacation existingVacation = vacationDao.findByPeriodAndTeacher(start, end, vacation.getTeacher());
+		if (start.isAfter(end)) {
+			return "Vacation can`t start after end date";
+		} else if (Duration.between(start, end).toDays() < 1) {
+			return "Vacation can`t be less than 1 day";
+		} else if (existingVacation == null) {
+			vacationDao.save(vacation);
+			return "Vacation added!";
+		} else if (existingVacation.getId() == vacation.getId()) {
+			vacationDao.save(vacation);
+			return "Vacation updated!";
+		}
+
+		return "Vacation with such teacher, start and end date already exists!";
 	}
 
 	public void deleteById(int id) {

@@ -25,8 +25,17 @@ public class HolidayService {
 		return holidayDao.findById(id);
 	}
 
-	public void save(Holiday holiday) {
-		holidayDao.save(holiday);
+	public String save(Holiday holiday) {
+		Holiday existingGroup = holidayDao.findByName(holiday.getName());
+		if (existingGroup == null) {
+			holidayDao.save(holiday);
+			return "Holiday added!";
+		} else if (existingGroup.getId() == holiday.getId()) {
+			holidayDao.save(holiday);
+			return "Holiday updated!";
+		}
+
+		return "Holiday with such name already exists!";
 	}
 
 	public void deleteById(int id) {

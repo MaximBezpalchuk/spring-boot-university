@@ -25,8 +25,18 @@ public class TeacherService {
 		return teacherDao.findById(id);
 	}
 
-	public void save(Teacher teacher) {
-		teacherDao.save(teacher);
+	public String save(Teacher teacher) {
+		Teacher existingTeacher = teacherDao.findByFullNameAndBirthDate(teacher.getFirstName(), teacher.getLastName(),
+				teacher.getBirthDate());
+		if (existingTeacher == null) {
+			teacherDao.save(teacher);
+			return "Teacher added!";
+		} else if (existingTeacher.getId() == teacher.getId()) {
+			teacherDao.save(teacher);
+			return "Teacher updated!";
+		}
+
+		return "Teacher with such full name and birthday already exists!";
 	}
 
 	public void deleteById(int id) {

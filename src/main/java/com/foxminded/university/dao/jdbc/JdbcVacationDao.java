@@ -2,8 +2,10 @@ package com.foxminded.university.dao.jdbc;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.foxminded.university.dao.VacationDao;
 import com.foxminded.university.dao.jdbc.mapper.VacationRowMapper;
+import com.foxminded.university.model.Teacher;
 import com.foxminded.university.model.Vacation;
 
 @Component
@@ -22,6 +25,7 @@ public class JdbcVacationDao implements VacationDao {
 	private final static String UPDATE_VACATION = "UPDATE vacations SET start=?, finish=?, teacher_id=? WHERE id=?";
 	private final static String DELETE_VACATION = "DELETE FROM vacations WHERE id = ?";
 	private final static String SELECT_BY_TEACHER_ID = "SELECT * FROM vacations WHERE teacher_id=?";
+	private final static String SELECT_BY_PERIOD_AND_TEACHER_ID = "SELECT * FROM vacations WHERE start = ? AND finish = ? AND teacher_id = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private VacationRowMapper rowMapper;
@@ -68,5 +72,14 @@ public class JdbcVacationDao implements VacationDao {
 	@Override
 	public List<Vacation> findByTeacherId(int id) {
 		return jdbcTemplate.query(SELECT_BY_TEACHER_ID, rowMapper, id);
+	}
+	
+	@Override
+	public Vacation findByPeriodAndTeacher(LocalDate start, LocalDate end, Teacher teacher) {
+		try {
+			return jdbcTemplate.queryForObject(SELECT_BY_PERIOD_AND_TEACHER_ID, rowMapper, start, end, teacher.getId());
+		} catch (DataAccessException e) {
+			return null;
+		}
 	}
 }

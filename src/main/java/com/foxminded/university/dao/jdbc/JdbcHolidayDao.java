@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -21,6 +22,7 @@ public class JdbcHolidayDao implements HolidayDao {
 	private final static String INSERT_HOLIDAY = "INSERT INTO holidays(name, date, cathedra_id) VALUES(?, ?, ?)";
 	private final static String UPDATE_HOLIDAY = "UPDATE holidays SET name=?, date=?, cathedra_id=? WHERE id=?";
 	private final static String DELETE_HOLIDAY = "DELETE FROM holidays WHERE id = ?";
+	private final static String SELECT_BY_NAME = "SELECT * FROM holidays WHERE name = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private HolidayRowMapper rowMapper;
@@ -64,4 +66,12 @@ public class JdbcHolidayDao implements HolidayDao {
 		jdbcTemplate.update(DELETE_HOLIDAY, id);
 	}
 
+	@Override
+	public Holiday findByName(String name) {
+		try {
+			return jdbcTemplate.queryForObject(SELECT_BY_NAME, rowMapper, name);
+		} catch (DataAccessException e) {
+			return null;
+		}
+	}
 }

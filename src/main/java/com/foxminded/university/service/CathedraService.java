@@ -25,12 +25,20 @@ public class CathedraService {
 		return cathedraDao.findById(id);
 	}
 
-	public void save(Cathedra cathedra) {
-		cathedraDao.save(cathedra);
+	public String save(Cathedra cathedra) {
+		Cathedra existingCathedra = cathedraDao.findByName(cathedra.getName());
+		if (existingCathedra == null) {
+			cathedraDao.save(cathedra);
+			return "Cathedra added!";
+		} else if (existingCathedra.getId() == cathedra.getId()) {
+			cathedraDao.save(cathedra);
+			return "Cathedra updated!";
+		}
+
+		return "Cathedra with such name already exists!";
 	}
 
 	public void deleteById(int id) {
 		cathedraDao.deleteById(id);
-		;
 	}
 }

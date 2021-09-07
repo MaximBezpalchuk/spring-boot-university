@@ -4,4 +4,5 @@ import com.foxminded.university.model.Holiday;
 
 public interface HolidayDao extends GenericDao<Holiday> {
 
+	Holiday findByName(String name);
 }

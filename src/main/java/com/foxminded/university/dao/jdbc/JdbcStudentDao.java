@@ -2,8 +2,10 @@ package com.foxminded.university.dao.jdbc;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -22,6 +24,7 @@ public class JdbcStudentDao implements StudentDao {
 	private final static String INSERT_STUDENT = "INSERT INTO students(first_name, last_name, phone, address, email, gender, postal_code, education, birth_date, group_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	private final static String UPDATE_STUDENT = "UPDATE students SET first_name=?, last_name=?, phone=?, address=?, email=?, gender=?, postal_code=?, education=?, birth_date=?, group_id=? WHERE id=?";
 	private final static String DELETE_STUDENT = "DELETE FROM students WHERE id = ?";
+	private final static String SELECT_BY_FULL_NAME_AND_BIRTHDAY = "SELECT * FROM students WHERE first_name = ? AND last_name = ? AND birth_date = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private StudentRowMapper rowMapper;
@@ -97,4 +100,12 @@ public class JdbcStudentDao implements StudentDao {
 		jdbcTemplate.update(DELETE_STUDENT, id);
 	}
 
+	@Override
+	public Student findByFullNameAndBirthDate(String firstName, String lastName, LocalDate birthDate) {
+		try {
+			return jdbcTemplate.queryForObject(SELECT_BY_FULL_NAME_AND_BIRTHDAY, rowMapper, firstName, lastName, birthDate);
+		} catch (DataAccessException e) {
+			return null;
+		}
+	}
 }

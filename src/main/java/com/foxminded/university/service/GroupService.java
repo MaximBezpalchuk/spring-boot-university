@@ -25,8 +25,17 @@ public class GroupService {
 		return groupDao.findById(id);
 	}
 
-	public void save(Group group) {
-		groupDao.save(group);
+	public String save(Group group) {
+		Group existingGroup = groupDao.findByName(group.getName());
+		if (existingGroup == null) {
+			groupDao.save(group);
+			return "Group added!";
+		} else if (existingGroup.getId() == group.getId()) {
+			groupDao.save(group);
+			return "Group updated!";
+		}
+
+		return "Group with such name already exists!";
 	}
 
 	public void deleteById(int id) {

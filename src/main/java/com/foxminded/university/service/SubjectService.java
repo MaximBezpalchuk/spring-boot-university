@@ -25,8 +25,17 @@ public class SubjectService {
 		return subjectDao.findById(id);
 	}
 
-	public void save(Subject subject) {
-		subjectDao.save(subject);
+	public String save(Subject subject) {
+		Subject existingSubject = subjectDao.findByName(subject.getName());
+		if (existingSubject == null) {
+			subjectDao.save(subject);
+			return "Subject added!";
+		} else if (existingSubject.getId() == subject.getId()) {
+			subjectDao.save(subject);
+			return "Subject updated!";
+		}
+
+		return "Subject with such name already exists!";
 	}
 
 	public void deleteById(int id) {
