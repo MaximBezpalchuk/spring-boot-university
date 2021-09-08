@@ -1,6 +1,7 @@
 package com.foxminded.university.service;
 
 import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,7 +45,7 @@ public class LectureService {
 
 		if (lecture.getDate().getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
 			return "Lecture cant be in sunday";
-		} else if (lecture.getTime().getEnd().getHour() > 22 && lecture.getTime().getStart().getHour() < 8) {
+		} else if (lecture.getTime().getEnd().getHour() > 22 || lecture.getTime().getStart().getHour() < 8) {
 			return "Lecture must start after 8 and end before 22";
 		}
 
@@ -54,7 +55,7 @@ public class LectureService {
 					.filter(lec -> lec.getDate().isEqual(lecture.getDate()))
 					.filter(lec -> lec.getTime().equals(lecture.getTime())).findAny().orElse(null);
 			if (lectureInSameTime != null) {
-				return "Teacher is on other lecture in this time";
+				return "Teacher is on other lecture at this time";
 			}
 		}
 
@@ -64,7 +65,7 @@ public class LectureService {
 					vac -> (!(lecture.getDate().isBefore(vac.getStart()) || lecture.getDate().isAfter(vac.getEnd()))))
 					.findAny().orElse(null);
 			if (vacation != null) {
-				return "Teacher have vacation in this time";
+				return "Teacher have vacation at this time";
 			}
 		}
 
@@ -88,8 +89,16 @@ public class LectureService {
 		}
 
 		List<Lecture> lecturesThisDay = lectureDao.findByAudienceAndDate(lecture.getAudience(), lecture.getDate());
+		LocalTime start = lecture.getTime().getStart();
+		LocalTime end = lecture.getTime().getEnd();
 		Lecture lectureWithConcurrentTime = lecturesThisDay.stream()
-				.filter(lec -> lecture.getTime().equals(lec.getTime())).findAny().orElse(null);
+				.filter(lec -> (start.isAfter(lec.getTime().getStart())
+						&& start.isBefore(lec.getTime().getEnd()))
+						|| (end.isAfter(lec.getTime().getStart())
+								&& end.isBefore(lec.getTime().getEnd()))
+						|| start.equals(lec.getTime().getStart())
+						|| end.equals(lec.getTime().getEnd()))
+				.findAny().orElse(null);
 		if (lectureWithConcurrentTime != null) {
 			return "Another lecture on this time already exists";
 		}
