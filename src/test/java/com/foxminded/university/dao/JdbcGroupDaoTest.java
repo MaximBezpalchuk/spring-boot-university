@@ -92,4 +92,16 @@ public class JdbcGroupDaoTest {
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
+	
+	@Test
+	void givenGroupName_whenFindByName_thenGroupFound() {
+		Group actual = groupDao.findByName("Killers");
+		Group expected = Group.builder()
+				.id(1)
+				.name("Killers")
+				.cathedra(actual.getCathedra())
+				.build();
+
+		assertEquals(expected, actual);
+	}
 }

@@ -96,5 +96,18 @@ public class JdbcAudienceDaoTest {
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
+	
+	@Test
+	void givenRoom_whenFindByRoom_thenAudienceFound() {
+		Audience actual = audienceDao.findByRoom(1);
+		Audience expected = Audience.builder()
+				.id(1)
+				.room(1)
+				.capacity(10)
+				.cathedra(actual.getCathedra())
+				.build();
+
+		assertEquals(expected, actual);
+	}
 
 }

@@ -95,5 +95,15 @@ public class JdbcLectureTimeDaoTest {
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
+	
+	@Test
+	void givenPeriod_whenFindByPeriod_thenLectureTimeFound() {
+		LectureTime expected = LectureTime.builder()
+				.id(1).start(LocalTime.of(8, 0, 0))
+				.end(LocalTime.of(9, 30, 0))
+				.build();
+		LectureTime actual = lectureTimeDao.findByPeriod(expected.getStart(), expected.getEnd());
 
+		assertEquals(expected, actual);
+	}
 }

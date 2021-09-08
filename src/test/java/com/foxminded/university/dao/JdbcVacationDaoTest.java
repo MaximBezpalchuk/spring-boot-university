@@ -22,6 +22,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.foxminded.university.config.SpringTestConfig;
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
+import com.foxminded.university.model.Cathedra;
+import com.foxminded.university.model.Degree;
+import com.foxminded.university.model.Gender;
+import com.foxminded.university.model.Subject;
 import com.foxminded.university.model.Teacher;
 import com.foxminded.university.model.Vacation;
 
@@ -123,6 +127,40 @@ public class JdbcVacationDaoTest {
 				.build();
 		expected.add(vacation1);
 		expected.add(vacation2);
+
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	void givenStartAndEndAndTeacher_whenFindByPeriodAndTeacher_thenVacationFound() {
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+		Teacher teacher = Teacher.builder()
+				.firstName("Daniel")
+				.lastName("Morpheus")
+				.address("Virtual Reality Capsule no 1")
+				.gender(Gender.MALE)
+				.birthDate(LocalDate.of(1970, 1, 1))
+				.cathedra(cathedra)
+				.degree(Degree.PROFESSOR)
+				.phone("1")
+				.email("1@bigowl.com")
+				.postalCode("12345")
+				.education("Higher education")
+				.id(1)
+				.build();
+		List<Subject> subjects = new ArrayList<>();
+		Subject subject = Subject.builder().cathedra(cathedra).name("Weapon Tactics")
+				.description("Learning how to use heavy weapon and guerrilla tactics").id(1).build();
+		subjects.add(subject);
+		teacher.setSubjects(subjects);
+		
+		Vacation expected = Vacation.builder()
+				.id(1)
+				.start(LocalDate.of(2021, 1, 15))
+				.end(LocalDate.of(2021, 1, 29))
+				.teacher(teacher)
+				.build();
+		Vacation actual = vacationDao.findByPeriodAndTeacher(expected.getStart(), expected.getEnd(), teacher);
 
 		assertEquals(expected, actual);
 	}

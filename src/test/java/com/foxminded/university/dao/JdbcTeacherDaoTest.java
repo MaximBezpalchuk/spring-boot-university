@@ -184,4 +184,31 @@ public class JdbcTeacherDaoTest {
 
 		assertEquals(expected, actual);
 	}
+	
+	@Test
+	void givenFirstNameAndLastNameAndBirthDate_whenFindByFullNameAndBirthDate_thenTeacherFound() {
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+		Teacher expected = Teacher.builder()
+				.firstName("Daniel")
+				.lastName("Morpheus")
+				.address("Virtual Reality Capsule no 1")
+				.gender(Gender.MALE)
+				.birthDate(LocalDate.of(1970, 1, 1))
+				.cathedra(cathedra)
+				.degree(Degree.PROFESSOR)
+				.phone("1")
+				.email("1@bigowl.com")
+				.postalCode("12345")
+				.education("Higher education")
+				.id(1)
+				.build();
+		List<Subject> subjects = new ArrayList<>();
+		Subject subject = Subject.builder().cathedra(cathedra).name("Weapon Tactics")
+				.description("Learning how to use heavy weapon and guerrilla tactics").id(1).build();
+		subjects.add(subject);
+		expected.setSubjects(subjects);
+		Teacher actual = teacherDao.findByFullNameAndBirthDate(expected.getFirstName(), expected.getLastName(), expected.getBirthDate());
+
+		assertEquals(expected, actual);
+	}
 }

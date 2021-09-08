@@ -89,4 +89,15 @@ public class JdbcCathedraDaoTest {
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
+	
+	@Test
+	void givenCathedraName_whenFindByName_thenCathedraFound() {
+		Cathedra expected = Cathedra.builder()
+				.id(1)
+				.name("Fantastic Cathedra")
+				.build();
+		Cathedra actual = cathedraDao.findByName("Fantastic Cathedra");
+
+		assertEquals(expected, actual);
+	}
 }

@@ -21,6 +21,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.foxminded.university.model.Student;
 import com.foxminded.university.config.SpringTestConfig;
 import com.foxminded.university.dao.jdbc.JdbcStudentDao;
+import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Gender;
 import com.foxminded.university.model.Group;
 
@@ -131,5 +132,25 @@ public class JdbcStudentDaoTest {
 		studentDao.deleteById(3);
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
+	}
+	
+	@Test
+	void givenFirstNameAndLastNameAndBirthDate_whenFindByFullNameAndBirthDate_thenStudentFound() {
+		Student expected = Student.builder()
+				.firstName("Petr")
+				.lastName("Orlov")
+				.address("Empty Street 8")
+				.gender(Gender.MALE)
+				.birthDate(LocalDate.of(1994, 3, 3))
+				.phone("888005353535")
+				.email("1@owl.com")
+				.postalCode("999")
+				.education("General secondary education")
+				.group(Group.builder().id(1).name("Killers").cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build()).build())
+				.id(1)
+				.build();
+		Student actual = studentDao.findByFullNameAndBirthDate(expected.getFirstName(), expected.getLastName(), expected.getBirthDate());
+
+		assertEquals(expected, actual);
 	}
 }

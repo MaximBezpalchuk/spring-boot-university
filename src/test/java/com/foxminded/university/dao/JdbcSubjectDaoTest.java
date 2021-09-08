@@ -115,4 +115,17 @@ public class JdbcSubjectDaoTest {
 
 		assertEquals(expected, actual);
 	}
+	
+	@Test
+	void givenSubjectName_whenFindByName_thenSubjectFound() {
+		Subject actual = subjectDao.findByName("Weapon Tactics");
+		Subject expected = Subject.builder()
+				.cathedra(actual.getCathedra())
+				.name("Weapon Tactics")
+				.description("Learning how to use heavy weapon and guerrilla tactics")
+				.id(1)
+				.build();
+
+		assertEquals(expected, actual);
+	}
 }

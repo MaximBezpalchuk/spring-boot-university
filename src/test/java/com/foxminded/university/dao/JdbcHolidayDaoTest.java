@@ -102,4 +102,17 @@ public class JdbcHolidayDaoTest {
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
+	
+	@Test
+	void givenHolidayName_whenFindByName_thenHolidayFound() {
+		Holiday actual = holidayDao.findByName("Christmas");
+		Holiday expected = Holiday.builder()
+				.id(1)
+				.name("Christmas")
+				.date(LocalDate.of(2021, 12, 25))
+				.cathedra(actual.getCathedra())
+				.build();
+
+		assertEquals(expected, actual);
+	}
 }
