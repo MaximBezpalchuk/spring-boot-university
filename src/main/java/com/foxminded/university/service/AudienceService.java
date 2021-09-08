@@ -35,7 +35,7 @@ public class AudienceService {
 			return "Audience updated!";
 		}
 
-		return "Audience with such room number already exists!";
+		return "Unusual error";
 	}
 
 	public void deleteById(int id) {

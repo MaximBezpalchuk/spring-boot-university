@@ -78,9 +78,9 @@ public class LectureServiceTest {
 				.end(LocalTime.of(10, 0)).build())
 				.teacher(teacher)
 				.subject(Subject.builder().id(1).cathedra(cathedra).build()).build();
-		lectureService.save(lecture);
-
-		verify(lectureDao).save(lecture);
+		String output = lectureService.save(lecture);
+		
+		assertEquals("Lecture added!", output);
 	}
 	
 	@Test
@@ -101,9 +101,9 @@ public class LectureServiceTest {
 				.teacher(teacher)
 				.subject(Subject.builder().id(1).cathedra(cathedra).build()).build();
 		when(lectureDao.findByAudienceDateAndLectureTime(audience, date, lectureTime)).thenReturn(lecture);
-		lectureService.save(lecture);
+		String output = lectureService.save(lecture);
 		
-		verify(lectureDao).save(lecture);
+		assertEquals("Lecture updated!", output);
 	}
 	
 	@Test

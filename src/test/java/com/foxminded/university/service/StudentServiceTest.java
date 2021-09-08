@@ -45,10 +45,20 @@ public class StudentServiceTest {
 
 	@Test
 	void givenNewStudent_whenSave_thenSaved() {
-		Student lectureTime = Student.builder().id(1).build();
-		studentService.save(lectureTime);
+		Student student = Student.builder().id(1).build();
+		String output = studentService.save(student);
 
-		verify(studentDao).save(lectureTime);
+		assertEquals("Student added!", output);
+	}
+
+	@Test
+	void givenExistingStudent_whenSave_thenSaved() {
+		Student student = Student.builder().id(1).build();
+		when(studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
+				student.getBirthDate())).thenReturn(student);
+		String output = studentService.save(student);
+
+		assertEquals("Student updated!", output);
 	}
 
 	@Test

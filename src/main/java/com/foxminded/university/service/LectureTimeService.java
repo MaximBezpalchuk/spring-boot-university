@@ -43,7 +43,7 @@ public class LectureTimeService {
 			return "Lecture time updated!";
 		}
 
-		return "Lecture time with such start and finish time already exists!";
+		return "Unusual error";
 	}
 
 	public void deleteById(int id) {

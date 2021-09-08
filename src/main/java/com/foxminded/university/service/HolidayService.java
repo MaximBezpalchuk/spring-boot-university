@@ -35,7 +35,7 @@ public class HolidayService {
 			return "Holiday updated!";
 		}
 
-		return "Holiday with such name already exists!";
+		return "Unusual error";
 	}
 
 	public void deleteById(int id) {

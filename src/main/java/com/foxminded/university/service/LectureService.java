@@ -113,7 +113,7 @@ public class LectureService {
 			return "Lecture updated!";
 		}
 
-		return "Lecture with same params already exists!";
+		return "Unusual error";
 	}
 
 	public void deleteById(int id) {

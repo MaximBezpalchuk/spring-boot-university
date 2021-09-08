@@ -35,7 +35,7 @@ public class SubjectService {
 			return "Subject updated!";
 		}
 
-		return "Subject with such name already exists!";
+		return "Unusual error";
 	}
 
 	public void deleteById(int id) {

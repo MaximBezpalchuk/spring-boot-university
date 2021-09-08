@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -45,10 +46,55 @@ public class LectureTimeServiceTest {
 
 	@Test
 	void givenNewLectureTime_whenSave_thenSaved() {
-		LectureTime lectureTime = LectureTime.builder().id(1).build();
-		lectureTimeService.save(lectureTime);
-
-		verify(lectureTimeDao).save(lectureTime);
+		LocalTime start = LocalTime.of(9, 0);
+		LocalTime end = LocalTime.of(10, 0);
+		LectureTime lectureTime = LectureTime.builder()
+				.start(start)
+				.end(end)
+				.build();
+		String output = lectureTimeService.save(lectureTime);
+		
+		assertEquals("Lecture time added!", output);
+	}
+	
+	@Test
+	void givenExistingLectureTime_whenSave_thenSaved() {
+		LocalTime start = LocalTime.of(9, 0);
+		LocalTime end = LocalTime.of(10, 0);
+		LectureTime lectureTime = LectureTime.builder()
+				.start(start)
+				.end(end)
+				.build();
+		when(lectureTimeDao.findByPeriod(start, end)).thenReturn(lectureTime);
+		String output = lectureTimeService.save(lectureTime);
+		
+		assertEquals("Lecture time updated!", output);
+	}
+	
+	@Test
+	void givenLectureTimeLessThan30Minutes_whenSave_thenSaved() {
+		LocalTime start = LocalTime.of(9, 0);
+		LocalTime end = LocalTime.of(9, 20);
+		LectureTime lectureTime = LectureTime.builder()
+				.start(start)
+				.end(end)
+				.build();
+		String output = lectureTimeService.save(lectureTime);
+		
+		assertEquals("Lecture can`t be less than 30 minutes", output);
+	}
+	
+	@Test
+	void givenLectureTimeWithWrongEnd_whenSave_thenSaved() {
+		LocalTime start = LocalTime.of(9, 0);
+		LocalTime end = LocalTime.of(8, 0);
+		LectureTime lectureTime = LectureTime.builder()
+				.start(start)
+				.end(end)
+				.build();
+		String output = lectureTimeService.save(lectureTime);
+		
+		assertEquals("Lecture can`t start after end time", output);
 	}
 
 	@Test

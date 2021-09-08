@@ -35,7 +35,7 @@ public class GroupService {
 			return "Group updated!";
 		}
 
-		return "Group with such name already exists!";
+		return "Unusual error";
 	}
 
 	public void deleteById(int id) {

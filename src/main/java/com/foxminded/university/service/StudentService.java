@@ -36,7 +36,7 @@ public class StudentService {
 			return "Student updated!";
 		}
 
-		return "Student with such full name and birthday already exists!";
+		return "Unusual error";
 	}
 
 	public void deleteById(int id) {

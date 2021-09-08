@@ -47,9 +47,18 @@ public class AudienceServiceTest {
 	@Test
 	void givenNewAudience_whenSave_thenSaved() {
 		Audience audience = Audience.builder().build();
-		audienceService.save(audience);
-
-		verify(audienceDao).save(audience);
+		String output = audienceService.save(audience);
+		
+		assertEquals("Audience added!", output);
+	}
+	
+	@Test
+	void givenExistingAudience_whenSave_thenSaved() {
+		Audience audience = Audience.builder().id(1).build();
+		when(audienceDao.findByRoom(audience.getRoom())).thenReturn(audience);
+		String output = audienceService.save(audience);
+		
+		assertEquals("Audience updated!", output);
 	}
 
 	@Test

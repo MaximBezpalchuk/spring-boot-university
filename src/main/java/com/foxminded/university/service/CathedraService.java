@@ -35,7 +35,7 @@ public class CathedraService {
 			return "Cathedra updated!";
 		}
 
-		return "Cathedra with such name already exists!";
+		return "Unusual error";
 	}
 
 	public void deleteById(int id) {

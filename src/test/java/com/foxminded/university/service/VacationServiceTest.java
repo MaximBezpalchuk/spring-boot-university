@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,13 +43,48 @@ public class VacationServiceTest {
 
 		assertEquals(expected, actual);
 	}
-
+	
 	@Test
 	void givenNewVacation_whenSave_thenSaved() {
-		Vacation lectureTime = Vacation.builder().id(1).build();
-		vacationService.save(lectureTime);
+		LocalDate start = LocalDate.of(2021, 1, 1);
+		LocalDate end = LocalDate.of(2021, 1, 2);
+		Vacation vacation = Vacation.builder().start(start).end(end).build();
+		String output = vacationService.save(vacation);
+		
+		assertEquals("Vacation added!", output);
+	}
 
-		verify(vacationDao).save(lectureTime);
+	@Test
+	void givenExistingVacation_whenSave_thenSaved() {
+		LocalDate start = LocalDate.of(2021, 1, 1);
+		LocalDate end = LocalDate.of(2021, 1, 2);
+		Vacation vacation = Vacation.builder().id(1).start(start).end(end).build();
+		when(vacationDao.findByPeriodAndTeacher(start, end, vacation.getTeacher())).thenReturn(vacation);
+		String output = vacationService.save(vacation);
+		
+		assertEquals("Vacation updated!", output);
+	}
+	
+	@Test
+	void givenVacationLess1Day_whenSave_thenSaved() {
+		LocalDate start = LocalDate.of(2021, 1, 1);
+		LocalDate end = LocalDate.of(2021, 1, 1);
+		Vacation vacation = Vacation.builder().id(1).start(start).end(end).build();
+		when(vacationDao.findByPeriodAndTeacher(start, end, vacation.getTeacher())).thenReturn(vacation);
+		String output = vacationService.save(vacation);
+		
+		assertEquals("Vacation can`t be less than 1 day", output);
+	}
+	
+	@Test
+	void givenVacationWithWrongDates_whenSave_thenSaved() {
+		LocalDate start = LocalDate.of(2021, 1, 1);
+		LocalDate end = LocalDate.of(2020, 1, 1);
+		Vacation vacation = Vacation.builder().id(1).start(start).end(end).build();
+		when(vacationDao.findByPeriodAndTeacher(start, end, vacation.getTeacher())).thenReturn(vacation);
+		String output = vacationService.save(vacation);
+		
+		assertEquals("Vacation can`t start after end date", output);
 	}
 
 	@Test

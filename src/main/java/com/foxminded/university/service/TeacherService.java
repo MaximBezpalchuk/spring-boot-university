@@ -36,7 +36,7 @@ public class TeacherService {
 			return "Teacher updated!";
 		}
 
-		return "Teacher with such full name and birthday already exists!";
+		return "Unusual error";
 	}
 
 	public void deleteById(int id) {
