@@ -1,5 +1,6 @@
 package com.foxminded.university.dao;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.foxminded.university.model.Audience;
@@ -9,7 +10,9 @@ import com.foxminded.university.model.Teacher;
 
 public interface LectureDao extends GenericDao<Lecture> {
 
-	Lecture findByAudienceAndLectureTime(Audience audience, LectureTime lectureTime);
+	Lecture findByAudienceDateAndLectureTime(Audience audience, LocalDate date, LectureTime lectureTime);
 
 	List<Lecture> findLecturesByTeacher(Teacher teacher);
+
+	List<Lecture> findByAudienceAndDate(Audience audience, LocalDate date);
 }

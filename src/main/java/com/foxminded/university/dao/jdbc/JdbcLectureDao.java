@@ -2,7 +2,7 @@ package com.foxminded.university.dao.jdbc;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,7 +31,8 @@ public class JdbcLectureDao implements LectureDao {
 	private final static String DELETE_LECTURE = "DELETE FROM lectures WHERE id = ?";
 	private final static String INSERT_GROUP = "INSERT INTO lectures_groups(group_id, lecture_id) VALUES (?,?)";
 	private final static String DELETE_GROUP = "DELETE FROM lectures_groups WHERE group_id = ? AND lecture_id = ?";
-	private final static String SELECT_BY_AUDIENCE_SUBJECT_LECTURE_TIME = "SELECT * FROM lectures WHERE audience_id = ? AND subject_id = ? AND lecture_time_id = ?";
+	private final static String SELECT_BY_AUDIENCE_DATE_LECTURE_TIME = "SELECT * FROM lectures WHERE audience_id = ? AND date = ? AND lecture_time_id = ?";
+	private final static String SELECT_BY_AUDIENCE_AND_DATE = "SELECT * FROM lectures WHERE audience_id = ? AND date = ?";
 	private final static String SELECT_BY_TEACHER_ID = "SELECT * FROM lectures WHERE teacher_id = ?";
 
 	private final JdbcTemplate jdbcTemplate;
@@ -98,9 +99,9 @@ public class JdbcLectureDao implements LectureDao {
 	}
 
 	@Override
-	public Lecture findByAudienceAndLectureTime(Audience audience, LectureTime lectureTime) {
+	public Lecture findByAudienceDateAndLectureTime(Audience audience, LocalDate date, LectureTime lectureTime) {
 		try {
-			return jdbcTemplate.queryForObject(SELECT_BY_AUDIENCE_SUBJECT_LECTURE_TIME, rowMapper, audience.getId(),
+			return jdbcTemplate.queryForObject(SELECT_BY_AUDIENCE_DATE_LECTURE_TIME, rowMapper, audience.getId(), date,
 					lectureTime.getId());
 		} catch (DataAccessException e) {
 			return null;
@@ -108,11 +109,12 @@ public class JdbcLectureDao implements LectureDao {
 	}
 
 	@Override
+	public List<Lecture> findByAudienceAndDate(Audience audience, LocalDate date) {
+		return jdbcTemplate.query(SELECT_BY_AUDIENCE_AND_DATE, rowMapper, audience.getId(), date);
+	}
+
+	@Override
 	public List<Lecture> findLecturesByTeacher(Teacher teacher) {
-		try {
-			return jdbcTemplate.query(SELECT_BY_TEACHER_ID, rowMapper, teacher.getId());
-		} catch (DataAccessException e) {
-			return new ArrayList<>();
-		}
+		return jdbcTemplate.query(SELECT_BY_TEACHER_ID, rowMapper, teacher.getId());
 	}
 }

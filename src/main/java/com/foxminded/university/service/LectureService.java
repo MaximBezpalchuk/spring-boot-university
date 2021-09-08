@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.foxminded.university.dao.LectureDao;
 import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
 import com.foxminded.university.dao.jdbc.JdbcLectureDao;
+import com.foxminded.university.dao.jdbc.JdbcStudentDao;
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
 import com.foxminded.university.model.Holiday;
 import com.foxminded.university.model.Lecture;
@@ -21,9 +22,14 @@ public class LectureService {
 	private LectureDao lectureDao;
 	private JdbcVacationDao vacationDao;
 	private JdbcHolidayDao holidayDao;
+	private JdbcStudentDao studentDao;
 
-	public LectureService(JdbcLectureDao lectureDao, JdbcVacationDao vacationDao, JdbcHolidayDao holidayDao) {
+	public LectureService(JdbcLectureDao lectureDao, JdbcVacationDao vacationDao, JdbcHolidayDao holidayDao,
+			JdbcStudentDao studentDao) {
 		this.lectureDao = lectureDao;
+		this.vacationDao = vacationDao;
+		this.holidayDao = holidayDao;
+		this.studentDao = studentDao;
 	}
 
 	public List<Lecture> findAll() {
@@ -35,7 +41,6 @@ public class LectureService {
 	}
 
 	public String save(Lecture lecture) {
-		Lecture existingLecture = lectureDao.findByAudienceAndLectureTime(lecture.getAudience(), lecture.getTime());
 
 		if (lecture.getDate().getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
 			return "Lecture cant be in sunday";
@@ -52,7 +57,7 @@ public class LectureService {
 				return "Teacher is on other lecture in this time";
 			}
 		}
-		
+
 		List<Vacation> teacherVacations = vacationDao.findByTeacherId(lecture.getTeacher().getId());
 		if (!teacherVacations.isEmpty()) {
 			Vacation vacation = teacherVacations.stream().filter(
@@ -65,23 +70,41 @@ public class LectureService {
 
 		List<Holiday> holidays = holidayDao.findAll();
 		if (!holidays.isEmpty()) {
-			Holiday holiday = holidays.stream().filter(hol -> lecture.getDate().equals(hol.getDate())).findAny().orElse(null);
+			Holiday holiday = holidays.stream().filter(hol -> lecture.getDate().equals(hol.getDate())).findAny()
+					.orElse(null);
 			if (holiday != null) {
 				return "It is holiday time: " + holiday.getName();
 			}
 		}
-		
-		if(!lecture.getTeacher().getSubjects().equals(lecture.getSubject())) {
+
+		if (!lecture.getTeacher().getSubjects().contains(lecture.getSubject())) {
 			return "Teacher can`t teach this subject";
 		}
-		
-		//TODO: get student count to check audience size
-		
-		List<Student> studentsOnLecture = lecture.getGroups().stream().forEach(group -> group.getId());;
 
-		
-		lectureDao.save(lecture);
-		return "";
+		List<Student> studentsOnLecture = studentDao.findAll().stream()
+				.filter(student -> lecture.getGroups().contains(student.getGroup())).collect(Collectors.toList());
+		if (!studentsOnLecture.isEmpty() && studentsOnLecture.size() >= lecture.getAudience().getCapacity()) {
+			return "Audience have less capacity then student count";
+		}
+
+		List<Lecture> lecturesThisDay = lectureDao.findByAudienceAndDate(lecture.getAudience(), lecture.getDate());
+		Lecture lectureWithConcurrentTime = lecturesThisDay.stream()
+				.filter(lec -> lecture.getTime().equals(lec.getTime())).findAny().orElse(null);
+		if (lectureWithConcurrentTime != null) {
+			return "Another lecture on this time already exists";
+		}
+
+		Lecture existingLecture = lectureDao.findByAudienceDateAndLectureTime(lecture.getAudience(), lecture.getDate(),
+				lecture.getTime());
+		if (existingLecture == null) {
+			lectureDao.save(lecture);
+			return "Lecture added!";
+		} else if (existingLecture.getId() == lecture.getId()) {
+			lectureDao.save(lecture);
+			return "Lecture updated!";
+		}
+
+		return "Lecture with same params already exists!";
 	}
 
 	public void deleteById(int id) {
