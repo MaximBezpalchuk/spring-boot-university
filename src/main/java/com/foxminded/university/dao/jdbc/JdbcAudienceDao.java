@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -66,13 +65,9 @@ public class JdbcAudienceDao implements AudienceDao {
 	public void deleteById(int id) {
 		jdbcTemplate.update(DELETE_AUDIENCE, id);
 	}
-	
+
 	@Override
 	public Audience findByRoom(int room) {
-		try {
-			return jdbcTemplate.queryForObject(SELECT_BY_ROOM, rowMapper, room);
-		} catch (DataAccessException e) {
-			return null;
-		}
+		return jdbcTemplate.queryForObject(SELECT_BY_ROOM, rowMapper, room);
 	}
 }

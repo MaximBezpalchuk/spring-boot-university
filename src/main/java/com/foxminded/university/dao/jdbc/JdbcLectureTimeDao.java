@@ -5,7 +5,6 @@ import java.sql.Statement;
 import java.time.LocalTime;
 import java.util.List;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -68,10 +67,6 @@ public class JdbcLectureTimeDao implements LectureTimeDao {
 
 	@Override
 	public LectureTime findByPeriod(LocalTime start, LocalTime end) {
-		try {
-			return jdbcTemplate.queryForObject(SELECT_BY_PERIOD, rowMapper, start, end);
-		} catch (DataAccessException e) {
-			return null;
-		}
+		return jdbcTemplate.queryForObject(SELECT_BY_PERIOD, rowMapper, start, end);
 	}
 }

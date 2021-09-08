@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -63,13 +62,9 @@ public class JdbcCathedraDao implements CathedraDao {
 	public void deleteById(int id) {
 		jdbcTemplate.update(DELETE_CATHEDRA, id);
 	}
-	
+
 	@Override
 	public Cathedra findByName(String name) {
-		try {
-			return jdbcTemplate.queryForObject(SELECT_BY_NAME, rowMapper, name);
-		} catch (DataAccessException e) {
-			return null;
-		}
+		return jdbcTemplate.queryForObject(SELECT_BY_NAME, rowMapper, name);
 	}
 }

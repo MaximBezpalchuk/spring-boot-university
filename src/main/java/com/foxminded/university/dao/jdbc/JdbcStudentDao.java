@@ -5,7 +5,6 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.List;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -102,10 +101,6 @@ public class JdbcStudentDao implements StudentDao {
 
 	@Override
 	public Student findByFullNameAndBirthDate(String firstName, String lastName, LocalDate birthDate) {
-		try {
-			return jdbcTemplate.queryForObject(SELECT_BY_FULL_NAME_AND_BIRTHDAY, rowMapper, firstName, lastName, birthDate);
-		} catch (DataAccessException e) {
-			return null;
-		}
+		return jdbcTemplate.queryForObject(SELECT_BY_FULL_NAME_AND_BIRTHDAY, rowMapper, firstName, lastName, birthDate);
 	}
 }

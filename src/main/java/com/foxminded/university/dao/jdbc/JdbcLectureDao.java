@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -100,12 +99,8 @@ public class JdbcLectureDao implements LectureDao {
 
 	@Override
 	public Lecture findByAudienceDateAndLectureTime(Audience audience, LocalDate date, LectureTime lectureTime) {
-		try {
-			return jdbcTemplate.queryForObject(SELECT_BY_AUDIENCE_DATE_LECTURE_TIME, rowMapper, audience.getId(), date,
-					lectureTime.getId());
-		} catch (DataAccessException e) {
-			return null;
-		}
+		return jdbcTemplate.queryForObject(SELECT_BY_AUDIENCE_DATE_LECTURE_TIME, rowMapper, audience.getId(), date,
+				lectureTime.getId());
 	}
 
 	@Override

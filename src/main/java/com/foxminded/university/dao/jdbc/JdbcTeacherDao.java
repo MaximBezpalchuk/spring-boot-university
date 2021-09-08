@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Predicate;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -70,13 +69,14 @@ public class JdbcTeacherDao implements TeacherDao {
 				return statement;
 			}, keyHolder);
 			teacher.setId((int) keyHolder.getKeyList().get(0).get("id"));
-			teacher.getSubjects().stream().forEach(subject -> jdbcTemplate.update(INSERT_SUBJECT, subject.getId(), teacher.getId()));
+			teacher.getSubjects().stream()
+					.forEach(subject -> jdbcTemplate.update(INSERT_SUBJECT, subject.getId(), teacher.getId()));
 		} else {
 			jdbcTemplate.update(UPDATE_TEACHER, teacher.getFirstName(), teacher.getLastName(), teacher.getPhone(),
 					teacher.getAddress(), teacher.getEmail(), teacher.getGender().toString(), teacher.getPostalCode(),
 					teacher.getEducation(), teacher.getBirthDate(), teacher.getCathedra().getId(),
 					teacher.getDegree().toString(), teacher.getId());
-			
+
 			teacherOld = findById(teacher.getId());
 			updateSubjects(teacherOld, teacher);
 			deleteSubjects(teacherOld, teacher);
@@ -89,23 +89,17 @@ public class JdbcTeacherDao implements TeacherDao {
 	}
 
 	private void updateSubjects(Teacher teacherOld, Teacher teacherNew) {
-		teacherNew.getSubjects().stream()
-								.filter(Predicate.not(teacherOld.getSubjects()::contains))
-								.forEach(subject -> jdbcTemplate.update(INSERT_SUBJECT, subject.getId(), teacherNew.getId()));
+		teacherNew.getSubjects().stream().filter(Predicate.not(teacherOld.getSubjects()::contains))
+				.forEach(subject -> jdbcTemplate.update(INSERT_SUBJECT, subject.getId(), teacherNew.getId()));
 	}
 
 	private void deleteSubjects(Teacher teacherOld, Teacher teacherNew) {
-		teacherOld.getSubjects().stream()
-								.filter(Predicate.not(teacherNew.getSubjects()::contains))
-								.forEach(subject -> jdbcTemplate.update(DELETE_SUBJECT, subject.getId(), teacherNew.getId()));
+		teacherOld.getSubjects().stream().filter(Predicate.not(teacherNew.getSubjects()::contains))
+				.forEach(subject -> jdbcTemplate.update(DELETE_SUBJECT, subject.getId(), teacherNew.getId()));
 	}
-	
+
 	@Override
 	public Teacher findByFullNameAndBirthDate(String firstName, String lastName, LocalDate birthDate) {
-		try {
-			return jdbcTemplate.queryForObject(SELECT_BY_FULL_NAME_AND_BIRTHDAY, rowMapper, firstName, lastName, birthDate);
-		} catch (DataAccessException e) {
-			return null;
-		}
+		return jdbcTemplate.queryForObject(SELECT_BY_FULL_NAME_AND_BIRTHDAY, rowMapper, firstName, lastName, birthDate);
 	}
 }

@@ -4,7 +4,6 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -70,13 +69,9 @@ public class JdbcGroupDao implements GroupDao {
 	public List<Group> findByLectureId(int id) {
 		return jdbcTemplate.query(SELECT_BY_LECTURE_ID, rowMapper, id);
 	}
-	
+
 	@Override
 	public Group findByName(String name) {
-		try {
-			return jdbcTemplate.queryForObject(SELECT_BY_NAME, rowMapper, name);
-		} catch (DataAccessException e) {
-			return null;
-		}
+		return jdbcTemplate.queryForObject(SELECT_BY_NAME, rowMapper, name);
 	}
 }
