@@ -300,7 +300,6 @@ public class MenuCreator {
 					.education(education1)
 					.build();
 			studentService.save(student);
-			System.out.println("Student added!");
 			break;
 		case 2:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -373,7 +372,6 @@ public class MenuCreator {
 				}
 			}
 			teacherService.save(teacher);
-			System.out.println("Teacher added!");
 			break;
 		case 3:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -389,7 +387,6 @@ public class MenuCreator {
 					.name(subjectName3)
 					.description(subjectDescription3)
 					.build());
-			System.out.println("Subject added!");
 			break;
 		case 4:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -401,7 +398,6 @@ public class MenuCreator {
 					.name(groupName4)
 					.cathedra(cathedraService.findById(1))
 					.build());
-			System.out.println("Group added!");
 			break;
 		case 5:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -440,7 +436,6 @@ public class MenuCreator {
 					.audience(audience5)
 					.teacher(teacher5)
 					.build());
-			System.out.println("Lecture added!");
 			break;
 		case 6:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -462,7 +457,6 @@ public class MenuCreator {
 					.cathedra(cathedra6)
 					.build();
 			holidayService.save(holiday6);
-			System.out.println("Holiday created!");
 			break;
 		case 7:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -477,7 +471,7 @@ public class MenuCreator {
 					.capacity(Integer.parseInt(audienceCapacity7))
 					.cathedra(cathedraService.findById(1))
 					.build();
-			System.out.println(audienceService.save(audience7));
+			audienceService.save(audience7);
 			break;
 		case 0:
 			break;
@@ -628,7 +622,6 @@ public class MenuCreator {
 			Group group1 = sortedGroups1.get(groupNumber1 - 1);
 			student1.setGroup(group1);
 			studentService.save(student1);
-			System.out.println("Student group was changed!");
 			break;
 		case 2:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -648,7 +641,6 @@ public class MenuCreator {
 					.teacher(teacher2)
 					.build();
 			vacationService.save(vacation2);
-			System.out.println("Vacation added!");
 			break;
 		case 3:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -667,7 +659,6 @@ public class MenuCreator {
 			if (!teacher3.getSubjects().contains(subject3)) {
 				teacher3.getSubjects().add(subject3);
 				teacherService.save(teacher3);
-				System.out.println("Subject was set!");
 			} else {
 				System.out.println("Teacher already have this subject");
 			}
@@ -689,7 +680,6 @@ public class MenuCreator {
 			Audience audience4 = sortedAudiences4.get(audienceNumber4 - 1);
 			lecture4.setAudience(audience4);
 			lectureService.save(lecture4);
-			System.out.println("Lecture audience was changed!");
 			break;
 		case 5:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -702,7 +692,6 @@ public class MenuCreator {
 			System.out.println("Enter the lecture date separated by commas without spaces (YEAR,MONTH,DAY):");
 			lecture5.setDate(setupLocalDate());
 			lectureService.save(lecture5);
-			System.out.println("Lecture date was changed!");
 			break;
 		case 6:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -720,7 +709,6 @@ public class MenuCreator {
 			LectureTime lectureTime6 = sortedLectureTimes6.get(lectureTimeNumber6 - 1);
 			lecture6.setTime(lectureTime6);
 			lectureService.save(lecture6);
-			System.out.println("Lecture time was changed!");
 			break;
 		case 7:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -739,7 +727,6 @@ public class MenuCreator {
 			if (!lecture7.getGroups().contains(group7)) {
 				lecture7.getGroups().add(group7);
 				lectureService.save(lecture7);
-				System.out.println("Group was set to lecture!");
 			} else {
 				System.out.println("Lecture already have this group!");
 			}
@@ -762,7 +749,6 @@ public class MenuCreator {
 			exitCheck(String.valueOf(studentNumber1));
 			Student student1 = sortedStudents1.get(studentNumber1 - 1);
 			studentService.deleteById(student1.getId());
-			System.out.println("Student was deleted!");
 			break;
 		case 2:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -776,7 +762,6 @@ public class MenuCreator {
 				System.out.println("Please remove lectures with this teacher first!");
 			} else {
 				teacherService.deleteById(teacher2.getId());
-				System.out.println("Teacher was deleted!");
 			}
 			break;
 		case 3:
@@ -791,7 +776,6 @@ public class MenuCreator {
 				System.out.println("Please remove students first from group!");
 			} else {
 				groupService.deleteById(group3.getId());
-				System.out.println("Group was deleted!");
 			}
 			break;
 		case 4:
@@ -803,7 +787,6 @@ public class MenuCreator {
 			exitCheck(String.valueOf(lectureNumber4));
 			Lecture lecture4 = sortedLectures4.get(lectureNumber4 - 1);
 			lectureService.deleteById(lecture4.getId());
-			System.out.println("Lecture was deleted!");
 			break;
 		case 5:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -817,7 +800,6 @@ public class MenuCreator {
 				System.out.println("Please remove audiences first from lectures!");
 			} else {
 				audienceService.deleteById(audience5.getId());
-				System.out.println("Audience was deleted!");
 			}
 			break;
 		case 6:
@@ -832,7 +814,6 @@ public class MenuCreator {
 				System.out.println("Please remove subject first from lecture!");
 			} else {
 				subjectService.deleteById(subject6.getId());
-				System.out.println("Subject was deleted!");
 			}
 			break;
 		case 7:
@@ -850,7 +831,6 @@ public class MenuCreator {
 			exitCheck(String.valueOf(vacationNumber7));
 			Vacation vacation7 = sortedVacations7.get(vacationNumber7 - 1);
 			vacationService.deleteById(vacation7.getId());
-			System.out.println("Teacher vacation was deleted!");
 			break;
 		case 8:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -861,7 +841,6 @@ public class MenuCreator {
 			exitCheck(String.valueOf(holidayNumber8));
 			Holiday holiday = sortedHolidays8.get(holidayNumber8 - 1);
 			holidayService.deleteById(holiday.getId());
-			System.out.println("Holiday was deleted!");
 			break;
 		case 9:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -883,7 +862,6 @@ public class MenuCreator {
 			Group group9 = sortedGroups9.get(groupNumber9 - 1);
 			lecture9.getGroups().remove(group9);
 			lectureService.save(lecture9);
-			System.out.println("Group was deleted from lecture!");
 			break;
 		case 10:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -905,7 +883,6 @@ public class MenuCreator {
 			Subject subject10 = sortedSubjects10.get(subjectNumber10 - 1);
 			teacher10.getSubjects().remove(subject10);
 			teacherService.save(teacher10);
-			System.out.println("Subject was deleted from teacher!");
 			break;
 		case 0:
 			break;
