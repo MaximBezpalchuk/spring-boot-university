@@ -25,20 +25,18 @@ public class AudienceService {
 		return audienceDao.findById(id);
 	}
 
-	public String save(Audience audience) {
-		Audience existingAudience = audienceDao.findByRoom(audience.getRoom());
-		if (existingAudience == null) {
+	public void save(Audience audience) {
+		if (isUnique(audience)) {
 			audienceDao.save(audience);
-			return "Audience added!";
-		} else if (existingAudience.getId() == audience.getId()) {
-			audienceDao.save(audience);
-			return "Audience updated!";
-		}
-
-		return "Unusual error";
+		} 
 	}
 
 	public void deleteById(int id) {
 		audienceDao.deleteById(id);
+	}
+	
+	private boolean isUnique(Audience audience) {
+		Audience existingAudience = audienceDao.findByRoom(audience.getRoom());
+		return existingAudience == null || (existingAudience.getId() == audience.getId());
 	}
 }

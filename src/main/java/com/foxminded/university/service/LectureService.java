@@ -56,6 +56,7 @@ public class LectureService {
 	private boolean isUnique(Lecture lecture) {
 		Lecture existingLecture = lectureDao.findByAudienceDateAndLectureTime(lecture.getAudience(), lecture.getDate(),
 				lecture.getTime());
+
 		return existingLecture == null || (existingLecture.getId() == lecture.getId());
 	}
 
@@ -77,6 +78,7 @@ public class LectureService {
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -90,6 +92,7 @@ public class LectureService {
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -102,6 +105,7 @@ public class LectureService {
 				return true;
 			}
 		}
+
 		return false;
 	}
 
@@ -112,6 +116,7 @@ public class LectureService {
 	private boolean isAudienceCapacityEnoughForStudents(Lecture lecture) {
 		List<Student> studentsOnLecture = studentDao.findAll().stream()
 				.filter(student -> lecture.getGroups().contains(student.getGroup())).collect(Collectors.toList());
+
 		return studentsOnLecture.isEmpty() || (studentsOnLecture.size() >= lecture.getAudience().getCapacity());
 	}
 
@@ -124,6 +129,7 @@ public class LectureService {
 						|| (end.isAfter(lec.getTime().getStart()) && end.isBefore(lec.getTime().getEnd()))
 						|| start.equals(lec.getTime().getStart()) || end.equals(lec.getTime().getEnd()))
 				.findAny().orElse(null);
+
 		return lectureWithConcurrentTime == null;
 	}
 }

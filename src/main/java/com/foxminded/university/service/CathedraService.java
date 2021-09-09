@@ -26,8 +26,7 @@ public class CathedraService {
 	}
 
 	public void save(Cathedra cathedra) {
-		Cathedra existingCathedra = cathedraDao.findByName(cathedra.getName());
-		if (isUnique(cathedra, existingCathedra)) {
+		if (isUnique(cathedra)) {
 			cathedraDao.save(cathedra);
 		}
 	}
@@ -36,7 +35,8 @@ public class CathedraService {
 		cathedraDao.deleteById(id);
 	}
 
-	private boolean isUnique(Cathedra cathedra, Cathedra existingCathedra) {
+	private boolean isUnique(Cathedra cathedra) {
+		Cathedra existingCathedra = cathedraDao.findByName(cathedra.getName());
 		return existingCathedra == null || (existingCathedra.getId() == cathedra.getId());
 	}
 }

@@ -25,21 +25,20 @@ public class StudentService {
 		return studentDao.findById(id);
 	}
 
-	public String save(Student student) {
-		Student existingStudent = studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
-				student.getBirthDate());
-		if (existingStudent == null) {
+	public void save(Student student) {
+		if (isUnique(student)) {
 			studentDao.save(student);
-			return "Student added!";
-		} else if (existingStudent.getId() == student.getId()) {
-			studentDao.save(student);
-			return "Student updated!";
 		}
-
-		return "Unusual error";
 	}
 
 	public void deleteById(int id) {
 		studentDao.deleteById(id);
+	}
+
+	private boolean isUnique(Student student) {
+		Student existingStudent = studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
+				student.getBirthDate());
+
+		return existingStudent == null || (existingStudent.getId() == student.getId());
 	}
 }

@@ -25,21 +25,20 @@ public class TeacherService {
 		return teacherDao.findById(id);
 	}
 
-	public String save(Teacher teacher) {
-		Teacher existingTeacher = teacherDao.findByFullNameAndBirthDate(teacher.getFirstName(), teacher.getLastName(),
-				teacher.getBirthDate());
-		if (existingTeacher == null) {
+	public void save(Teacher teacher) {
+		if (isUnique(teacher)) {
 			teacherDao.save(teacher);
-			return "Teacher added!";
-		} else if (existingTeacher.getId() == teacher.getId()) {
-			teacherDao.save(teacher);
-			return "Teacher updated!";
 		}
-
-		return "Unusual error";
 	}
 
 	public void deleteById(int id) {
 		teacherDao.deleteById(id);
+	}
+
+	private boolean isUnique(Teacher teacher) {
+		Teacher existingTeacher = teacherDao.findByFullNameAndBirthDate(teacher.getFirstName(), teacher.getLastName(),
+				teacher.getBirthDate());
+
+		return existingTeacher == null || (existingTeacher.getId() == teacher.getId());
 	}
 }

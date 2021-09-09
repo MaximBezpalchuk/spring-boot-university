@@ -26,8 +26,7 @@ public class GroupService {
 	}
 
 	public void save(Group group) {
-		Group existingGroup = groupDao.findByName(group.getName());
-		if (isUnique(group, existingGroup)) {
+		if (isUnique(group)) {
 			groupDao.save(group);
 		}
 	}
@@ -40,7 +39,8 @@ public class GroupService {
 		return groupDao.findByLectureId(id);
 	}
 
-	private boolean isUnique(Group group, Group existingGroup) {
+	private boolean isUnique(Group group) {
+		Group existingGroup = groupDao.findByName(group.getName());
 		return existingGroup == null || (existingGroup.getId() == group.getId());
 	}
 }

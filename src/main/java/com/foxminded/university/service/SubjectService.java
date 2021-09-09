@@ -25,17 +25,10 @@ public class SubjectService {
 		return subjectDao.findById(id);
 	}
 
-	public String save(Subject subject) {
-		Subject existingSubject = subjectDao.findByName(subject.getName());
-		if (existingSubject == null) {
+	public void save(Subject subject) {
+		if (isUnique(subject)) {
 			subjectDao.save(subject);
-			return "Subject added!";
-		} else if (existingSubject.getId() == subject.getId()) {
-			subjectDao.save(subject);
-			return "Subject updated!";
 		}
-
-		return "Unusual error";
 	}
 
 	public void deleteById(int id) {
@@ -44,5 +37,11 @@ public class SubjectService {
 
 	public List<Subject> findByTeacherId(int id) {
 		return subjectDao.findByTeacherId(id);
+	}
+
+	private boolean isUnique(Subject subject) {
+		Subject existingSubject = subjectDao.findByName(subject.getName());
+
+		return existingSubject == null || (existingSubject.getId() == subject.getId());
 	}
 }

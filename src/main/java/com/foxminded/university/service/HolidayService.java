@@ -26,8 +26,7 @@ public class HolidayService {
 	}
 
 	public void save(Holiday holiday) {
-		Holiday existingHoliday = holidayDao.findByName(holiday.getName());
-		if (isUnique(holiday, existingHoliday)) {
+		if (isUnique(holiday)) {
 			holidayDao.save(holiday);
 		}
 	}
@@ -36,7 +35,8 @@ public class HolidayService {
 		holidayDao.deleteById(id);
 	}
 
-	private boolean isUnique(Holiday holiday, Holiday existingHoliday) {
+	private boolean isUnique(Holiday holiday) {
+		Holiday existingHoliday = holidayDao.findByName(holiday.getName());
 		return existingHoliday == null || (existingHoliday.getId() == holiday.getId());
 	}
 }
