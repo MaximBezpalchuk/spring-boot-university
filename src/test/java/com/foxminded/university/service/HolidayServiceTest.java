@@ -46,18 +46,18 @@ public class HolidayServiceTest {
 	@Test
 	void givenNewHoliday_whenSave_thenSaved() {
 		Holiday holiday = Holiday.builder().build();
-		String output = holidayService.save(holiday);
-		
-		assertEquals("Holiday added!", output);
+		holidayService.save(holiday);
+
+		verify(holidayDao).save(holiday);
 	}
-	
+
 	@Test
 	void givenExistingHoliday_whenSave_thenSaved() {
 		Holiday holiday = Holiday.builder().build();
-		when(holidayDao.findByName(holiday.getName())).thenReturn(holiday);
-		String output = holidayService.save(holiday);
-		
-		assertEquals("Holiday updated!", output);
+		when(holidayDao.findByNameAndDate(holiday.getName(), holiday.getDate())).thenReturn(holiday);
+		holidayService.save(holiday);
+
+		verify(holidayDao).save(holiday);
 	}
 
 	@Test

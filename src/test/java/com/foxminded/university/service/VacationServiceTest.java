@@ -9,13 +9,17 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
+import com.foxminded.university.model.Degree;
+import com.foxminded.university.model.Teacher;
 import com.foxminded.university.model.Vacation;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,6 +29,13 @@ public class VacationServiceTest {
 	private JdbcVacationDao vacationDao;
 	@InjectMocks
 	private VacationService vacationService;
+
+	@BeforeEach
+	void setUp() {
+		ReflectionTestUtils.setField(vacationService, "assistantMaxVacation", 16);
+		ReflectionTestUtils.setField(vacationService, "professorMaxVacation", 18);
+		ReflectionTestUtils.setField(vacationService, "unknownMaxVacation", 14);
+	}
 
 	@Test
 	void givenListOfVacations_whenFindAll_thenAllExistingVacationsFound() {
@@ -44,14 +55,15 @@ public class VacationServiceTest {
 
 		assertEquals(expected, actual);
 	}
-	
+
 	@Test
 	void givenNewVacation_whenSave_thenSaved() {
 		LocalDate start = LocalDate.of(2021, 1, 1);
 		LocalDate end = LocalDate.of(2021, 1, 2);
-		Vacation vacation = Vacation.builder().start(start).end(end).build();
+		Vacation vacation = Vacation.builder().start(start).end(end)
+				.teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build()).build();
 		vacationService.save(vacation);
-		
+
 		verify(vacationDao).save(vacation);
 	}
 
@@ -59,32 +71,42 @@ public class VacationServiceTest {
 	void givenExistingVacation_whenSave_thenSaved() {
 		LocalDate start = LocalDate.of(2021, 1, 1);
 		LocalDate end = LocalDate.of(2021, 1, 2);
-		Vacation vacation = Vacation.builder().id(1).start(start).end(end).build();
+		Vacation vacation = Vacation.builder().id(1).start(start).end(end)
+				.teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build()).build();
 		when(vacationDao.findByPeriodAndTeacher(start, end, vacation.getTeacher())).thenReturn(vacation);
 		vacationService.save(vacation);
-		
+
 		verify(vacationDao).save(vacation);
 	}
-	
+
 	@Test
 	void givenVacationLess1Day_whenSave_thenNotSaved() {
 		LocalDate start = LocalDate.of(2021, 1, 1);
 		LocalDate end = LocalDate.of(2021, 1, 1);
 		Vacation vacation = Vacation.builder().id(1).start(start).end(end).build();
-		when(vacationDao.findByPeriodAndTeacher(start, end, vacation.getTeacher())).thenReturn(vacation);
 		vacationService.save(vacation);
-		
+
 		verify(vacationDao, never()).save(vacation);
 	}
-	
+
 	@Test
 	void givenVacationWithWrongDates_whenSave_thenNotSaved() {
 		LocalDate start = LocalDate.of(2021, 1, 1);
 		LocalDate end = LocalDate.of(2020, 1, 1);
 		Vacation vacation = Vacation.builder().id(1).start(start).end(end).build();
-		when(vacationDao.findByPeriodAndTeacher(start, end, vacation.getTeacher())).thenReturn(vacation);
 		vacationService.save(vacation);
-		
+
+		verify(vacationDao, never()).save(vacation);
+	}
+
+	@Test
+	void givenVacationWithWrongVacation_whenSave_thenNotSaved() {
+		LocalDate start = LocalDate.of(2021, 1, 1);
+		LocalDate end = LocalDate.of(2021, 1, 25);
+		Vacation vacation = Vacation.builder().id(1).start(start).end(end)
+				.teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build()).build();
+		vacationService.save(vacation);
+
 		verify(vacationDao, never()).save(vacation);
 	}
 

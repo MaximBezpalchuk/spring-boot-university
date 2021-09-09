@@ -117,19 +117,22 @@ public class LectureService {
 		List<Student> studentsOnLecture = studentDao.findAll().stream()
 				.filter(student -> lecture.getGroups().contains(student.getGroup())).collect(Collectors.toList());
 
-		return studentsOnLecture.isEmpty() || (studentsOnLecture.size() >= lecture.getAudience().getCapacity());
+		return studentsOnLecture.isEmpty() || (studentsOnLecture.size() <= lecture.getAudience().getCapacity());
 	}
 
 	private boolean isAudienceOccupied(Lecture lecture) {
 		List<Lecture> lecturesThisDay = lectureDao.findByAudienceAndDate(lecture.getAudience(), lecture.getDate());
 		LocalTime start = lecture.getTime().getStart();
 		LocalTime end = lecture.getTime().getEnd();
-		Lecture lectureWithConcurrentTime = lecturesThisDay.stream()
-				.filter(lec -> (start.isAfter(lec.getTime().getStart()) && start.isBefore(lec.getTime().getEnd()))
-						|| (end.isAfter(lec.getTime().getStart()) && end.isBefore(lec.getTime().getEnd()))
-						|| start.equals(lec.getTime().getStart()) || end.equals(lec.getTime().getEnd()))
-				.findAny().orElse(null);
+		if (!lecturesThisDay.isEmpty()) {
+			Lecture lectureWithConcurrentTime = lecturesThisDay.stream()
+					.filter(lec -> (start.isAfter(lec.getTime().getStart()) && start.isBefore(lec.getTime().getEnd()))
+							|| (end.isAfter(lec.getTime().getStart()) && end.isBefore(lec.getTime().getEnd()))
+							|| start.equals(lec.getTime().getStart()) || end.equals(lec.getTime().getEnd()))
+					.findAny().orElse(null);
+			return lectureWithConcurrentTime != null;
+		}
 
-		return lectureWithConcurrentTime == null;
+		return false;
 	}
 }

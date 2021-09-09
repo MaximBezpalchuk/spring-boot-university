@@ -46,9 +46,9 @@ public class TeacherServiceTest {
 	@Test
 	void givenNewTeacher_whenSave_thenSaved() {
 		Teacher teacher = Teacher.builder().id(1).build();
-		String output = teacherService.save(teacher);
+		teacherService.save(teacher);
 
-		assertEquals("Teacher added!", output);
+		verify(teacherDao).save(teacher);
 	}
 
 	@Test
@@ -56,9 +56,9 @@ public class TeacherServiceTest {
 		Teacher teacher = Teacher.builder().id(1).build();
 		when(teacherDao.findByFullNameAndBirthDate(teacher.getFirstName(), teacher.getLastName(),
 				teacher.getBirthDate())).thenReturn(teacher);
-		String output = teacherService.save(teacher);
+		teacherService.save(teacher);
 
-		assertEquals("Teacher updated!", output);
+		verify(teacherDao).save(teacher);
 	}
 
 	@Test

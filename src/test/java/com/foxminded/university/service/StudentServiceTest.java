@@ -1,19 +1,24 @@
 package com.foxminded.university.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.foxminded.university.dao.jdbc.JdbcStudentDao;
+import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Student;
 
 @ExtendWith(MockitoExtension.class)
@@ -23,6 +28,11 @@ public class StudentServiceTest {
 	private JdbcStudentDao studentDao;
 	@InjectMocks
 	private StudentService studentService;
+	
+	@BeforeEach
+	void setUp() {
+		ReflectionTestUtils.setField(studentService, "groupSize", 1);
+	}
 
 	@Test
 	void givenListOfStudents_whenFindAll_thenAllExistingStudentsFound() {
@@ -45,20 +55,35 @@ public class StudentServiceTest {
 
 	@Test
 	void givenNewStudent_whenSave_thenSaved() {
-		Student student = Student.builder().id(1).build();
-		String output = studentService.save(student);
+		Student student = Student.builder().id(1).group(Group.builder().name("Test").build()).build();
+		when(studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
+				student.getBirthDate())).thenReturn(student);
+		when(studentDao.findByGroupName(student.getGroup().getName())).thenReturn(new ArrayList<>());
+		studentService.save(student);
 
-		assertEquals("Student added!", output);
+		verify(studentDao).save(student);
 	}
 
 	@Test
 	void givenExistingStudent_whenSave_thenSaved() {
-		Student student = Student.builder().id(1).build();
+		Student student = Student.builder().id(1).group(Group.builder().name("Test").build()).build();
 		when(studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
 				student.getBirthDate())).thenReturn(student);
-		String output = studentService.save(student);
+		when(studentDao.findByGroupName(student.getGroup().getName())).thenReturn(new ArrayList<>());
+		studentService.save(student);
 
-		assertEquals("Student updated!", output);
+		verify(studentDao).save(student);
+	}
+	
+	@Test
+	void givenStudentWhenGroupIsFull_whenSave_thenNotSaved() {
+		Student student = Student.builder().id(1).group(Group.builder().name("Test").build()).build();
+		when(studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
+				student.getBirthDate())).thenReturn(student);
+		when(studentDao.findByGroupName(student.getGroup().getName())).thenReturn(Arrays.asList(student, student));
+		studentService.save(student);
+
+		verify(studentDao, never()).save(student);
 	}
 
 	@Test

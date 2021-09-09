@@ -3,6 +3,7 @@ package com.foxminded.university.service;
 import java.time.Duration;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.foxminded.university.dao.LectureTimeDao;
@@ -13,6 +14,8 @@ import com.foxminded.university.model.LectureTime;
 public class LectureTimeService {
 
 	private LectureTimeDao lectureTimeDao;
+	@Value("${lectureTimeDuration}")
+	private int lectureTimeDuration;
 
 	public LectureTimeService(JdbcLectureTimeDao lectureTimeDao) {
 		this.lectureTimeDao = lectureTimeDao;
@@ -47,6 +50,6 @@ public class LectureTimeService {
 	}
 
 	private boolean isDurationMoreThanThirtyMin(LectureTime lectureTime) {
-		return Duration.between(lectureTime.getStart(), lectureTime.getEnd()).toMinutes() > 30;
+		return Duration.between(lectureTime.getStart(), lectureTime.getEnd()).toMinutes() > lectureTimeDuration;
 	}
 }

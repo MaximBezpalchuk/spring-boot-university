@@ -1,11 +1,13 @@
 package com.foxminded.university.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -78,9 +80,10 @@ public class LectureServiceTest {
 				.end(LocalTime.of(10, 0)).build())
 				.teacher(teacher)
 				.subject(Subject.builder().id(1).cathedra(cathedra).build()).build();
-		String output = lectureService.save(lecture);
+		when(lectureDao.findByAudienceAndDate(lecture.getAudience(), lecture.getDate())).thenReturn(new ArrayList<>());
+		lectureService.save(lecture);
 		
-		assertEquals("Lecture added!", output);
+		verify(lectureDao).save(lecture);
 	}
 	
 	@Test
@@ -101,9 +104,9 @@ public class LectureServiceTest {
 				.teacher(teacher)
 				.subject(Subject.builder().id(1).cathedra(cathedra).build()).build();
 		when(lectureDao.findByAudienceDateAndLectureTime(audience, date, lectureTime)).thenReturn(lecture);
-		String output = lectureService.save(lecture);
+		lectureService.save(lecture);
 		
-		assertEquals("Lecture updated!", output);
+		verify(lectureDao).save(lecture);
 	}
 	
 	@Test
@@ -112,9 +115,9 @@ public class LectureServiceTest {
 				.id(1)
 				.date(LocalDate.of(2021, 9, 5))
 				.build();
-		String output = lectureService.save(lecture);
+		lectureService.save(lecture);
 		
-		assertEquals("Lecture cant be in sunday", output);
+		verify(lectureDao, never()).save(lecture);
 	}
 	
 	@Test
@@ -124,9 +127,9 @@ public class LectureServiceTest {
 				.date(LocalDate.of(2021, 9, 6))
 				.time(LectureTime.builder().id(1).start(LocalTime.of(7, 0)).end(LocalTime.of(10, 0)).build())
 				.build();
-		String output = lectureService.save(lecture);
+		lectureService.save(lecture);
 		
-		assertEquals("Lecture must start after 8 and end before 22", output);
+		verify(lectureDao, never()).save(lecture);
 	}
 	
 	@Test
@@ -138,9 +141,9 @@ public class LectureServiceTest {
 				.teacher(Teacher.builder().build())
 				.build();
 		when(lectureDao.findLecturesByTeacher(lecture.getTeacher())).thenReturn(Arrays.asList(lecture));
-		String output = lectureService.save(lecture);
+		lectureService.save(lecture);
 		
-		assertEquals("Teacher is on other lecture at this time", output);
+		verify(lectureDao, never()).save(lecture);
 	}
 	
 	@Test
@@ -153,9 +156,9 @@ public class LectureServiceTest {
 				.build();
 		Vacation vacation = Vacation.builder().start(LocalDate.of(2021, 9, 5)).end(LocalDate.of(2021, 9, 7)).build();
 		when(vacationDao.findByTeacherId(lecture.getTeacher().getId())).thenReturn(Arrays.asList(vacation));
-		String output = lectureService.save(lecture);
+		lectureService.save(lecture);
 		
-		assertEquals("Teacher have vacation at this time", output);
+		verify(lectureDao, never()).save(lecture);
 	}
 	
 	@Test
@@ -167,9 +170,9 @@ public class LectureServiceTest {
 				.teacher(Teacher.builder().id(1).build())
 				.build();
 		when(holidayDao.findAll()).thenReturn(Arrays.asList(Holiday.builder().date(LocalDate.of(2021, 9, 6)).name("Test").build()));
-		String output = lectureService.save(lecture);
+		lectureService.save(lecture);
 		
-		assertEquals("It is holiday time: Test", output);
+		verify(lectureDao, never()).save(lecture);
 	}
 	
 	@Test
@@ -181,9 +184,9 @@ public class LectureServiceTest {
 				.teacher(Teacher.builder().id(1).build())
 				.subject(Subject.builder().build())
 				.build();
-		String output = lectureService.save(lecture);
+		lectureService.save(lecture);
 		
-		assertEquals("Teacher can`t teach this subject", output);
+		verify(lectureDao, never()).save(lecture);
 	}
 	
 	@Test
@@ -200,9 +203,9 @@ public class LectureServiceTest {
 				.audience(Audience.builder().capacity(1).build())
 				.build();
 		when(studentDao.findAll()).thenReturn(Arrays.asList(Student.builder().group(group).build(), Student.builder().group(group).build()));
-		String output = lectureService.save(lecture);
+		lectureService.save(lecture);
 		
-		assertEquals("Audience have less capacity then student count", output);
+		verify(lectureDao, never()).save(lecture);
 	}
 	
 	@Test
@@ -217,9 +220,9 @@ public class LectureServiceTest {
 				.audience(Audience.builder().capacity(1).build())
 				.build();
 		when(lectureDao.findByAudienceAndDate(lecture.getAudience(), lecture.getDate())).thenReturn(Arrays.asList(lecture));
-		String output = lectureService.save(lecture);
+		lectureService.save(lecture);
 		
-		assertEquals("Another lecture on this time already exists", output);
+		verify(lectureDao, never()).save(lecture);
 	}
 
 	@Test

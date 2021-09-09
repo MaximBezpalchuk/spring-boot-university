@@ -7,6 +7,8 @@ import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -151,6 +153,40 @@ public class JdbcStudentDaoTest {
 				.build();
 		Student actual = studentDao.findByFullNameAndBirthDate(expected.getFirstName(), expected.getLastName(), expected.getBirthDate());
 
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	void givenGroupName_whenFindByGroupName_thenStudentsFound() {
+		Student student1 = Student.builder()
+				.firstName("Kim")
+				.lastName("Cattrall")
+				.address("Virtual Reality Capsule no 2")
+				.gender(Gender.FEMALE)
+				.birthDate(LocalDate.of(1956, 8, 21))
+				.phone("312-555-0690:00")
+				.email("4@owl.com")
+				.postalCode("12345")
+				.education("College education")
+				.group(Group.builder().id(2).name("Mages").cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build()).build())
+				.id(4)
+				.build();
+		Student student2 = Student.builder()
+				.firstName("Thomas")
+				.lastName("Anderson")
+				.address("Virtual Reality Capsule no 3")
+				.gender(Gender.MALE)
+				.birthDate(LocalDate.of(1962, 3, 11))
+				.phone("312-555-5555")
+				.email("5@owl.com")
+				.postalCode("12345")
+				.education("College education")
+				.group(Group.builder().id(2).name("Mages").cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build()).build())
+				.id(5)
+				.build();
+		List<Student> expected = Arrays.asList(student1, student2);
+		List<Student> actual = studentDao.findByGroupName("Mages");
+		
 		assertEquals(expected, actual);
 	}
 }

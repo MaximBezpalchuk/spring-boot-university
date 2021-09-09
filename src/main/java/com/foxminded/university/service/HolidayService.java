@@ -36,7 +36,7 @@ public class HolidayService {
 	}
 
 	private boolean isUnique(Holiday holiday) {
-		Holiday existingHoliday = holidayDao.findByName(holiday.getName());
+		Holiday existingHoliday = holidayDao.findByNameAndDate(holiday.getName(), holiday.getDate());
 		return existingHoliday == null || (existingHoliday.getId() == holiday.getId());
 	}
 }

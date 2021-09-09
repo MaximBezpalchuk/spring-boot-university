@@ -1,6 +1,7 @@
 package com.foxminded.university.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -8,11 +9,13 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.foxminded.university.dao.jdbc.JdbcLectureTimeDao;
 import com.foxminded.university.model.LectureTime;
@@ -24,6 +27,12 @@ public class LectureTimeServiceTest {
 	private JdbcLectureTimeDao lectureTimeDao;
 	@InjectMocks
 	private LectureTimeService lectureTimeService;
+	
+	@BeforeEach
+	void setUp() {
+		ReflectionTestUtils.setField(lectureTimeService, "lectureTimeDuration", 30);
+	}
+
 
 	@Test
 	void givenListOfLectureTimes_whenFindAll_thenAllExistingLectureTimesFound() {
@@ -52,9 +61,9 @@ public class LectureTimeServiceTest {
 				.start(start)
 				.end(end)
 				.build();
-		String output = lectureTimeService.save(lectureTime);
+		lectureTimeService.save(lectureTime);
 		
-		assertEquals("Lecture time added!", output);
+		verify(lectureTimeDao).save(lectureTime);
 	}
 	
 	@Test
@@ -66,22 +75,22 @@ public class LectureTimeServiceTest {
 				.end(end)
 				.build();
 		when(lectureTimeDao.findByPeriod(start, end)).thenReturn(lectureTime);
-		String output = lectureTimeService.save(lectureTime);
+		lectureTimeService.save(lectureTime);
 		
-		assertEquals("Lecture time updated!", output);
+		verify(lectureTimeDao).save(lectureTime);
 	}
 	
 	@Test
-	void givenLectureTimeLessThan30Minutes_whenSave_thenSaved() {
+	void givenLectureTimeLessThan30Minutes_whenSave_thenNotSaved() {
 		LocalTime start = LocalTime.of(9, 0);
 		LocalTime end = LocalTime.of(9, 20);
 		LectureTime lectureTime = LectureTime.builder()
 				.start(start)
 				.end(end)
 				.build();
-		String output = lectureTimeService.save(lectureTime);
+		lectureTimeService.save(lectureTime);
 		
-		assertEquals("Lecture can`t be less than 30 minutes", output);
+		verify(lectureTimeDao, never()).save(lectureTime);
 	}
 	
 	@Test
@@ -92,9 +101,9 @@ public class LectureTimeServiceTest {
 				.start(start)
 				.end(end)
 				.build();
-		String output = lectureTimeService.save(lectureTime);
+		lectureTimeService.save(lectureTime);
 		
-		assertEquals("Lecture can`t start after end time", output);
+		verify(lectureTimeDao, never()).save(lectureTime);
 	}
 
 	@Test

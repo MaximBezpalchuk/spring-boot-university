@@ -45,18 +45,18 @@ public class CathedraServiceTest {
 	@Test
 	void givenNewCathedra_whenSave_thenSaved() {
 		Cathedra cathedra = Cathedra.builder().build();
-		String output = cathedraService.save(cathedra);
+		cathedraService.save(cathedra);
 		
-		assertEquals("Cathedra added!", output);
+		verify(cathedraDao).save(cathedra);
 	}
 	
 	@Test
 	void givenExistingCathedra_whenSave_thenSaved() {
 		Cathedra cathedra = Cathedra.builder().build();
 		when(cathedraDao.findByName(cathedra.getName())).thenReturn(cathedra);
-		String output = cathedraService.save(cathedra);
+		cathedraService.save(cathedra);
 		
-		assertEquals("Cathedra updated!", output);
+		verify(cathedraDao).save(cathedra);
 	}
 
 	@Test

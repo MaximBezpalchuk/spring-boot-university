@@ -47,18 +47,18 @@ public class GroupServiceTest {
 	@Test
 	void givenNewGroup_whenSave_thenSaved() {
 		Group group = Group.builder().build();
-		String output = groupService.save(group);;
-		
-		assertEquals("Group added!", output);
+		groupService.save(group);
+
+		verify(groupDao).save(group);
 	}
-	
+
 	@Test
 	void givenExistingGroup_whenSave_thenSaved() {
 		Group group = Group.builder().build();
 		when(groupDao.findByName(group.getName())).thenReturn(group);
-		String output = groupService.save(group);;
-		
-		assertEquals("Group updated!", output);
+		groupService.save(group);
+
+		verify(groupDao).save(group);
 	}
 
 	@Test

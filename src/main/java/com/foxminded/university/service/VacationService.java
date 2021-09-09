@@ -1,19 +1,26 @@
 package com.foxminded.university.service;
 
-import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.foxminded.university.dao.VacationDao;
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
+import com.foxminded.university.model.Degree;
 import com.foxminded.university.model.Vacation;
 
 @Service
 public class VacationService {
 
 	private VacationDao vacationDao;
+	@Value("${assistantMaxVacation}")
+	private int assistantMaxVacation;
+	@Value("${professorMaxVacation}")
+	private int professorMaxVacation;
+	@Value("${unknownMaxVacation}")
+	private int unknownMaxVacation;
 
 	public VacationService(JdbcVacationDao vacationDao) {
 		this.vacationDao = vacationDao;
@@ -28,10 +35,8 @@ public class VacationService {
 	}
 
 	public void save(Vacation vacation) {
-		LocalDate start = vacation.getStart();
-		LocalDate end = vacation.getEnd();
-		Vacation existingVacation = vacationDao.findByPeriodAndTeacher(start, end, vacation.getTeacher());
-		if (isDateCorrect(vacation) && isDateMoreThenOneDay(vacation) && isUnique(vacation, existingVacation)) {
+		if (isDateCorrect(vacation) && isDateMoreThenOneDay(vacation) && isVacationDurationLessOrEqualsThanMax(vacation)
+				&& isUnique(vacation)) {
 			vacationDao.save(vacation);
 		}
 	}
@@ -44,15 +49,34 @@ public class VacationService {
 		return vacationDao.findByTeacherId(id);
 	}
 
-	private boolean isUnique(Vacation vacation, Vacation existingVacation) {
+	private boolean isUnique(Vacation vacation) {
+		Vacation existingVacation = vacationDao.findByPeriodAndTeacher(vacation.getStart(), vacation.getEnd(),
+				vacation.getTeacher());
+
 		return existingVacation == null || (existingVacation.getId() == vacation.getId());
 	}
 
 	private boolean isDateCorrect(Vacation vacation) {
-		return vacation.getStart().isBefore(vacation.getEnd());
+		return vacation.getStart().isBefore(vacation.getEnd()) || vacation.getStart().equals(vacation.getEnd());
 	}
 
 	private boolean isDateMoreThenOneDay(Vacation vacation) {
-		return Math.abs(Period.between(vacation.getStart(), vacation.getEnd()).getDays()) > 1;
+		return getVacationDaysCount(vacation) >= 1;
+	}
+
+	private int getVacationDaysCount(Vacation vacation) {
+		return Math.abs(Period.between(vacation.getStart(), vacation.getEnd()).getDays());
+	}
+
+	private boolean isVacationDurationLessOrEqualsThanMax(Vacation vacation) {
+		int vacationDays = getVacationDaysCount(vacation);
+		Degree actualDegree = vacation.getTeacher().getDegree();
+		if ((actualDegree == Degree.ASSISTANT && vacationDays <= assistantMaxVacation)
+				|| (actualDegree == Degree.PROFESSOR && vacationDays <= professorMaxVacation)
+				|| (actualDegree == Degree.UNKNOWN && vacationDays <= unknownMaxVacation)) {
+			return true;
+		}
+
+		return false;
 	}
 }

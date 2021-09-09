@@ -2,6 +2,7 @@ package com.foxminded.university.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.foxminded.university.dao.StudentDao;
@@ -12,6 +13,8 @@ import com.foxminded.university.model.Student;
 public class StudentService {
 
 	private StudentDao studentDao;
+	@Value("${groupSize}")
+	private int groupSize;
 
 	public StudentService(JdbcStudentDao studentDao) {
 		this.studentDao = studentDao;
@@ -26,7 +29,7 @@ public class StudentService {
 	}
 
 	public void save(Student student) {
-		if (isUnique(student)) {
+		if (isUnique(student) && !isGroupFilled(student)) {
 			studentDao.save(student);
 		}
 	}
@@ -40,5 +43,14 @@ public class StudentService {
 				student.getBirthDate());
 
 		return existingStudent == null || (existingStudent.getId() == student.getId());
+	}
+
+	private boolean isGroupFilled(Student student) {
+		List<Student> students = studentDao.findByGroupName(student.getGroup().getName());
+		if (students.size() >= groupSize) {
+			return true;
+		}
+
+		return false;
 	}
 }

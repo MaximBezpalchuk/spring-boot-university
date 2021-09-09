@@ -46,18 +46,18 @@ public class SubjectServiceTest {
 	@Test
 	void givenNewSubject_whenSave_thenSaved() {
 		Subject subject = Subject.builder().id(1).build();
-		String output = subjectService.save(subject);
-		
-		assertEquals("Subject added!", output);
+		subjectService.save(subject);
+
+		verify(subjectDao).save(subject);
 	}
-	
+
 	@Test
 	void givenExistingSubject_whenSave_thenSaved() {
 		Subject subject = Subject.builder().id(1).build();
 		when(subjectDao.findByName(subject.getName())).thenReturn(subject);
-		String output = subjectService.save(subject);
-		
-		assertEquals("Subject updated!", output);
+		subjectService.save(subject);
+
+		verify(subjectDao).save(subject);
 	}
 
 	@Test
