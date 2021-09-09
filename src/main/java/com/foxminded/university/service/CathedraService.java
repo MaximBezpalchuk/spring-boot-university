@@ -25,20 +25,18 @@ public class CathedraService {
 		return cathedraDao.findById(id);
 	}
 
-	public String save(Cathedra cathedra) {
+	public void save(Cathedra cathedra) {
 		Cathedra existingCathedra = cathedraDao.findByName(cathedra.getName());
-		if (existingCathedra == null) {
+		if (isUnique(cathedra, existingCathedra)) {
 			cathedraDao.save(cathedra);
-			return "Cathedra added!";
-		} else if (existingCathedra.getId() == cathedra.getId()) {
-			cathedraDao.save(cathedra);
-			return "Cathedra updated!";
 		}
-
-		return "Unusual error";
 	}
 
 	public void deleteById(int id) {
 		cathedraDao.deleteById(id);
+	}
+
+	private boolean isUnique(Cathedra cathedra, Cathedra existingCathedra) {
+		return existingCathedra == null || (existingCathedra.getId() == cathedra.getId());
 	}
 }

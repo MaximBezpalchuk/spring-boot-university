@@ -1,6 +1,7 @@
 package com.foxminded.university.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -49,9 +50,9 @@ public class VacationServiceTest {
 		LocalDate start = LocalDate.of(2021, 1, 1);
 		LocalDate end = LocalDate.of(2021, 1, 2);
 		Vacation vacation = Vacation.builder().start(start).end(end).build();
-		String output = vacationService.save(vacation);
+		vacationService.save(vacation);
 		
-		assertEquals("Vacation added!", output);
+		verify(vacationDao).save(vacation);
 	}
 
 	@Test
@@ -60,31 +61,31 @@ public class VacationServiceTest {
 		LocalDate end = LocalDate.of(2021, 1, 2);
 		Vacation vacation = Vacation.builder().id(1).start(start).end(end).build();
 		when(vacationDao.findByPeriodAndTeacher(start, end, vacation.getTeacher())).thenReturn(vacation);
-		String output = vacationService.save(vacation);
+		vacationService.save(vacation);
 		
-		assertEquals("Vacation updated!", output);
+		verify(vacationDao).save(vacation);
 	}
 	
 	@Test
-	void givenVacationLess1Day_whenSave_thenSaved() {
+	void givenVacationLess1Day_whenSave_thenNotSaved() {
 		LocalDate start = LocalDate.of(2021, 1, 1);
 		LocalDate end = LocalDate.of(2021, 1, 1);
 		Vacation vacation = Vacation.builder().id(1).start(start).end(end).build();
 		when(vacationDao.findByPeriodAndTeacher(start, end, vacation.getTeacher())).thenReturn(vacation);
-		String output = vacationService.save(vacation);
+		vacationService.save(vacation);
 		
-		assertEquals("Vacation can`t be less than 1 day", output);
+		verify(vacationDao, never()).save(vacation);
 	}
 	
 	@Test
-	void givenVacationWithWrongDates_whenSave_thenSaved() {
+	void givenVacationWithWrongDates_whenSave_thenNotSaved() {
 		LocalDate start = LocalDate.of(2021, 1, 1);
 		LocalDate end = LocalDate.of(2020, 1, 1);
 		Vacation vacation = Vacation.builder().id(1).start(start).end(end).build();
 		when(vacationDao.findByPeriodAndTeacher(start, end, vacation.getTeacher())).thenReturn(vacation);
-		String output = vacationService.save(vacation);
+		vacationService.save(vacation);
 		
-		assertEquals("Vacation can`t start after end date", output);
+		verify(vacationDao, never()).save(vacation);
 	}
 
 	@Test

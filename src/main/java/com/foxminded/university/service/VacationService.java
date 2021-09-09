@@ -27,23 +27,13 @@ public class VacationService {
 		return vacationDao.findById(id);
 	}
 
-	public String save(Vacation vacation) {
+	public void save(Vacation vacation) {
 		LocalDate start = vacation.getStart();
 		LocalDate end = vacation.getEnd();
 		Vacation existingVacation = vacationDao.findByPeriodAndTeacher(start, end, vacation.getTeacher());
-		if (start.isAfter(end)) {
-			return "Vacation can`t start after end date";
-		} else if (Math.abs(Period.between(start, end).getDays()) < 1) {
-			return "Vacation can`t be less than 1 day";
-		} else if (existingVacation == null) {
+		if (isDateCorrect(vacation) && isDateMoreThenOneDay(vacation) && isUnique(vacation, existingVacation)) {
 			vacationDao.save(vacation);
-			return "Vacation added!";
-		} else if (existingVacation.getId() == vacation.getId()) {
-			vacationDao.save(vacation);
-			return "Vacation updated!";
 		}
-
-		return "";
 	}
 
 	public void deleteById(int id) {
@@ -52,5 +42,17 @@ public class VacationService {
 
 	public List<Vacation> findByTeacherId(int id) {
 		return vacationDao.findByTeacherId(id);
+	}
+
+	private boolean isUnique(Vacation vacation, Vacation existingVacation) {
+		return existingVacation == null || (existingVacation.getId() == vacation.getId());
+	}
+
+	private boolean isDateCorrect(Vacation vacation) {
+		return vacation.getStart().isBefore(vacation.getEnd());
+	}
+
+	private boolean isDateMoreThenOneDay(Vacation vacation) {
+		return Math.abs(Period.between(vacation.getStart(), vacation.getEnd()).getDays()) > 1;
 	}
 }

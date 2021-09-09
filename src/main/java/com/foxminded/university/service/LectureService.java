@@ -41,82 +41,89 @@ public class LectureService {
 		return lectureDao.findById(id);
 	}
 
-	public String save(Lecture lecture) {
-
-		if (lecture.getDate().getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
-			return "Lecture cant be in sunday";
-		} else if (lecture.getTime().getEnd().getHour() > 22 || lecture.getTime().getStart().getHour() < 8) {
-			return "Lecture must start after 8 and end before 22";
+	public void save(Lecture lecture) {
+		if (!isSunday(lecture) && !isAfterHours(lecture) && !isTeacherBusy(lecture) && !isTeacherInVacation(lecture)
+				&& !isHoliday(lecture) && isTeacherCompetentWithSubject(lecture)
+				&& isAudienceCapacityEnoughForStudents(lecture) && !isAudienceOccupied(lecture) && isUnique(lecture)) {
+			lectureDao.save(lecture);
 		}
+	}
 
+	public void deleteById(int id) {
+		lectureDao.deleteById(id);
+	}
+
+	private boolean isUnique(Lecture lecture) {
+		Lecture existingLecture = lectureDao.findByAudienceDateAndLectureTime(lecture.getAudience(), lecture.getDate(),
+				lecture.getTime());
+		return existingLecture == null || (existingLecture.getId() == lecture.getId());
+	}
+
+	private boolean isSunday(Lecture lecture) {
+		return lecture.getDate().getDayOfWeek().equals(DayOfWeek.SUNDAY);
+	}
+
+	private boolean isAfterHours(Lecture lecture) {
+		return lecture.getTime().getEnd().getHour() > 22 || lecture.getTime().getStart().getHour() < 8;
+	}
+
+	private boolean isTeacherBusy(Lecture lecture) {
 		List<Lecture> lecturesWithSameTeacher = lectureDao.findLecturesByTeacher(lecture.getTeacher());
 		if (!lecturesWithSameTeacher.isEmpty()) {
 			Lecture lectureInSameTime = lecturesWithSameTeacher.stream()
 					.filter(lec -> lec.getDate().isEqual(lecture.getDate()))
 					.filter(lec -> lec.getTime().equals(lecture.getTime())).findAny().orElse(null);
 			if (lectureInSameTime != null) {
-				return "Teacher is on other lecture at this time";
+				return true;
 			}
 		}
+		return false;
+	}
 
+	private boolean isTeacherInVacation(Lecture lecture) {
 		List<Vacation> teacherVacations = vacationDao.findByTeacherId(lecture.getTeacher().getId());
 		if (!teacherVacations.isEmpty()) {
 			Vacation vacation = teacherVacations.stream().filter(
 					vac -> (!(lecture.getDate().isBefore(vac.getStart()) || lecture.getDate().isAfter(vac.getEnd()))))
 					.findAny().orElse(null);
 			if (vacation != null) {
-				return "Teacher have vacation at this time";
+				return true;
 			}
 		}
+		return false;
+	}
 
+	private boolean isHoliday(Lecture lecture) {
 		List<Holiday> holidays = holidayDao.findAll();
 		if (!holidays.isEmpty()) {
 			Holiday holiday = holidays.stream().filter(hol -> lecture.getDate().equals(hol.getDate())).findAny()
 					.orElse(null);
 			if (holiday != null) {
-				return "It is holiday time: " + holiday.getName();
+				return true;
 			}
 		}
+		return false;
+	}
 
-		if (!lecture.getTeacher().getSubjects().contains(lecture.getSubject())) {
-			return "Teacher can`t teach this subject";
-		}
+	private boolean isTeacherCompetentWithSubject(Lecture lecture) {
+		return lecture.getTeacher().getSubjects().contains(lecture.getSubject());
+	}
 
+	private boolean isAudienceCapacityEnoughForStudents(Lecture lecture) {
 		List<Student> studentsOnLecture = studentDao.findAll().stream()
 				.filter(student -> lecture.getGroups().contains(student.getGroup())).collect(Collectors.toList());
-		if (!studentsOnLecture.isEmpty() && studentsOnLecture.size() >= lecture.getAudience().getCapacity()) {
-			return "Audience have less capacity then student count";
-		}
+		return studentsOnLecture.isEmpty() || (studentsOnLecture.size() >= lecture.getAudience().getCapacity());
+	}
 
+	private boolean isAudienceOccupied(Lecture lecture) {
 		List<Lecture> lecturesThisDay = lectureDao.findByAudienceAndDate(lecture.getAudience(), lecture.getDate());
 		LocalTime start = lecture.getTime().getStart();
 		LocalTime end = lecture.getTime().getEnd();
 		Lecture lectureWithConcurrentTime = lecturesThisDay.stream()
-				.filter(lec -> (start.isAfter(lec.getTime().getStart())
-						&& start.isBefore(lec.getTime().getEnd()))
-						|| (end.isAfter(lec.getTime().getStart())
-								&& end.isBefore(lec.getTime().getEnd()))
-						|| start.equals(lec.getTime().getStart())
-						|| end.equals(lec.getTime().getEnd()))
+				.filter(lec -> (start.isAfter(lec.getTime().getStart()) && start.isBefore(lec.getTime().getEnd()))
+						|| (end.isAfter(lec.getTime().getStart()) && end.isBefore(lec.getTime().getEnd()))
+						|| start.equals(lec.getTime().getStart()) || end.equals(lec.getTime().getEnd()))
 				.findAny().orElse(null);
-		if (lectureWithConcurrentTime != null) {
-			return "Another lecture on this time already exists";
-		}
-
-		Lecture existingLecture = lectureDao.findByAudienceDateAndLectureTime(lecture.getAudience(), lecture.getDate(),
-				lecture.getTime());
-		if (existingLecture == null) {
-			lectureDao.save(lecture);
-			return "Lecture added!";
-		} else if (existingLecture.getId() == lecture.getId()) {
-			lectureDao.save(lecture);
-			return "Lecture updated!";
-		}
-
-		return "Unusual error";
-	}
-
-	public void deleteById(int id) {
-		lectureDao.deleteById(id);
+		return lectureWithConcurrentTime == null;
 	}
 }

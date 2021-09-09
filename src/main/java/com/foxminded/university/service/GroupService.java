@@ -25,17 +25,11 @@ public class GroupService {
 		return groupDao.findById(id);
 	}
 
-	public String save(Group group) {
+	public void save(Group group) {
 		Group existingGroup = groupDao.findByName(group.getName());
-		if (existingGroup == null) {
+		if (isUnique(group, existingGroup)) {
 			groupDao.save(group);
-			return "Group added!";
-		} else if (existingGroup.getId() == group.getId()) {
-			groupDao.save(group);
-			return "Group updated!";
 		}
-
-		return "Unusual error";
 	}
 
 	public void deleteById(int id) {
@@ -44,5 +38,9 @@ public class GroupService {
 
 	public List<Group> findByLectureId(int id) {
 		return groupDao.findByLectureId(id);
+	}
+
+	private boolean isUnique(Group group, Group existingGroup) {
+		return existingGroup == null || (existingGroup.getId() == group.getId());
 	}
 }

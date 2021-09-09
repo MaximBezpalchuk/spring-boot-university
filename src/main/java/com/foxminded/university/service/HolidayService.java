@@ -25,20 +25,18 @@ public class HolidayService {
 		return holidayDao.findById(id);
 	}
 
-	public String save(Holiday holiday) {
-		Holiday existingGroup = holidayDao.findByName(holiday.getName());
-		if (existingGroup == null) {
+	public void save(Holiday holiday) {
+		Holiday existingHoliday = holidayDao.findByName(holiday.getName());
+		if (isUnique(holiday, existingHoliday)) {
 			holidayDao.save(holiday);
-			return "Holiday added!";
-		} else if (existingGroup.getId() == holiday.getId()) {
-			holidayDao.save(holiday);
-			return "Holiday updated!";
 		}
-
-		return "Unusual error";
 	}
 
 	public void deleteById(int id) {
 		holidayDao.deleteById(id);
+	}
+
+	private boolean isUnique(Holiday holiday, Holiday existingHoliday) {
+		return existingHoliday == null || (existingHoliday.getId() == holiday.getId());
 	}
 }
