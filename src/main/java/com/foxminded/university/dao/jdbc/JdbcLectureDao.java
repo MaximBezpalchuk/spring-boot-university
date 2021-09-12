@@ -32,7 +32,7 @@ public class JdbcLectureDao implements LectureDao {
 	private final static String DELETE_GROUP = "DELETE FROM lectures_groups WHERE group_id = ? AND lecture_id = ?";
 	private final static String SELECT_BY_AUDIENCE_DATE_LECTURE_TIME = "SELECT * FROM lectures WHERE audience_id = ? AND date = ? AND lecture_time_id = ?";
 	private final static String SELECT_BY_AUDIENCE_AND_DATE = "SELECT * FROM lectures WHERE audience_id = ? AND date = ?";
-	private final static String SELECT_BY_TEACHER_ID = "SELECT * FROM lectures WHERE teacher_id = ?";
+	private final static String SELECT_BY_TEACHER_ID_DATE_AND_LECTURE_TIME_ID = "SELECT * FROM lectures WHERE teacher_id = ? AND date = ? AND lecture_time_id = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private LectureRowMapper rowMapper;
@@ -109,7 +109,7 @@ public class JdbcLectureDao implements LectureDao {
 	}
 
 	@Override
-	public List<Lecture> findLecturesByTeacher(Teacher teacher) {
-		return jdbcTemplate.query(SELECT_BY_TEACHER_ID, rowMapper, teacher.getId());
+	public List<Lecture> findLecturesByTeacherDateAndTime(Teacher teacher, LocalDate date, LectureTime time) {
+		return jdbcTemplate.query(SELECT_BY_TEACHER_ID_DATE_AND_LECTURE_TIME_ID, rowMapper, teacher.getId(), date, time.getId());
 	}
 }

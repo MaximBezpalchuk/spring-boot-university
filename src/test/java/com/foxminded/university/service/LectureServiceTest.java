@@ -140,7 +140,7 @@ public class LectureServiceTest {
 				.time(LectureTime.builder().id(1).start(LocalTime.of(9, 0)).end(LocalTime.of(10, 0)).build())
 				.teacher(Teacher.builder().build())
 				.build();
-		when(lectureDao.findLecturesByTeacher(lecture.getTeacher())).thenReturn(Arrays.asList(lecture));
+		when(lectureDao.findLecturesByTeacherDateAndTime(lecture.getTeacher(), lecture.getDate(), lecture.getTime())).thenReturn(Arrays.asList(lecture));
 		lectureService.save(lecture);
 		
 		verify(lectureDao, never()).save(lecture);

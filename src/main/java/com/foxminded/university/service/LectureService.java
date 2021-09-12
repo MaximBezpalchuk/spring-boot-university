@@ -69,17 +69,10 @@ public class LectureService {
 	}
 
 	private boolean isTeacherBusy(Lecture lecture) {
-		List<Lecture> lecturesWithSameTeacher = lectureDao.findLecturesByTeacher(lecture.getTeacher());
-		if (!lecturesWithSameTeacher.isEmpty()) {
-			Lecture lectureInSameTime = lecturesWithSameTeacher.stream()
-					.filter(lec -> lec.getDate().isEqual(lecture.getDate()))
-					.filter(lec -> lec.getTime().equals(lecture.getTime())).findAny().orElse(null);
-			if (lectureInSameTime != null) {
-				return true;
-			}
-		}
+		List<Lecture> lecturesWithSameTeacherThisTime = lectureDao
+				.findLecturesByTeacherDateAndTime(lecture.getTeacher(), lecture.getDate(), lecture.getTime());
 
-		return false;
+		return !lecturesWithSameTeacherThisTime.isEmpty();
 	}
 
 	private boolean isTeacherInVacation(Lecture lecture) {

@@ -12,7 +12,7 @@ public interface LectureDao extends GenericDao<Lecture> {
 
 	Lecture findByAudienceDateAndLectureTime(Audience audience, LocalDate date, LectureTime lectureTime);
 
-	List<Lecture> findLecturesByTeacher(Teacher teacher);
+	List<Lecture> findLecturesByTeacherDateAndTime(Teacher teacher, LocalDate date, LectureTime time);
 
 	List<Lecture> findByAudienceAndDate(Audience audience, LocalDate date);
 }
