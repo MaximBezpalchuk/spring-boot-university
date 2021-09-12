@@ -30,7 +30,7 @@ public class LectureTimeService {
 	}
 
 	public void save(LectureTime lectureTime) {
-		if (isUnique(lectureTime) && isTimeCorrect(lectureTime) && isDurationMoreThanThirtyMin(lectureTime)) {
+		if (isUnique(lectureTime) && isTimeCorrect(lectureTime) && isDurationMoreThanChosenTime(lectureTime)) {
 			lectureTimeDao.save(lectureTime);
 		}
 	}
@@ -49,7 +49,7 @@ public class LectureTimeService {
 		return lectureTime.getStart().isBefore(lectureTime.getEnd());
 	}
 
-	private boolean isDurationMoreThanThirtyMin(LectureTime lectureTime) {
+	private boolean isDurationMoreThanChosenTime(LectureTime lectureTime) {
 		return Duration.between(lectureTime.getStart(), lectureTime.getEnd()).toMinutes() > lectureTimeDuration;
 	}
 }
