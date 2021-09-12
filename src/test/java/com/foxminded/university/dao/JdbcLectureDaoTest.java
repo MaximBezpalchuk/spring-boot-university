@@ -129,7 +129,9 @@ public class JdbcLectureDaoTest {
 	
 	@Test
 	void givenAudienceAndDate_whenFindByAudienceAndDate_thenLectureFound() {
-		List<Lecture> actual = lectureDao.findByAudienceAndDate(Audience.builder().id(1).build(), LocalDate.of(2021, 4, 4));
+		List<Lecture> actual = lectureDao.findByAudienceDateAndTimePeriod(Audience.builder().id(1).build(), 
+				LocalDate.of(2021, 4, 4), 
+				LectureTime.builder().start(LocalTime.of(8, 0)).end(LocalTime.of(12, 0)).build());
 		Lecture lecture1 = Lecture.builder()
 				.id(1)
 				.group(actual.get(0).getGroups())

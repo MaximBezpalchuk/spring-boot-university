@@ -25,6 +25,7 @@ public class JdbcVacationDao implements VacationDao {
 	private final static String DELETE_VACATION = "DELETE FROM vacations WHERE id = ?";
 	private final static String SELECT_BY_TEACHER_ID = "SELECT * FROM vacations WHERE teacher_id=?";
 	private final static String SELECT_BY_PERIOD_AND_TEACHER_ID = "SELECT * FROM vacations WHERE start = ? AND finish = ? AND teacher_id = ?";
+	private final static String SELECT_BY_DATE_IN_PERIOD_AND_TEACHER_ID = "SELECT * FROM vacations WHERE start >= ? AND finish <= ? AND teacher_id = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private VacationRowMapper rowMapper;
@@ -76,5 +77,10 @@ public class JdbcVacationDao implements VacationDao {
 	@Override
 	public Vacation findByPeriodAndTeacher(LocalDate start, LocalDate end, Teacher teacher) {
 		return jdbcTemplate.queryForObject(SELECT_BY_PERIOD_AND_TEACHER_ID, rowMapper, start, end, teacher.getId());
+	}
+	
+	@Override
+	public List<Vacation> findByDateInPeriodAndTeacher(LocalDate date, Teacher teacher) {
+		return jdbcTemplate.query(SELECT_BY_DATE_IN_PERIOD_AND_TEACHER_ID, rowMapper, date, date, teacher.getId());
 	}
 }

@@ -80,7 +80,8 @@ public class LectureServiceTest {
 				.end(LocalTime.of(10, 0)).build())
 				.teacher(teacher)
 				.subject(Subject.builder().id(1).cathedra(cathedra).build()).build();
-		when(lectureDao.findByAudienceAndDate(lecture.getAudience(), lecture.getDate())).thenReturn(new ArrayList<>());
+		when(lectureDao.findByAudienceDateAndTimePeriod(lecture.getAudience(), lecture.getDate(), lecture.getTime()))
+				.thenReturn(new ArrayList<>());
 		lectureService.save(lecture);
 		
 		verify(lectureDao).save(lecture);
@@ -155,7 +156,7 @@ public class LectureServiceTest {
 				.teacher(Teacher.builder().id(1).build())
 				.build();
 		Vacation vacation = Vacation.builder().start(LocalDate.of(2021, 9, 5)).end(LocalDate.of(2021, 9, 7)).build();
-		when(vacationDao.findByTeacherId(lecture.getTeacher().getId())).thenReturn(Arrays.asList(vacation));
+		when(vacationDao.findByDateInPeriodAndTeacher(lecture.getDate(), lecture.getTeacher())).thenReturn(Arrays.asList(vacation));
 		lectureService.save(lecture);
 		
 		verify(lectureDao, never()).save(lecture);
@@ -219,7 +220,8 @@ public class LectureServiceTest {
 				.subject(subject)
 				.audience(Audience.builder().capacity(1).build())
 				.build();
-		when(lectureDao.findByAudienceAndDate(lecture.getAudience(), lecture.getDate())).thenReturn(Arrays.asList(lecture));
+		when(lectureDao.findByAudienceDateAndTimePeriod(lecture.getAudience(), lecture.getDate(), lecture.getTime()))
+				.thenReturn(Arrays.asList(lecture));
 		lectureService.save(lecture);
 		
 		verify(lectureDao, never()).save(lecture);

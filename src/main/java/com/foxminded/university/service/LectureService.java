@@ -1,7 +1,6 @@
 package com.foxminded.university.service;
 
 import java.time.DayOfWeek;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,8 +42,8 @@ public class LectureService {
 
 	public void save(Lecture lecture) {
 		if (!isSunday(lecture) && !isAfterHours(lecture) && !isTeacherBusy(lecture) && !isTeacherInVacation(lecture)
-				&& !isHoliday(lecture) && isTeacherCompetentWithSubject(lecture)
-				&& isAudienceCapacityEnoughForStudents(lecture) && !isAudienceOccupied(lecture) && isUnique(lecture)) {
+				&& !isHoliday(lecture) && isTeacherCompetentWithSubject(lecture) && isEnoughAudienceCapacity(lecture)
+				&& !isAudienceOccupied(lecture) && isUnique(lecture)) {
 			lectureDao.save(lecture);
 		}
 	}
@@ -76,17 +75,10 @@ public class LectureService {
 	}
 
 	private boolean isTeacherInVacation(Lecture lecture) {
-		List<Vacation> teacherVacations = vacationDao.findByTeacherId(lecture.getTeacher().getId());
-		if (!teacherVacations.isEmpty()) {
-			Vacation vacation = teacherVacations.stream().filter(
-					vac -> (!(lecture.getDate().isBefore(vac.getStart()) || lecture.getDate().isAfter(vac.getEnd()))))
-					.findAny().orElse(null);
-			if (vacation != null) {
-				return true;
-			}
-		}
+		List<Vacation> teacherVacations = vacationDao.findByDateInPeriodAndTeacher(lecture.getDate(),
+				lecture.getTeacher());
 
-		return false;
+		return !teacherVacations.isEmpty();
 	}
 
 	private boolean isHoliday(Lecture lecture) {
@@ -94,9 +86,7 @@ public class LectureService {
 		if (!holidays.isEmpty()) {
 			Holiday holiday = holidays.stream().filter(hol -> lecture.getDate().equals(hol.getDate())).findAny()
 					.orElse(null);
-			if (holiday != null) {
-				return true;
-			}
+			return holiday != null;
 		}
 
 		return false;
@@ -106,7 +96,7 @@ public class LectureService {
 		return lecture.getTeacher().getSubjects().contains(lecture.getSubject());
 	}
 
-	private boolean isAudienceCapacityEnoughForStudents(Lecture lecture) {
+	private boolean isEnoughAudienceCapacity(Lecture lecture) {
 		List<Student> studentsOnLecture = studentDao.findAll().stream()
 				.filter(student -> lecture.getGroups().contains(student.getGroup())).collect(Collectors.toList());
 
@@ -114,18 +104,9 @@ public class LectureService {
 	}
 
 	private boolean isAudienceOccupied(Lecture lecture) {
-		List<Lecture> lecturesThisDay = lectureDao.findByAudienceAndDate(lecture.getAudience(), lecture.getDate());
-		LocalTime start = lecture.getTime().getStart();
-		LocalTime end = lecture.getTime().getEnd();
-		if (!lecturesThisDay.isEmpty()) {
-			Lecture lectureWithConcurrentTime = lecturesThisDay.stream()
-					.filter(lec -> (start.isAfter(lec.getTime().getStart()) && start.isBefore(lec.getTime().getEnd()))
-							|| (end.isAfter(lec.getTime().getStart()) && end.isBefore(lec.getTime().getEnd()))
-							|| start.equals(lec.getTime().getStart()) || end.equals(lec.getTime().getEnd()))
-					.findAny().orElse(null);
-			return lectureWithConcurrentTime != null;
-		}
+		List<Lecture> existingLecture = lectureDao.findByAudienceDateAndTimePeriod(lecture.getAudience(),
+				lecture.getDate(), lecture.getTime());
 
-		return false;
+		return !existingLecture.isEmpty();
 	}
 }

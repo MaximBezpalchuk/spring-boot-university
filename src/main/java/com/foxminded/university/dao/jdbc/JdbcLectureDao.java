@@ -31,7 +31,7 @@ public class JdbcLectureDao implements LectureDao {
 	private final static String INSERT_GROUP = "INSERT INTO lectures_groups(group_id, lecture_id) VALUES (?,?)";
 	private final static String DELETE_GROUP = "DELETE FROM lectures_groups WHERE group_id = ? AND lecture_id = ?";
 	private final static String SELECT_BY_AUDIENCE_DATE_LECTURE_TIME = "SELECT * FROM lectures WHERE audience_id = ? AND date = ? AND lecture_time_id = ?";
-	private final static String SELECT_BY_AUDIENCE_AND_DATE = "SELECT * FROM lectures WHERE audience_id = ? AND date = ?";
+	private final static String SELECT_BY_AUDIENCE_AND_DATE_AND_TIME_PERIOD = "SELECT * FROM lectures WHERE audience_id = ? AND date = ? AND lecture_time_id IN (SELECT id FROM lecture_times WHERE start >= ? AND finish <= ?)";
 	private final static String SELECT_BY_TEACHER_ID_DATE_AND_LECTURE_TIME_ID = "SELECT * FROM lectures WHERE teacher_id = ? AND date = ? AND lecture_time_id = ?";
 
 	private final JdbcTemplate jdbcTemplate;
@@ -104,8 +104,8 @@ public class JdbcLectureDao implements LectureDao {
 	}
 
 	@Override
-	public List<Lecture> findByAudienceAndDate(Audience audience, LocalDate date) {
-		return jdbcTemplate.query(SELECT_BY_AUDIENCE_AND_DATE, rowMapper, audience.getId(), date);
+	public List<Lecture> findByAudienceDateAndTimePeriod(Audience audience, LocalDate date, LectureTime lectureTime) {
+		return jdbcTemplate.query(SELECT_BY_AUDIENCE_AND_DATE_AND_TIME_PERIOD, rowMapper, audience.getId(), date, lectureTime.getStart(), lectureTime.getEnd());
 	}
 
 	@Override
