@@ -13,8 +13,8 @@ import com.foxminded.university.model.Student;
 public class StudentService {
 
 	private StudentDao studentDao;
-	@Value("${groupSize}")
-	private int groupSize;
+	@Value("${maxGroupSize}")
+	private int maxGroupSize;
 
 	public StudentService(JdbcStudentDao studentDao) {
 		this.studentDao = studentDao;
@@ -47,7 +47,7 @@ public class StudentService {
 
 	private boolean isGroupFilled(Student student) {
 		List<Student> students = studentDao.findByGroupName(student.getGroup().getName());
-		if (students.size() >= groupSize) {
+		if (students.size() >= maxGroupSize) {
 			return true;
 		}
 

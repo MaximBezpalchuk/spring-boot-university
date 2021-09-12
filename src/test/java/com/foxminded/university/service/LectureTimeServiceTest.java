@@ -30,7 +30,7 @@ public class LectureTimeServiceTest {
 	
 	@BeforeEach
 	void setUp() {
-		ReflectionTestUtils.setField(lectureTimeService, "lectureTimeDuration", 30);
+		ReflectionTestUtils.setField(lectureTimeService, "minLectureDurationInMinutes", 30);
 	}
 
 

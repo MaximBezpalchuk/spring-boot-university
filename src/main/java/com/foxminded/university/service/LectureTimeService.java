@@ -14,8 +14,8 @@ import com.foxminded.university.model.LectureTime;
 public class LectureTimeService {
 
 	private LectureTimeDao lectureTimeDao;
-	@Value("${lectureTimeDuration}")
-	private int lectureTimeDuration;
+	@Value("${minLectureDurationInMinutes}")
+	private int minLectureDurationInMinutes;
 
 	public LectureTimeService(JdbcLectureTimeDao lectureTimeDao) {
 		this.lectureTimeDao = lectureTimeDao;
@@ -50,6 +50,6 @@ public class LectureTimeService {
 	}
 
 	private boolean isDurationMoreThanChosenTime(LectureTime lectureTime) {
-		return Duration.between(lectureTime.getStart(), lectureTime.getEnd()).toMinutes() > lectureTimeDuration;
+		return Duration.between(lectureTime.getStart(), lectureTime.getEnd()).toMinutes() >= minLectureDurationInMinutes;
 	}
 }

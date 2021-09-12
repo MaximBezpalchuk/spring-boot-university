@@ -31,7 +31,7 @@ public class StudentServiceTest {
 	
 	@BeforeEach
 	void setUp() {
-		ReflectionTestUtils.setField(studentService, "groupSize", 1);
+		ReflectionTestUtils.setField(studentService, "maxGroupSize", 1);
 	}
 
 	@Test
