@@ -51,10 +51,7 @@ public class StudentService {
 
 	private boolean isGroupFilled(Student student) {
 		List<Student> students = studentDao.findByGroupId(student.getGroup().getId());
-		if (students.size() >= maxGroupSize) {
-			return true;
-		}
 
-		return false;
+		return students.size() >= maxGroupSize;
 	}
 }
