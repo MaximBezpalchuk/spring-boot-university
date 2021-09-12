@@ -29,7 +29,7 @@ public class StudentService {
 	}
 
 	public void save(Student student) {
-		if (isUnique(student) && !isGroupFilled(student)) {
+		if (isUnique(student) && isStudentWithGroup(student) && !isGroupFilled(student)) {
 			studentDao.save(student);
 		}
 	}
@@ -45,8 +45,12 @@ public class StudentService {
 		return existingStudent == null || (existingStudent.getId() == student.getId());
 	}
 
+	private boolean isStudentWithGroup(Student student) {
+		return student.getGroup() != null;
+	}
+
 	private boolean isGroupFilled(Student student) {
-		List<Student> students = studentDao.findByGroupName(student.getGroup().getName());
+		List<Student> students = studentDao.findByGroupId(student.getGroup().getId());
 		if (students.size() >= maxGroupSize) {
 			return true;
 		}

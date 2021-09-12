@@ -157,7 +157,7 @@ public class JdbcStudentDaoTest {
 	}
 	
 	@Test
-	void givenGroupName_whenFindByGroupName_thenStudentsFound() {
+	void givenGroupName_whenFindByGroupId_thenStudentsFound() {
 		Student student1 = Student.builder()
 				.firstName("Kim")
 				.lastName("Cattrall")
@@ -185,7 +185,7 @@ public class JdbcStudentDaoTest {
 				.id(5)
 				.build();
 		List<Student> expected = Arrays.asList(student1, student2);
-		List<Student> actual = studentDao.findByGroupName("Mages");
+		List<Student> actual = studentDao.findByGroupId(2);
 		
 		assertEquals(expected, actual);
 	}

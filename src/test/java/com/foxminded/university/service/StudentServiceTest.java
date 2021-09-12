@@ -58,7 +58,7 @@ public class StudentServiceTest {
 		Student student = Student.builder().id(1).group(Group.builder().name("Test").build()).build();
 		when(studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
 				student.getBirthDate())).thenReturn(student);
-		when(studentDao.findByGroupName(student.getGroup().getName())).thenReturn(new ArrayList<>());
+		when(studentDao.findByGroupId(student.getGroup().getId())).thenReturn(new ArrayList<>());
 		studentService.save(student);
 
 		verify(studentDao).save(student);
@@ -69,7 +69,7 @@ public class StudentServiceTest {
 		Student student = Student.builder().id(1).group(Group.builder().name("Test").build()).build();
 		when(studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
 				student.getBirthDate())).thenReturn(student);
-		when(studentDao.findByGroupName(student.getGroup().getName())).thenReturn(new ArrayList<>());
+		when(studentDao.findByGroupId(student.getGroup().getId())).thenReturn(new ArrayList<>());
 		studentService.save(student);
 
 		verify(studentDao).save(student);
@@ -80,7 +80,17 @@ public class StudentServiceTest {
 		Student student = Student.builder().id(1).group(Group.builder().name("Test").build()).build();
 		when(studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
 				student.getBirthDate())).thenReturn(student);
-		when(studentDao.findByGroupName(student.getGroup().getName())).thenReturn(Arrays.asList(student, student));
+		when(studentDao.findByGroupId(student.getGroup().getId())).thenReturn(Arrays.asList(student, student));
+		studentService.save(student);
+
+		verify(studentDao, never()).save(student);
+	}
+	
+	@Test
+	void givenStudentWithoutGroup_whenSave_thenNotSaved() {
+		Student student = Student.builder().id(1).build();
+		when(studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
+				student.getBirthDate())).thenReturn(student);
 		studentService.save(student);
 
 		verify(studentDao, never()).save(student);
