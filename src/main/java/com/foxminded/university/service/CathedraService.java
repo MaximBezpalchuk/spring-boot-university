@@ -37,6 +37,7 @@ public class CathedraService {
 
 	private boolean isUnique(Cathedra cathedra) {
 		Cathedra existingCathedra = cathedraDao.findByName(cathedra.getName());
+		
 		return existingCathedra == null || (existingCathedra.getId() == cathedra.getId());
 	}
 }

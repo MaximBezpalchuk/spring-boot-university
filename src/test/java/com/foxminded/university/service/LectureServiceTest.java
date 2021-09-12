@@ -203,7 +203,7 @@ public class LectureServiceTest {
 				.group(Arrays.asList(group))
 				.audience(Audience.builder().capacity(1).build())
 				.build();
-		when(studentDao.findAll()).thenReturn(Arrays.asList(Student.builder().group(group).build(), Student.builder().group(group).build()));
+		when(studentDao.findByGroupId(group.getId())).thenReturn(Arrays.asList(Student.builder().group(group).build(), Student.builder().group(group).build()));
 		lectureService.save(lecture);
 		
 		verify(lectureDao, never()).save(lecture);

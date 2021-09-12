@@ -41,6 +41,7 @@ public class GroupService {
 
 	private boolean isUnique(Group group) {
 		Group existingGroup = groupDao.findByName(group.getName());
+		
 		return existingGroup == null || (existingGroup.getId() == group.getId());
 	}
 }

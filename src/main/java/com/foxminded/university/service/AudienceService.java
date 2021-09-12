@@ -37,6 +37,7 @@ public class AudienceService {
 	
 	private boolean isUnique(Audience audience) {
 		Audience existingAudience = audienceDao.findByRoom(audience.getRoom());
+		
 		return existingAudience == null || (existingAudience.getId() == audience.getId());
 	}
 }
