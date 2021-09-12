@@ -1,8 +1,8 @@
 package com.foxminded.university.service;
 
 import java.time.DayOfWeek;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -86,6 +86,7 @@ public class LectureService {
 		if (!holidays.isEmpty()) {
 			Holiday holiday = holidays.stream().filter(hol -> lecture.getDate().equals(hol.getDate())).findAny()
 					.orElse(null);
+
 			return holiday != null;
 		}
 
@@ -97,8 +98,9 @@ public class LectureService {
 	}
 
 	private boolean isEnoughAudienceCapacity(Lecture lecture) {
-		List<Student> studentsOnLecture = studentDao.findAll().stream()
-				.filter(student -> lecture.getGroups().contains(student.getGroup())).collect(Collectors.toList());
+		List<Student> studentsOnLecture = new ArrayList<>();
+		lecture.getGroups().stream().map(group -> studentDao.findByGroupId(group.getId()))
+				.forEach(list -> studentsOnLecture.addAll(list));
 
 		return studentsOnLecture.isEmpty() || (studentsOnLecture.size() <= lecture.getAudience().getCapacity());
 	}
