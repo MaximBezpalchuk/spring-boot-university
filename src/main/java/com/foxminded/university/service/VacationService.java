@@ -2,6 +2,7 @@ package com.foxminded.university.service;
 
 import java.time.Period;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,12 +16,8 @@ import com.foxminded.university.model.Vacation;
 public class VacationService {
 
 	private VacationDao vacationDao;
-	@Value("${assistantMaxVacation}")
-	private int assistantMaxVacation;
-	@Value("${professorMaxVacation}")
-	private int professorMaxVacation;
-	@Value("${unknownMaxVacation}")
-	private int unknownMaxVacation;
+	@Value("#{${maxVacation}}")
+	private Map<Degree, Integer> maxVacation;
 
 	public VacationService(JdbcVacationDao vacationDao) {
 		this.vacationDao = vacationDao;
@@ -71,9 +68,9 @@ public class VacationService {
 	private boolean isVacationDurationLessOrEqualsThanMax(Vacation vacation) {
 		int vacationDays = getVacationDaysCount(vacation);
 		Degree actualDegree = vacation.getTeacher().getDegree();
-		if ((actualDegree == Degree.ASSISTANT && vacationDays <= assistantMaxVacation)
-				|| (actualDegree == Degree.PROFESSOR && vacationDays <= professorMaxVacation)
-				|| (actualDegree == Degree.UNKNOWN && vacationDays <= unknownMaxVacation)) {
+		if ((actualDegree == Degree.ASSISTANT && vacationDays <= maxVacation.get(actualDegree))
+				|| (actualDegree == Degree.PROFESSOR && vacationDays <= maxVacation.get(actualDegree))
+				|| (actualDegree == Degree.UNKNOWN && vacationDays <= maxVacation.get(actualDegree))) {
 			return true;
 		}
 

@@ -7,7 +7,9 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,9 +34,11 @@ public class VacationServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		ReflectionTestUtils.setField(vacationService, "assistantMaxVacation", 16);
-		ReflectionTestUtils.setField(vacationService, "professorMaxVacation", 18);
-		ReflectionTestUtils.setField(vacationService, "unknownMaxVacation", 14);
+		Map<Degree, Integer> maxVacation = new HashMap<>();
+		maxVacation.put(Degree.PROFESSOR, 20);
+		maxVacation.put(Degree.ASSISTANT, 16);
+		maxVacation.put(Degree.UNKNOWN, 14);
+		ReflectionTestUtils.setField(vacationService, "maxVacation", maxVacation);
 	}
 
 	@Test
