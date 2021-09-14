@@ -3,7 +3,6 @@ package com.foxminded.university.dao;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -52,14 +51,8 @@ public class JdbcAudienceDaoTest {
 	}
 
 	@Test
-	void givenNotExistingAudience_whenFindById_thenIncorrestResultSize() {
-		Exception exception = assertThrows(EmptyResultDataAccessException.class, () -> {
-			audienceDao.findById(100);
-		});
-		String expectedMessage = "Incorrect result size";
-		String actualMessage = exception.getMessage();
-
-		assertTrue(actualMessage.contains(expectedMessage));
+	void givenNotExistingAudience_whenFindById_thenReturnNull() {
+		assertNull(audienceDao.findById(100));
 	}
 
 	@Test

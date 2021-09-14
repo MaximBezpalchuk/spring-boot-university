@@ -1,8 +1,7 @@
 package com.foxminded.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
@@ -12,7 +11,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
@@ -57,14 +55,8 @@ public class JdbcSubjectDaoTest {
 	}
 
 	@Test
-	void givenNotExistingSubject_whenFindById_thenIncorrestResultSize() {
-		Exception exception = assertThrows(EmptyResultDataAccessException.class, () -> {
-			subjectDao.findById(100);
-		});
-		String expectedMessage = "Incorrect result size";
-		String actualMessage = exception.getMessage();
-
-		assertTrue(actualMessage.contains(expectedMessage));
+	void givenNotExistingSubject_whenFindById_thenReturnNull() {
+		assertNull(subjectDao.findById(100));
 	}
 
 	@Test

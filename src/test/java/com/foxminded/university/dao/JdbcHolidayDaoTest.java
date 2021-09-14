@@ -1,8 +1,7 @@
 package com.foxminded.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
@@ -13,7 +12,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
@@ -58,14 +56,8 @@ public class JdbcHolidayDaoTest {
 	}
 
 	@Test
-	void givenNotExistingHoliday_whenFindById_thenIncorrestResultSize() {
-		Exception exception = assertThrows(EmptyResultDataAccessException.class, () -> {
-			holidayDao.findById(100);
-		});
-		String expectedMessage = "Incorrect result size";
-		String actualMessage = exception.getMessage();
-
-		assertTrue(actualMessage.contains(expectedMessage));
+	void givenNotExistingHoliday_whenFindById_thenReturnNull() {
+		assertNull(holidayDao.findById(100));
 	}
 
 	@Test
