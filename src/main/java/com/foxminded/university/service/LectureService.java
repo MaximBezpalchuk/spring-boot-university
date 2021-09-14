@@ -2,7 +2,9 @@ package com.foxminded.university.service;
 
 import java.time.DayOfWeek;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.foxminded.university.dao.LectureDao;
@@ -20,6 +22,8 @@ public class LectureService {
 	private JdbcVacationDao vacationDao;
 	private JdbcHolidayDao holidayDao;
 	private JdbcStudentDao studentDao;
+	@Value("#{${workingHours}}")
+	private Map<String, Integer> workingHours;
 
 	public LectureService(JdbcLectureDao lectureDao, JdbcVacationDao vacationDao, JdbcHolidayDao holidayDao,
 			JdbcStudentDao studentDao) {
@@ -61,14 +65,16 @@ public class LectureService {
 	}
 
 	private boolean isAfterHours(Lecture lecture) {
-		return lecture.getTime().getEnd().getHour() > 22 || lecture.getTime().getStart().getHour() < 8;
+		return lecture.getTime().getEnd().getHour() > workingHours.get("end") || lecture.getTime().getStart().getHour() < workingHours.get("start");
 	}
 
 	private boolean isTeacherBusy(Lecture lecture) {
 		List<Lecture> lecturesWithSameTeacherThisTime = lectureDao
 				.findLecturesByTeacherDateAndTime(lecture.getTeacher(), lecture.getDate(), lecture.getTime());
+		boolean isSameLecture = lecturesWithSameTeacherThisTime.stream().filter(lec -> lec.getId() != lecture.getId())
+				.findAny().isPresent();
 
-		return !lecturesWithSameTeacherThisTime.isEmpty();
+		return !lecturesWithSameTeacherThisTime.isEmpty() && isSameLecture;
 	}
 
 	private boolean isTeacherInVacation(Lecture lecture) {

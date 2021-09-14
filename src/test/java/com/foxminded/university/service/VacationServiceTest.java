@@ -64,8 +64,11 @@ public class VacationServiceTest {
 	void givenNewVacation_whenSave_thenSaved() {
 		LocalDate start = LocalDate.of(2021, 1, 1);
 		LocalDate end = LocalDate.of(2021, 1, 2);
-		Vacation vacation = Vacation.builder().start(start).end(end)
-				.teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build()).build();
+		Vacation vacation = Vacation.builder()
+				.start(start)
+				.end(end)
+				.teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build())
+				.build();
 		vacationService.save(vacation);
 
 		verify(vacationDao).save(vacation);
@@ -75,8 +78,12 @@ public class VacationServiceTest {
 	void givenExistingVacation_whenSave_thenSaved() {
 		LocalDate start = LocalDate.of(2021, 1, 1);
 		LocalDate end = LocalDate.of(2021, 1, 2);
-		Vacation vacation = Vacation.builder().id(1).start(start).end(end)
-				.teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build()).build();
+		Vacation vacation = Vacation.builder()
+				.id(1)
+				.start(start)
+				.end(end)
+				.teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build())
+				.build();
 		when(vacationDao.findByPeriodAndTeacher(start, end, vacation.getTeacher())).thenReturn(vacation);
 		vacationService.save(vacation);
 
@@ -97,7 +104,11 @@ public class VacationServiceTest {
 	void givenVacationWithWrongDates_whenSave_thenNotSaved() {
 		LocalDate start = LocalDate.of(2021, 1, 1);
 		LocalDate end = LocalDate.of(2020, 1, 1);
-		Vacation vacation = Vacation.builder().id(1).start(start).end(end).build();
+		Vacation vacation = Vacation.builder()
+				.id(1)
+				.start(start)
+				.end(end)
+				.build();
 		vacationService.save(vacation);
 
 		verify(vacationDao, never()).save(vacation);
@@ -107,8 +118,12 @@ public class VacationServiceTest {
 	void givenVacationWithWrongVacation_whenSave_thenNotSaved() {
 		LocalDate start = LocalDate.of(2021, 1, 1);
 		LocalDate end = LocalDate.of(2021, 1, 25);
-		Vacation vacation = Vacation.builder().id(1).start(start).end(end)
-				.teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build()).build();
+		Vacation vacation = Vacation.builder()
+				.id(1)
+				.start(start)
+				.end(end)
+				.teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build())
+				.build();
 		vacationService.save(vacation);
 
 		verify(vacationDao, never()).save(vacation);

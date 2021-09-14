@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -53,7 +54,11 @@ public class TeacherServiceTest {
 
 	@Test
 	void givenExistingTeacher_whenSave_thenSaved() {
-		Teacher teacher = Teacher.builder().id(1).build();
+		Teacher teacher = Teacher.builder().id(1)
+				.firstName("TestFirstName")
+				.lastName("TestLastName")
+				.birthDate(LocalDate.of(1920, 2, 12))
+				.build();
 		when(teacherDao.findByFullNameAndBirthDate(teacher.getFirstName(), teacher.getLastName(),
 				teacher.getBirthDate())).thenReturn(teacher);
 		teacherService.save(teacher);

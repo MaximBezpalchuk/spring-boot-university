@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -53,7 +54,10 @@ public class HolidayServiceTest {
 
 	@Test
 	void givenExistingHoliday_whenSave_thenSaved() {
-		Holiday holiday = Holiday.builder().build();
+		Holiday holiday = Holiday.builder()
+				.name("TestName")
+				.date(LocalDate.of(2020, 1, 1))
+				.build();
 		when(holidayDao.findByNameAndDate(holiday.getName(), holiday.getDate())).thenReturn(holiday);
 		holidayService.save(holiday);
 

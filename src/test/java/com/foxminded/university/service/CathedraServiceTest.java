@@ -52,7 +52,7 @@ public class CathedraServiceTest {
 	
 	@Test
 	void givenExistingCathedra_whenSave_thenSaved() {
-		Cathedra cathedra = Cathedra.builder().build();
+		Cathedra cathedra = Cathedra.builder().name("TestName").build();
 		when(cathedraDao.findByName(cathedra.getName())).thenReturn(cathedra);
 		cathedraService.save(cathedra);
 		

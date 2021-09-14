@@ -66,14 +66,6 @@ public class VacationService {
 	}
 
 	private boolean isVacationDurationLessOrEqualsThanMax(Vacation vacation) {
-		int vacationDays = getVacationDaysCount(vacation);
-		Degree actualDegree = vacation.getTeacher().getDegree();
-		if ((actualDegree == Degree.ASSISTANT && vacationDays <= maxVacation.get(actualDegree))
-				|| (actualDegree == Degree.PROFESSOR && vacationDays <= maxVacation.get(actualDegree))
-				|| (actualDegree == Degree.UNKNOWN && vacationDays <= maxVacation.get(actualDegree))) {
-			return true;
-		}
-
-		return false;
+		return getVacationDaysCount(vacation) <= maxVacation.get(vacation.getTeacher().getDegree());
 	}
 }

@@ -54,7 +54,7 @@ public class AudienceServiceTest {
 	
 	@Test
 	void givenExistingAudience_whenSave_thenSaved() {
-		Audience audience = Audience.builder().id(1).build();
+		Audience audience = Audience.builder().id(1).room(123).build();
 		when(audienceDao.findByRoom(audience.getRoom())).thenReturn(audience);
 		audienceService.save(audience);
 		

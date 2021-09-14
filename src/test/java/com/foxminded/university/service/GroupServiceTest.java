@@ -54,7 +54,9 @@ public class GroupServiceTest {
 
 	@Test
 	void givenExistingGroup_whenSave_thenSaved() {
-		Group group = Group.builder().build();
+		Group group = Group.builder()
+				.name("TestName")
+				.build();
 		when(groupDao.findByName(group.getName())).thenReturn(group);
 		groupService.save(group);
 

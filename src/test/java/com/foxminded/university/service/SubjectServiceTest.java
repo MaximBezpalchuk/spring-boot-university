@@ -53,7 +53,7 @@ public class SubjectServiceTest {
 
 	@Test
 	void givenExistingSubject_whenSave_thenSaved() {
-		Subject subject = Subject.builder().id(1).build();
+		Subject subject = Subject.builder().id(1).name("TestName").build();
 		when(subjectDao.findByName(subject.getName())).thenReturn(subject);
 		subjectService.save(subject);
 

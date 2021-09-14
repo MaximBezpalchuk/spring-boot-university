@@ -81,7 +81,7 @@ public class LectureTimeServiceTest {
 	}
 	
 	@Test
-	void givenLectureTimeLessThan30Minutes_whenSave_thenNotSaved() {
+	void givenLectureTimeLessThanMinLectureDuration_whenSave_thenNotSaved() {
 		LocalTime start = LocalTime.of(9, 0);
 		LocalTime end = LocalTime.of(9, 20);
 		LectureTime lectureTime = LectureTime.builder()

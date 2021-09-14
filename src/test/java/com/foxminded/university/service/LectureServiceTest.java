@@ -8,13 +8,17 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
 import com.foxminded.university.dao.jdbc.JdbcLectureDao;
@@ -44,6 +48,14 @@ public class LectureServiceTest {
 	private JdbcStudentDao studentDao;
 	@InjectMocks
 	private LectureService lectureService;
+	
+	@BeforeEach
+	void setUp() {
+		Map<String, Integer> workingHours = new HashMap<>();
+		workingHours.put("start", 8);
+		workingHours.put("end", 22);
+		ReflectionTestUtils.setField(lectureService, "workingHours", workingHours);
+	}
 
 	@Test
 	void givenListOfLectures_whenFindAll_thenAllExistingLecturesFound() {
@@ -169,7 +181,7 @@ public class LectureServiceTest {
 				.time(LectureTime.builder().id(1).start(LocalTime.of(9, 0)).end(LocalTime.of(10, 0)).build())
 				.teacher(Teacher.builder().id(1).build())
 				.build();
-		when(holidayDao.findAll()).thenReturn(Arrays.asList(Holiday.builder().date(LocalDate.of(2021, 9, 6)).name("Test").build()));
+		when(holidayDao.findByDate(lecture.getDate())).thenReturn(Arrays.asList(Holiday.builder().date(LocalDate.of(2021, 9, 6)).name("Test").build()));
 		lectureService.save(lecture);
 		
 		verify(lectureDao, never()).save(lecture);

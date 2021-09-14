@@ -5,6 +5,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -66,7 +67,12 @@ public class StudentServiceTest {
 
 	@Test
 	void givenExistingStudent_whenSave_thenSaved() {
-		Student student = Student.builder().id(1).group(Group.builder().name("Test").build()).build();
+		Student student = Student.builder()
+				.id(1)
+				.firstName("TestFirstName")
+				.lastName("TestLastName")
+				.group(Group.builder().id(10).name("Test").build())
+				.build();
 		when(studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
 				student.getBirthDate())).thenReturn(student);
 		when(studentDao.findByGroupId(student.getGroup().getId())).thenReturn(new ArrayList<>());
@@ -77,7 +83,12 @@ public class StudentServiceTest {
 	
 	@Test
 	void givenStudentWhenGroupIsFull_whenSave_thenNotSaved() {
-		Student student = Student.builder().id(1).group(Group.builder().name("Test").build()).build();
+		Student student = Student.builder()
+				.id(1)
+				.firstName("TestFirstName")
+				.lastName("TestLastName")
+				.group(Group.builder().id(10).name("Test").build())
+				.build();
 		when(studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
 				student.getBirthDate())).thenReturn(student);
 		when(studentDao.findByGroupId(student.getGroup().getId())).thenReturn(Arrays.asList(student, student));
@@ -88,7 +99,12 @@ public class StudentServiceTest {
 	
 	@Test
 	void givenStudentWithoutGroup_whenSave_thenNotSaved() {
-		Student student = Student.builder().id(1).build();
+		Student student = Student.builder()
+				.id(1)
+				.firstName("TestFirstName")
+				.lastName("TestLastName")
+				.birthDate(LocalDate.of(1900, 1, 1))
+				.build();
 		when(studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
 				student.getBirthDate())).thenReturn(student);
 		studentService.save(student);
