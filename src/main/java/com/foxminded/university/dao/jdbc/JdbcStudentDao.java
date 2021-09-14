@@ -5,6 +5,7 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -26,7 +27,6 @@ public class JdbcStudentDao implements StudentDao {
 	private final static String SELECT_BY_FULL_NAME_AND_BIRTHDAY = "SELECT * FROM students WHERE first_name = ? AND last_name = ? AND birth_date = ?";
 	private final static String SELECT_BY_GROUP_ID = "SELECT * FROM students WHERE group_id = ?";
 
-	
 	private final JdbcTemplate jdbcTemplate;
 	private StudentRowMapper rowMapper;
 
@@ -42,7 +42,11 @@ public class JdbcStudentDao implements StudentDao {
 
 	@Override
 	public Student findById(int id) {
-		return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+		try {
+			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
 	}
 
 	@Override
@@ -103,9 +107,14 @@ public class JdbcStudentDao implements StudentDao {
 
 	@Override
 	public Student findByFullNameAndBirthDate(String firstName, String lastName, LocalDate birthDate) {
-		return jdbcTemplate.queryForObject(SELECT_BY_FULL_NAME_AND_BIRTHDAY, rowMapper, firstName, lastName, birthDate);
+		try {
+			return jdbcTemplate.queryForObject(SELECT_BY_FULL_NAME_AND_BIRTHDAY, rowMapper, firstName, lastName,
+					birthDate);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
 	}
-	
+
 	@Override
 	public List<Student> findByGroupId(int id) {
 		return jdbcTemplate.query(SELECT_BY_GROUP_ID, rowMapper, id);

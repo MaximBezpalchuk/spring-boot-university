@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Predicate;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -43,7 +44,11 @@ public class JdbcTeacherDao implements TeacherDao {
 
 	@Override
 	public Teacher findById(int id) {
-		return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+		try {
+			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
 	}
 
 	@Override
@@ -100,6 +105,11 @@ public class JdbcTeacherDao implements TeacherDao {
 
 	@Override
 	public Teacher findByFullNameAndBirthDate(String firstName, String lastName, LocalDate birthDate) {
-		return jdbcTemplate.queryForObject(SELECT_BY_FULL_NAME_AND_BIRTHDAY, rowMapper, firstName, lastName, birthDate);
+		try {
+			return jdbcTemplate.queryForObject(SELECT_BY_FULL_NAME_AND_BIRTHDAY, rowMapper, firstName, lastName,
+					birthDate);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
 	}
 }

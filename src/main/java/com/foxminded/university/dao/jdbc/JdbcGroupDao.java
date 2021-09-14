@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -39,7 +40,11 @@ public class JdbcGroupDao implements GroupDao {
 
 	@Override
 	public Group findById(int id) {
-		return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+		try {
+			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
 	}
 
 	@Override
@@ -72,6 +77,10 @@ public class JdbcGroupDao implements GroupDao {
 
 	@Override
 	public Group findByName(String name) {
-		return jdbcTemplate.queryForObject(SELECT_BY_NAME, rowMapper, name);
+		try {
+			return jdbcTemplate.queryForObject(SELECT_BY_NAME, rowMapper, name);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
 	}
 }

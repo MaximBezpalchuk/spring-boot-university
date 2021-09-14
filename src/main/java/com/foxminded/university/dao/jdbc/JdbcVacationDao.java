@@ -5,6 +5,7 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -42,7 +43,11 @@ public class JdbcVacationDao implements VacationDao {
 
 	@Override
 	public Vacation findById(int id) {
-		return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+		try {
+			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
 	}
 
 	@Override
@@ -76,9 +81,13 @@ public class JdbcVacationDao implements VacationDao {
 
 	@Override
 	public Vacation findByPeriodAndTeacher(LocalDate start, LocalDate end, Teacher teacher) {
-		return jdbcTemplate.queryForObject(SELECT_BY_PERIOD_AND_TEACHER_ID, rowMapper, start, end, teacher.getId());
+		try {
+			return jdbcTemplate.queryForObject(SELECT_BY_PERIOD_AND_TEACHER_ID, rowMapper, start, end, teacher.getId());
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
 	}
-	
+
 	@Override
 	public List<Vacation> findByDateInPeriodAndTeacher(LocalDate date, Teacher teacher) {
 		return jdbcTemplate.query(SELECT_BY_DATE_IN_PERIOD_AND_TEACHER_ID, rowMapper, date, date, teacher.getId());

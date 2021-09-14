@@ -5,6 +5,7 @@ import java.sql.Statement;
 import java.time.LocalTime;
 import java.util.List;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -39,7 +40,11 @@ public class JdbcLectureTimeDao implements LectureTimeDao {
 
 	@Override
 	public LectureTime findById(int id) {
-		return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+		try {
+			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
 	}
 
 	@Override
@@ -67,6 +72,10 @@ public class JdbcLectureTimeDao implements LectureTimeDao {
 
 	@Override
 	public LectureTime findByPeriod(LocalTime start, LocalTime end) {
-		return jdbcTemplate.queryForObject(SELECT_BY_PERIOD, rowMapper, start, end);
+		try {
+			return jdbcTemplate.queryForObject(SELECT_BY_PERIOD, rowMapper, start, end);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
 	}
 }
