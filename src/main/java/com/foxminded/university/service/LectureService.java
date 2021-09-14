@@ -2,7 +2,6 @@ package com.foxminded.university.service;
 
 import java.time.DayOfWeek;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -88,8 +87,8 @@ public class LectureService {
 	}
 
 	private boolean isEnoughAudienceCapacity(Lecture lecture) {
-		Integer studentsOnLectureCount = lecture.getGroups().stream().map(group -> studentDao.findByGroupId(group.getId()))
-				.collect(Collectors.summingInt(List::size));
+		Integer studentsOnLectureCount = lecture.getGroups().stream()
+				.map(group -> studentDao.findByGroupId(group.getId())).mapToInt(List::size).sum();
 
 		return studentsOnLectureCount == 0 || (studentsOnLectureCount <= lecture.getAudience().getCapacity());
 	}
