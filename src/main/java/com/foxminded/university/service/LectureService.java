@@ -106,9 +106,9 @@ public class LectureService {
 	}
 
 	private boolean isAudienceOccupied(Lecture lecture) {
-		List<Lecture> existingLecture = lectureDao.findByAudienceDateAndTimePeriod(lecture.getAudience(),
-				lecture.getDate(), lecture.getTime());
+		Lecture existingLecture = lectureDao.findByAudienceDateAndLectureTime(lecture.getAudience(), lecture.getDate(),
+				lecture.getTime());
 
-		return !existingLecture.isEmpty();
+		return existingLecture != null && existingLecture.getId() != lecture.getId();
 	}
 }

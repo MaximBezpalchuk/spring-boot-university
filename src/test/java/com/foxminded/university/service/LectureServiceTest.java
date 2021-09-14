@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -80,8 +79,8 @@ public class LectureServiceTest {
 				.end(LocalTime.of(10, 0)).build())
 				.teacher(teacher)
 				.subject(Subject.builder().id(1).cathedra(cathedra).build()).build();
-		when(lectureDao.findByAudienceDateAndTimePeriod(lecture.getAudience(), lecture.getDate(), lecture.getTime()))
-				.thenReturn(new ArrayList<>());
+		when(lectureDao.findByAudienceDateAndLectureTime(lecture.getAudience(), lecture.getDate(), lecture.getTime()))
+				.thenReturn(null);
 		lectureService.save(lecture);
 		
 		verify(lectureDao).save(lecture);
@@ -220,8 +219,9 @@ public class LectureServiceTest {
 				.subject(subject)
 				.audience(Audience.builder().capacity(1).build())
 				.build();
-		when(lectureDao.findByAudienceDateAndTimePeriod(lecture.getAudience(), lecture.getDate(), lecture.getTime()))
-				.thenReturn(Arrays.asList(lecture));
+		Lecture lecture2 = Lecture.builder().id(2).build();
+		when(lectureDao.findByAudienceDateAndLectureTime(lecture.getAudience(), lecture.getDate(), lecture.getTime()))
+				.thenReturn(lecture2);
 		lectureService.save(lecture);
 		
 		verify(lectureDao, never()).save(lecture);

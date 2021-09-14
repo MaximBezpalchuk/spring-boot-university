@@ -7,10 +7,7 @@ import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -129,30 +126,20 @@ public class JdbcLectureDaoTest {
 	
 	@Test
 	void givenAudienceAndDate_whenFindByAudienceAndDate_thenLectureFound() {
-		List<Lecture> actual = lectureDao.findByAudienceDateAndTimePeriod(Audience.builder().id(1).build(), 
+		Lecture actual = lectureDao.findByAudienceDateAndLectureTime(Audience.builder().id(1).build(), 
 				LocalDate.of(2021, 4, 4), 
-				LectureTime.builder().start(LocalTime.of(8, 0)).end(LocalTime.of(12, 0)).build());
-		Lecture lecture1 = Lecture.builder()
+				LectureTime.builder().id(1).build());
+		Lecture expected = Lecture.builder()
 				.id(1)
-				.group(actual.get(0).getGroups())
-				.cathedra(actual.get(0).getCathedra())
-				.subject(actual.get(0).getSubject())
+				.group(actual.getGroups())
+				.cathedra(actual.getCathedra())
+				.subject(actual.getSubject())
 				.date(LocalDate.of(2021, 4, 4))
-				.time(actual.get(0).getTime())
-				.audience(actual.get(0).getAudience())
-				.teacher(actual.get(0).getTeacher())
+				.time(actual.getTime())
+				.audience(actual.getAudience())
+				.teacher(actual.getTeacher())
 				.build();
-		Lecture lecture2 = Lecture.builder()
-		.id(2)
-		.group(actual.get(1).getGroups())
-		.cathedra(actual.get(1).getCathedra())
-		.subject(actual.get(1).getSubject())
-		.date(LocalDate.of(2021, 4, 4))
-		.time(LectureTime.builder().id(2).start(LocalTime.of(9, 40)).end(LocalTime.of(11, 10)).build())
-		.audience(actual.get(1).getAudience())
-		.teacher(actual.get(1).getTeacher())
-		.build();
-		List<Lecture> expected = Arrays.asList(lecture1, lecture2);
+		
 
 		assertEquals(expected, actual);
 	}
