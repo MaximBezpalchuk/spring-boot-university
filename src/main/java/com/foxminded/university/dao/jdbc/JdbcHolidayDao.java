@@ -24,6 +24,7 @@ public class JdbcHolidayDao implements HolidayDao {
 	private final static String UPDATE_HOLIDAY = "UPDATE holidays SET name=?, date=?, cathedra_id=? WHERE id=?";
 	private final static String DELETE_HOLIDAY = "DELETE FROM holidays WHERE id = ?";
 	private final static String SELECT_BY_NAME_AND_DATE = "SELECT * FROM holidays WHERE name = ? AND date = ?";
+	private final static String SELECT_BY_DATE = "SELECT * FROM holidays WHERE date = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private HolidayRowMapper rowMapper;
@@ -75,6 +76,15 @@ public class JdbcHolidayDao implements HolidayDao {
 	public Holiday findByNameAndDate(String name, LocalDate date) {
 		try {
 			return jdbcTemplate.queryForObject(SELECT_BY_NAME_AND_DATE, rowMapper, name, date);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
+	}
+	
+	@Override
+	public List<Holiday> findByDate(LocalDate date) {
+		try {
+			return jdbcTemplate.query(SELECT_BY_DATE, rowMapper,  date);
 		} catch (EmptyResultDataAccessException e) {
 			return null;
 		}

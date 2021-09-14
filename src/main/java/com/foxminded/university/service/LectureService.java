@@ -11,7 +11,6 @@ import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
 import com.foxminded.university.dao.jdbc.JdbcLectureDao;
 import com.foxminded.university.dao.jdbc.JdbcStudentDao;
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
-import com.foxminded.university.model.Holiday;
 import com.foxminded.university.model.Lecture;
 import com.foxminded.university.model.Student;
 import com.foxminded.university.model.Vacation;
@@ -82,15 +81,7 @@ public class LectureService {
 	}
 
 	private boolean isHoliday(Lecture lecture) {
-		List<Holiday> holidays = holidayDao.findAll();
-		if (!holidays.isEmpty()) {
-			Holiday holiday = holidays.stream().filter(hol -> lecture.getDate().equals(hol.getDate())).findAny()
-					.orElse(null);
-
-			return holiday != null;
-		}
-
-		return false;
+			return !holidayDao.findByDate(lecture.getDate()).isEmpty();
 	}
 
 	private boolean isTeacherCompetentWithSubject(Lecture lecture) {

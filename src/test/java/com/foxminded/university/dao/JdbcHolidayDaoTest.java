@@ -7,6 +7,8 @@ import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -112,6 +114,19 @@ public class JdbcHolidayDaoTest {
 				.date(LocalDate.of(2021, 12, 25))
 				.cathedra(actual.getCathedra())
 				.build();
+
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	void givenHolidayName_whenFindByDate_thenHolidayFound() {
+		List<Holiday> actual = holidayDao.findByDate(LocalDate.of(2021, 12, 25));
+		List<Holiday> expected = Arrays.asList(Holiday.builder()
+				.id(1)
+				.name("Christmas")
+				.date(LocalDate.of(2021, 12, 25))
+				.cathedra(actual.get(0).getCathedra())
+				.build());
 
 		assertEquals(expected, actual);
 	}
