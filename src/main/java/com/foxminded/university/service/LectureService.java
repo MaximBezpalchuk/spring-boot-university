@@ -1,8 +1,8 @@
 package com.foxminded.university.service;
 
 import java.time.DayOfWeek;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,6 @@ import com.foxminded.university.dao.jdbc.JdbcLectureDao;
 import com.foxminded.university.dao.jdbc.JdbcStudentDao;
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
 import com.foxminded.university.model.Lecture;
-import com.foxminded.university.model.Student;
 import com.foxminded.university.model.Vacation;
 
 @Service
@@ -81,7 +80,7 @@ public class LectureService {
 	}
 
 	private boolean isHoliday(Lecture lecture) {
-			return !holidayDao.findByDate(lecture.getDate()).isEmpty();
+		return !holidayDao.findByDate(lecture.getDate()).isEmpty();
 	}
 
 	private boolean isTeacherCompetentWithSubject(Lecture lecture) {
@@ -89,11 +88,10 @@ public class LectureService {
 	}
 
 	private boolean isEnoughAudienceCapacity(Lecture lecture) {
-		List<Student> studentsOnLecture = new ArrayList<>();
-		lecture.getGroups().stream().map(group -> studentDao.findByGroupId(group.getId()))
-				.forEach(list -> studentsOnLecture.addAll(list));
+		Integer studentsOnLectureCount = lecture.getGroups().stream().map(group -> studentDao.findByGroupId(group.getId()))
+				.collect(Collectors.summingInt(List::size));
 
-		return studentsOnLecture.isEmpty() || (studentsOnLecture.size() <= lecture.getAudience().getCapacity());
+		return studentsOnLectureCount == 0 || (studentsOnLectureCount <= lecture.getAudience().getCapacity());
 	}
 
 	private boolean isAudienceOccupied(Lecture lecture) {
