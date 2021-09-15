@@ -2,12 +2,14 @@ package com.foxminded.university.service;
 
 import java.time.DayOfWeek;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.foxminded.university.dao.HolidayDao;
 import com.foxminded.university.dao.LectureDao;
+import com.foxminded.university.dao.StudentDao;
+import com.foxminded.university.dao.VacationDao;
 import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
 import com.foxminded.university.dao.jdbc.JdbcLectureDao;
 import com.foxminded.university.dao.jdbc.JdbcStudentDao;
@@ -19,11 +21,13 @@ import com.foxminded.university.model.Vacation;
 public class LectureService {
 
 	private LectureDao lectureDao;
-	private JdbcVacationDao vacationDao;
-	private JdbcHolidayDao holidayDao;
-	private JdbcStudentDao studentDao;
-	@Value("#{${workingHours}}")
-	private Map<String, Integer> workingHours;
+	private VacationDao vacationDao;
+	private HolidayDao holidayDao;
+	private StudentDao studentDao;
+	@Value("startWorkingDay")
+	private int startWorkingDay;
+	@Value("endWorkingDay")
+	private int endWorkingDay;
 
 	public LectureService(JdbcLectureDao lectureDao, JdbcVacationDao vacationDao, JdbcHolidayDao holidayDao,
 			JdbcStudentDao studentDao) {
@@ -65,7 +69,7 @@ public class LectureService {
 	}
 
 	private boolean isAfterHours(Lecture lecture) {
-		return lecture.getTime().getEnd().getHour() > workingHours.get("end") || lecture.getTime().getStart().getHour() < workingHours.get("start");
+		return lecture.getTime().getEnd().getHour() > startWorkingDay || lecture.getTime().getStart().getHour() < endWorkingDay;
 	}
 
 	private boolean isTeacherBusy(Lecture lecture) {
