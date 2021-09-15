@@ -8,9 +8,7 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -51,10 +49,8 @@ public class LectureServiceTest {
 	
 	@BeforeEach
 	void setUp() {
-		Map<String, Integer> workingHours = new HashMap<>();
-		workingHours.put("start", 8);
-		workingHours.put("end", 22);
-		ReflectionTestUtils.setField(lectureService, "workingHours", workingHours);
+		ReflectionTestUtils.setField(lectureService, "startWorkingDay", 8);
+		ReflectionTestUtils.setField(lectureService, "endWorkingDay", 22);
 	}
 
 	@Test
@@ -85,6 +81,7 @@ public class LectureServiceTest {
 				.build();
 		Lecture lecture = Lecture.builder()
 				.id(1)
+				.audience(Audience.builder().capacity(10).build())
 				.date(LocalDate.of(2021, 9, 8))
 				.time(LectureTime.builder()
 				.start(LocalTime.of(9, 0))
@@ -204,7 +201,7 @@ public class LectureServiceTest {
 	@Test
 	void givenLectureWithMoreStudentsThenAudienceCapacity_whenSave_thenNotSaved() {
 		Subject subject = Subject.builder().build();
-		Group group = Group.builder().build();
+		Group group = Group.builder().id(1).build();
 		Lecture lecture = Lecture.builder()
 				.id(1)
 				.date(LocalDate.of(2021, 9, 6))
@@ -214,7 +211,7 @@ public class LectureServiceTest {
 				.group(Arrays.asList(group))
 				.audience(Audience.builder().capacity(1).build())
 				.build();
-		when(studentDao.findByGroupId(group.getId())).thenReturn(Arrays.asList(Student.builder().group(group).build(), Student.builder().group(group).build()));
+		when(studentDao.findByGroupId(1)).thenReturn(Arrays.asList(Student.builder().build(), Student.builder().build()));
 		lectureService.save(lecture);
 		
 		verify(lectureDao, never()).save(lecture);

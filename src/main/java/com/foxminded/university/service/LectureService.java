@@ -14,8 +14,8 @@ import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
 import com.foxminded.university.dao.jdbc.JdbcLectureDao;
 import com.foxminded.university.dao.jdbc.JdbcStudentDao;
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
+import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Lecture;
-import com.foxminded.university.model.Vacation;
 
 @Service
 public class LectureService {
@@ -24,9 +24,9 @@ public class LectureService {
 	private VacationDao vacationDao;
 	private HolidayDao holidayDao;
 	private StudentDao studentDao;
-	@Value("startWorkingDay")
+	@Value("${startWorkingDay}")
 	private int startWorkingDay;
-	@Value("endWorkingDay")
+	@Value("${endWorkingDay}")
 	private int endWorkingDay;
 
 	public LectureService(JdbcLectureDao lectureDao, JdbcVacationDao vacationDao, JdbcHolidayDao holidayDao,
@@ -69,23 +69,17 @@ public class LectureService {
 	}
 
 	private boolean isAfterHours(Lecture lecture) {
-		return lecture.getTime().getEnd().getHour() > startWorkingDay || lecture.getTime().getStart().getHour() < endWorkingDay;
+		return lecture.getTime().getEnd().getHour() > endWorkingDay
+				|| lecture.getTime().getStart().getHour() < startWorkingDay;
 	}
 
 	private boolean isTeacherBusy(Lecture lecture) {
-		List<Lecture> lecturesWithSameTeacherThisTime = lectureDao
-				.findLecturesByTeacherDateAndTime(lecture.getTeacher(), lecture.getDate(), lecture.getTime());
-		boolean isSameLecture = lecturesWithSameTeacherThisTime.stream().filter(lec -> lec.getId() != lecture.getId())
-				.findAny().isPresent();
-
-		return !lecturesWithSameTeacherThisTime.isEmpty() && isSameLecture;
+		return lectureDao.findLecturesByTeacherDateAndTime(lecture.getTeacher(), lecture.getDate(), lecture.getTime())
+				.stream().filter(lec -> lec.getId() != lecture.getId()).findAny().isPresent();
 	}
 
 	private boolean isTeacherInVacation(Lecture lecture) {
-		List<Vacation> teacherVacations = vacationDao.findByDateInPeriodAndTeacher(lecture.getDate(),
-				lecture.getTeacher());
-
-		return !teacherVacations.isEmpty();
+		return !vacationDao.findByDateInPeriodAndTeacher(lecture.getDate(), lecture.getTeacher()).isEmpty();
 	}
 
 	private boolean isHoliday(Lecture lecture) {
@@ -98,9 +92,9 @@ public class LectureService {
 
 	private boolean isEnoughAudienceCapacity(Lecture lecture) {
 		Integer studentsOnLectureCount = lecture.getGroups().stream()
-				.map(group -> studentDao.findByGroupId(group.getId())).mapToInt(List::size).sum();
+				.map(Group::getId).map(studentDao::findByGroupId).mapToInt(List::size).sum();
 
-		return studentsOnLectureCount == 0 || (studentsOnLectureCount <= lecture.getAudience().getCapacity());
+		return (studentsOnLectureCount <= lecture.getAudience().getCapacity());
 	}
 
 	private boolean isAudienceOccupied(Lecture lecture) {

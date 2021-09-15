@@ -66,6 +66,10 @@ public class VacationService {
 	}
 
 	private boolean isVacationDurationLessOrEqualsThanMax(Vacation vacation) {
-		return getVacationDaysCount(vacation) <= maxVacation.get(vacation.getTeacher().getDegree());
+		int teacherVacationDays = vacationDao.findByTeacherId(vacation.getTeacher().getId()).stream()
+				.map(vac -> getVacationDaysCount(vac)).mapToInt(Integer::intValue).sum();
+
+		return (teacherVacationDays + getVacationDaysCount(vacation)) <= maxVacation
+				.get(vacation.getTeacher().getDegree());
 	}
 }

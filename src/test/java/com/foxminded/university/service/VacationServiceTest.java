@@ -117,13 +117,14 @@ public class VacationServiceTest {
 	@Test
 	void givenVacationWithWrongVacation_whenSave_thenNotSaved() {
 		LocalDate start = LocalDate.of(2021, 1, 1);
-		LocalDate end = LocalDate.of(2021, 1, 25);
+		LocalDate end = LocalDate.of(2021, 1, 10);
 		Vacation vacation = Vacation.builder()
 				.id(1)
 				.start(start)
 				.end(end)
 				.teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build())
 				.build();
+		when(vacationDao.findByTeacherId(vacation.getTeacher().getId())).thenReturn(Arrays.asList(vacation));
 		vacationService.save(vacation);
 
 		verify(vacationDao, never()).save(vacation);
