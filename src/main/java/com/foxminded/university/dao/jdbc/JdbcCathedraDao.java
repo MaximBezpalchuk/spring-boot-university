@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -21,6 +22,7 @@ public class JdbcCathedraDao implements CathedraDao {
 	private final static String INSERT_CATHEDRA = "INSERT INTO cathedras(name) VALUES(?)";
 	private final static String UPDATE_CATHEDRA = "UPDATE cathedras SET name=? WHERE id=?";
 	private final static String DELETE_CATHEDRA = "DELETE FROM cathedras WHERE id = ?";
+	private final static String SELECT_BY_NAME = "SELECT * FROM cathedras WHERE name = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private CathedraRowMapper rowMapper;
@@ -37,7 +39,11 @@ public class JdbcCathedraDao implements CathedraDao {
 
 	@Override
 	public Cathedra findById(int id) {
-		return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+		try {
+			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
 	}
 
 	@Override
@@ -60,5 +66,14 @@ public class JdbcCathedraDao implements CathedraDao {
 	@Override
 	public void deleteById(int id) {
 		jdbcTemplate.update(DELETE_CATHEDRA, id);
+	}
+
+	@Override
+	public Cathedra findByName(String name) {
+		try {
+			return jdbcTemplate.queryForObject(SELECT_BY_NAME, rowMapper, name);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
 	}
 }

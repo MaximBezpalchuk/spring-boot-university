@@ -1,17 +1,17 @@
 package com.foxminded.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
@@ -21,6 +21,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.foxminded.university.model.Student;
 import com.foxminded.university.config.SpringTestConfig;
 import com.foxminded.university.dao.jdbc.JdbcStudentDao;
+import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Gender;
 import com.foxminded.university.model.Group;
 
@@ -64,14 +65,8 @@ public class JdbcStudentDaoTest {
 	}
 
 	@Test
-	void givenNotExistingStudent_whenFindById_thenIncorrestResultSize() {
-		Exception exception = assertThrows(EmptyResultDataAccessException.class, () -> {
-			studentDao.findById(100);
-		});
-		String expectedMessage = "Incorrect result size";
-		String actualMessage = exception.getMessage();
-
-		assertTrue(actualMessage.contains(expectedMessage));
+	void givenNotExistingStudent_whenFindById_thenReturnNull() {
+		assertNull(studentDao.findById(100));
 	}
 
 	@Test
@@ -131,5 +126,59 @@ public class JdbcStudentDaoTest {
 		studentDao.deleteById(3);
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
+	}
+	
+	@Test
+	void givenFirstNameAndLastNameAndBirthDate_whenFindByFullNameAndBirthDate_thenStudentFound() {
+		Student expected = Student.builder()
+				.firstName("Petr")
+				.lastName("Orlov")
+				.address("Empty Street 8")
+				.gender(Gender.MALE)
+				.birthDate(LocalDate.of(1994, 3, 3))
+				.phone("888005353535")
+				.email("1@owl.com")
+				.postalCode("999")
+				.education("General secondary education")
+				.group(Group.builder().id(1).name("Killers").cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build()).build())
+				.id(1)
+				.build();
+		Student actual = studentDao.findByFullNameAndBirthDate(expected.getFirstName(), expected.getLastName(), expected.getBirthDate());
+
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	void givenGroupName_whenFindByGroupId_thenStudentsFound() {
+		Student student1 = Student.builder()
+				.firstName("Kim")
+				.lastName("Cattrall")
+				.address("Virtual Reality Capsule no 2")
+				.gender(Gender.FEMALE)
+				.birthDate(LocalDate.of(1956, 8, 21))
+				.phone("312-555-0690:00")
+				.email("4@owl.com")
+				.postalCode("12345")
+				.education("College education")
+				.group(Group.builder().id(2).name("Mages").cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build()).build())
+				.id(4)
+				.build();
+		Student student2 = Student.builder()
+				.firstName("Thomas")
+				.lastName("Anderson")
+				.address("Virtual Reality Capsule no 3")
+				.gender(Gender.MALE)
+				.birthDate(LocalDate.of(1962, 3, 11))
+				.phone("312-555-5555")
+				.email("5@owl.com")
+				.postalCode("12345")
+				.education("College education")
+				.group(Group.builder().id(2).name("Mages").cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build()).build())
+				.id(5)
+				.build();
+		List<Student> expected = Arrays.asList(student1, student2);
+		List<Student> actual = studentDao.findByGroupId(2);
+		
+		assertEquals(expected, actual);
 	}
 }

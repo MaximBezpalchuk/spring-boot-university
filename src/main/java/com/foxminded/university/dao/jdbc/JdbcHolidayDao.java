@@ -2,8 +2,10 @@ package com.foxminded.university.dao.jdbc;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -21,6 +23,8 @@ public class JdbcHolidayDao implements HolidayDao {
 	private final static String INSERT_HOLIDAY = "INSERT INTO holidays(name, date, cathedra_id) VALUES(?, ?, ?)";
 	private final static String UPDATE_HOLIDAY = "UPDATE holidays SET name=?, date=?, cathedra_id=? WHERE id=?";
 	private final static String DELETE_HOLIDAY = "DELETE FROM holidays WHERE id = ?";
+	private final static String SELECT_BY_NAME_AND_DATE = "SELECT * FROM holidays WHERE name = ? AND date = ?";
+	private final static String SELECT_BY_DATE = "SELECT * FROM holidays WHERE date = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private HolidayRowMapper rowMapper;
@@ -37,7 +41,11 @@ public class JdbcHolidayDao implements HolidayDao {
 
 	@Override
 	public Holiday findById(int id) {
-		return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+		try {
+			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
 	}
 
 	@Override
@@ -64,4 +72,21 @@ public class JdbcHolidayDao implements HolidayDao {
 		jdbcTemplate.update(DELETE_HOLIDAY, id);
 	}
 
+	@Override
+	public Holiday findByNameAndDate(String name, LocalDate date) {
+		try {
+			return jdbcTemplate.queryForObject(SELECT_BY_NAME_AND_DATE, rowMapper, name, date);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
+	}
+	
+	@Override
+	public List<Holiday> findByDate(LocalDate date) {
+		try {
+			return jdbcTemplate.query(SELECT_BY_DATE, rowMapper,  date);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
+	}
 }

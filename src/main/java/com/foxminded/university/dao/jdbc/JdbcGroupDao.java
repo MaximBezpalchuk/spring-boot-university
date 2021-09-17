@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -22,6 +23,7 @@ public class JdbcGroupDao implements GroupDao {
 	private final static String UPDATE_GROUP = "UPDATE groups SET name=?, cathedra_id=? WHERE id=?";
 	private final static String DELETE_GROUP = "DELETE FROM groups WHERE id = ?";
 	private final static String SELECT_BY_LECTURE_ID = "SELECT * FROM groups WHERE id IN (SELECT group_id FROM lectures_groups WHERE lecture_id =?)";
+	private final static String SELECT_BY_NAME = "SELECT * FROM groups WHERE name = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private GroupRowMapper rowMapper;
@@ -38,7 +40,11 @@ public class JdbcGroupDao implements GroupDao {
 
 	@Override
 	public Group findById(int id) {
-		return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+		try {
+			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
 	}
 
 	@Override
@@ -67,5 +73,14 @@ public class JdbcGroupDao implements GroupDao {
 	@Override
 	public List<Group> findByLectureId(int id) {
 		return jdbcTemplate.query(SELECT_BY_LECTURE_ID, rowMapper, id);
+	}
+
+	@Override
+	public Group findByName(String name) {
+		try {
+			return jdbcTemplate.queryForObject(SELECT_BY_NAME, rowMapper, name);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
 	}
 }

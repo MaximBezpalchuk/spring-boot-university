@@ -1,15 +1,13 @@
 package com.foxminded.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
@@ -53,14 +51,8 @@ public class JdbcGroupDaoTest {
 	}
 
 	@Test
-	void givenNotExistingGroup_whenFindById_thenIncorrestResultSize() {
-		Exception exception = assertThrows(EmptyResultDataAccessException.class, () -> {
-			groupDao.findById(100);
-		});
-		String expectedMessage = "Incorrect result size";
-		String actualMessage = exception.getMessage();
-
-		assertTrue(actualMessage.contains(expectedMessage));
+	void givenNotExistingGroup_whenFindById_thenReturnNull() {
+		assertNull(groupDao.findById(100));
 	}
 
 	@Test
@@ -91,5 +83,17 @@ public class JdbcGroupDaoTest {
 		groupDao.deleteById(1);
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
+	}
+	
+	@Test
+	void givenGroupName_whenFindByName_thenGroupFound() {
+		Group actual = groupDao.findByName("Killers");
+		Group expected = Group.builder()
+				.id(1)
+				.name("Killers")
+				.cathedra(actual.getCathedra())
+				.build();
+
+		assertEquals(expected, actual);
 	}
 }

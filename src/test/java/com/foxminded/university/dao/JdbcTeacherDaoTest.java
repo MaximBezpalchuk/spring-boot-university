@@ -1,8 +1,7 @@
 package com.foxminded.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 
@@ -14,7 +13,6 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
@@ -75,14 +73,8 @@ public class JdbcTeacherDaoTest {
 	}
 
 	@Test
-	void givenNotExistingTeacher_whenFindById_thenIncorrestResultSize() {
-		Exception exception = assertThrows(EmptyResultDataAccessException.class, () -> {
-			teacherDao.findById(100);
-		});
-		String expectedMessage = "Incorrect result size";
-		String actualMessage = exception.getMessage();
-
-		assertTrue(actualMessage.contains(expectedMessage));
+	void givenNotExistingTeacher_whenFindById_thenReturnNull() {
+		assertNull(teacherDao.findById(100));
 	}
 
 	@Test
@@ -181,6 +173,33 @@ public class JdbcTeacherDaoTest {
 				.build());
 		teacherDao.save(teacher);
 		int actual = countRowsInTable(template, "subjects_teachers");
+
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	void givenFirstNameAndLastNameAndBirthDate_whenFindByFullNameAndBirthDate_thenTeacherFound() {
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+		Teacher expected = Teacher.builder()
+				.firstName("Daniel")
+				.lastName("Morpheus")
+				.address("Virtual Reality Capsule no 1")
+				.gender(Gender.MALE)
+				.birthDate(LocalDate.of(1970, 1, 1))
+				.cathedra(cathedra)
+				.degree(Degree.PROFESSOR)
+				.phone("1")
+				.email("1@bigowl.com")
+				.postalCode("12345")
+				.education("Higher education")
+				.id(1)
+				.build();
+		List<Subject> subjects = new ArrayList<>();
+		Subject subject = Subject.builder().cathedra(cathedra).name("Weapon Tactics")
+				.description("Learning how to use heavy weapon and guerrilla tactics").id(1).build();
+		subjects.add(subject);
+		expected.setSubjects(subjects);
+		Teacher actual = teacherDao.findByFullNameAndBirthDate(expected.getFirstName(), expected.getLastName(), expected.getBirthDate());
 
 		assertEquals(expected, actual);
 	}

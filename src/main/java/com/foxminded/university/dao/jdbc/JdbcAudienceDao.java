@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -21,6 +22,7 @@ public class JdbcAudienceDao implements AudienceDao {
 	private final static String INSERT_AUDIENCE = "INSERT INTO audiences(room, capacity, cathedra_id) VALUES(?, ?, ?)";
 	private final static String UPDATE_AUDIENCE = "UPDATE audiences SET room=?, capacity=?, cathedra_id=? WHERE id=?";
 	private final static String DELETE_AUDIENCE = "DELETE FROM audiences WHERE id = ?";
+	private final static String SELECT_BY_ROOM = "SELECT * FROM audiences WHERE room = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private AudienceRowMapper rowMapper;
@@ -37,7 +39,11 @@ public class JdbcAudienceDao implements AudienceDao {
 
 	@Override
 	public Audience findById(int id) {
-		return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+		try {
+			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
 	}
 
 	@Override
@@ -65,4 +71,12 @@ public class JdbcAudienceDao implements AudienceDao {
 		jdbcTemplate.update(DELETE_AUDIENCE, id);
 	}
 
+	@Override
+	public Audience findByRoom(int room) {
+		try {
+			return jdbcTemplate.queryForObject(SELECT_BY_ROOM, rowMapper, room);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
+	}
 }

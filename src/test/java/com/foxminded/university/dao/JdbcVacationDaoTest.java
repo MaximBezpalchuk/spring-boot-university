@@ -1,19 +1,18 @@
 package com.foxminded.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
@@ -22,6 +21,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.foxminded.university.config.SpringTestConfig;
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
+import com.foxminded.university.model.Cathedra;
+import com.foxminded.university.model.Degree;
+import com.foxminded.university.model.Gender;
+import com.foxminded.university.model.Subject;
 import com.foxminded.university.model.Teacher;
 import com.foxminded.university.model.Vacation;
 
@@ -58,14 +61,8 @@ public class JdbcVacationDaoTest {
 	}
 
 	@Test
-	void givenNotExistingVacation_whenFindById_thenIncorrestResultSize() {
-		Exception exception = assertThrows(EmptyResultDataAccessException.class, () -> {
-			vacationDao.findById(100);
-		});
-		String expectedMessage = "Incorrect result size";
-		String actualMessage = exception.getMessage();
-
-		assertTrue(actualMessage.contains(expectedMessage));
+	void givenNotExistingVacation_whenFindById_thenReturnNull() {
+		assertNull(vacationDao.findById(100));
 	}
 
 	@Test
@@ -125,5 +122,79 @@ public class JdbcVacationDaoTest {
 		expected.add(vacation2);
 
 		assertEquals(expected, actual);
+	}
+	
+	@Test
+	void givenStartAndEndAndTeacher_whenFindByPeriodAndTeacher_thenVacationFound() {
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+		Teacher teacher = Teacher.builder()
+				.firstName("Daniel")
+				.lastName("Morpheus")
+				.address("Virtual Reality Capsule no 1")
+				.gender(Gender.MALE)
+				.birthDate(LocalDate.of(1970, 1, 1))
+				.cathedra(cathedra)
+				.degree(Degree.PROFESSOR)
+				.phone("1")
+				.email("1@bigowl.com")
+				.postalCode("12345")
+				.education("Higher education")
+				.id(1)
+				.build();
+		List<Subject> subjects = new ArrayList<>();
+		Subject subject = Subject.builder().cathedra(cathedra).name("Weapon Tactics")
+				.description("Learning how to use heavy weapon and guerrilla tactics").id(1).build();
+		subjects.add(subject);
+		teacher.setSubjects(subjects);
+		
+		Vacation expected = Vacation.builder()
+				.id(1)
+				.start(LocalDate.of(2021, 1, 15))
+				.end(LocalDate.of(2021, 1, 29))
+				.teacher(teacher)
+				.build();
+		Vacation actual = vacationDao.findByPeriodAndTeacher(expected.getStart(), expected.getEnd(), teacher);
+
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	void givenTeacherAndYear_whenFindByTeacherAndYear_thenVacationFound() {
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+		Teacher teacher = Teacher.builder()
+				.firstName("Daniel")
+				.lastName("Morpheus")
+				.address("Virtual Reality Capsule no 1")
+				.gender(Gender.MALE)
+				.birthDate(LocalDate.of(1970, 1, 1))
+				.cathedra(cathedra)
+				.degree(Degree.PROFESSOR)
+				.phone("1")
+				.email("1@bigowl.com")
+				.postalCode("12345")
+				.education("Higher education")
+				.id(1)
+				.build();
+		List<Subject> subjects = new ArrayList<>();
+		Subject subject = Subject.builder().cathedra(cathedra).name("Weapon Tactics")
+				.description("Learning how to use heavy weapon and guerrilla tactics").id(1).build();
+		subjects.add(subject);
+		teacher.setSubjects(subjects);
+		
+		Vacation vacation1 = Vacation.builder()
+				.id(1)
+				.start(LocalDate.of(2021, 1, 15))
+				.end(LocalDate.of(2021, 1, 29))
+				.teacher(teacher)
+				.build();
+		Vacation vacation2 = Vacation.builder()
+				.id(2)
+				.start(LocalDate.of(2021, 6, 15))
+				.end(LocalDate.of(2021, 6, 29))
+				.teacher(teacher)
+				.build();
+		List<Vacation> actual = vacationDao.findByTeacherIdAndYear(1, 2021);
+
+		assertEquals(Arrays.asList(vacation1, vacation2), actual);
 	}
 }

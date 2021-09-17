@@ -16,16 +16,16 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.foxminded.university.config.SpringConfig;
-import com.foxminded.university.dao.jdbc.JdbcAudienceDao;
-import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
-import com.foxminded.university.dao.jdbc.JdbcGroupDao;
-import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
-import com.foxminded.university.dao.jdbc.JdbcLectureDao;
-import com.foxminded.university.dao.jdbc.JdbcLectureTimeDao;
-import com.foxminded.university.dao.jdbc.JdbcStudentDao;
-import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
-import com.foxminded.university.dao.jdbc.JdbcTeacherDao;
-import com.foxminded.university.dao.jdbc.JdbcVacationDao;
+import com.foxminded.university.service.AudienceService;
+import com.foxminded.university.service.CathedraService;
+import com.foxminded.university.service.GroupService;
+import com.foxminded.university.service.HolidayService;
+import com.foxminded.university.service.LectureService;
+import com.foxminded.university.service.LectureTimeService;
+import com.foxminded.university.service.StudentService;
+import com.foxminded.university.service.SubjectService;
+import com.foxminded.university.service.TeacherService;
+import com.foxminded.university.service.VacationService;
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Degree;
@@ -45,16 +45,16 @@ public class MenuCreator {
 	private boolean exit;
 	private BufferedReader reader;
 	private Formatter formatter = new Formatter();
-	private JdbcAudienceDao audienceDao = context.getBean(JdbcAudienceDao.class);
-	private JdbcCathedraDao cathedraDao = context.getBean(JdbcCathedraDao.class);
-	private JdbcGroupDao groupDao = context.getBean(JdbcGroupDao.class);
-	private JdbcStudentDao studentDao = context.getBean(JdbcStudentDao.class);
-	private JdbcSubjectDao subjectDao = context.getBean(JdbcSubjectDao.class);
-	private JdbcTeacherDao teacherDao = context.getBean(JdbcTeacherDao.class);
-	private JdbcLectureDao lectureDao = context.getBean(JdbcLectureDao.class);
-	private JdbcLectureTimeDao lectureTimeDao = context.getBean(JdbcLectureTimeDao.class);
-	private JdbcHolidayDao holidayDao = context.getBean(JdbcHolidayDao.class);
-	private JdbcVacationDao vacationDao = context.getBean(JdbcVacationDao.class);
+	private AudienceService audienceService = context.getBean(AudienceService.class);
+	private CathedraService cathedraService = context.getBean(CathedraService.class);
+	private GroupService groupService = context.getBean(GroupService.class);
+	private StudentService studentService = context.getBean(StudentService.class);
+	private SubjectService subjectService = context.getBean(SubjectService.class);
+	private TeacherService teacherService = context.getBean(TeacherService.class);
+	private LectureService lectureService = context.getBean(LectureService.class);
+	private LectureTimeService lectureTimeService = context.getBean(LectureTimeService.class);
+	private HolidayService holidayService = context.getBean(HolidayService.class);
+	private VacationService vacationService = context.getBean(VacationService.class);
 
 	private String printMainMenu() {
 		StringBuilder menu = new StringBuilder();
@@ -299,8 +299,7 @@ public class MenuCreator {
 					.postalCode(postalCode1)
 					.education(education1)
 					.build();
-			studentDao.save(student);
-			System.out.println("Student added!");
+			studentService.save(student);
 			break;
 		case 2:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -334,7 +333,7 @@ public class MenuCreator {
 			System.out.println(formatter.getDegreeString());
 			Degree degree2 = degreeMaker();
 			System.out.println("Set subjects from list separated by commas without spaces (SUBJ or SUBJ,SUBJ,SUBJ):");
-			List<Subject> sortedSubjects2 = sortSubjectsByName(subjectDao.findAll());
+			List<Subject> sortedSubjects2 = sortSubjectsByName(subjectService.findAll());
 			System.out.println(formatter.formatSubjectList(sortedSubjects2));
 			List<Subject> subjects2 = new ArrayList<>();
 			while (true) {
@@ -360,7 +359,7 @@ public class MenuCreator {
 					.address(address2)
 					.gender(gender2)
 					.birthDate(birthDate2)
-					.cathedra(cathedraDao.findById(1))
+					.cathedra(cathedraService.findById(1))
 					.degree(degree2)
 					.phone(phone2)
 					.email(email2)
@@ -372,8 +371,7 @@ public class MenuCreator {
 					teacher.getSubjects().add(subject);
 				}
 			}
-			teacherDao.save(teacher);
-			System.out.println("Teacher added!");
+			teacherService.save(teacher);
 			break;
 		case 3:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -383,42 +381,40 @@ public class MenuCreator {
 			System.out.println("Enter subject description:");
 			String subjectDescription3 = reader.readLine();
 			exitCheck(subjectDescription3);
-			subjectDao.save(
+			subjectService.save(
 					Subject.builder()
-					.cathedra(cathedraDao.findById(1))
+					.cathedra(cathedraService.findById(1))
 					.name(subjectName3)
 					.description(subjectDescription3)
 					.build());
-			System.out.println("Subject added!");
 			break;
 		case 4:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Enter group name:");
 			String groupName4 = reader.readLine();
 			exitCheck(groupName4);
-			groupDao.save(
+			groupService.save(
 					Group.builder()
 					.name(groupName4)
-					.cathedra(cathedraDao.findById(1))
+					.cathedra(cathedraService.findById(1))
 					.build());
-			System.out.println("Group added!");
 			break;
 		case 5:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Set subject from the list:");
-			List<Subject> sortedSubjects5 = sortSubjectsByName(subjectDao.findAll());
+			List<Subject> sortedSubjects5 = sortSubjectsByName(subjectService.findAll());
 			System.out.println(formatter.formatSubjectList(sortedSubjects5));
 			int subjectNumber5 = getInput(sortedSubjects5.size());
 			exitCheck(String.valueOf(subjectNumber5));
 			Subject subject5 = sortedSubjects5.get(subjectNumber5 - 1);
 			System.out.println("Set teacher from the list:");
-			List<Teacher> sortedTeachers5 = sortTeachersByLastName(teacherDao.findAll());
+			List<Teacher> sortedTeachers5 = sortTeachersByLastName(teacherService.findAll());
 			System.out.println(formatter.formatTeacherList(sortedTeachers5));
 			int teacherNumber5 = getInput(sortedTeachers5.size());
 			exitCheck(String.valueOf(teacherNumber5));
 			Teacher teacher5 = sortedTeachers5.get(teacherNumber5 - 1);
 			System.out.println("Set audience from the list:");
-			List<Audience> sortedAudiences = sortAudiencesByNumber(audienceDao.findAll());
+			List<Audience> sortedAudiences = sortAudiencesByNumber(audienceService.findAll());
 			System.out.println(formatter.formatAudienceList(sortedAudiences));
 			int audienceNumber5 = getInput(sortedAudiences.size());
 			exitCheck(String.valueOf(audienceNumber5));
@@ -426,21 +422,20 @@ public class MenuCreator {
 			System.out.println("Enter the lecture date separated by commas without spaces (YEAR,MONTH,DAY):");
 			LocalDate lectureDate5 = setupLocalDate();
 			System.out.println("Set lecture time from the list:");
-			List<LectureTime> sortedLectureTimes5 = sortLectureTimesByTime(lectureTimeDao.findAll());
+			List<LectureTime> sortedLectureTimes5 = sortLectureTimesByTime(lectureTimeService.findAll());
 			System.out.println(formatter.formatLectureTimesList(sortedLectureTimes5));
 			int lectureTimeNumber5 = getInput(sortedLectureTimes5.size());
 			exitCheck(String.valueOf(lectureTimeNumber5));
 			LectureTime lectureTime5 = sortedLectureTimes5.get(lectureTimeNumber5 - 1);
-			lectureDao.save(
+			lectureService.save(
 					Lecture.builder()
-					.cathedra(cathedraDao.findById(1))
+					.cathedra(cathedraService.findById(1))
 					.subject(subject5)
 					.date(lectureDate5)
 					.time(lectureTime5)
 					.audience(audience5)
 					.teacher(teacher5)
 					.build());
-			System.out.println("Lecture added!");
 			break;
 		case 6:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -451,7 +446,7 @@ public class MenuCreator {
 			LocalDate holidayDate5 = setupLocalDate();
 			System.out.println("Set cathedra from list:");
 
-			List<Cathedra> sortedCathedras6 = sortCathedrasByName(cathedraDao.findAll());
+			List<Cathedra> sortedCathedras6 = sortCathedrasByName(cathedraService.findAll());
 			System.out.println(formatter.formatCathedraList(sortedCathedras6));
 			int cathedraNumber6 = getInput(sortedCathedras6.size());
 			exitCheck(String.valueOf(cathedraNumber6));
@@ -461,8 +456,7 @@ public class MenuCreator {
 					.date(holidayDate5)
 					.cathedra(cathedra6)
 					.build();
-			holidayDao.save(holiday6);
-			System.out.println("Holiday created!");
+			holidayService.save(holiday6);
 			break;
 		case 7:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -475,10 +469,9 @@ public class MenuCreator {
 			Audience audience7 = Audience.builder()
 					.room(Integer.parseInt(audienceRoom7))
 					.capacity(Integer.parseInt(audienceCapacity7))
-					.cathedra(cathedraDao.findById(1))
+					.cathedra(cathedraService.findById(1))
 					.build();
-			audienceDao.save(audience7);
-			System.out.println("Audience created!");
+			audienceService.save(audience7);
 			break;
 		case 0:
 			break;
@@ -490,24 +483,24 @@ public class MenuCreator {
 		int choise = getInput(10);
 		switch (choise) {
 		case 1:
-			System.out.println(formatter.formatStudentList(sortStudentsByLastName(studentDao.findAll())));
+			System.out.println(formatter.formatStudentList(sortStudentsByLastName(studentService.findAll())));
 			break;
 		case 2:
-			System.out.println(formatter.formatTeacherList(sortTeachersByLastName(teacherDao.findAll())));
+			System.out.println(formatter.formatTeacherList(sortTeachersByLastName(teacherService.findAll())));
 			break;
 		case 3:
-			System.out.println(formatter.formatSubjectList(sortSubjectsByName(subjectDao.findAll())));
+			System.out.println(formatter.formatSubjectList(sortSubjectsByName(subjectService.findAll())));
 			break;
 		case 4:
-			System.out.println(formatter.formatGroupList(sortGroupsByName(groupDao.findAll())));
+			System.out.println(formatter.formatGroupList(sortGroupsByName(groupService.findAll())));
 			break;
 		case 5:
-			System.out.println(formatter.formatHolidayList(sortHolidaysByDate(holidayDao.findAll())));
+			System.out.println(formatter.formatHolidayList(sortHolidaysByDate(holidayService.findAll())));
 			break;
 		case 6:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select student from the list:");
-			List<Student> sortedStudents6 = sortStudentsByLastName(studentDao.findAll());
+			List<Student> sortedStudents6 = sortStudentsByLastName(studentService.findAll());
 			System.out.println(formatter.formatStudentList(sortedStudents6));
 			int studentNumber6 = getInput(sortedStudents6.size());
 			exitCheck(String.valueOf(studentNumber6));
@@ -535,7 +528,7 @@ public class MenuCreator {
 		case 7:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select teacher from the list:");
-			List<Teacher> sortedTeachers7 = sortTeachersByLastName(teacherDao.findAll());
+			List<Teacher> sortedTeachers7 = sortTeachersByLastName(teacherService.findAll());
 			System.out.println(formatter.formatTeacherList(sortedTeachers7));
 			int teacherNumber7 = getInput(sortedTeachers7.size());
 			exitCheck(String.valueOf(teacherNumber7));
@@ -562,7 +555,7 @@ public class MenuCreator {
 		case 8:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select student from the list:");
-			List<Student> sortedStudents8 = sortStudentsByLastName(studentDao.findAll());
+			List<Student> sortedStudents8 = sortStudentsByLastName(studentService.findAll());
 			System.out.println(formatter.formatStudentList(sortedStudents8));
 			int studentNumber8 = getInput(sortedStudents8.size());
 			exitCheck(String.valueOf(studentNumber8));
@@ -583,7 +576,7 @@ public class MenuCreator {
 		case 9:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select teacher from the list:");
-			List<Teacher> sortedTeachers9 = sortTeachersByLastName(teacherDao.findAll());
+			List<Teacher> sortedTeachers9 = sortTeachersByLastName(teacherService.findAll());
 			System.out.println(formatter.formatTeacherList(sortedTeachers9));
 			int teacherNumber9 = getInput(sortedTeachers9.size());
 			exitCheck(String.valueOf(teacherNumber9));
@@ -602,7 +595,7 @@ public class MenuCreator {
 			}
 			break;
 		case 10:
-			System.out.println(formatter.formatAudienceList(sortAudiencesByNumber(audienceDao.findAll())));
+			System.out.println(formatter.formatAudienceList(sortAudiencesByNumber(audienceService.findAll())));
 			break;
 		case 0:
 			break;
@@ -616,25 +609,24 @@ public class MenuCreator {
 		case 1:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select student from the list:");
-			List<Student> sortedStudents1 = sortStudentsByLastName(studentDao.findAll());
+			List<Student> sortedStudents1 = sortStudentsByLastName(studentService.findAll());
 			System.out.println(formatter.formatStudentList(sortedStudents1));
 			int studentNumber1 = getInput(sortedStudents1.size());
 			exitCheck(String.valueOf(studentNumber1));
 			Student student1 = sortedStudents1.get(studentNumber1 - 1);
 			System.out.println("Select group from the list:");
-			List<Group> sortedGroups1 = sortGroupsByName(groupDao.findAll());
+			List<Group> sortedGroups1 = sortGroupsByName(groupService.findAll());
 			System.out.println(formatter.formatGroupList(sortedGroups1));
 			int groupNumber1 = getInput(sortedGroups1.size());
 			exitCheck(String.valueOf(groupNumber1));
 			Group group1 = sortedGroups1.get(groupNumber1 - 1);
 			student1.setGroup(group1);
-			studentDao.save(student1);
-			System.out.println("Student group was changed!");
+			studentService.save(student1);
 			break;
 		case 2:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select teacher from the list:");
-			List<Teacher> sortedTeachers2 = sortTeachersByLastName(teacherDao.findAll());
+			List<Teacher> sortedTeachers2 = sortTeachersByLastName(teacherService.findAll());
 			System.out.println(formatter.formatTeacherList(sortedTeachers2));
 			int teacherNumber2 = getInput(sortedTeachers2.size());
 			exitCheck(String.valueOf(teacherNumber2));
@@ -648,27 +640,25 @@ public class MenuCreator {
 					.end(vacationEndDate2)
 					.teacher(teacher2)
 					.build();
-			vacationDao.save(vacation2);
-			System.out.println("Vacation added!");
+			vacationService.save(vacation2);
 			break;
 		case 3:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Set subject from the list:");
-			List<Subject> sortedSubjects3 = sortSubjectsByName(subjectDao.findAll());
+			List<Subject> sortedSubjects3 = sortSubjectsByName(subjectService.findAll());
 			System.out.println(formatter.formatSubjectList(sortedSubjects3));
 			int subjectNumber3 = getInput(sortedSubjects3.size());
 			exitCheck(String.valueOf(subjectNumber3));
 			Subject subject3 = sortedSubjects3.get(subjectNumber3 - 1);
 			System.out.println("Select teacher from the list:");
-			List<Teacher> sortedTeachers3 = sortTeachersByLastName(teacherDao.findAll());
+			List<Teacher> sortedTeachers3 = sortTeachersByLastName(teacherService.findAll());
 			System.out.println(formatter.formatTeacherList(sortedTeachers3));
 			int teacherNumber3 = getInput(sortedTeachers3.size());
 			exitCheck(String.valueOf(teacherNumber3));
 			Teacher teacher3 = sortedTeachers3.get(teacherNumber3 - 1);
 			if (!teacher3.getSubjects().contains(subject3)) {
 				teacher3.getSubjects().add(subject3);
-				teacherDao.save(teacher3);
-				System.out.println("Subject was set!");
+				teacherService.save(teacher3);
 			} else {
 				System.out.println("Teacher already have this subject");
 			}
@@ -676,71 +666,67 @@ public class MenuCreator {
 		case 4:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select lecture from the list:");
-			List<Lecture> test = lectureDao.findAll();
+			List<Lecture> test = lectureService.findAll();
 			List<Lecture> sortedLectures4 = sortLecturesByDate(test);
 			System.out.println(formatter.formatLectureList(sortedLectures4));
 			int lectureNumber4 = getInput(sortedLectures4.size());
 			exitCheck(String.valueOf(lectureNumber4));
 			Lecture lecture4 = sortedLectures4.get(lectureNumber4 - 1);
 			System.out.println("Select audience from the list:");
-			List<Audience> sortedAudiences4 = sortAudiencesByNumber(audienceDao.findAll());
+			List<Audience> sortedAudiences4 = sortAudiencesByNumber(audienceService.findAll());
 			System.out.println(formatter.formatAudienceList(sortedAudiences4));
 			int audienceNumber4 = getInput(sortedAudiences4.size());
 			exitCheck(String.valueOf(audienceNumber4));
 			Audience audience4 = sortedAudiences4.get(audienceNumber4 - 1);
 			lecture4.setAudience(audience4);
-			lectureDao.save(lecture4);
-			System.out.println("Lecture audience was changed!");
+			lectureService.save(lecture4);
 			break;
 		case 5:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select lecture from the list:");
-			List<Lecture> sortedLectures5 = sortLecturesByDate(lectureDao.findAll());
+			List<Lecture> sortedLectures5 = sortLecturesByDate(lectureService.findAll());
 			System.out.println(formatter.formatLectureList(sortedLectures5));
 			int lectureNumber5 = getInput(sortedLectures5.size());
 			exitCheck(String.valueOf(lectureNumber5));
 			Lecture lecture5 = sortedLectures5.get(lectureNumber5 - 1);
 			System.out.println("Enter the lecture date separated by commas without spaces (YEAR,MONTH,DAY):");
 			lecture5.setDate(setupLocalDate());
-			lectureDao.save(lecture5);
-			System.out.println("Lecture date was changed!");
+			lectureService.save(lecture5);
 			break;
 		case 6:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select lecture from the list:");
-			List<Lecture> sortedLectures6 = sortLecturesByDate(lectureDao.findAll());
+			List<Lecture> sortedLectures6 = sortLecturesByDate(lectureService.findAll());
 			System.out.println(formatter.formatLectureList(sortedLectures6));
 			int lectureNumber6 = getInput(sortedLectures6.size());
 			exitCheck(String.valueOf(lectureNumber6));
 			Lecture lecture6 = sortedLectures6.get(lectureNumber6 - 1);
 			System.out.println("Set lecture time from the list:");
-			List<LectureTime> sortedLectureTimes6 = sortLectureTimesByTime(lectureTimeDao.findAll());
+			List<LectureTime> sortedLectureTimes6 = sortLectureTimesByTime(lectureTimeService.findAll());
 			System.out.println(formatter.formatLectureTimesList(sortedLectureTimes6));
 			int lectureTimeNumber6 = getInput(sortedLectureTimes6.size());
 			exitCheck(String.valueOf(lectureTimeNumber6));
 			LectureTime lectureTime6 = sortedLectureTimes6.get(lectureTimeNumber6 - 1);
 			lecture6.setTime(lectureTime6);
-			lectureDao.save(lecture6);
-			System.out.println("Lecture time was changed!");
+			lectureService.save(lecture6);
 			break;
 		case 7:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select lecture from the list:");
-			List<Lecture> sortedLectures7 = sortLecturesByDate(lectureDao.findAll());
+			List<Lecture> sortedLectures7 = sortLecturesByDate(lectureService.findAll());
 			System.out.println(formatter.formatLectureList(sortedLectures7));
 			int lectureNumber7 = getInput(sortedLectures7.size());
 			exitCheck(String.valueOf(lectureNumber7));
 			Lecture lecture7 = sortedLectures7.get(lectureNumber7 - 1);
 			System.out.println("Select group from the list:");
-			List<Group> sortedGroups7 = sortGroupsByName(groupDao.findAll());
+			List<Group> sortedGroups7 = sortGroupsByName(groupService.findAll());
 			System.out.println(formatter.formatGroupList(sortedGroups7));
 			int groupNumber7 = getInput(sortedGroups7.size());
 			exitCheck(String.valueOf(groupNumber7));
 			Group group7 = sortedGroups7.get(groupNumber7 - 1);
 			if (!lecture7.getGroups().contains(group7)) {
 				lecture7.getGroups().add(group7);
-				lectureDao.save(lecture7);
-				System.out.println("Group was set to lecture!");
+				lectureService.save(lecture7);
 			} else {
 				System.out.println("Lecture already have this group!");
 			}
@@ -757,117 +743,109 @@ public class MenuCreator {
 		case 1:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select student from the list:");
-			List<Student> sortedStudents1 = sortStudentsByLastName(studentDao.findAll());
+			List<Student> sortedStudents1 = sortStudentsByLastName(studentService.findAll());
 			System.out.println(formatter.formatStudentList(sortedStudents1));
 			int studentNumber1 = getInput(sortedStudents1.size());
 			exitCheck(String.valueOf(studentNumber1));
 			Student student1 = sortedStudents1.get(studentNumber1 - 1);
-			studentDao.deleteById(student1.getId());
-			System.out.println("Student was deleted!");
+			studentService.deleteById(student1.getId());
 			break;
 		case 2:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select teacher from the list:");
-			List<Teacher> sortedTeachers2 = sortTeachersByLastName(teacherDao.findAll());
+			List<Teacher> sortedTeachers2 = sortTeachersByLastName(teacherService.findAll());
 			System.out.println(formatter.formatTeacherList(sortedTeachers2));
 			int teacherNumber2 = getInput(sortedTeachers2.size());
 			exitCheck(String.valueOf(teacherNumber2));
 			Teacher teacher2 = sortedTeachers2.get(teacherNumber2 - 1);
-			if (lectureDao.findAll().stream().anyMatch(lecture -> lecture.getTeacher().equals(teacher2))) {
+			if (lectureService.findAll().stream().anyMatch(lecture -> lecture.getTeacher().equals(teacher2))) {
 				System.out.println("Please remove lectures with this teacher first!");
 			} else {
-				teacherDao.deleteById(teacher2.getId());
-				System.out.println("Teacher was deleted!");
+				teacherService.deleteById(teacher2.getId());
 			}
 			break;
 		case 3:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select group from the list:");
-			List<Group> sortedGroups3 = sortGroupsByName(groupDao.findAll());
+			List<Group> sortedGroups3 = sortGroupsByName(groupService.findAll());
 			System.out.println(formatter.formatGroupList(sortedGroups3));
 			int groupNumber3 = getInput(sortedGroups3.size());
 			exitCheck(String.valueOf(groupNumber3));
 			Group group3 = sortedGroups3.get(groupNumber3 - 1);
-			if (studentDao.findAll().stream().anyMatch(student -> student.getGroup().equals(group3))) {
+			if (studentService.findAll().stream().anyMatch(student -> student.getGroup().equals(group3))) {
 				System.out.println("Please remove students first from group!");
 			} else {
-				groupDao.deleteById(group3.getId());
-				System.out.println("Group was deleted!");
+				groupService.deleteById(group3.getId());
 			}
 			break;
 		case 4:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select lecture from the list:");
-			List<Lecture> sortedLectures4 = sortLecturesByDate(lectureDao.findAll());
+			List<Lecture> sortedLectures4 = sortLecturesByDate(lectureService.findAll());
 			System.out.println(formatter.formatLectureList(sortedLectures4));
 			int lectureNumber4 = getInput(sortedLectures4.size());
 			exitCheck(String.valueOf(lectureNumber4));
 			Lecture lecture4 = sortedLectures4.get(lectureNumber4 - 1);
-			lectureDao.deleteById(lecture4.getId());
-			System.out.println("Lecture was deleted!");
+			lectureService.deleteById(lecture4.getId());
 			break;
 		case 5:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select audience from the list:");
-			List<Audience> sortedAudiences5 = sortAudiencesByNumber(audienceDao.findAll());
+			List<Audience> sortedAudiences5 = sortAudiencesByNumber(audienceService.findAll());
 			System.out.println(formatter.formatAudienceList(sortedAudiences5));
 			int audienceNumber5 = getInput(sortedAudiences5.size());
 			exitCheck(String.valueOf(audienceNumber5));
 			Audience audience5 = sortedAudiences5.get(audienceNumber5 - 1);
-			if (lectureDao.findAll().stream().anyMatch(lecture -> lecture.getAudience().equals(audience5))) {
+			if (lectureService.findAll().stream().anyMatch(lecture -> lecture.getAudience().equals(audience5))) {
 				System.out.println("Please remove audiences first from lectures!");
 			} else {
-				audienceDao.deleteById(audience5.getId());
-				System.out.println("Audience was deleted!");
+				audienceService.deleteById(audience5.getId());
 			}
 			break;
 		case 6:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select subject from the list:");
-			List<Subject> sortedSubjects6 = sortSubjectsByName(subjectDao.findAll());
+			List<Subject> sortedSubjects6 = sortSubjectsByName(subjectService.findAll());
 			System.out.println(formatter.formatSubjectList(sortedSubjects6));
 			int subjectNumber6 = getInput(sortedSubjects6.size());
 			exitCheck(String.valueOf(subjectNumber6));
 			Subject subject6 = sortedSubjects6.get(subjectNumber6 - 1);
-			if (lectureDao.findAll().stream().anyMatch(lecture -> lecture.getSubject().equals(subject6))) {
+			if (lectureService.findAll().stream().anyMatch(lecture -> lecture.getSubject().equals(subject6))) {
 				System.out.println("Please remove subject first from lecture!");
 			} else {
-				subjectDao.deleteById(subject6.getId());
-				System.out.println("Subject was deleted!");
+				subjectService.deleteById(subject6.getId());
 			}
 			break;
 		case 7:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select teacher from the list:");
-			List<Teacher> sortedTeachers7 = sortTeachersByLastName(teacherDao.findAll());
+			List<Teacher> sortedTeachers7 = sortTeachersByLastName(teacherService.findAll());
 			System.out.println(formatter.formatTeacherList(sortedTeachers7));
 			int teacherNumber7 = getInput(sortedTeachers7.size());
 			exitCheck(String.valueOf(teacherNumber7));
 			Teacher teacher7 = sortedTeachers7.get(teacherNumber7 - 1);
 			System.out.println("Select vacation from the list:");
-			List<Vacation> sortedVacations7 = sortVacationsByDate(vacationDao.findByTeacherId(teacher7.getId()));
+			List<Vacation> sortedVacations7 = sortVacationsByDate(vacationService.findByTeacherId(teacher7.getId()));
 			System.out.println(formatter.formatVacationList(sortedVacations7));
 			int vacationNumber7 = getInput(sortedVacations7.size());
 			exitCheck(String.valueOf(vacationNumber7));
 			Vacation vacation7 = sortedVacations7.get(vacationNumber7 - 1);
-			vacationDao.deleteById(vacation7.getId());
-			System.out.println("Teacher vacation was deleted!");
+			vacationService.deleteById(vacation7.getId());
 			break;
 		case 8:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select holiday from the list:");
-			List<Holiday> sortedHolidays8 = sortHolidaysByDate(holidayDao.findAll());
+			List<Holiday> sortedHolidays8 = sortHolidaysByDate(holidayService.findAll());
 			System.out.println(formatter.formatHolidayList(sortedHolidays8));
 			int holidayNumber8 = getInput(sortedHolidays8.size());
 			exitCheck(String.valueOf(holidayNumber8));
 			Holiday holiday = sortedHolidays8.get(holidayNumber8 - 1);
-			holidayDao.deleteById(holiday.getId());
-			System.out.println("Holiday was deleted!");
+			holidayService.deleteById(holiday.getId());
 			break;
 		case 9:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select lecture from the list:");
-			List<Lecture> sortedLectures9 = sortLecturesByDate(lectureDao.findAll());
+			List<Lecture> sortedLectures9 = sortLecturesByDate(lectureService.findAll());
 			System.out.println(formatter.formatLectureList(sortedLectures9));
 			int lectureNumber9 = getInput(sortedLectures9.size());
 			exitCheck(String.valueOf(lectureNumber9));
@@ -883,13 +861,12 @@ public class MenuCreator {
 			exitCheck(String.valueOf(groupNumber9));
 			Group group9 = sortedGroups9.get(groupNumber9 - 1);
 			lecture9.getGroups().remove(group9);
-			lectureDao.save(lecture9);
-			System.out.println("Group was deleted from lecture!");
+			lectureService.save(lecture9);
 			break;
 		case 10:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Select teacher from the list:");
-			List<Teacher> sortedTeachers10 = sortTeachersByLastName(teacherDao.findAll());
+			List<Teacher> sortedTeachers10 = sortTeachersByLastName(teacherService.findAll());
 			System.out.println(formatter.formatTeacherList(sortedTeachers10));
 			int teacherNumber10 = getInput(sortedTeachers10.size());
 			exitCheck(String.valueOf(teacherNumber10));
@@ -905,8 +882,7 @@ public class MenuCreator {
 			exitCheck(String.valueOf(subjectNumber10));
 			Subject subject10 = sortedSubjects10.get(subjectNumber10 - 1);
 			teacher10.getSubjects().remove(subject10);
-			teacherDao.save(teacher10);
-			System.out.println("Subject was deleted from teacher!");
+			teacherService.save(teacher10);
 			break;
 		case 0:
 			break;
@@ -960,7 +936,7 @@ public class MenuCreator {
 	}
 
 	public List<Lecture> getTTForDay(Student student, MonthDay date) {
-		return lectureDao.findAll().stream()
+		return lectureService.findAll().stream()
 				.sorted((d1, d2) -> d1.getTime().getStart().compareTo(d2.getTime().getStart()))
 				.filter(lecture -> lecture.getDate().getMonthValue() == date.getMonthValue()
 						&& lecture.getDate().getDayOfMonth() == date.getDayOfMonth())
@@ -968,7 +944,7 @@ public class MenuCreator {
 	}
 
 	public List<Lecture> getTTForDay(Teacher teacher, MonthDay date) {
-		return lectureDao.findAll().stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
+		return lectureService.findAll().stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
 				.filter(lecture -> lecture.getTeacher().equals(teacher)
 						&& (lecture.getDate().getMonthValue() == date.getMonthValue()
 								&& lecture.getDate().getDayOfMonth() == date.getDayOfMonth()))
@@ -976,13 +952,13 @@ public class MenuCreator {
 	}
 
 	public List<Lecture> getTTForMonth(Student student, Month date) {
-		return lectureDao.findAll().stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
+		return lectureService.findAll().stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
 				.filter(lecture -> lecture.getDate().getMonth().equals(date))
 				.filter(lecture -> lecture.getGroups().contains(student.getGroup())).collect(Collectors.toList());
 	}
 
 	public List<Lecture> getTTForMonth(Teacher teacher, Month date) {
-		return lectureDao.findAll().stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
+		return lectureService.findAll().stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
 				.filter(lecture -> (lecture.getTeacher().equals(teacher) && lecture.getDate().getMonth().equals(date)))
 				.collect(Collectors.toList());
 	}

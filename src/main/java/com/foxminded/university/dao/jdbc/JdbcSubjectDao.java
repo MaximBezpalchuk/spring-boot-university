@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -22,6 +23,7 @@ public class JdbcSubjectDao implements SubjectDao {
 	private final static String UPDATE_SUBJECT = "UPDATE subjects SET name=?, description=?, cathedra_id=? WHERE id=?";
 	private final static String DELETE_SUBJECT = "DELETE FROM subjects WHERE id = ?";
 	private final static String SELECT_BY_TEACHER_ID = "SELECT * FROM subjects WHERE id IN (SELECT subject_id FROM subjects_teachers WHERE teacher_id =?)";
+	private final static String SELECT_BY_NAME = "SELECT * FROM subjects WHERE name = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private SubjectRowMapper rowMapper;
@@ -38,7 +40,11 @@ public class JdbcSubjectDao implements SubjectDao {
 
 	@Override
 	public Subject findById(int id) {
-		return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+		try {
+			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
 	}
 
 	@Override
@@ -71,4 +77,12 @@ public class JdbcSubjectDao implements SubjectDao {
 		return jdbcTemplate.query(SELECT_BY_TEACHER_ID, rowMapper, id);
 	}
 
+	@Override
+	public Subject findByName(String name) {
+		try {
+			return jdbcTemplate.queryForObject(SELECT_BY_NAME, rowMapper, name);
+		} catch (EmptyResultDataAccessException e) {
+			return null;
+		}
+	}
 }
