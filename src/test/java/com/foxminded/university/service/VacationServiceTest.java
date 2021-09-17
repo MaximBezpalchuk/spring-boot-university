@@ -124,7 +124,7 @@ public class VacationServiceTest {
 				.end(end)
 				.teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build())
 				.build();
-		when(vacationDao.findByTeacherId(vacation.getTeacher().getId())).thenReturn(Arrays.asList(vacation));
+		when(vacationDao.findByTeacherIdAndYear(vacation.getTeacher().getId(), vacation.getStart().getYear())).thenReturn(Arrays.asList(vacation));
 		vacationService.save(vacation);
 
 		verify(vacationDao, never()).save(vacation);

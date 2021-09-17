@@ -7,6 +7,7 @@ import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -155,5 +156,45 @@ public class JdbcVacationDaoTest {
 		Vacation actual = vacationDao.findByPeriodAndTeacher(expected.getStart(), expected.getEnd(), teacher);
 
 		assertEquals(expected, actual);
+	}
+	
+	@Test
+	void givenTeacherAndYear_whenFindByTeacherAndYear_thenVacationFound() {
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+		Teacher teacher = Teacher.builder()
+				.firstName("Daniel")
+				.lastName("Morpheus")
+				.address("Virtual Reality Capsule no 1")
+				.gender(Gender.MALE)
+				.birthDate(LocalDate.of(1970, 1, 1))
+				.cathedra(cathedra)
+				.degree(Degree.PROFESSOR)
+				.phone("1")
+				.email("1@bigowl.com")
+				.postalCode("12345")
+				.education("Higher education")
+				.id(1)
+				.build();
+		List<Subject> subjects = new ArrayList<>();
+		Subject subject = Subject.builder().cathedra(cathedra).name("Weapon Tactics")
+				.description("Learning how to use heavy weapon and guerrilla tactics").id(1).build();
+		subjects.add(subject);
+		teacher.setSubjects(subjects);
+		
+		Vacation vacation1 = Vacation.builder()
+				.id(1)
+				.start(LocalDate.of(2021, 1, 15))
+				.end(LocalDate.of(2021, 1, 29))
+				.teacher(teacher)
+				.build();
+		Vacation vacation2 = Vacation.builder()
+				.id(2)
+				.start(LocalDate.of(2021, 6, 15))
+				.end(LocalDate.of(2021, 6, 29))
+				.teacher(teacher)
+				.build();
+		List<Vacation> actual = vacationDao.findByTeacherIdAndYear(1, 2021);
+
+		assertEquals(Arrays.asList(vacation1, vacation2), actual);
 	}
 }
