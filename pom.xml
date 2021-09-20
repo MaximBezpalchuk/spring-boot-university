@@ -18,6 +18,7 @@
 		<h2.version>1.4.200</h2.version>
 		<mockito.version>3.12.4</mockito.version>
 		<slf4j.version>1.7.32</slf4j.version>
+		<logback.version>1.2.6</logback.version>
 	</properties>
 
 	<dependencies>
@@ -54,7 +55,17 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
-			<version>1.2.6</version>
+			<version>${logback.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
