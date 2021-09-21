@@ -6,6 +6,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.function.Predicate;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -19,6 +21,8 @@ import com.foxminded.university.model.Teacher;
 
 @Component
 public class JdbcTeacherDao implements TeacherDao {
+
+	private final static Logger logger = LoggerFactory.getLogger(JdbcTeacherDao.class);
 
 	private final static String SELECT_ALL = "SELECT * FROM teachers";
 	private final static String SELECT_BY_ID = "SELECT * FROM teachers WHERE id = ?";
@@ -39,14 +43,17 @@ public class JdbcTeacherDao implements TeacherDao {
 
 	@Override
 	public List<Teacher> findAll() {
+		logger.debug("Find all teachers");
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
 
 	@Override
 	public Teacher findById(int id) {
+		logger.debug("Find teacher by id: {}", id);
 		try {
 			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
 		} catch (EmptyResultDataAccessException e) {
+			// TODO: throw custom exception with custom message
 			return null;
 		}
 	}
@@ -54,6 +61,7 @@ public class JdbcTeacherDao implements TeacherDao {
 	@Override
 	@Transactional
 	public void save(Teacher teacher) {
+		logger.debug("Save teacher");
 		Teacher teacherOld = Teacher.builder().build();
 		if (teacher.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -76,6 +84,7 @@ public class JdbcTeacherDao implements TeacherDao {
 			teacher.setId((int) keyHolder.getKeyList().get(0).get("id"));
 			teacher.getSubjects().stream()
 					.forEach(subject -> jdbcTemplate.update(INSERT_SUBJECT, subject.getId(), teacher.getId()));
+			logger.debug("New teacher created with id: {}", teacher.getId());
 		} else {
 			jdbcTemplate.update(UPDATE_TEACHER, teacher.getFirstName(), teacher.getLastName(), teacher.getPhone(),
 					teacher.getAddress(), teacher.getEmail(), teacher.getGender().toString(), teacher.getPostalCode(),
@@ -85,30 +94,37 @@ public class JdbcTeacherDao implements TeacherDao {
 			teacherOld = findById(teacher.getId());
 			updateSubjects(teacherOld, teacher);
 			deleteSubjects(teacherOld, teacher);
+			logger.debug("Teacher with id {} was updated", teacher.getId());
 		}
 	}
 
 	@Override
 	public void deleteById(int id) {
 		jdbcTemplate.update(DELETE_TEACHER, id);
+		logger.debug("Teacher with id {} was deleted", id);
 	}
 
 	private void updateSubjects(Teacher teacherOld, Teacher teacherNew) {
 		teacherNew.getSubjects().stream().filter(Predicate.not(teacherOld.getSubjects()::contains))
 				.forEach(subject -> jdbcTemplate.update(INSERT_SUBJECT, subject.getId(), teacherNew.getId()));
+		logger.debug("Update subjects in teacher with id {}", teacherNew.getId());
 	}
 
 	private void deleteSubjects(Teacher teacherOld, Teacher teacherNew) {
 		teacherOld.getSubjects().stream().filter(Predicate.not(teacherNew.getSubjects()::contains))
 				.forEach(subject -> jdbcTemplate.update(DELETE_SUBJECT, subject.getId(), teacherNew.getId()));
+		logger.debug("Delete subjects in teacher with id {}", teacherNew.getId());
 	}
 
 	@Override
 	public Teacher findByFullNameAndBirthDate(String firstName, String lastName, LocalDate birthDate) {
+		logger.debug("Find teacher by first name: {}, last name: {} and birth date: {}", firstName, lastName,
+				birthDate);
 		try {
 			return jdbcTemplate.queryForObject(SELECT_BY_FULL_NAME_AND_BIRTHDAY, rowMapper, firstName, lastName,
 					birthDate);
 		} catch (EmptyResultDataAccessException e) {
+			// TODO: throw custom exception with custom message
 			return null;
 		}
 	}

@@ -5,6 +5,8 @@ import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -17,6 +19,8 @@ import com.foxminded.university.model.Holiday;
 
 @Component
 public class JdbcHolidayDao implements HolidayDao {
+	
+	private final static Logger logger = LoggerFactory.getLogger(JdbcHolidayDao.class);
 
 	private final static String SELECT_ALL = "SELECT * FROM holidays";
 	private final static String SELECT_BY_ID = "SELECT * FROM holidays WHERE id = ?";
@@ -36,20 +40,24 @@ public class JdbcHolidayDao implements HolidayDao {
 
 	@Override
 	public List<Holiday> findAll() {
+		logger.debug("Find all holidays");
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
 
 	@Override
 	public Holiday findById(int id) {
+		logger.debug("Find holiday by id: {}", id);
 		try {
 			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
 		} catch (EmptyResultDataAccessException e) {
+			//TODO: throw custom exception with custom message
 			return null;
 		}
 	}
 
 	@Override
 	public void save(Holiday holiday) {
+		logger.debug("Save holiday");
 		if (holiday.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {
@@ -61,31 +69,38 @@ public class JdbcHolidayDao implements HolidayDao {
 				return statement;
 			}, keyHolder);
 			holiday.setId((int) keyHolder.getKeyList().get(0).get("id"));
+			logger.debug("New holiday created with id: {}", holiday.getId());
 		} else {
 			jdbcTemplate.update(UPDATE_HOLIDAY, holiday.getName(), holiday.getDate(), holiday.getCathedra().getId(),
 					holiday.getId());
+			logger.debug("Holiday with id {} was updated", holiday.getId());
 		}
 	}
 
 	@Override
 	public void deleteById(int id) {
 		jdbcTemplate.update(DELETE_HOLIDAY, id);
+		logger.debug("Holiday with id {} was deleted", id);
 	}
 
 	@Override
 	public Holiday findByNameAndDate(String name, LocalDate date) {
+		logger.debug("Find holiday with name: {} and date: {}", name, date);
 		try {
 			return jdbcTemplate.queryForObject(SELECT_BY_NAME_AND_DATE, rowMapper, name, date);
 		} catch (EmptyResultDataAccessException e) {
+			//TODO: throw custom exception with custom message
 			return null;
 		}
 	}
 	
 	@Override
 	public List<Holiday> findByDate(LocalDate date) {
+		logger.debug("Find holiday by date: {}", date);
 		try {
 			return jdbcTemplate.query(SELECT_BY_DATE, rowMapper,  date);
 		} catch (EmptyResultDataAccessException e) {
+			//TODO: throw custom exception with custom message
 			return null;
 		}
 	}

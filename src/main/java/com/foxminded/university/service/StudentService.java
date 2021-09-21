@@ -46,6 +46,10 @@ public class StudentService {
 	}
 
 	private boolean isGroupFilled(Student student) {
-		return studentDao.findByGroupId(student.getGroup().getId()).size() >= maxGroupSize;
+		if (student.getGroup() != null) {
+			return studentDao.findByGroupId(student.getGroup().getId()).size() >= maxGroupSize;
+		}
+
+		return false;
 	}
 }

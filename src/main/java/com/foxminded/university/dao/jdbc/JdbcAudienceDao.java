@@ -4,6 +4,8 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -16,6 +18,8 @@ import com.foxminded.university.model.Audience;
 
 @Component
 public class JdbcAudienceDao implements AudienceDao {
+	
+	private final static Logger logger = LoggerFactory.getLogger(JdbcAudienceDao.class);
 
 	private final static String SELECT_ALL = "SELECT * FROM audiences";
 	private final static String SELECT_BY_ID = "SELECT * FROM audiences WHERE id = ?";
@@ -34,20 +38,24 @@ public class JdbcAudienceDao implements AudienceDao {
 
 	@Override
 	public List<Audience> findAll() {
+		logger.debug("Find all audiences");
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
 
 	@Override
 	public Audience findById(int id) {
+		logger.debug("Find audience by id: {}", id);
 		try {
 			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
 		} catch (EmptyResultDataAccessException e) {
+			//TODO: throw custom exception with custom message
 			return null;
 		}
 	}
 
 	@Override
 	public void save(Audience audience) {
+		logger.debug("Save audience");
 		if (audience.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {
@@ -59,9 +67,11 @@ public class JdbcAudienceDao implements AudienceDao {
 				return statement;
 			}, keyHolder);
 			audience.setId((int) keyHolder.getKeyList().get(0).get("id"));
+			logger.debug("New audience created with id: {}", audience.getId());
 		} else {
 			jdbcTemplate.update(UPDATE_AUDIENCE, audience.getRoom(), audience.getCapacity(),
 					audience.getCathedra().getId(), audience.getId());
+			logger.debug("Audience with id {} was updated", audience.getId());
 		}
 
 	}
@@ -69,13 +79,16 @@ public class JdbcAudienceDao implements AudienceDao {
 	@Override
 	public void deleteById(int id) {
 		jdbcTemplate.update(DELETE_AUDIENCE, id);
+		logger.debug("Audience with id {} was deleted", id);
 	}
 
 	@Override
 	public Audience findByRoom(int room) {
+		logger.debug("Find audience by room number: {}", room);
 		try {
 			return jdbcTemplate.queryForObject(SELECT_BY_ROOM, rowMapper, room);
 		} catch (EmptyResultDataAccessException e) {
+			//TODO: throw custom exception with custom message
 			return null;
 		}
 	}

@@ -5,6 +5,8 @@ import java.sql.Statement;
 import java.time.LocalTime;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -17,6 +19,8 @@ import com.foxminded.university.model.LectureTime;
 
 @Component
 public class JdbcLectureTimeDao implements LectureTimeDao {
+	
+	private final static Logger logger = LoggerFactory.getLogger(JdbcLectureTimeDao.class);
 
 	private final static String SELECT_ALL = "SELECT * FROM lecture_times";
 	private final static String SELECT_BY_ID = "SELECT * FROM lecture_times WHERE id = ?";
@@ -35,20 +39,24 @@ public class JdbcLectureTimeDao implements LectureTimeDao {
 
 	@Override
 	public List<LectureTime> findAll() {
+		logger.debug("Find all lecture times");
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
 
 	@Override
 	public LectureTime findById(int id) {
+		logger.debug("Find lecture time by id: {}", id);
 		try {
 			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
 		} catch (EmptyResultDataAccessException e) {
+			//TODO: throw custom exception with custom message
 			return null;
 		}
 	}
 
 	@Override
 	public void save(LectureTime lectureTime) {
+		logger.debug("Save lecture time");
 		if (lectureTime.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {
@@ -59,8 +67,10 @@ public class JdbcLectureTimeDao implements LectureTimeDao {
 				return statement;
 			}, keyHolder);
 			lectureTime.setId((int) keyHolder.getKeyList().get(0).get("id"));
+			logger.debug("New lecture time created with id: {}", lectureTime.getId());
 		} else {
 			jdbcTemplate.update(UPDATE_LECTURE_TIME, lectureTime.getStart(), lectureTime.getEnd(), lectureTime.getId());
+			logger.debug("Lecture time with id {} was updated", lectureTime.getId());
 		}
 
 	}
@@ -68,13 +78,16 @@ public class JdbcLectureTimeDao implements LectureTimeDao {
 	@Override
 	public void deleteById(int id) {
 		jdbcTemplate.update(DELETE_LECTURE_TIME, id);
+		logger.debug("Lecture time with id {} was deleted", id);
 	}
 
 	@Override
 	public LectureTime findByPeriod(LocalTime start, LocalTime end) {
+		logger.debug("Find lecture time which starts at {} and end at {}", start, end);
 		try {
 			return jdbcTemplate.queryForObject(SELECT_BY_PERIOD, rowMapper, start, end);
 		} catch (EmptyResultDataAccessException e) {
+			//TODO: throw custom exception with custom message
 			return null;
 		}
 	}
