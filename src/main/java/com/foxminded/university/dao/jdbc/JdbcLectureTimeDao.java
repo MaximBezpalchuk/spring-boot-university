@@ -15,11 +15,12 @@ import org.springframework.stereotype.Component;
 
 import com.foxminded.university.dao.LectureTimeDao;
 import com.foxminded.university.dao.jdbc.mapper.LectureTimeRowMapper;
+import com.foxminded.university.exception.DaoException;
 import com.foxminded.university.model.LectureTime;
 
 @Component
 public class JdbcLectureTimeDao implements LectureTimeDao {
-	
+
 	private final static Logger logger = LoggerFactory.getLogger(JdbcLectureTimeDao.class);
 
 	private final static String SELECT_ALL = "SELECT * FROM lecture_times";
@@ -44,13 +45,12 @@ public class JdbcLectureTimeDao implements LectureTimeDao {
 	}
 
 	@Override
-	public LectureTime findById(int id) {
+	public LectureTime findById(int id) throws DaoException {
 		logger.debug("Find lecture time by id: {}", id);
 		try {
 			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
 		} catch (EmptyResultDataAccessException e) {
-			//TODO: throw custom exception with custom message
-			return null;
+			throw new DaoException("Cant find lecture time by id", e);
 		}
 	}
 
@@ -82,13 +82,12 @@ public class JdbcLectureTimeDao implements LectureTimeDao {
 	}
 
 	@Override
-	public LectureTime findByPeriod(LocalTime start, LocalTime end) {
+	public LectureTime findByPeriod(LocalTime start, LocalTime end) throws DaoException {
 		logger.debug("Find lecture time which starts at {} and end at {}", start, end);
 		try {
 			return jdbcTemplate.queryForObject(SELECT_BY_PERIOD, rowMapper, start, end);
 		} catch (EmptyResultDataAccessException e) {
-			//TODO: throw custom exception with custom message
-			return null;
+			throw new DaoException("Cant find lecture time by period", e);
 		}
 	}
 }

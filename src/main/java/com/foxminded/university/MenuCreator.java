@@ -185,11 +185,13 @@ public class MenuCreator {
 			try {
 				choise = Integer.parseInt(reader.readLine());
 				if (choise < 0 || choise > max) {
+					logger.debug("Input not in max range");
 					System.out.println("Invalid selection. Please try again");
 				} else {
 					break;
 				}
 			} catch (NumberFormatException | IOException e) {
+				logger.debug("Not an integer input");
 				System.out.println("Invalid selection. Please try again");
 			}
 		}
@@ -219,6 +221,7 @@ public class MenuCreator {
 				date = LocalDate.of(year, month, day);
 				break;
 			} catch (NumberFormatException | ArrayIndexOutOfBoundsException | DateTimeException | IOException e) {
+				logger.debug("Bad date input");
 				System.out.println("Invalid selection. Please try again");
 			}
 		}

@@ -1,7 +1,8 @@
 package com.foxminded.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
@@ -25,6 +26,7 @@ import com.foxminded.university.model.Subject;
 import com.foxminded.university.model.Teacher;
 import com.foxminded.university.config.SpringTestConfig;
 import com.foxminded.university.dao.jdbc.JdbcLectureDao;
+import com.foxminded.university.exception.DaoException;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = SpringTestConfig.class)
@@ -63,8 +65,14 @@ public class JdbcLectureDaoTest {
 	}
 
 	@Test
-	void givenNotExistingLecture_whenFindById_thenReturnNull() {
-		assertNull(lectureDao.findById(100));
+	void givenNotExistingLecture_whenFindById_thenDaoException() {
+		Exception exception = assertThrows(DaoException.class, () -> {
+			lectureDao.findById(100);
+		});
+		String expectedMessage = "Cant find lecture by id";
+		String actualMessage = exception.getMessage();
+
+		assertTrue(actualMessage.contains(expectedMessage));
 	}
 
 	@Test

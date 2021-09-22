@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.foxminded.university.dao.HolidayDao;
 import com.foxminded.university.dao.jdbc.mapper.HolidayRowMapper;
+import com.foxminded.university.exception.DaoException;
 import com.foxminded.university.model.Holiday;
 
 @Component
@@ -45,13 +46,12 @@ public class JdbcHolidayDao implements HolidayDao {
 	}
 
 	@Override
-	public Holiday findById(int id) {
+	public Holiday findById(int id) throws DaoException {
 		logger.debug("Find holiday by id: {}", id);
 		try {
 			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
 		} catch (EmptyResultDataAccessException e) {
-			//TODO: throw custom exception with custom message
-			return null;
+			throw new DaoException("Cant find holiday by id", e);
 		}
 	}
 
@@ -84,24 +84,22 @@ public class JdbcHolidayDao implements HolidayDao {
 	}
 
 	@Override
-	public Holiday findByNameAndDate(String name, LocalDate date) {
+	public Holiday findByNameAndDate(String name, LocalDate date) throws DaoException {
 		logger.debug("Find holiday with name: {} and date: {}", name, date);
 		try {
 			return jdbcTemplate.queryForObject(SELECT_BY_NAME_AND_DATE, rowMapper, name, date);
 		} catch (EmptyResultDataAccessException e) {
-			//TODO: throw custom exception with custom message
-			return null;
+			throw new DaoException("Cant find holiday by name and date", e);
 		}
 	}
 	
 	@Override
-	public List<Holiday> findByDate(LocalDate date) {
+	public List<Holiday> findByDate(LocalDate date) throws DaoException {
 		logger.debug("Find holiday by date: {}", date);
 		try {
 			return jdbcTemplate.query(SELECT_BY_DATE, rowMapper,  date);
 		} catch (EmptyResultDataAccessException e) {
-			//TODO: throw custom exception with custom message
-			return null;
+			throw new DaoException("Cant find holiday by date", e);
 		}
 	}
 }

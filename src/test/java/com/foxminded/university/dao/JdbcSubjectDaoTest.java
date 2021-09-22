@@ -1,7 +1,8 @@
 package com.foxminded.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
@@ -20,6 +21,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.foxminded.university.model.Subject;
 import com.foxminded.university.config.SpringTestConfig;
 import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
+import com.foxminded.university.exception.DaoException;
 import com.foxminded.university.model.Cathedra;
 
 @ExtendWith(SpringExtension.class)
@@ -55,8 +57,14 @@ public class JdbcSubjectDaoTest {
 	}
 
 	@Test
-	void givenNotExistingSubject_whenFindById_thenReturnNull() {
-		assertNull(subjectDao.findById(100));
+	void givenNotExistingSubject_whenFindById_thenDaoException() {
+		Exception exception = assertThrows(DaoException.class, () -> {
+			subjectDao.findById(100);
+		});
+		String expectedMessage = "Cant find subject by id";
+		String actualMessage = exception.getMessage();
+
+		assertTrue(actualMessage.contains(expectedMessage));
 	}
 
 	@Test

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.foxminded.university.dao.SubjectDao;
 import com.foxminded.university.dao.jdbc.mapper.SubjectRowMapper;
+import com.foxminded.university.exception.DaoException;
 import com.foxminded.university.model.Subject;
 
 @Component
@@ -44,13 +45,12 @@ public class JdbcSubjectDao implements SubjectDao {
 	}
 
 	@Override
-	public Subject findById(int id) {
+	public Subject findById(int id) throws DaoException {
 		logger.debug("Find subject by id: {}", id);
 		try {
 			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
 		} catch (EmptyResultDataAccessException e) {
-			//TODO: throw custom exception with custom message
-			return null;
+			throw new DaoException("Cant find subject by id", e);
 		}
 	}
 
@@ -90,13 +90,12 @@ public class JdbcSubjectDao implements SubjectDao {
 	}
 
 	@Override
-	public Subject findByName(String name) {
+	public Subject findByName(String name) throws DaoException {
 		logger.debug("Find subject by name: {}", name);
 		try {
 			return jdbcTemplate.queryForObject(SELECT_BY_NAME, rowMapper, name);
 		} catch (EmptyResultDataAccessException e) {
-			//TODO: throw custom exception with custom message
-			return null;
+			throw new DaoException("Cant find subject by name", e);
 		}
 	}
 }

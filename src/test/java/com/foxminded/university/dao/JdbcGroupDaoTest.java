@@ -1,7 +1,8 @@
 package com.foxminded.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
@@ -18,6 +19,7 @@ import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.config.SpringTestConfig;
 import com.foxminded.university.dao.jdbc.JdbcGroupDao;
+import com.foxminded.university.exception.DaoException;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = SpringTestConfig.class)
@@ -51,8 +53,14 @@ public class JdbcGroupDaoTest {
 	}
 
 	@Test
-	void givenNotExistingGroup_whenFindById_thenReturnNull() {
-		assertNull(groupDao.findById(100));
+	void givenNotExistingGroup_whenFindById_thenDaoException() {
+		Exception exception = assertThrows(DaoException.class, () -> {
+			groupDao.findById(100);
+		});
+		String expectedMessage = "Cant find group by id";
+		String actualMessage = exception.getMessage();
+
+		assertTrue(actualMessage.contains(expectedMessage));
 	}
 
 	@Test

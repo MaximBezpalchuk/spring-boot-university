@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.foxminded.university.dao.TeacherDao;
 import com.foxminded.university.dao.jdbc.mapper.TeacherRowMapper;
+import com.foxminded.university.exception.DaoException;
 import com.foxminded.university.model.Teacher;
 
 @Component
@@ -48,13 +49,12 @@ public class JdbcTeacherDao implements TeacherDao {
 	}
 
 	@Override
-	public Teacher findById(int id) {
+	public Teacher findById(int id) throws DaoException {
 		logger.debug("Find teacher by id: {}", id);
 		try {
 			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
 		} catch (EmptyResultDataAccessException e) {
-			// TODO: throw custom exception with custom message
-			return null;
+			throw new DaoException("Cant find teacher by id", e);
 		}
 	}
 
@@ -117,15 +117,12 @@ public class JdbcTeacherDao implements TeacherDao {
 	}
 
 	@Override
-	public Teacher findByFullNameAndBirthDate(String firstName, String lastName, LocalDate birthDate) {
-		logger.debug("Find teacher by first name: {}, last name: {} and birth date: {}", firstName, lastName,
-				birthDate);
+	public Teacher findByFullNameAndBirthDate(String firstName, String lastName, LocalDate birthDate) throws DaoException {
+		logger.debug("Find teacher by first name: {}, last name: {} and birth date: {}", firstName, lastName, birthDate);
 		try {
-			return jdbcTemplate.queryForObject(SELECT_BY_FULL_NAME_AND_BIRTHDAY, rowMapper, firstName, lastName,
-					birthDate);
+			return jdbcTemplate.queryForObject(SELECT_BY_FULL_NAME_AND_BIRTHDAY, rowMapper, firstName, lastName, birthDate);
 		} catch (EmptyResultDataAccessException e) {
-			// TODO: throw custom exception with custom message
-			return null;
+			throw new DaoException("Cant find teacher by full name and birth date", e);
 		}
 	}
 }

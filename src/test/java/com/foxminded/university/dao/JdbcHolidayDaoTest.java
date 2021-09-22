@@ -1,7 +1,8 @@
 package com.foxminded.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
@@ -20,6 +21,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.foxminded.university.config.SpringTestConfig;
 import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
+import com.foxminded.university.exception.DaoException;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Holiday;
 
@@ -56,8 +58,14 @@ public class JdbcHolidayDaoTest {
 	}
 
 	@Test
-	void givenNotExistingHoliday_whenFindById_thenReturnNull() {
-		assertNull(holidayDao.findById(100));
+	void givenNotExistingHoliday_whenFindById_thenDaoException() {
+		Exception exception = assertThrows(DaoException.class, () -> {
+			holidayDao.findById(100);
+		});
+		String expectedMessage = "Cant find holiday by id";
+		String actualMessage = exception.getMessage();
+
+		assertTrue(actualMessage.contains(expectedMessage));
 	}
 
 	@Test

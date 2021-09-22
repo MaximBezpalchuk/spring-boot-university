@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.foxminded.university.dao.VacationDao;
 import com.foxminded.university.dao.jdbc.mapper.VacationRowMapper;
+import com.foxminded.university.exception.DaoException;
 import com.foxminded.university.model.Teacher;
 import com.foxminded.university.model.Vacation;
 
@@ -48,13 +49,12 @@ public class JdbcVacationDao implements VacationDao {
 	}
 
 	@Override
-	public Vacation findById(int id) {
+	public Vacation findById(int id) throws DaoException {
 		logger.debug("Find vacation by id: {}", id);
 		try {
 			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
 		} catch (EmptyResultDataAccessException e) {
-			// TODO: throw custom exception with custom message
-			return null;
+			throw new DaoException("Cant find vacation by id", e);
 		}
 	}
 
@@ -93,13 +93,12 @@ public class JdbcVacationDao implements VacationDao {
 	}
 
 	@Override
-	public Vacation findByPeriodAndTeacher(LocalDate start, LocalDate end, Teacher teacher) {
+	public Vacation findByPeriodAndTeacher(LocalDate start, LocalDate end, Teacher teacher) throws DaoException {
 		logger.debug("Find vacation by vacation start: {}, end: {}, teacher id: {}", start, end, teacher.getId());
 		try {
 			return jdbcTemplate.queryForObject(SELECT_BY_PERIOD_AND_TEACHER_ID, rowMapper, start, end, teacher.getId());
 		} catch (EmptyResultDataAccessException e) {
-			// TODO: throw custom exception with custom message
-			return null;
+			throw new DaoException("Cant find vacation by period and teacher", e);
 		}
 	}
 

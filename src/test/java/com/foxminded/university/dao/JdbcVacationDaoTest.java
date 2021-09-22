@@ -1,7 +1,8 @@
 package com.foxminded.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
@@ -21,6 +22,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.foxminded.university.config.SpringTestConfig;
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
+import com.foxminded.university.exception.DaoException;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Degree;
 import com.foxminded.university.model.Gender;
@@ -61,8 +63,14 @@ public class JdbcVacationDaoTest {
 	}
 
 	@Test
-	void givenNotExistingVacation_whenFindById_thenReturnNull() {
-		assertNull(vacationDao.findById(100));
+	void givenNotExistingVacation_whenFindById_thenDaoException() {
+		Exception exception = assertThrows(DaoException.class, () -> {
+			vacationDao.findById(100);
+		});
+		String expectedMessage = "Cant find vacation by id";
+		String actualMessage = exception.getMessage();
+
+		assertTrue(actualMessage.contains(expectedMessage));
 	}
 
 	@Test

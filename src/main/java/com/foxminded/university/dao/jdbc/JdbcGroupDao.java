@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.jdbc.mapper.GroupRowMapper;
+import com.foxminded.university.exception.DaoException;
 import com.foxminded.university.model.Group;
 
 @Component
@@ -44,13 +45,12 @@ public class JdbcGroupDao implements GroupDao {
 	}
 
 	@Override
-	public Group findById(int id) {
+	public Group findById(int id) throws DaoException {
 		logger.debug("Find group by id: {}", id);
 		try {
 			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
 		} catch (EmptyResultDataAccessException e) {
-			//TODO: throw custom exception with custom message
-			return null;
+			throw new DaoException("Cant find group by id", e);
 		}
 	}
 
@@ -88,13 +88,12 @@ public class JdbcGroupDao implements GroupDao {
 	}
 
 	@Override
-	public Group findByName(String name) {
+	public Group findByName(String name) throws DaoException {
 		logger.debug("Find group with name {}", name);
 		try {
 			return jdbcTemplate.queryForObject(SELECT_BY_NAME, rowMapper, name);
 		} catch (EmptyResultDataAccessException e) {
-			//TODO: throw custom exception with custom message
-			return null;
+			throw new DaoException("Cant find group by name", e);
 		}
 	}
 }
