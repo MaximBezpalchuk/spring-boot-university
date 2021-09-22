@@ -12,6 +12,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -40,6 +42,8 @@ import com.foxminded.university.model.Teacher;
 import com.foxminded.university.model.Vacation;
 
 public class MenuCreator {
+	
+	private static final Logger logger = LoggerFactory.getLogger(MenuCreator.class);
 
 	private final ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfig.class);
 	private boolean exit;
