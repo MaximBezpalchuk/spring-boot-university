@@ -40,11 +40,6 @@
     
     <appender name="DEBUG_INTO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${HOME_DEBUG_LOG}</file>
-        <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>DEBUG</level>
-            <onMatch>ACCEPT</onMatch>
-            <onMismatch>ACCEPT</onMismatch>
-        </filter>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>logs/archived/debug.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
             <!-- each archived file, size max 10MB -->
