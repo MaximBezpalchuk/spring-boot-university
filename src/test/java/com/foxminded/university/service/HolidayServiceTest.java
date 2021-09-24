@@ -1,6 +1,7 @@
 package com.foxminded.university.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -17,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
 import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Holiday;
 
 @ExtendWith(MockitoExtension.class)
@@ -71,5 +73,25 @@ public class HolidayServiceTest {
 		holidayService.deleteById(1);
 
 		verify(holidayDao).deleteById(1);
+	}
+	
+	@Test
+	void givenNotUniqueAudience_whenSave_thenEntityNotUniqueException() throws Exception {
+		Holiday holiday1 = Holiday.builder()
+				.id(1)
+				.name("TestName")
+				.date(LocalDate.of(2020, 1, 1))
+				.build();
+		Holiday holiday2 = Holiday.builder()
+				.id(10)
+				.name("TestName")
+				.date(LocalDate.of(2020, 1, 1))
+				.build();
+		when(holidayDao.findByNameAndDate(holiday1.getName(), holiday1.getDate())).thenReturn(Optional.of(holiday2));
+		Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
+				holidayService.save(holiday1);
+			});
+
+		assertEquals("Holiday with same name and date is already exists!", exception.getMessage());
 	}
 }

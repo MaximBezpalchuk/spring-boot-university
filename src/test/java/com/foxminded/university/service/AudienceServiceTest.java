@@ -1,6 +1,7 @@
 package com.foxminded.university.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -16,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.foxminded.university.dao.jdbc.JdbcAudienceDao;
 import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Audience;
 
 @ExtendWith(MockitoExtension.class)
@@ -70,6 +72,21 @@ public class AudienceServiceTest {
 		verify(audienceDao).deleteById(3);
 	}
 	
-	
+	@Test
+	void givenNotUniqueAudience_whenSave_thenEntityNotUniqueException() throws Exception {
+		Audience audience1 = Audience.builder()
+				.id(1)
+				.room(10)
+				.build();
+		Audience audience2 = Audience.builder()
+				.id(5)
+				.room(10)
+				.build();
+		when(audienceDao.findByRoom(audience1.getRoom())).thenReturn(Optional.of(audience2));
+		Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
+				audienceService.save(audience1);
+			});
 
+		assertEquals("Audience with this room number is already exists!", exception.getMessage());
+	}
 }

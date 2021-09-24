@@ -83,7 +83,7 @@ public class LectureService {
 
 	private boolean isUnique(Lecture lecture) throws EntityNotUniqueException {
 		logger.debug("Check lecture is unique");
-		Optional<Lecture> existingLecture = lectureDao.findByAudienceDateAndLectureTime(lecture.getAudience(),
+		Optional<Lecture> existingLecture = lectureDao.findByTeacherAudienceDateAndLectureTime(lecture.getTeacher(), lecture.getAudience(),
 				lecture.getDate(), lecture.getTime());
 		if (existingLecture.isEmpty() || (existingLecture.get().getId() == lecture.getId())) {
 			return true;
@@ -95,9 +95,9 @@ public class LectureService {
 	private boolean isSunday(Lecture lecture) throws LectureOnSundayException {
 		logger.debug("Check lecture is on sunday");
 		if (lecture.getDate().getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
-			return true;
-		} else {
 			throw new LectureOnSundayException("Lecture can`t be on sunday!");
+		} else {
+			return false;
 		}
 	}
 
@@ -105,9 +105,9 @@ public class LectureService {
 		logger.debug("Check lecture is after hours");
 		if (lecture.getTime().getEnd().getHour() > endWorkingDay
 				|| lecture.getTime().getStart().getHour() < startWorkingDay) {
-			return true;
-		} else {
 			throw new LectureInAfterHoursException("Lecture can`t be in after hours!");
+		} else {
+			return false;
 		}
 	}
 
@@ -115,27 +115,27 @@ public class LectureService {
 		logger.debug("Check teacher for this lecture is busy");
 		if (lectureDao.findLecturesByTeacherDateAndTime(lecture.getTeacher(), lecture.getDate(), lecture.getTime())
 				.stream().filter(lec -> lec.getId() != lecture.getId()).findAny().isPresent()) {
-			return true;
-		} else {
 			throw new LectureWithBusyTeacherException("Teacher is on another lecture this time!");
+		} else {
+			return false;
 		}
 	}
 
 	private boolean isTeacherInVacation(Lecture lecture) throws LectureWithTeacherInVacationException {
 		logger.debug("Check teacher for this lecture is in vacation");
 		if (!vacationDao.findByDateInPeriodAndTeacher(lecture.getDate(), lecture.getTeacher()).isEmpty()) {
-			return true;
-		} else {
 			throw new LectureWithTeacherInVacationException("Teacher is in vacation this date!");
+		} else {
+			return false;
 		}
 	}
 
 	private boolean isHoliday(Lecture lecture) throws LectureOnHolidayException {
 		logger.debug("Check lecture is in holiday time");
 		if (!holidayDao.findByDate(lecture.getDate()).isEmpty()) {
-			return true;
-		} else {
 			throw new LectureOnHolidayException("Lecture can`t be on holiday!");
+		} else {
+			return false;
 		}
 	}
 
@@ -163,10 +163,10 @@ public class LectureService {
 		logger.debug("Check audience is occupied");
 		Optional<Lecture> existingLecture = lectureDao.findByAudienceDateAndLectureTime(lecture.getAudience(),
 				lecture.getDate(), lecture.getTime());
-		if (existingLecture.isEmpty() && existingLecture.get().getId() != lecture.getId()) {
-			return true;
-		} else {
+		if (!existingLecture.isEmpty() && existingLecture.get().getId() != lecture.getId()) {
 			throw new LectureInOccupiedAudienceException("This audience is already occupied!");
+		} else {
+			return false;
 		}
 	}
 }

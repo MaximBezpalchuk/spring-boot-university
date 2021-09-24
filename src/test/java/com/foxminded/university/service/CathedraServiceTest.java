@@ -1,6 +1,7 @@
 package com.foxminded.university.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -16,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
 import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Cathedra;
 
 @ExtendWith(MockitoExtension.class)
@@ -66,5 +68,17 @@ public class CathedraServiceTest {
 		cathedraService.deleteById(1);
 
 		verify(cathedraDao).deleteById(1);
+	}
+	
+	@Test
+	void givenNotUniqueCathedra_whenSave_thenEntityNotUniqueException() throws Exception {
+		Cathedra cathedra1 = Cathedra.builder().id(1).name("Test1").build();
+		Cathedra cathedra2 = Cathedra.builder().id(2).name("Test2").build();
+		when(cathedraDao.findByName(cathedra1.getName())).thenReturn(Optional.of(cathedra2));
+		Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
+				cathedraService.save(cathedra1);
+			});
+
+		assertEquals("Cathedra with same name is already exists!", exception.getMessage());
 	}
 }

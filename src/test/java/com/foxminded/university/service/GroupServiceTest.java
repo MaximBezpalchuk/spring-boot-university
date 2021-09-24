@@ -1,6 +1,7 @@
 package com.foxminded.university.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -16,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.foxminded.university.dao.jdbc.JdbcGroupDao;
 import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Group;
 
 @ExtendWith(MockitoExtension.class)
@@ -81,5 +83,17 @@ public class GroupServiceTest {
 		List<Group> actual = groupService.findByLectureId(2);
 
 		assertEquals(expected, actual);
+	}
+	
+	@Test
+	void givenNotUniqueGroup_whenSave_thenEntityNotUniqueException() throws Exception {
+		Group group1 = Group.builder().id(1).name("Test1").build();
+		Group group2 = Group.builder().id(2).name("Test2").build();
+		when(groupDao.findByName(group1.getName())).thenReturn(Optional.of(group2));
+		Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
+				groupService.save(group1);
+			});
+
+		assertEquals("Group with same name is already exists!", exception.getMessage());
 	}
 }

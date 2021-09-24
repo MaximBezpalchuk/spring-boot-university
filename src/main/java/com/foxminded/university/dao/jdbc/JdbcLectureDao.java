@@ -38,6 +38,7 @@ public class JdbcLectureDao implements LectureDao {
 	private final static String DELETE_GROUP = "DELETE FROM lectures_groups WHERE group_id = ? AND lecture_id = ?";
 	private final static String SELECT_BY_AUDIENCE_DATE_LECTURE_TIME = "SELECT * FROM lectures WHERE audience_id = ? AND date = ? AND lecture_time_id = ?";
 	private final static String SELECT_BY_TEACHER_ID_DATE_AND_LECTURE_TIME_ID = "SELECT * FROM lectures WHERE teacher_id = ? AND date = ? AND lecture_time_id = ?";
+	private final static String SELECT_BY_TEACHER_AUDIENCE_DATE_LECTURE_TIME = "SELECT * FROM lectures WHERE teacher_id = ? AND audience_id = ? AND date = ? AND lecture_time_id = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private LectureRowMapper rowMapper;
@@ -126,6 +127,18 @@ public class JdbcLectureDao implements LectureDao {
 				lectureTime.getId());
 		try {
 			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_AUDIENCE_DATE_LECTURE_TIME, rowMapper, audience.getId(), date,
+					lectureTime.getId()));
+		} catch (EmptyResultDataAccessException e) {
+			return Optional.empty();
+		}
+	}
+	
+	@Override
+	public Optional<Lecture> findByTeacherAudienceDateAndLectureTime(Teacher teacher, Audience audience, LocalDate date, LectureTime lectureTime) {
+		logger.debug("Find lecture by teacher with id: {}, audience with id {}, date {} and lecture time id {}", teacher.getId(), audience.getId(), date,
+				lectureTime.getId());
+		try {
+			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_TEACHER_AUDIENCE_DATE_LECTURE_TIME, rowMapper, teacher.getId(), audience.getId(), date,
 					lectureTime.getId()));
 		} catch (EmptyResultDataAccessException e) {
 			return Optional.empty();
