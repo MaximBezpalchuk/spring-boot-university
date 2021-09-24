@@ -2,13 +2,66 @@
 
 <configuration>
 
+	<property name="HOME_ERROR_LOG" value="logs/errors.log"/>
+	<property name="HOME_DEBUG_LOG" value="logs/debug.log"/>
+
   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+  <Target>System.out</Target>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
         <encoder>
-      <pattern>%d{dd.MM.yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{0} - %m%n</pattern>
+      <pattern>%d{dd.MM.yyyy HH:mm:ss.SSS} [%thread] %-5level - %m%n</pattern>
     </encoder>
   </appender>
+  
+  <appender name="ERRORS_INTO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${HOME_ERROR_LOG}</file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/archived/errors.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <!-- each archived file, size max 10MB -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
+            <totalSizeCap>20GB</totalSizeCap>
+            <!-- 60 days to keep -->
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{dd.MM.yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{20} - %m%n</pattern>
+        </encoder>
+    </appender>
+    
+    <appender name="DEBUG_INTO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${HOME_DEBUG_LOG}</file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>ACCEPT</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>logs/archived/debug.%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+            <!-- each archived file, size max 10MB -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- total size of all archive files, if total size > 20GB, it will delete old archived file -->
+            <totalSizeCap>20GB</totalSizeCap>
+            <!-- 60 days to keep -->
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{dd.MM.yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{2} - %m%n</pattern>
+        </encoder>
+    </appender>
  
- <root level="debug">
+ <root level="info">
 	<appender-ref ref="STDOUT" />
+	<appender-ref ref="ERRORS_INTO_FILE" />
+	<appender-ref ref="DEBUG_INTO_FILE" />
   </root>
 </configuration>
