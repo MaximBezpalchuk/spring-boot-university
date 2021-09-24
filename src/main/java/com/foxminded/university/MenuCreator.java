@@ -307,7 +307,12 @@ public class MenuCreator {
 					.postalCode(postalCode1)
 					.education(education1)
 					.build();
-			studentService.save(student);
+			try {
+				studentService.save(student);
+			} catch (Exception e1) {
+				System.out.println(e1.getMessage());
+				logger.error(e1.getMessage());
+			}
 			break;
 		case 2:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -379,7 +384,12 @@ public class MenuCreator {
 					teacher.getSubjects().add(subject);
 				}
 			}
-			teacherService.save(teacher);
+			try {
+				teacherService.save(teacher);
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				logger.error(e.getMessage());
+			}
 			break;
 		case 3:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -389,23 +399,33 @@ public class MenuCreator {
 			System.out.println("Enter subject description:");
 			String subjectDescription3 = reader.readLine();
 			exitCheck(subjectDescription3);
-			subjectService.save(
-					Subject.builder()
-					.cathedra(cathedraService.findById(1))
-					.name(subjectName3)
-					.description(subjectDescription3)
-					.build());
+			try {
+				subjectService.save(
+						Subject.builder()
+						.cathedra(cathedraService.findById(1))
+						.name(subjectName3)
+						.description(subjectDescription3)
+						.build());
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				logger.error(e.getMessage());
+			}
 			break;
 		case 4:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
 			System.out.println("Enter group name:");
 			String groupName4 = reader.readLine();
 			exitCheck(groupName4);
-			groupService.save(
-					Group.builder()
-					.name(groupName4)
-					.cathedra(cathedraService.findById(1))
-					.build());
+			try {
+				groupService.save(
+						Group.builder()
+						.name(groupName4)
+						.cathedra(cathedraService.findById(1))
+						.build());
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				logger.error(e.getMessage());
+			}
 			break;
 		case 5:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -435,15 +455,20 @@ public class MenuCreator {
 			int lectureTimeNumber5 = getInput(sortedLectureTimes5.size());
 			exitCheck(String.valueOf(lectureTimeNumber5));
 			LectureTime lectureTime5 = sortedLectureTimes5.get(lectureTimeNumber5 - 1);
-			lectureService.save(
-					Lecture.builder()
-					.cathedra(cathedraService.findById(1))
-					.subject(subject5)
-					.date(lectureDate5)
-					.time(lectureTime5)
-					.audience(audience5)
-					.teacher(teacher5)
-					.build());
+			try {
+				lectureService.save(
+						Lecture.builder()
+						.cathedra(cathedraService.findById(1))
+						.subject(subject5)
+						.date(lectureDate5)
+						.time(lectureTime5)
+						.audience(audience5)
+						.teacher(teacher5)
+						.build());
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				logger.error(e.getMessage());
+			}
 			break;
 		case 6:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -464,7 +489,12 @@ public class MenuCreator {
 					.date(holidayDate5)
 					.cathedra(cathedra6)
 					.build();
-			holidayService.save(holiday6);
+			try {
+				holidayService.save(holiday6);
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				logger.error(e.getMessage());
+			}
 			break;
 		case 7:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -479,7 +509,12 @@ public class MenuCreator {
 					.capacity(Integer.parseInt(audienceCapacity7))
 					.cathedra(cathedraService.findById(1))
 					.build();
-			audienceService.save(audience7);
+			try {
+				audienceService.save(audience7);
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				logger.error(e.getMessage());
+			}
 			break;
 		case 0:
 			break;
@@ -629,7 +664,12 @@ public class MenuCreator {
 			exitCheck(String.valueOf(groupNumber1));
 			Group group1 = sortedGroups1.get(groupNumber1 - 1);
 			student1.setGroup(group1);
-			studentService.save(student1);
+			try {
+				studentService.save(student1);
+			} catch (Exception e1) {
+				System.out.println(e1.getMessage());
+				logger.error(e1.getMessage());
+			}
 			break;
 		case 2:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -648,7 +688,12 @@ public class MenuCreator {
 					.end(vacationEndDate2)
 					.teacher(teacher2)
 					.build();
-			vacationService.save(vacation2);
+			try {
+				vacationService.save(vacation2);
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				logger.error(e.getMessage());
+			}
 			break;
 		case 3:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -666,7 +711,12 @@ public class MenuCreator {
 			Teacher teacher3 = sortedTeachers3.get(teacherNumber3 - 1);
 			if (!teacher3.getSubjects().contains(subject3)) {
 				teacher3.getSubjects().add(subject3);
-				teacherService.save(teacher3);
+				try {
+					teacherService.save(teacher3);
+				} catch (Exception e) {
+					System.out.println(e.getMessage());
+					logger.error(e.getMessage());
+				}
 			} else {
 				System.out.println("Teacher already have this subject");
 			}
@@ -687,7 +737,12 @@ public class MenuCreator {
 			exitCheck(String.valueOf(audienceNumber4));
 			Audience audience4 = sortedAudiences4.get(audienceNumber4 - 1);
 			lecture4.setAudience(audience4);
-			lectureService.save(lecture4);
+			try {
+				lectureService.save(lecture4);
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				logger.error(e.getMessage());
+			}
 			break;
 		case 5:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -699,7 +754,12 @@ public class MenuCreator {
 			Lecture lecture5 = sortedLectures5.get(lectureNumber5 - 1);
 			System.out.println("Enter the lecture date separated by commas without spaces (YEAR,MONTH,DAY):");
 			lecture5.setDate(setupLocalDate());
-			lectureService.save(lecture5);
+			try {
+				lectureService.save(lecture5);
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				logger.error(e.getMessage());
+			}
 			break;
 		case 6:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -716,7 +776,12 @@ public class MenuCreator {
 			exitCheck(String.valueOf(lectureTimeNumber6));
 			LectureTime lectureTime6 = sortedLectureTimes6.get(lectureTimeNumber6 - 1);
 			lecture6.setTime(lectureTime6);
-			lectureService.save(lecture6);
+			try {
+				lectureService.save(lecture6);
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				logger.error(e.getMessage());
+			}
 			break;
 		case 7:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -734,7 +799,12 @@ public class MenuCreator {
 			Group group7 = sortedGroups7.get(groupNumber7 - 1);
 			if (!lecture7.getGroups().contains(group7)) {
 				lecture7.getGroups().add(group7);
-				lectureService.save(lecture7);
+				try {
+					lectureService.save(lecture7);
+				} catch (Exception e) {
+					System.out.println(e.getMessage());
+					logger.error(e.getMessage());
+				}
 			} else {
 				System.out.println("Lecture already have this group!");
 			}
@@ -869,7 +939,12 @@ public class MenuCreator {
 			exitCheck(String.valueOf(groupNumber9));
 			Group group9 = sortedGroups9.get(groupNumber9 - 1);
 			lecture9.getGroups().remove(group9);
-			lectureService.save(lecture9);
+			try {
+				lectureService.save(lecture9);
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				logger.error(e.getMessage());
+			}
 			break;
 		case 10:
 			System.out.println("If you want to cancel, type 0 or nothing at any stage");
@@ -890,7 +965,12 @@ public class MenuCreator {
 			exitCheck(String.valueOf(subjectNumber10));
 			Subject subject10 = sortedSubjects10.get(subjectNumber10 - 1);
 			teacher10.getSubjects().remove(subject10);
-			teacherService.save(teacher10);
+			try {
+				teacherService.save(teacher10);
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+				logger.error(e.getMessage());
+			}
 			break;
 		case 0:
 			break;
