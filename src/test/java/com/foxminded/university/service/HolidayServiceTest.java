@@ -76,7 +76,7 @@ public class HolidayServiceTest {
 	}
 	
 	@Test
-	void givenNotUniqueAudience_whenSave_thenEntityNotUniqueException() throws Exception {
+	void givenNotUniqueAudience_whenSave_thenEntityNotUniqueException() {
 		Holiday holiday1 = Holiday.builder()
 				.id(1)
 				.name("TestName")

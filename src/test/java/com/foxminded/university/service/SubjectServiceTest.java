@@ -1,6 +1,7 @@
 package com.foxminded.university.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -16,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
 import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Subject;
 
 @ExtendWith(MockitoExtension.class)
@@ -67,6 +69,18 @@ public class SubjectServiceTest {
 		subjectService.deleteById(1);
 
 		verify(subjectDao).deleteById(1);
+	}
+	
+	@Test
+	void givenNotUniqueSubject_whenSave_thenEntityNotUniqueException() {
+		Subject subject1 = Subject.builder().id(1).name("TestName").build();
+		Subject subject2 = Subject.builder().id(2).name("TestName").build();
+		when(subjectDao.findByName(subject1.getName())).thenReturn(Optional.of(subject2));
+		Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
+			subjectService.save(subject1);
+			});
+
+		assertEquals("Subject with same name is already exists!", exception.getMessage());
 	}
 
 	@Test

@@ -71,7 +71,7 @@ public class CathedraServiceTest {
 	}
 	
 	@Test
-	void givenNotUniqueCathedra_whenSave_thenEntityNotUniqueException() throws Exception {
+	void givenNotUniqueCathedra_whenSave_thenEntityNotUniqueException() {
 		Cathedra cathedra1 = Cathedra.builder().id(1).name("Test1").build();
 		Cathedra cathedra2 = Cathedra.builder().id(2).name("Test2").build();
 		when(cathedraDao.findByName(cathedra1.getName())).thenReturn(Optional.of(cathedra2));

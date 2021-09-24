@@ -1,6 +1,7 @@
 package com.foxminded.university.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -17,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.foxminded.university.dao.jdbc.JdbcTeacherDao;
 import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Teacher;
 
 @ExtendWith(MockitoExtension.class)
@@ -73,5 +75,26 @@ public class TeacherServiceTest {
 		teacherService.deleteById(1);
 
 		verify(teacherDao).deleteById(1);
+	}
+	
+	@Test
+	void givenNotUniqueTeacher_whenSave_thenEntityNotUniqueException() {
+		Teacher teacher1 = Teacher.builder().id(1)
+				.firstName("TestFirstName")
+				.lastName("TestLastName")
+				.birthDate(LocalDate.of(1920, 2, 12))
+				.build();
+		Teacher teacher2 = Teacher.builder().id(10)
+				.firstName("TestFirstName")
+				.lastName("TestLastName")
+				.birthDate(LocalDate.of(1920, 2, 12))
+				.build();
+		when(teacherDao.findByFullNameAndBirthDate(teacher1.getFirstName(), teacher1.getLastName(),
+				teacher1.getBirthDate())).thenReturn(Optional.of(teacher2));
+		Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
+			teacherService.save(teacher1);
+			});
+
+		assertEquals("Teacher with same first name, last name and birth date is already exists!", exception.getMessage());
 	}
 }

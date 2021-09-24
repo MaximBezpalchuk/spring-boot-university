@@ -86,7 +86,7 @@ public class GroupServiceTest {
 	}
 	
 	@Test
-	void givenNotUniqueGroup_whenSave_thenEntityNotUniqueException() throws Exception {
+	void givenNotUniqueGroup_whenSave_thenEntityNotUniqueException() {
 		Group group1 = Group.builder().id(1).name("Test1").build();
 		Group group2 = Group.builder().id(2).name("Test2").build();
 		when(groupDao.findByName(group1.getName())).thenReturn(Optional.of(group2));

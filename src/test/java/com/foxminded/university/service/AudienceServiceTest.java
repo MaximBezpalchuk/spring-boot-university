@@ -73,7 +73,7 @@ public class AudienceServiceTest {
 	}
 	
 	@Test
-	void givenNotUniqueAudience_whenSave_thenEntityNotUniqueException() throws Exception {
+	void givenNotUniqueAudience_whenSave_thenEntityNotUniqueException() {
 		Audience audience1 = Audience.builder()
 				.id(1)
 				.room(10)

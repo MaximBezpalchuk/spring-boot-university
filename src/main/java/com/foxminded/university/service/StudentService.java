@@ -71,10 +71,10 @@ public class StudentService {
 	private boolean isGroupFilled(Student student) throws StudentGroupIsFullException {
 		logger.debug("Check that group is filled");
 		if (student.getGroup() != null) {
-			if( studentDao.findByGroupId(student.getGroup().getId()).size() >= maxGroupSize) {
-				return true;
-			} else {
+			if (studentDao.findByGroupId(student.getGroup().getId()).size() >= maxGroupSize) {
 				throw new StudentGroupIsFullException("This group is already full!");
+			} else {
+				return false;
 			}
 		}
 

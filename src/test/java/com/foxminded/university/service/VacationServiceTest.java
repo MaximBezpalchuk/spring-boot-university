@@ -1,7 +1,7 @@
 package com.foxminded.university.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.never;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -22,6 +22,10 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
 import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
+import com.foxminded.university.exception.VacationDurationMoreThanMaxException;
+import com.foxminded.university.exception.VacationLessOneDayException;
+import com.foxminded.university.exception.VacationNotCorrectDateException;
 import com.foxminded.university.model.Degree;
 import com.foxminded.university.model.Teacher;
 import com.foxminded.university.model.Vacation;
@@ -91,19 +95,46 @@ public class VacationServiceTest {
 
 		verify(vacationDao).save(vacation);
 	}
-
+	
 	@Test
-	void givenVacationLess1Day_whenSave_thenNotSaved() throws Exception {
+	void givenNotUniqueVacation_whenSave_thenEntityNotUniqueException() {
 		LocalDate start = LocalDate.of(2021, 1, 1);
-		LocalDate end = LocalDate.of(2021, 1, 1);
-		Vacation vacation = Vacation.builder().id(1).start(start).end(end).build();
-		vacationService.save(vacation);
+		LocalDate end = LocalDate.of(2021, 1, 2);
+		Vacation vacation1 = Vacation.builder()
+				.id(1)
+				.start(start)
+				.end(end)
+				.teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build())
+				.build();
+		Vacation vacation2 = Vacation.builder()
+				.id(11)
+				.start(start)
+				.end(end)
+				.teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build())
+				.build();
+		when(vacationDao.findByPeriodAndTeacher(vacation1.getStart(), vacation1.getEnd(),
+				vacation1.getTeacher())).thenReturn(Optional.of(vacation2));
+		Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
+			vacationService.save(vacation1);
+		});
 
-		verify(vacationDao, never()).save(vacation);
+		assertEquals("Vacation with same start, end and teacher id is already exists!", exception.getMessage());
 	}
 
 	@Test
-	void givenVacationWithWrongDates_whenSave_thenNotSaved() throws Exception {
+	void givenVacationLessOneDay_whenSave_thenVacationLessOneDayException() {
+		LocalDate start = LocalDate.of(2021, 1, 1);
+		LocalDate end = LocalDate.of(2021, 1, 1);
+		Vacation vacation = Vacation.builder().id(1).start(start).end(end).build();
+		Exception exception = assertThrows(VacationLessOneDayException.class, () -> {
+			vacationService.save(vacation);
+		});
+
+		assertEquals("Vacation can`t be less than 1 day!", exception.getMessage());
+	}
+
+	@Test
+	void givenVacationWithWrongDates_whenSave_thenVacationNotCorrectDateException(){
 		LocalDate start = LocalDate.of(2021, 1, 1);
 		LocalDate end = LocalDate.of(2020, 1, 1);
 		Vacation vacation = Vacation.builder()
@@ -111,13 +142,15 @@ public class VacationServiceTest {
 				.start(start)
 				.end(end)
 				.build();
-		vacationService.save(vacation);
+		Exception exception = assertThrows(VacationNotCorrectDateException.class, () -> {
+			vacationService.save(vacation);
+		});
 
-		verify(vacationDao, never()).save(vacation);
+		assertEquals("Vacation start date can`t be after vacation end date!", exception.getMessage());
 	}
 
 	@Test
-	void givenVacationWithWrongVacation_whenSave_thenNotSaved() throws Exception {
+	void givenVacationWithWrongDuration_whenSave_thenVacationDurationMoreThanMaxException() {
 		LocalDate start = LocalDate.of(2021, 1, 1);
 		LocalDate end = LocalDate.of(2021, 1, 10);
 		Vacation vacation = Vacation.builder()
@@ -126,10 +159,13 @@ public class VacationServiceTest {
 				.end(end)
 				.teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build())
 				.build();
-		when(vacationDao.findByTeacherIdAndYear(vacation.getTeacher().getId(), vacation.getStart().getYear())).thenReturn(Arrays.asList(vacation));
-		vacationService.save(vacation);
+		when(vacationDao.findByTeacherIdAndYear(vacation.getTeacher().getId(), vacation.getStart().getYear()))
+				.thenReturn(Arrays.asList(vacation));
+		Exception exception = assertThrows(VacationDurationMoreThanMaxException.class, () -> {
+			vacationService.save(vacation);
+		});
 
-		verify(vacationDao, never()).save(vacation);
+		assertEquals("Vacations duration can`t be more than max!", exception.getMessage());
 	}
 
 	@Test

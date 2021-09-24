@@ -1,7 +1,7 @@
 package com.foxminded.university.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.never;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -20,6 +20,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import com.foxminded.university.dao.jdbc.JdbcStudentDao;
 import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
+import com.foxminded.university.exception.StudentGroupIsFullException;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Student;
 
@@ -83,7 +85,30 @@ public class StudentServiceTest {
 	}
 	
 	@Test
-	void givenStudentWhenGroupIsFull_whenSave_thenNotSaved() throws Exception {
+	void givenNotUniqueStudent_whenSave_thenEntityNotUniqueException() {
+		Student student1 = Student.builder()
+				.id(1)
+				.firstName("TestFirstName")
+				.lastName("TestLastName")
+				.group(Group.builder().id(10).name("Test").build())
+				.build();
+		Student student2 = Student.builder()
+				.id(11)
+				.firstName("TestFirstName")
+				.lastName("TestLastName")
+				.group(Group.builder().id(10).name("Test").build())
+				.build();
+		when(studentDao.findByFullNameAndBirthDate(student1.getFirstName(),
+				student1.getLastName(), student1.getBirthDate())).thenReturn(Optional.of(student2));
+		Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
+			studentService.save(student1);
+			});
+
+		assertEquals("Student with same first name, last name and  birth date is already exists!", exception.getMessage());
+	}
+	
+	@Test
+	void givenStudentWhenGroupIsFull_whenSave_thenStudentGroupIsFullException() {
 		Student student = Student.builder()
 				.id(1)
 				.firstName("TestFirstName")
@@ -93,9 +118,11 @@ public class StudentServiceTest {
 		when(studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
 				student.getBirthDate())).thenReturn(Optional.of(student));
 		when(studentDao.findByGroupId(student.getGroup().getId())).thenReturn(Arrays.asList(student, student));
-		studentService.save(student);
+		Exception exception = assertThrows(StudentGroupIsFullException.class, () -> {
+			studentService.save(student);
+			});
 
-		verify(studentDao, never()).save(student);
+		assertEquals("This group is already full!", exception.getMessage());
 	}
 
 	@Test
