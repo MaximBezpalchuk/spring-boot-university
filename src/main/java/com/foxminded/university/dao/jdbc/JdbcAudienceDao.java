@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 import com.foxminded.university.dao.AudienceDao;
 import com.foxminded.university.dao.jdbc.mapper.AudienceRowMapper;
-import com.foxminded.university.exception.DaoException;
 import com.foxminded.university.model.Audience;
 
 @Component
@@ -45,7 +44,7 @@ public class JdbcAudienceDao implements AudienceDao {
 	}
 
 	@Override
-	public Optional<Audience> findById(int id) throws DaoException {
+	public Optional<Audience> findById(int id) {
 		logger.debug("Find audience by id: {}", id);
 		try {
 			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id));
@@ -84,12 +83,12 @@ public class JdbcAudienceDao implements AudienceDao {
 	}
 
 	@Override
-	public Audience findByRoom(int room) throws DaoException {
+	public Optional<Audience> findByRoom(int room) {
 		logger.debug("Find audience by room number: {}", room);
 		try {
-			return jdbcTemplate.queryForObject(SELECT_BY_ROOM, rowMapper, room);
+			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_ROOM, rowMapper, room));
 		} catch (EmptyResultDataAccessException e) {
-			throw new DaoException("Cant find audience by room number", e);
+			return Optional.empty();
 		}
 	}
 }

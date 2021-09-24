@@ -16,12 +16,11 @@ import org.springframework.stereotype.Component;
 
 import com.foxminded.university.dao.HolidayDao;
 import com.foxminded.university.dao.jdbc.mapper.HolidayRowMapper;
-import com.foxminded.university.exception.DaoException;
 import com.foxminded.university.model.Holiday;
 
 @Component
 public class JdbcHolidayDao implements HolidayDao {
-	
+
 	private final static Logger logger = LoggerFactory.getLogger(JdbcHolidayDao.class);
 
 	private final static String SELECT_ALL = "SELECT * FROM holidays";
@@ -47,7 +46,7 @@ public class JdbcHolidayDao implements HolidayDao {
 	}
 
 	@Override
-	public Optional<Holiday> findById(int id) throws DaoException {
+	public Optional<Holiday> findById(int id) {
 		logger.debug("Find holiday by id: {}", id);
 		try {
 			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id));
@@ -85,22 +84,18 @@ public class JdbcHolidayDao implements HolidayDao {
 	}
 
 	@Override
-	public Holiday findByNameAndDate(String name, LocalDate date) throws DaoException {
+	public Optional<Holiday> findByNameAndDate(String name, LocalDate date) {
 		logger.debug("Find holiday with name: {} and date: {}", name, date);
 		try {
-			return jdbcTemplate.queryForObject(SELECT_BY_NAME_AND_DATE, rowMapper, name, date);
+			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_NAME_AND_DATE, rowMapper, name, date));
 		} catch (EmptyResultDataAccessException e) {
-			throw new DaoException("Cant find holiday by name and date", e);
+			return Optional.empty();
 		}
 	}
-	
+
 	@Override
-	public List<Holiday> findByDate(LocalDate date) throws DaoException {
+	public List<Holiday> findByDate(LocalDate date) {
 		logger.debug("Find holiday by date: {}", date);
-		try {
-			return jdbcTemplate.query(SELECT_BY_DATE, rowMapper,  date);
-		} catch (EmptyResultDataAccessException e) {
-			throw new DaoException("Cant find holiday by date", e);
-		}
+		return jdbcTemplate.query(SELECT_BY_DATE, rowMapper, date);
 	}
 }

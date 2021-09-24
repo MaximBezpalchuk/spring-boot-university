@@ -153,7 +153,7 @@ public class JdbcVacationDaoTest {
 				.end(LocalDate.of(2021, 1, 29))
 				.teacher(teacher)
 				.build();
-		Vacation actual = vacationDao.findByPeriodAndTeacher(expected.getStart(), expected.getEnd(), teacher);
+		Vacation actual = vacationDao.findByPeriodAndTeacher(expected.getStart(), expected.getEnd(), teacher).get();
 
 		assertEquals(expected, actual);
 	}

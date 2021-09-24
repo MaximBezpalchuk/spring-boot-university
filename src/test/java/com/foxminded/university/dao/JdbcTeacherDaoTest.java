@@ -199,7 +199,7 @@ public class JdbcTeacherDaoTest {
 				.description("Learning how to use heavy weapon and guerrilla tactics").id(1).build();
 		subjects.add(subject);
 		expected.setSubjects(subjects);
-		Teacher actual = teacherDao.findByFullNameAndBirthDate(expected.getFirstName(), expected.getLastName(), expected.getBirthDate());
+		Teacher actual = teacherDao.findByFullNameAndBirthDate(expected.getFirstName(), expected.getLastName(), expected.getBirthDate()).get();
 
 		assertEquals(expected, actual);
 	}

@@ -2,6 +2,7 @@ package com.foxminded.university.service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,8 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.jdbc.JdbcGroupDao;
-import com.foxminded.university.exception.DaoException;
 import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Group;
 
 @Service
@@ -38,7 +39,7 @@ public class GroupService {
 		}
 	}
 
-	public void save(Group group) {
+	public void save(Group group) throws EntityNotUniqueException {
 		logger.debug("Save group");
 		if (isUnique(group)) {
 			groupDao.save(group);
@@ -55,15 +56,13 @@ public class GroupService {
 		return groupDao.findByLectureId(id);
 	}
 
-	private boolean isUnique(Group group) {
+	private boolean isUnique(Group group) throws EntityNotUniqueException {
 		logger.debug("Check group is unique");
-		try {
-			Group existingGroup = groupDao.findByName(group.getName());
-
-			return existingGroup == null || (existingGroup.getId() == group.getId());
-		} catch (DaoException e) {
-			logger.error("Group with same name is already exists: {}", group.getName());
-			return false;
+		Optional<Group> existingGroup = groupDao.findByName(group.getName());
+		if (existingGroup.isEmpty() || (existingGroup.get().getId() == group.getId())) {
+			return true;
+		} else {
+			throw new EntityNotUniqueException("Group with same name is already exists!");
 		}
 	}
 }

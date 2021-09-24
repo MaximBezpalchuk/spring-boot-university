@@ -46,7 +46,7 @@ public class SubjectServiceTest {
 	}
 
 	@Test
-	void givenNewSubject_whenSave_thenSaved() {
+	void givenNewSubject_whenSave_thenSaved() throws Exception {
 		Subject subject = Subject.builder().id(1).build();
 		subjectService.save(subject);
 
@@ -54,9 +54,9 @@ public class SubjectServiceTest {
 	}
 
 	@Test
-	void givenExistingSubject_whenSave_thenSaved() {
+	void givenExistingSubject_whenSave_thenSaved() throws Exception {
 		Subject subject = Subject.builder().id(1).name("TestName").build();
-		when(subjectDao.findByName(subject.getName())).thenReturn(subject);
+		when(subjectDao.findByName(subject.getName())).thenReturn(Optional.of(subject));
 		subjectService.save(subject);
 
 		verify(subjectDao).save(subject);

@@ -2,6 +2,7 @@ package com.foxminded.university.service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,8 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.foxminded.university.dao.HolidayDao;
 import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
-import com.foxminded.university.exception.DaoException;
 import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Holiday;
 
 @Service
@@ -38,7 +39,7 @@ public class HolidayService {
 		}
 	}
 
-	public void save(Holiday holiday) {
+	public void save(Holiday holiday) throws EntityNotUniqueException {
 		logger.debug("Save holiday");
 		if (isUnique(holiday)) {
 			holidayDao.save(holiday);
@@ -50,16 +51,14 @@ public class HolidayService {
 		holidayDao.deleteById(id);
 	}
 
-	private boolean isUnique(Holiday holiday) {
+	private boolean isUnique(Holiday holiday) throws EntityNotUniqueException {
 		logger.debug("Check holiday is unique");
-		try {
-			Holiday existingHoliday = holidayDao.findByNameAndDate(holiday.getName(), holiday.getDate());
+		Optional<Holiday> existingHoliday = holidayDao.findByNameAndDate(holiday.getName(), holiday.getDate());
 
-			return existingHoliday == null || (existingHoliday.getId() == holiday.getId());
-		} catch (DaoException e) {
-			logger.error("Holiday with same name: {} and date: {} is already exists", holiday.getName(),
-					holiday.getDate());
-			return false;
+		if (existingHoliday.isEmpty() || (existingHoliday.get().getId() == holiday.getId())) {
+			return true;
+		} else {
+			throw new EntityNotUniqueException("Holiday with same name and date is already exists!");
 		}
 	}
 }

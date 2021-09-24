@@ -143,7 +143,7 @@ public class JdbcStudentDaoTest {
 				.group(Group.builder().id(1).name("Killers").cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build()).build())
 				.id(1)
 				.build();
-		Student actual = studentDao.findByFullNameAndBirthDate(expected.getFirstName(), expected.getLastName(), expected.getBirthDate());
+		Student actual = studentDao.findByFullNameAndBirthDate(expected.getFirstName(), expected.getLastName(), expected.getBirthDate()).get();
 
 		assertEquals(expected, actual);
 	}

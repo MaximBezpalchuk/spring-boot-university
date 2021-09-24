@@ -110,7 +110,7 @@ public class JdbcSubjectDaoTest {
 	
 	@Test
 	void givenSubjectName_whenFindByName_thenSubjectFound() {
-		Subject actual = subjectDao.findByName("Weapon Tactics");
+		Subject actual = subjectDao.findByName("Weapon Tactics").get();
 		Subject expected = Subject.builder()
 				.cathedra(actual.getCathedra())
 				.name("Weapon Tactics")

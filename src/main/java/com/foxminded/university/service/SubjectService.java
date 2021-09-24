@@ -2,6 +2,7 @@ package com.foxminded.university.service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,8 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.foxminded.university.dao.SubjectDao;
 import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
-import com.foxminded.university.exception.DaoException;
 import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Subject;
 
 @Service
@@ -38,7 +39,7 @@ public class SubjectService {
 		}
 	}
 
-	public void save(Subject subject) {
+	public void save(Subject subject) throws Exception {
 		logger.debug("Save subject");
 		if (isUnique(subject)) {
 			subjectDao.save(subject);
@@ -55,15 +56,14 @@ public class SubjectService {
 		return subjectDao.findByTeacherId(id);
 	}
 
-	private boolean isUnique(Subject subject) {
+	private boolean isUnique(Subject subject) throws EntityNotUniqueException {
 		logger.debug("Check subject is unique");
-		try {
-			Subject existingSubject = subjectDao.findByName(subject.getName());
+		Optional<Subject> existingSubject = subjectDao.findByName(subject.getName());
 
-			return existingSubject == null || (existingSubject.getId() == subject.getId());
-		} catch (DaoException e) {
-			logger.error("Subject with same name: {} is already exists", subject.getName());
-			return false;
+		if (existingSubject.isEmpty() || (existingSubject.get().getId() == subject.getId())) {
+			return true;
+		} else {
+			throw new EntityNotUniqueException("Subject with same name is already exists!");
 		}
 	}
 }

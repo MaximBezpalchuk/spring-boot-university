@@ -47,7 +47,7 @@ public class TeacherServiceTest {
 	}
 
 	@Test
-	void givenNewTeacher_whenSave_thenSaved() {
+	void givenNewTeacher_whenSave_thenSaved() throws Exception {
 		Teacher teacher = Teacher.builder().id(1).build();
 		teacherService.save(teacher);
 
@@ -55,14 +55,14 @@ public class TeacherServiceTest {
 	}
 
 	@Test
-	void givenExistingTeacher_whenSave_thenSaved() {
+	void givenExistingTeacher_whenSave_thenSaved() throws Exception {
 		Teacher teacher = Teacher.builder().id(1)
 				.firstName("TestFirstName")
 				.lastName("TestLastName")
 				.birthDate(LocalDate.of(1920, 2, 12))
 				.build();
 		when(teacherDao.findByFullNameAndBirthDate(teacher.getFirstName(), teacher.getLastName(),
-				teacher.getBirthDate())).thenReturn(teacher);
+				teacher.getBirthDate())).thenReturn(Optional.of(teacher));
 		teacherService.save(teacher);
 
 		verify(teacherDao).save(teacher);

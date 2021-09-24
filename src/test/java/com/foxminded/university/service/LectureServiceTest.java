@@ -75,14 +75,13 @@ public class LectureServiceTest {
 	}
 
 	@Test
-	void givenNewLecture_whenSave_thenSaved() {
+	void givenNewLecture_whenSave_thenSaved() throws Exception {
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
 		Teacher teacher = Teacher.builder()
 				.id(1)
 				.subjects(Arrays.asList(Subject.builder().id(1).cathedra(cathedra).build()))
 				.build();
 		Lecture lecture = Lecture.builder()
-				.id(1)
 				.audience(Audience.builder().capacity(10).build())
 				.date(LocalDate.of(2021, 9, 8))
 				.time(LectureTime.builder()
@@ -91,14 +90,14 @@ public class LectureServiceTest {
 				.teacher(teacher)
 				.subject(Subject.builder().id(1).cathedra(cathedra).build()).build();
 		when(lectureDao.findByAudienceDateAndLectureTime(lecture.getAudience(), lecture.getDate(), lecture.getTime()))
-				.thenReturn(null);
+				.thenReturn(Optional.of(lecture));
 		lectureService.save(lecture);
 		
 		verify(lectureDao).save(lecture);
 	}
 	
 	@Test
-	void givenExistingLecture_whenSave_thenSaved() {
+	void givenExistingLecture_whenSave_thenSaved() throws Exception {
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
 		Teacher teacher = Teacher.builder()
 				.id(1)
@@ -114,14 +113,14 @@ public class LectureServiceTest {
 				.time(lectureTime)
 				.teacher(teacher)
 				.subject(Subject.builder().id(1).cathedra(cathedra).build()).build();
-		when(lectureDao.findByAudienceDateAndLectureTime(audience, date, lectureTime)).thenReturn(lecture);
+		when(lectureDao.findByAudienceDateAndLectureTime(audience, date, lectureTime)).thenReturn(Optional.of(lecture));
 		lectureService.save(lecture);
 		
 		verify(lectureDao).save(lecture);
 	}
 	
 	@Test
-	void givenLectureInSunday_whenSave_thenNotSaved() {
+	void givenLectureInSunday_whenSave_thenNotSaved() throws Exception {
 		Lecture lecture = Lecture.builder()
 				.id(1)
 				.date(LocalDate.of(2021, 9, 5))
@@ -132,7 +131,7 @@ public class LectureServiceTest {
 	}
 	
 	@Test
-	void givenLectureInNotSupportedTime_whenSave_thenNotSaved() {
+	void givenLectureInNotSupportedTime_whenSave_thenNotSaved() throws Exception {
 		Lecture lecture = Lecture.builder()
 				.id(1)
 				.date(LocalDate.of(2021, 9, 6))
@@ -144,7 +143,7 @@ public class LectureServiceTest {
 	}
 	
 	@Test
-	void givenLectureWithBusyTeacher_whenSave_thenNotSaved() {
+	void givenLectureWithBusyTeacher_whenSave_thenNotSaved() throws Exception {
 		Lecture lecture = Lecture.builder()
 				.id(1)
 				.date(LocalDate.of(2021, 9, 6))
@@ -158,7 +157,7 @@ public class LectureServiceTest {
 	}
 	
 	@Test
-	void givenLectureWithTeacherHaveVacation_whenSave_thenNotSaved() {
+	void givenLectureWithTeacherHaveVacation_whenSave_thenNotSaved() throws Exception {
 		Lecture lecture = Lecture.builder()
 				.id(1)
 				.date(LocalDate.of(2021, 9, 6))
@@ -173,7 +172,7 @@ public class LectureServiceTest {
 	}
 	
 	@Test
-	void givenLectureInHoliday_whenSave_thenNotSaved() {
+	void givenLectureInHoliday_whenSave_thenNotSaved() throws Exception {
 		Lecture lecture = Lecture.builder()
 				.id(1)
 				.date(LocalDate.of(2021, 9, 6))
@@ -187,7 +186,7 @@ public class LectureServiceTest {
 	}
 	
 	@Test
-	void givenLectureWithTeacherWhoDidntKnowSubject_whenSave_thenNotSaved() {
+	void givenLectureWithTeacherWhoDidntKnowSubject_whenSave_thenNotSaved() throws Exception {
 		Lecture lecture = Lecture.builder()
 				.id(1)
 				.date(LocalDate.of(2021, 9, 6))
@@ -201,7 +200,7 @@ public class LectureServiceTest {
 	}
 	
 	@Test
-	void givenLectureWithMoreStudentsThenAudienceCapacity_whenSave_thenNotSaved() {
+	void givenLectureWithMoreStudentsThenAudienceCapacity_whenSave_thenNotSaved() throws Exception {
 		Subject subject = Subject.builder().build();
 		Group group = Group.builder().id(1).build();
 		Lecture lecture = Lecture.builder()
@@ -220,7 +219,7 @@ public class LectureServiceTest {
 	}
 	
 	@Test
-	void givenLectureWithAudienceInUse_whenSave_thenNotSaved() {
+	void givenLectureWithAudienceInUse_whenSave_thenNotSaved() throws Exception {
 		Subject subject = Subject.builder().build();
 		Lecture lecture = Lecture.builder()
 				.id(1)
@@ -232,7 +231,7 @@ public class LectureServiceTest {
 				.build();
 		Lecture lecture2 = Lecture.builder().id(2).build();
 		when(lectureDao.findByAudienceDateAndLectureTime(lecture.getAudience(), lecture.getDate(), lecture.getTime()))
-				.thenReturn(lecture2);
+				.thenReturn(Optional.of(lecture2));
 		lectureService.save(lecture);
 		
 		verify(lectureDao, never()).save(lecture);

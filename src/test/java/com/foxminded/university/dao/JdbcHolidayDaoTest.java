@@ -99,7 +99,7 @@ public class JdbcHolidayDaoTest {
 	
 	@Test
 	void givenHolidayName_whenFindByNameAndDate_thenHolidayFound() {
-		Holiday actual = holidayDao.findByNameAndDate("Christmas", LocalDate.of(2021, 12, 25));
+		Holiday actual = holidayDao.findByNameAndDate("Christmas", LocalDate.of(2021, 12, 25)).get();
 		Holiday expected = Holiday.builder()
 				.id(1)
 				.name("Christmas")

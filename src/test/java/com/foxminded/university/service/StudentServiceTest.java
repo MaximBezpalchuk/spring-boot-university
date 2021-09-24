@@ -56,10 +56,10 @@ public class StudentServiceTest {
 	}
 
 	@Test
-	void givenNewStudent_whenSave_thenSaved() {
+	void givenNewStudent_whenSave_thenSaved() throws Exception {
 		Student student = Student.builder().id(1).group(Group.builder().name("Test").build()).build();
 		when(studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
-				student.getBirthDate())).thenReturn(student);
+				student.getBirthDate())).thenReturn(Optional.of(student));
 		when(studentDao.findByGroupId(student.getGroup().getId())).thenReturn(new ArrayList<>());
 		studentService.save(student);
 
@@ -67,7 +67,7 @@ public class StudentServiceTest {
 	}
 
 	@Test
-	void givenExistingStudent_whenSave_thenSaved() {
+	void givenExistingStudent_whenSave_thenSaved() throws Exception {
 		Student student = Student.builder()
 				.id(1)
 				.firstName("TestFirstName")
@@ -75,7 +75,7 @@ public class StudentServiceTest {
 				.group(Group.builder().id(10).name("Test").build())
 				.build();
 		when(studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
-				student.getBirthDate())).thenReturn(student);
+				student.getBirthDate())).thenReturn(Optional.of(student));
 		when(studentDao.findByGroupId(student.getGroup().getId())).thenReturn(new ArrayList<>());
 		studentService.save(student);
 
@@ -83,7 +83,7 @@ public class StudentServiceTest {
 	}
 	
 	@Test
-	void givenStudentWhenGroupIsFull_whenSave_thenNotSaved() {
+	void givenStudentWhenGroupIsFull_whenSave_thenNotSaved() throws Exception {
 		Student student = Student.builder()
 				.id(1)
 				.firstName("TestFirstName")
@@ -91,7 +91,7 @@ public class StudentServiceTest {
 				.group(Group.builder().id(10).name("Test").build())
 				.build();
 		when(studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
-				student.getBirthDate())).thenReturn(student);
+				student.getBirthDate())).thenReturn(Optional.of(student));
 		when(studentDao.findByGroupId(student.getGroup().getId())).thenReturn(Arrays.asList(student, student));
 		studentService.save(student);
 

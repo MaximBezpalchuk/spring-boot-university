@@ -94,7 +94,7 @@ public class JdbcLectureTimeDaoTest {
 				.id(1).start(LocalTime.of(8, 0, 0))
 				.end(LocalTime.of(9, 30, 0))
 				.build();
-		LectureTime actual = lectureTimeDao.findByPeriod(expected.getStart(), expected.getEnd());
+		LectureTime actual = lectureTimeDao.findByPeriod(expected.getStart(), expected.getEnd()).get();
 
 		assertEquals(expected, actual);
 	}

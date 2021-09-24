@@ -87,7 +87,7 @@ public class JdbcGroupDaoTest {
 	
 	@Test
 	void givenGroupName_whenFindByName_thenGroupFound() {
-		Group actual = groupDao.findByName("Killers");
+		Group actual = groupDao.findByName("Killers").get();
 		Group expected = Group.builder()
 				.id(1)
 				.name("Killers")

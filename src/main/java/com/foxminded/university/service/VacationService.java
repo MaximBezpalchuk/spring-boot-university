@@ -4,6 +4,7 @@ import java.time.Period;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,8 +13,11 @@ import org.springframework.stereotype.Service;
 
 import com.foxminded.university.dao.VacationDao;
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
-import com.foxminded.university.exception.DaoException;
 import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
+import com.foxminded.university.exception.VacationDurationMoreThanMaxException;
+import com.foxminded.university.exception.VacationLessOneDayException;
+import com.foxminded.university.exception.VacationNotCorrectDateException;
 import com.foxminded.university.model.Degree;
 import com.foxminded.university.model.Vacation;
 
@@ -44,7 +48,7 @@ public class VacationService {
 		}
 	}
 
-	public void save(Vacation vacation) {
+	public void save(Vacation vacation) throws Exception {
 		logger.debug("Save vacation");
 		if (isDateCorrect(vacation) && isDateMoreThenOneDay(vacation) && isVacationDurationLessOrEqualsThanMax(vacation)
 				&& isUnique(vacation)) {
@@ -62,41 +66,51 @@ public class VacationService {
 		return vacationDao.findByTeacherId(id);
 	}
 
-	private boolean isUnique(Vacation vacation) {
+	private boolean isUnique(Vacation vacation) throws EntityNotUniqueException {
 		logger.debug("Check vacation is unique");
-		try {
-			Vacation existingVacation = vacationDao.findByPeriodAndTeacher(vacation.getStart(), vacation.getEnd(),
-					vacation.getTeacher());
+		Optional<Vacation> existingVacation = vacationDao.findByPeriodAndTeacher(vacation.getStart(), vacation.getEnd(),
+				vacation.getTeacher());
 
-			return existingVacation == null || (existingVacation.getId() == vacation.getId());
-		} catch (DaoException e) {
-			logger.error("Vacation with same start: {}, end: {} and teacher id: {} is already exists",
-					vacation.getStart(), vacation.getEnd(), vacation.getTeacher().getId());
-			return false;
+		if (existingVacation.isEmpty() || (existingVacation.get().getId() == vacation.getId())) {
+			return true;
+		} else {
+			throw new EntityNotUniqueException("Vacation with same start, end and teacher id is already exists!");
 		}
 	}
 
-	private boolean isDateCorrect(Vacation vacation) {
+	private boolean isDateCorrect(Vacation vacation) throws VacationNotCorrectDateException {
 		logger.debug("Check vacation start is after end");
-		return vacation.getStart().isBefore(vacation.getEnd()) || vacation.getStart().equals(vacation.getEnd());
+		if( vacation.getStart().isBefore(vacation.getEnd()) || vacation.getStart().equals(vacation.getEnd())) {
+			return true;
+		} else {
+			throw new VacationNotCorrectDateException("Vacation start date can`t be after vacation end date!");
+		}
 	}
 
-	private boolean isDateMoreThenOneDay(Vacation vacation) {
+	private boolean isDateMoreThenOneDay(Vacation vacation) throws VacationLessOneDayException {
 		logger.debug("Check vacation duration more or equals 1 day");
-		return getVacationDaysCount(vacation) >= 1;
+		if( getVacationDaysCount(vacation) >= 1) {
+			return true;
+		} else {
+			throw new VacationLessOneDayException("Vacation can`t be less than 1 day!");
+		}
 	}
 
 	private int getVacationDaysCount(Vacation vacation) {
 		return Math.abs(Period.between(vacation.getStart(), vacation.getEnd()).getDays());
 	}
 
-	private boolean isVacationDurationLessOrEqualsThanMax(Vacation vacation) {
+	private boolean isVacationDurationLessOrEqualsThanMax(Vacation vacation) throws VacationDurationMoreThanMaxException {
 		logger.debug("Check vacation duration less or equals than max");
 		int teacherVacationDays = vacationDao
 				.findByTeacherIdAndYear(vacation.getTeacher().getId(), vacation.getStart().getYear()).stream()
 				.map(vac -> getVacationDaysCount(vac)).mapToInt(Integer::intValue).sum();
 
-		return (teacherVacationDays + getVacationDaysCount(vacation)) <= maxVacation
-				.get(vacation.getTeacher().getDegree());
+		if( (teacherVacationDays + getVacationDaysCount(vacation)) <= maxVacation
+				.get(vacation.getTeacher().getDegree())) {
+			return true;
+		} else {
+			throw new VacationDurationMoreThanMaxException("Vacations duration can`t be more than max!");
+		}
 	}
 }

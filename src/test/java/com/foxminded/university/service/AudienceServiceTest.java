@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.foxminded.university.dao.jdbc.JdbcAudienceDao;
 import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Audience;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,7 +48,7 @@ public class AudienceServiceTest {
 	}
 
 	@Test
-	void givenNewAudience_whenSave_thenSaved() {
+	void givenNewAudience_whenSave_thenSaved() throws EntityNotUniqueException {
 		Audience audience = Audience.builder().build();
 		audienceService.save(audience);
 		
@@ -55,9 +56,9 @@ public class AudienceServiceTest {
 	}
 	
 	@Test
-	void givenExistingAudience_whenSave_thenSaved() {
+	void givenExistingAudience_whenSave_thenSaved() throws EntityNotUniqueException {
 		Audience audience = Audience.builder().id(1).room(123).build();
-		when(audienceDao.findByRoom(audience.getRoom())).thenReturn(audience);
+		when(audienceDao.findByRoom(audience.getRoom())).thenReturn(Optional.of(audience));
 		audienceService.save(audience);
 		
 		verify(audienceDao).save(audience);

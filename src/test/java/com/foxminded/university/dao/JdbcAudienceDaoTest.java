@@ -92,7 +92,7 @@ public class JdbcAudienceDaoTest {
 	
 	@Test
 	void givenRoom_whenFindByRoom_thenAudienceFound() {
-		Audience actual = audienceDao.findByRoom(1);
+		Audience actual = audienceDao.findByRoom(1).get();
 		Audience expected = Audience.builder()
 				.id(1)
 				.room(1)

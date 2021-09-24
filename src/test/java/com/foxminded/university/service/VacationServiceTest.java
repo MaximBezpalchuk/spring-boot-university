@@ -63,7 +63,7 @@ public class VacationServiceTest {
 	}
 
 	@Test
-	void givenNewVacation_whenSave_thenSaved() {
+	void givenNewVacation_whenSave_thenSaved() throws Exception {
 		LocalDate start = LocalDate.of(2021, 1, 1);
 		LocalDate end = LocalDate.of(2021, 1, 2);
 		Vacation vacation = Vacation.builder()
@@ -77,7 +77,7 @@ public class VacationServiceTest {
 	}
 
 	@Test
-	void givenExistingVacation_whenSave_thenSaved() {
+	void givenExistingVacation_whenSave_thenSaved() throws Exception {
 		LocalDate start = LocalDate.of(2021, 1, 1);
 		LocalDate end = LocalDate.of(2021, 1, 2);
 		Vacation vacation = Vacation.builder()
@@ -86,14 +86,14 @@ public class VacationServiceTest {
 				.end(end)
 				.teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build())
 				.build();
-		when(vacationDao.findByPeriodAndTeacher(start, end, vacation.getTeacher())).thenReturn(vacation);
+		when(vacationDao.findByPeriodAndTeacher(start, end, vacation.getTeacher())).thenReturn(Optional.of(vacation));
 		vacationService.save(vacation);
 
 		verify(vacationDao).save(vacation);
 	}
 
 	@Test
-	void givenVacationLess1Day_whenSave_thenNotSaved() {
+	void givenVacationLess1Day_whenSave_thenNotSaved() throws Exception {
 		LocalDate start = LocalDate.of(2021, 1, 1);
 		LocalDate end = LocalDate.of(2021, 1, 1);
 		Vacation vacation = Vacation.builder().id(1).start(start).end(end).build();
@@ -103,7 +103,7 @@ public class VacationServiceTest {
 	}
 
 	@Test
-	void givenVacationWithWrongDates_whenSave_thenNotSaved() {
+	void givenVacationWithWrongDates_whenSave_thenNotSaved() throws Exception {
 		LocalDate start = LocalDate.of(2021, 1, 1);
 		LocalDate end = LocalDate.of(2020, 1, 1);
 		Vacation vacation = Vacation.builder()
@@ -117,7 +117,7 @@ public class VacationServiceTest {
 	}
 
 	@Test
-	void givenVacationWithWrongVacation_whenSave_thenNotSaved() {
+	void givenVacationWithWrongVacation_whenSave_thenNotSaved() throws Exception {
 		LocalDate start = LocalDate.of(2021, 1, 1);
 		LocalDate end = LocalDate.of(2021, 1, 10);
 		Vacation vacation = Vacation.builder()

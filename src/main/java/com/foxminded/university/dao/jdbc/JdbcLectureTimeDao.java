@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 
 import com.foxminded.university.dao.LectureTimeDao;
 import com.foxminded.university.dao.jdbc.mapper.LectureTimeRowMapper;
-import com.foxminded.university.exception.DaoException;
 import com.foxminded.university.model.LectureTime;
 
 @Component
@@ -46,7 +45,7 @@ public class JdbcLectureTimeDao implements LectureTimeDao {
 	}
 
 	@Override
-	public Optional<LectureTime> findById(int id) throws DaoException {
+	public Optional<LectureTime> findById(int id) {
 		logger.debug("Find lecture time by id: {}", id);
 		try {
 			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id));
@@ -83,12 +82,12 @@ public class JdbcLectureTimeDao implements LectureTimeDao {
 	}
 
 	@Override
-	public LectureTime findByPeriod(LocalTime start, LocalTime end) throws DaoException {
+	public Optional<LectureTime> findByPeriod(LocalTime start, LocalTime end) {
 		logger.debug("Find lecture time which starts at {} and end at {}", start, end);
 		try {
-			return jdbcTemplate.queryForObject(SELECT_BY_PERIOD, rowMapper, start, end);
+			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_PERIOD, rowMapper, start, end));
 		} catch (EmptyResultDataAccessException e) {
-			throw new DaoException("Cant find lecture time by period", e);
+			return Optional.empty();
 		}
 	}
 }

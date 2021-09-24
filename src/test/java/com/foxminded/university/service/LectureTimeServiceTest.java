@@ -56,7 +56,7 @@ public class LectureTimeServiceTest {
 	}
 
 	@Test
-	void givenNewLectureTime_whenSave_thenSaved() {
+	void givenNewLectureTime_whenSave_thenSaved() throws Exception {
 		LocalTime start = LocalTime.of(9, 0);
 		LocalTime end = LocalTime.of(10, 0);
 		LectureTime lectureTime = LectureTime.builder()
@@ -69,21 +69,21 @@ public class LectureTimeServiceTest {
 	}
 	
 	@Test
-	void givenExistingLectureTime_whenSave_thenSaved() {
+	void givenExistingLectureTime_whenSave_thenSaved() throws Exception {
 		LocalTime start = LocalTime.of(9, 0);
 		LocalTime end = LocalTime.of(10, 0);
 		LectureTime lectureTime = LectureTime.builder()
 				.start(start)
 				.end(end)
 				.build();
-		when(lectureTimeDao.findByPeriod(start, end)).thenReturn(lectureTime);
+		when(lectureTimeDao.findByPeriod(start, end)).thenReturn(Optional.of(lectureTime));
 		lectureTimeService.save(lectureTime);
 		
 		verify(lectureTimeDao).save(lectureTime);
 	}
 	
 	@Test
-	void givenLectureTimeLessThanMinLectureDuration_whenSave_thenNotSaved() {
+	void givenLectureTimeLessThanMinLectureDuration_whenSave_thenNotSaved() throws Exception {
 		LocalTime start = LocalTime.of(9, 0);
 		LocalTime end = LocalTime.of(9, 20);
 		LectureTime lectureTime = LectureTime.builder()
@@ -96,7 +96,7 @@ public class LectureTimeServiceTest {
 	}
 	
 	@Test
-	void givenLectureTimeWithWrongEnd_whenSave_thenSaved() {
+	void givenLectureTimeWithWrongEnd_whenSave_thenSaved() throws Exception {
 		LocalTime start = LocalTime.of(9, 0);
 		LocalTime end = LocalTime.of(8, 0);
 		LectureTime lectureTime = LectureTime.builder()

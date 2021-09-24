@@ -16,7 +16,6 @@ import org.springframework.stereotype.Component;
 
 import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.dao.jdbc.mapper.StudentRowMapper;
-import com.foxminded.university.exception.DaoException;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Student;
 
@@ -48,7 +47,7 @@ public class JdbcStudentDao implements StudentDao {
 	}
 
 	@Override
-	public Optional<Student> findById(int id) throws DaoException {
+	public Optional<Student> findById(int id) {
 		logger.debug("Find student by id: {}", id);
 		try {
 			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id));
@@ -117,13 +116,14 @@ public class JdbcStudentDao implements StudentDao {
 	}
 
 	@Override
-	public Student findByFullNameAndBirthDate(String firstName, String lastName, LocalDate birthDate)
-			throws DaoException {
-		logger.debug("Find student with first name: {}, last name: {} and birthDate {}", firstName, lastName, birthDate);
+	public Optional<Student> findByFullNameAndBirthDate(String firstName, String lastName, LocalDate birthDate) {
+		logger.debug("Find student with first name: {}, last name: {} and birthDate {}", firstName, lastName,
+				birthDate);
 		try {
-			return jdbcTemplate.queryForObject(SELECT_BY_FULL_NAME_AND_BIRTHDAY, rowMapper, firstName, lastName, birthDate);
+			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_FULL_NAME_AND_BIRTHDAY, rowMapper, firstName,
+					lastName, birthDate));
 		} catch (EmptyResultDataAccessException e) {
-			throw new DaoException("Cant find student by full name and birth date", e);
+			return Optional.empty();
 		}
 	}
 

@@ -88,7 +88,7 @@ public class JdbcCathedraDaoTest {
 				.id(1)
 				.name("Fantastic Cathedra")
 				.build();
-		Cathedra actual = cathedraDao.findByName("Fantastic Cathedra");
+		Cathedra actual = cathedraDao.findByName("Fantastic Cathedra").get();
 
 		assertEquals(expected, actual);
 	}

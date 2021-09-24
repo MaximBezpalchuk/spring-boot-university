@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.foxminded.university.dao.LectureDao;
 import com.foxminded.university.dao.jdbc.mapper.LectureRowMapper;
-import com.foxminded.university.exception.DaoException;
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Lecture;
@@ -55,7 +54,7 @@ public class JdbcLectureDao implements LectureDao {
 	}
 
 	@Override
-	public Optional<Lecture> findById(int id) throws DaoException {
+	public Optional<Lecture> findById(int id) {
 		logger.debug("Find lecture by id: {}", id);
 		try {
 			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id));
@@ -122,15 +121,14 @@ public class JdbcLectureDao implements LectureDao {
 	}
 
 	@Override
-	public Lecture findByAudienceDateAndLectureTime(Audience audience, LocalDate date, LectureTime lectureTime)
-			throws DaoException {
+	public Optional<Lecture> findByAudienceDateAndLectureTime(Audience audience, LocalDate date, LectureTime lectureTime) {
 		logger.debug("Find lecture by audience with id {}, date {} and lecture time id {}", audience.getId(), date,
 				lectureTime.getId());
 		try {
-			return jdbcTemplate.queryForObject(SELECT_BY_AUDIENCE_DATE_LECTURE_TIME, rowMapper, audience.getId(), date,
-					lectureTime.getId());
+			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_AUDIENCE_DATE_LECTURE_TIME, rowMapper, audience.getId(), date,
+					lectureTime.getId()));
 		} catch (EmptyResultDataAccessException e) {
-			throw new DaoException("Cant find lecture by audience, date and lecture time", e);
+			return Optional.empty();
 		}
 	}
 

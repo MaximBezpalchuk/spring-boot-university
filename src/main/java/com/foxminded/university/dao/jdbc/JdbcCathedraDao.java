@@ -15,12 +15,11 @@ import org.springframework.stereotype.Component;
 
 import com.foxminded.university.dao.CathedraDao;
 import com.foxminded.university.dao.jdbc.mapper.CathedraRowMapper;
-import com.foxminded.university.exception.DaoException;
 import com.foxminded.university.model.Cathedra;
 
 @Component
 public class JdbcCathedraDao implements CathedraDao {
-	
+
 	private final static Logger logger = LoggerFactory.getLogger(JdbcCathedraDao.class);
 
 	private final static String SELECT_ALL = "SELECT * FROM cathedras";
@@ -45,7 +44,7 @@ public class JdbcCathedraDao implements CathedraDao {
 	}
 
 	@Override
-	public Optional<Cathedra> findById(int id) throws DaoException {
+	public Optional<Cathedra> findById(int id) {
 		logger.debug("Find cathedra by id: {}", id);
 		try {
 			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id));
@@ -81,12 +80,12 @@ public class JdbcCathedraDao implements CathedraDao {
 	}
 
 	@Override
-	public Cathedra findByName(String name) throws DaoException {
+	public Optional<Cathedra> findByName(String name) {
 		logger.debug("Find audience by name: {}", name);
 		try {
-			return jdbcTemplate.queryForObject(SELECT_BY_NAME, rowMapper, name);
+			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_NAME, rowMapper, name));
 		} catch (EmptyResultDataAccessException e) {
-			throw new DaoException("Cant find cathedra by name", e);
+			return Optional.empty();
 		}
 	}
 }

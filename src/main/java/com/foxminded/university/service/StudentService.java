@@ -2,6 +2,7 @@ package com.foxminded.university.service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,8 +11,9 @@ import org.springframework.stereotype.Service;
 
 import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.dao.jdbc.JdbcStudentDao;
-import com.foxminded.university.exception.DaoException;
 import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
+import com.foxminded.university.exception.StudentGroupIsFullException;
 import com.foxminded.university.model.Student;
 
 @Service
@@ -41,7 +43,7 @@ public class StudentService {
 		}
 	}
 
-	public void save(Student student) {
+	public void save(Student student) throws Exception {
 		logger.debug("Save student");
 		if (isUnique(student) && !isGroupFilled(student)) {
 			studentDao.save(student);
@@ -53,24 +55,27 @@ public class StudentService {
 		studentDao.deleteById(id);
 	}
 
-	private boolean isUnique(Student student) {
+	private boolean isUnique(Student student) throws EntityNotUniqueException {
 		logger.debug("Check student is unique");
-		try {
-			Student existingStudent = studentDao.findByFullNameAndBirthDate(student.getFirstName(),
-					student.getLastName(), student.getBirthDate());
+		Optional<Student> existingStudent = studentDao.findByFullNameAndBirthDate(student.getFirstName(),
+				student.getLastName(), student.getBirthDate());
 
-			return existingStudent == null || (existingStudent.getId() == student.getId());
-		} catch (DaoException e) {
-			logger.error("Student with same first name: {}, last name: {} and  birth date: {} is already exists",
-					student.getFirstName(), student.getLastName(), student.getBirthDate());
-			return false;
+		if (existingStudent.isEmpty() || (existingStudent.get().getId() == student.getId())) {
+			return true;
+		} else {
+			throw new EntityNotUniqueException(
+					"Student with same first name, last name and  birth date is already exists!");
 		}
 	}
 
-	private boolean isGroupFilled(Student student) {
+	private boolean isGroupFilled(Student student) throws StudentGroupIsFullException {
 		logger.debug("Check that group is filled");
 		if (student.getGroup() != null) {
-			return studentDao.findByGroupId(student.getGroup().getId()).size() >= maxGroupSize;
+			if( studentDao.findByGroupId(student.getGroup().getId()).size() >= maxGroupSize) {
+				return true;
+			} else {
+				throw new StudentGroupIsFullException("This group is already full!");
+			}
 		}
 
 		return false;
