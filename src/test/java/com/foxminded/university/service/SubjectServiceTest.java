@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
+import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.model.Subject;
 
 @ExtendWith(MockitoExtension.class)
@@ -35,12 +37,12 @@ public class SubjectServiceTest {
 	}
 
 	@Test
-	void givenExistingSubject_whenFindById_thenSubjectFound() {
-		Subject expected = Subject.builder().id(1).build();
+	void givenExistingSubject_whenFindById_thenSubjectFound() throws EntityNotFoundException {
+		Optional<Subject> expected = Optional.of(Subject.builder().id(1).build());
 		when(subjectDao.findById(1)).thenReturn(expected);
 		Subject actual = subjectService.findById(1);
 
-		assertEquals(expected, actual);
+		assertEquals(expected.get(), actual);
 	}
 
 	@Test

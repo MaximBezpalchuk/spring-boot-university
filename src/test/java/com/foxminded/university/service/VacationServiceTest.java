@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
+import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.model.Degree;
 import com.foxminded.university.model.Teacher;
 import com.foxminded.university.model.Vacation;
@@ -52,12 +54,12 @@ public class VacationServiceTest {
 	}
 
 	@Test
-	void givenExistingVacation_whenFindById_thenVacationFound() {
-		Vacation expected = Vacation.builder().id(1).build();
+	void givenExistingVacation_whenFindById_thenVacationFound() throws EntityNotFoundException {
+		Optional<Vacation> expected = Optional.of(Vacation.builder().id(1).build());
 		when(vacationDao.findById(1)).thenReturn(expected);
 		Vacation actual = vacationService.findById(1);
 
-		assertEquals(expected, actual);
+		assertEquals(expected.get(), actual);
 	}
 
 	@Test

@@ -7,6 +7,7 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.foxminded.university.dao.jdbc.JdbcTeacherDao;
+import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.model.Teacher;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,12 +38,12 @@ public class TeacherServiceTest {
 	}
 
 	@Test
-	void givenExistingTeacher_whenFindById_thenTeacherFound() {
-		Teacher expected = Teacher.builder().id(1).build();
+	void givenExistingTeacher_whenFindById_thenTeacherFound() throws EntityNotFoundException {
+		Optional<Teacher> expected = Optional.of(Teacher.builder().id(1).build());
 		when(teacherDao.findById(1)).thenReturn(expected);
 		Teacher actual = teacherService.findById(1);
 
-		assertEquals(expected, actual);
+		assertEquals(expected.get(), actual);
 	}
 
 	@Test

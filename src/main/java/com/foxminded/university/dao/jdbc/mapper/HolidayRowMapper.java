@@ -25,7 +25,7 @@ public class HolidayRowMapper implements RowMapper<Holiday> {
 				.id(resultSet.getInt("id"))
 				.name(resultSet.getString("name"))
 				.date(resultSet.getObject("date", LocalDate.class))
-				.cathedra(cathedraDao.findById(resultSet.getInt("cathedra_id")))
+				.cathedra(cathedraDao.findById(resultSet.getInt("cathedra_id")).get())
 				.build();
 	}
 }

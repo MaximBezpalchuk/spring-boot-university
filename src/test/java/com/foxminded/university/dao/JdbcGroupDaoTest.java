@@ -1,7 +1,6 @@
 package com.foxminded.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
@@ -19,7 +18,6 @@ import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.config.SpringTestConfig;
 import com.foxminded.university.dao.jdbc.JdbcGroupDao;
-import com.foxminded.university.exception.DaoException;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = SpringTestConfig.class)
@@ -42,7 +40,7 @@ public class JdbcGroupDaoTest {
 
 	@Test
 	void givenExistingGroup_whenFindById_thenGroupFound() {
-		Group actual = groupDao.findById(1);
+		Group actual = groupDao.findById(1).get();
 		Group expected = Group.builder()
 				.id(1)
 				.name("Killers")
@@ -53,14 +51,8 @@ public class JdbcGroupDaoTest {
 	}
 
 	@Test
-	void givenNotExistingGroup_whenFindById_thenDaoException() {
-		Exception exception = assertThrows(DaoException.class, () -> {
-			groupDao.findById(100);
-		});
-		String expectedMessage = "Cant find group by id";
-		String actualMessage = exception.getMessage();
-
-		assertTrue(actualMessage.contains(expectedMessage));
+	void givenNotExistingGroup_whenFindById_thenReturnEmptyOptional() {
+		assertTrue(groupDao.findById(100).isEmpty());
 	}
 
 	@Test
@@ -78,7 +70,7 @@ public class JdbcGroupDaoTest {
 	
 	@Test
 	void givenExitstingGroup_whenSaveWithChanges_thenChangesApplied() {
-		Group expected = groupDao.findById(1);
+		Group expected = groupDao.findById(1).get();
 		expected.setName("Killers 2");
 		groupDao.save(expected);
 		

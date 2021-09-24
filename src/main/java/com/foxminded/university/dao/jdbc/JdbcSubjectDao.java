@@ -3,6 +3,7 @@ package com.foxminded.university.dao.jdbc;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,12 +46,12 @@ public class JdbcSubjectDao implements SubjectDao {
 	}
 
 	@Override
-	public Subject findById(int id) throws DaoException {
+	public Optional<Subject> findById(int id) throws DaoException {
 		logger.debug("Find subject by id: {}", id);
 		try {
-			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id));
 		} catch (EmptyResultDataAccessException e) {
-			throw new DaoException("Cant find subject by id", e);
+			return Optional.empty();
 		}
 	}
 

@@ -1,7 +1,6 @@
 package com.foxminded.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
@@ -21,7 +20,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.foxminded.university.model.Subject;
 import com.foxminded.university.config.SpringTestConfig;
 import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
-import com.foxminded.university.exception.DaoException;
 import com.foxminded.university.model.Cathedra;
 
 @ExtendWith(SpringExtension.class)
@@ -45,7 +43,7 @@ public class JdbcSubjectDaoTest {
 
 	@Test
 	void givenExistingSubject_whenFindById_thenSubjectFound() {
-		Subject actual = subjectDao.findById(1);
+		Subject actual = subjectDao.findById(1).get();
 		Subject expected = Subject.builder()
 				.cathedra(actual.getCathedra())
 				.name("Weapon Tactics")
@@ -57,20 +55,14 @@ public class JdbcSubjectDaoTest {
 	}
 
 	@Test
-	void givenNotExistingSubject_whenFindById_thenDaoException() {
-		Exception exception = assertThrows(DaoException.class, () -> {
-			subjectDao.findById(100);
-		});
-		String expectedMessage = "Cant find subject by id";
-		String actualMessage = exception.getMessage();
-
-		assertTrue(actualMessage.contains(expectedMessage));
+	void givenNotExistingSubject_whenFindById_thenReturnEmptyOptional() {
+		assertTrue(subjectDao.findById(100).isEmpty());
 	}
 
 	@Test
 	void givenNewSubject_whenSaveSubject_thenAllExistingSubjectsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		Subject actual = subjectDao.findById(1);
+		Subject actual = subjectDao.findById(1).get();
 		subjectDao.save(Subject.builder()
 				.cathedra(actual.getCathedra())
 				.name("Weapon Tactics123")

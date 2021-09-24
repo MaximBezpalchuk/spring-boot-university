@@ -33,7 +33,7 @@ public class TeacherRowMapper implements RowMapper<Teacher> {
 				.address(resultSet.getString("address"))
 				.gender(Gender.valueOf(resultSet.getString("gender")))
 				.birthDate(resultSet.getObject("birth_date", LocalDate.class))
-				.cathedra(cathedraDao.findById(resultSet.getInt("cathedra_id")))
+				.cathedra(cathedraDao.findById(resultSet.getInt("cathedra_id")).get())
 				.degree(Degree.valueOf(resultSet.getString("degree")))
 				.phone(resultSet.getString("phone"))
 				.email(resultSet.getString("email"))

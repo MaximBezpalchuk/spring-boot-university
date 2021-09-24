@@ -1,6 +1,7 @@
 package com.foxminded.university.service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.dao.jdbc.JdbcStudentDao;
 import com.foxminded.university.exception.DaoException;
+import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.model.Student;
 
 @Service
@@ -30,13 +32,12 @@ public class StudentService {
 		return studentDao.findAll();
 	}
 
-	public Student findById(int id) {
+	public Student findById(int id) throws EntityNotFoundException {
 		logger.debug("Find student by id {}", id);
 		try {
-			return studentDao.findById(id);
-		} catch (DaoException e) {
-			logger.error("Cannot find student with id: {}", id, e);
-			return null;
+			return studentDao.findById(id).orElseThrow();
+		} catch (NoSuchElementException e) {
+			throw new EntityNotFoundException("Can`t find any student", e);
 		}
 	}
 

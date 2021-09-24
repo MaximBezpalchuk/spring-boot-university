@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,12 +48,12 @@ public class JdbcStudentDao implements StudentDao {
 	}
 
 	@Override
-	public Student findById(int id) throws DaoException {
+	public Optional<Student> findById(int id) throws DaoException {
 		logger.debug("Find student by id: {}", id);
 		try {
-			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id));
 		} catch (EmptyResultDataAccessException e) {
-			throw new DaoException("Cant find student by id", e);
+			return Optional.empty();
 		}
 	}
 

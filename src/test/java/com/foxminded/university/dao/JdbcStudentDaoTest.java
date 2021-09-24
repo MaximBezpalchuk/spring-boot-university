@@ -1,7 +1,6 @@
 package com.foxminded.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
@@ -22,7 +21,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import com.foxminded.university.model.Student;
 import com.foxminded.university.config.SpringTestConfig;
 import com.foxminded.university.dao.jdbc.JdbcStudentDao;
-import com.foxminded.university.exception.DaoException;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Gender;
 import com.foxminded.university.model.Group;
@@ -48,7 +46,7 @@ public class JdbcStudentDaoTest {
 
 	@Test
 	void givenExistingStudent_whenFindById_thenStudentFound() {
-		Student actual = studentDao.findById(1);
+		Student actual = studentDao.findById(1).get();
 		Student expected = Student.builder()
 				.firstName("Petr")
 				.lastName("Orlov")
@@ -67,14 +65,8 @@ public class JdbcStudentDaoTest {
 	}
 
 	@Test
-	void givenNotExistingStudent_whenFindById_thenDaoException() {
-		Exception exception = assertThrows(DaoException.class, () -> {
-			studentDao.findById(100);
-		});
-		String expectedMessage = "Cant find student by id";
-		String actualMessage = exception.getMessage();
-
-		assertTrue(actualMessage.contains(expectedMessage));
+	void givenNotExistingStudent_whenFindById_thenReturnEmptyOptional() {
+		assertTrue(studentDao.findById(100).isEmpty());
 	}
 
 	@Test

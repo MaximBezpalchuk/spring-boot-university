@@ -23,7 +23,7 @@ public class GroupRowMapper implements RowMapper<Group> {
 		return Group.builder()
 				.id(resultSet.getInt("id"))
 				.name(resultSet.getString("name"))
-				.cathedra(cathedraDao.findById(resultSet.getInt("cathedra_id")))
+				.cathedra(cathedraDao.findById(resultSet.getInt("cathedra_id")).get())
 				.build();
 	}
 }

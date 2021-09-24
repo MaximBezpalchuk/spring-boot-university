@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import org.slf4j.Logger;
@@ -49,12 +50,12 @@ public class JdbcTeacherDao implements TeacherDao {
 	}
 
 	@Override
-	public Teacher findById(int id) throws DaoException {
+	public Optional<Teacher> findById(int id) throws DaoException {
 		logger.debug("Find teacher by id: {}", id);
 		try {
-			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id));
 		} catch (EmptyResultDataAccessException e) {
-			throw new DaoException("Cant find teacher by id", e);
+			return Optional.empty();
 		}
 	}
 
@@ -62,7 +63,6 @@ public class JdbcTeacherDao implements TeacherDao {
 	@Transactional
 	public void save(Teacher teacher) {
 		logger.debug("Save teacher");
-		Teacher teacherOld = Teacher.builder().build();
 		if (teacher.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {
@@ -91,7 +91,7 @@ public class JdbcTeacherDao implements TeacherDao {
 					teacher.getEducation(), teacher.getBirthDate(), teacher.getCathedra().getId(),
 					teacher.getDegree().toString(), teacher.getId());
 
-			teacherOld = findById(teacher.getId());
+			Teacher teacherOld = findById(teacher.getId()).get();
 			updateSubjects(teacherOld, teacher);
 			deleteSubjects(teacherOld, teacher);
 			logger.debug("Teacher with id {} was updated", teacher.getId());

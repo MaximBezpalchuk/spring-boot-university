@@ -1,7 +1,6 @@
 package com.foxminded.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
@@ -22,7 +21,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.foxminded.university.config.SpringTestConfig;
 import com.foxminded.university.dao.jdbc.JdbcTeacherDao;
-import com.foxminded.university.exception.DaoException;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Degree;
 import com.foxminded.university.model.Gender;
@@ -50,7 +48,7 @@ public class JdbcTeacherDaoTest {
 
 	@Test
 	void givenExistingTeacher_whenFindById_thenTeacherFound() {
-		Teacher actual = teacherDao.findById(1);
+		Teacher actual = teacherDao.findById(1).get();
 		Teacher expected = Teacher.builder()
 				.firstName("Daniel")
 				.lastName("Morpheus")
@@ -75,14 +73,8 @@ public class JdbcTeacherDaoTest {
 	}
 
 	@Test
-	void givenNotExistingTeacher_whenFindById_thenDaoException() {
-		Exception exception = assertThrows(DaoException.class, () -> {
-			teacherDao.findById(100);
-		});
-		String expectedMessage = "Cant find teacher by id";
-		String actualMessage = exception.getMessage();
-
-		assertTrue(actualMessage.contains(expectedMessage));
+	void givenNotExistingTeacher_whenFindById_thenReturnEmptyOptional() {
+		assertTrue(teacherDao.findById(100).isEmpty());
 	}
 
 	@Test
@@ -172,7 +164,7 @@ public class JdbcTeacherDaoTest {
 	@Test
 	void givenExitstingTeacher_whenUpdateSubjects_thenAllExistingTeachersFound() {
 		int expected = countRowsInTable(template, "subjects_teachers") + 1;
-		Teacher teacher = teacherDao.findById(1);
+		Teacher teacher = teacherDao.findById(1).get();
 		teacher.getSubjects().add(Subject.builder()
 				.cathedra(teacher.getCathedra())
 				.name("Wandless Magic")

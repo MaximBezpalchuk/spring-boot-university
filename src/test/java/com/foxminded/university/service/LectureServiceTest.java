@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,7 @@ import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
 import com.foxminded.university.dao.jdbc.JdbcLectureDao;
 import com.foxminded.university.dao.jdbc.JdbcStudentDao;
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
+import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Group;
@@ -64,12 +66,12 @@ public class LectureServiceTest {
 	}
 
 	@Test
-	void givenExistingLecture_whenFindById_thenLectureFound() {
-		Lecture expected = Lecture.builder().id(1).build();
+	void givenExistingLecture_whenFindById_thenLectureFound() throws EntityNotFoundException {
+		Optional<Lecture> expected = Optional.of(Lecture.builder().id(1).build());
 		when(lectureDao.findById(1)).thenReturn(expected);
 		Lecture actual = lectureService.findById(1);
 
-		assertEquals(expected, actual);
+		assertEquals(expected.get(), actual);
 	}
 
 	@Test

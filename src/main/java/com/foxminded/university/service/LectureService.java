@@ -2,6 +2,7 @@ package com.foxminded.university.service;
 
 import java.time.DayOfWeek;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +18,7 @@ import com.foxminded.university.dao.jdbc.JdbcLectureDao;
 import com.foxminded.university.dao.jdbc.JdbcStudentDao;
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
 import com.foxminded.university.exception.DaoException;
+import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Lecture;
 
@@ -47,13 +49,12 @@ public class LectureService {
 		return lectureDao.findAll();
 	}
 
-	public Lecture findById(int id) {
+	public Lecture findById(int id) throws EntityNotFoundException {
 		logger.debug("Find lecture by id {}", id);
 		try {
-			return lectureDao.findById(id);
-		} catch (DaoException e) {
-			logger.error("Cannot find lecture with id: {}", id, e);
-			return null;
+			return lectureDao.findById(id).orElseThrow();
+		} catch (NoSuchElementException e) {
+			throw new EntityNotFoundException("Can`t find any lecture", e);
 		}
 	}
 

@@ -1,6 +1,7 @@
 package com.foxminded.university.service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.foxminded.university.dao.AudienceDao;
 import com.foxminded.university.dao.jdbc.JdbcAudienceDao;
 import com.foxminded.university.exception.DaoException;
+import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.model.Audience;
 
 @Service
@@ -27,13 +29,12 @@ public class AudienceService {
 		return audienceDao.findAll();
 	}
 
-	public Audience findById(int id) {
+	public Audience findById(int id) throws EntityNotFoundException {
 		logger.debug("Find audience by id {}", id);
 		try {
-			return audienceDao.findById(id);
-		} catch (DaoException e) {
-			logger.error("Cannot find audience with id: {}", id, e);
-			return null;
+			return audienceDao.findById(id).orElseThrow();
+		} catch (NoSuchElementException e) {
+			throw new EntityNotFoundException("Can`t find any audience", e);
 		}
 
 	}

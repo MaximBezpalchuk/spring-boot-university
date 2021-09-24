@@ -3,6 +3,7 @@ package com.foxminded.university.service;
 import java.time.Period;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import com.foxminded.university.dao.VacationDao;
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
 import com.foxminded.university.exception.DaoException;
+import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.model.Degree;
 import com.foxminded.university.model.Vacation;
 
@@ -33,13 +35,12 @@ public class VacationService {
 		return vacationDao.findAll();
 	}
 
-	public Vacation findById(int id) {
+	public Vacation findById(int id) throws EntityNotFoundException {
 		logger.debug("Find vacation by id {}", id);
 		try {
-			return vacationDao.findById(id);
-		} catch (DaoException e) {
-			logger.error("Cannot find vacation with id: {}", id, e);
-			return null;
+			return vacationDao.findById(id).orElseThrow();
+		} catch (NoSuchElementException e) {
+			throw new EntityNotFoundException("Can`t find any vacation", e);
 		}
 	}
 

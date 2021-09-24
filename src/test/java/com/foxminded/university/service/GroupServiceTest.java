@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.foxminded.university.dao.jdbc.JdbcGroupDao;
+import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.model.Group;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,12 +38,12 @@ public class GroupServiceTest {
 	}
 
 	@Test
-	void givenExistingGroup_whenFindById_thenGroupFound() {
-		Group expected = Group.builder().id(1).build();
+	void givenExistingGroup_whenFindById_thenGroupFound() throws EntityNotFoundException {
+		Optional<Group> expected = Optional.of(Group.builder().id(1).build());
 		when(groupDao.findById(1)).thenReturn(expected);
 		Group actual = groupService.findById(1);
 
-		assertEquals(expected, actual);
+		assertEquals(expected.get(), actual);
 	}
 
 	@Test

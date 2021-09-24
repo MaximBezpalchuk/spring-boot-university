@@ -1,14 +1,13 @@
 package com.foxminded.university.dao;
 
 import java.util.List;
-
-import com.foxminded.university.exception.DaoException;
+import java.util.Optional;
 
 public interface GenericDao<T> {
 
 	List<T> findAll();
 
-	T findById(int id) throws DaoException;
+	Optional<T> findById(int id);
 
 	void save(T entity);
 

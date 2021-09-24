@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,12 +47,12 @@ public class JdbcHolidayDao implements HolidayDao {
 	}
 
 	@Override
-	public Holiday findById(int id) throws DaoException {
+	public Optional<Holiday> findById(int id) throws DaoException {
 		logger.debug("Find holiday by id: {}", id);
 		try {
-			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id));
 		} catch (EmptyResultDataAccessException e) {
-			throw new DaoException("Cant find holiday by id", e);
+			return Optional.empty();
 		}
 	}
 

@@ -11,7 +11,6 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
 import com.foxminded.university.config.SpringTestConfig;
 import com.foxminded.university.dao.jdbc.JdbcAudienceDao;
-import com.foxminded.university.exception.DaoException;
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Cathedra;
 
@@ -40,7 +39,7 @@ public class JdbcAudienceDaoTest {
 
 	@Test
 	void givenExistingAudience_whenFindById_thenAudienceFound() {
-		Audience actual = audienceDao.findById(1);
+		Audience actual = audienceDao.findById(1).get();
 		Audience expected = Audience.builder()
 				.id(1)
 				.room(1)
@@ -52,14 +51,8 @@ public class JdbcAudienceDaoTest {
 	}
 
 	@Test
-	void givenNotExistingAudience_whenFindById_thenDaoException() {
-		Exception exception = assertThrows(DaoException.class, () -> {
-			audienceDao.findById(100);
-		});
-		String expectedMessage = "Cant find audience by id";
-		String actualMessage = exception.getMessage();
-
-		assertTrue(actualMessage.contains(expectedMessage));
+	void givenNotExistingAudience_whenFindById_thenReturnEmptyOptional() {
+		assertTrue(audienceDao.findById(100).isEmpty());
 	}
 
 	@Test

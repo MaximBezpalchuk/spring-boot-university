@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.foxminded.university.dao.jdbc.JdbcAudienceDao;
+import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.model.Audience;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,12 +38,12 @@ public class AudienceServiceTest {
 	}
 
 	@Test
-	void givenExistingAudience_whenFindById_thenAudienceFound() {
-		Audience expected = Audience.builder().id(1).build();
+	void givenExistingAudience_whenFindById_thenAudienceFound() throws EntityNotFoundException {
+		Optional<Audience> expected = Optional.of(Audience.builder().id(1).build());
 		when(audienceDao.findById(1)).thenReturn(expected);
 		Audience actual = audienceService.findById(1);
 
-		assertEquals(expected, actual);
+		assertEquals(expected.get(), actual);
 	}
 
 	@Test

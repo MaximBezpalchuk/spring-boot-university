@@ -18,6 +18,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.foxminded.university.config.SpringConfig;
+import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.service.AudienceService;
 import com.foxminded.university.service.CathedraService;
 import com.foxminded.university.service.GroupService;
@@ -258,12 +259,12 @@ public class MenuCreator {
 				}
 			}
 			reader.close();
-		} catch (IOException e) {
+		} catch (IOException | EntityNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void submenuCreate() throws IOException {
+	private void submenuCreate() throws IOException, EntityNotFoundException {
 		System.out.println(printCreateMenu());
 		int choise = getInput(7);
 		switch (choise) {

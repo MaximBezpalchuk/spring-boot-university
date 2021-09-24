@@ -1,7 +1,6 @@
 package com.foxminded.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
@@ -17,7 +16,6 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.foxminded.university.config.SpringTestConfig;
 import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
-import com.foxminded.university.exception.DaoException;
 import com.foxminded.university.model.Cathedra;
 
 @ExtendWith(SpringExtension.class)
@@ -45,20 +43,14 @@ public class JdbcCathedraDaoTest {
 				.id(1)
 				.name("Fantastic Cathedra")
 				.build();
-		Cathedra actual = cathedraDao.findById(1);
+		Cathedra actual = cathedraDao.findById(1).get();
 
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	void givenNotExistingCathedra_whenFindById_thenDaoException() {
-		Exception exception = assertThrows(DaoException.class, () -> {
-			cathedraDao.findById(100);
-		});
-		String expectedMessage = "Cant find cathedra by id";
-		String actualMessage = exception.getMessage();
-
-		assertTrue(actualMessage.contains(expectedMessage));
+	void givenNotExistingCathedra_whenFindById_thenReturnEmptyOptional() {
+		assertTrue(cathedraDao.findById(100).isEmpty());
 	}
 
 	@Test

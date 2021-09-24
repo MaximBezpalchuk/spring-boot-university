@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -26,7 +27,7 @@ import com.foxminded.university.model.Teacher;
 
 @Component
 public class JdbcLectureDao implements LectureDao {
-	
+
 	private final static Logger logger = LoggerFactory.getLogger(JdbcLectureDao.class);
 
 	private final static String SELECT_ALL = "SELECT * FROM lectures";
@@ -54,12 +55,12 @@ public class JdbcLectureDao implements LectureDao {
 	}
 
 	@Override
-	public Lecture findById(int id) throws DaoException {
+	public Optional<Lecture> findById(int id) throws DaoException {
 		logger.debug("Find lecture by id: {}", id);
 		try {
-			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id));
 		} catch (EmptyResultDataAccessException e) {
-			throw new DaoException("Cant find lecture by id", e);
+			return Optional.empty();
 		}
 	}
 
@@ -99,24 +100,32 @@ public class JdbcLectureDao implements LectureDao {
 	}
 
 	private void insertGroup(Lecture lecture) {
-		for (Group group : lecture.getGroups().stream()
-				.filter(group -> !findById(lecture.getId()).getGroups().contains(group)).collect(Collectors.toList())) {
-			jdbcTemplate.update(INSERT_GROUP, group.getId(), lecture.getId());
-			logger.debug("Insert group with id {} into lecture with id {}", group.getId(), lecture.getId());
+		Optional<Lecture> lectureOpt = findById(lecture.getId());
+		if (!lectureOpt.isEmpty()) {
+			for (Group group : lecture.getGroups().stream()
+					.filter(group -> !lectureOpt.get().getGroups().contains(group)).collect(Collectors.toList())) {
+				jdbcTemplate.update(INSERT_GROUP, group.getId(), lecture.getId());
+				logger.debug("Insert group with id {} into lecture with id {}", group.getId(), lecture.getId());
+			}
 		}
 	}
 
 	private void deleteGroup(Lecture lecture) {
-		for (Group group : findById(lecture.getId()).getGroups().stream()
-				.filter(group -> !lecture.getGroups().contains(group)).collect(Collectors.toList())) {
-			jdbcTemplate.update(DELETE_GROUP, group.getId(), lecture.getId());
-			logger.debug("Delete group with id {} from lecture with id {}", group.getId(), lecture.getId());
+		Optional<Lecture> lectureOpt = findById(lecture.getId());
+		if (!lectureOpt.isEmpty()) {
+			for (Group group : lectureOpt.get().getGroups().stream()
+					.filter(group -> !lecture.getGroups().contains(group)).collect(Collectors.toList())) {
+				jdbcTemplate.update(DELETE_GROUP, group.getId(), lecture.getId());
+				logger.debug("Delete group with id {} from lecture with id {}", group.getId(), lecture.getId());
+			}
 		}
 	}
 
 	@Override
-	public Lecture findByAudienceDateAndLectureTime(Audience audience, LocalDate date, LectureTime lectureTime) throws DaoException {
-		logger.debug("Find lecture by audience with id {}, date {} and lecture time id {}", audience.getId(), date, lectureTime.getId());
+	public Lecture findByAudienceDateAndLectureTime(Audience audience, LocalDate date, LectureTime lectureTime)
+			throws DaoException {
+		logger.debug("Find lecture by audience with id {}, date {} and lecture time id {}", audience.getId(), date,
+				lectureTime.getId());
 		try {
 			return jdbcTemplate.queryForObject(SELECT_BY_AUDIENCE_DATE_LECTURE_TIME, rowMapper, audience.getId(), date,
 					lectureTime.getId());
@@ -127,7 +136,8 @@ public class JdbcLectureDao implements LectureDao {
 
 	@Override
 	public List<Lecture> findLecturesByTeacherDateAndTime(Teacher teacher, LocalDate date, LectureTime time) {
-		logger.debug("Find lecture by teacher with id {}, date {} and lecture time id {}", teacher.getId(), date, time.getId());
+		logger.debug("Find lecture by teacher with id {}, date {} and lecture time id {}", teacher.getId(), date,
+				time.getId());
 		return jdbcTemplate.query(SELECT_BY_TEACHER_ID_DATE_AND_LECTURE_TIME_ID, rowMapper, teacher.getId(), date,
 				time.getId());
 	}

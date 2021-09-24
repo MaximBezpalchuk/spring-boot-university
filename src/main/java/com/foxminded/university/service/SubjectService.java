@@ -1,6 +1,7 @@
 package com.foxminded.university.service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.foxminded.university.dao.SubjectDao;
 import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
 import com.foxminded.university.exception.DaoException;
+import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.model.Subject;
 
 @Service
@@ -27,13 +29,12 @@ public class SubjectService {
 		return subjectDao.findAll();
 	}
 
-	public Subject findById(int id) {
+	public Subject findById(int id) throws EntityNotFoundException {
 		logger.debug("Find subject by id {}", id);
 		try {
-			return subjectDao.findById(id);
-		} catch (DaoException e) {
-			logger.error("Cannot find subject with id: {}", id, e);
-			return null;
+			return subjectDao.findById(id).orElseThrow();
+		} catch (NoSuchElementException e) {
+			throw new EntityNotFoundException("Can`t find any subject", e);
 		}
 	}
 

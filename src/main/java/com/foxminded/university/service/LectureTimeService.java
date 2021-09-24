@@ -2,6 +2,7 @@ package com.foxminded.university.service;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.foxminded.university.dao.LectureTimeDao;
 import com.foxminded.university.dao.jdbc.JdbcLectureTimeDao;
 import com.foxminded.university.exception.DaoException;
+import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.model.LectureTime;
 
 @Service
@@ -31,13 +33,12 @@ public class LectureTimeService {
 		return lectureTimeDao.findAll();
 	}
 
-	public LectureTime findById(int id) {
+	public LectureTime findById(int id) throws EntityNotFoundException {
 		logger.debug("Find lecture time by id {}", id);
 		try {
-			return lectureTimeDao.findById(id);
-		} catch (DaoException e) {
-			logger.error("Cannot find lecture time with id: {}", id, e);
-			return null;
+			return lectureTimeDao.findById(id).orElseThrow();
+		} catch (NoSuchElementException e) {
+			throw new EntityNotFoundException("Can`t find any lecture time", e);
 		}
 	}
 

@@ -3,6 +3,7 @@ package com.foxminded.university.dao.jdbc;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,12 +45,12 @@ public class JdbcCathedraDao implements CathedraDao {
 	}
 
 	@Override
-	public Cathedra findById(int id) throws DaoException {
+	public Optional<Cathedra> findById(int id) throws DaoException {
 		logger.debug("Find cathedra by id: {}", id);
 		try {
-			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id));
 		} catch (EmptyResultDataAccessException e) {
-			throw new DaoException("Cant find cathedra by id", e);
+			return Optional.empty();
 		}
 	}
 

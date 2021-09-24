@@ -1,6 +1,7 @@
 package com.foxminded.university.service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.jdbc.JdbcGroupDao;
 import com.foxminded.university.exception.DaoException;
+import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.model.Group;
 
 @Service
@@ -27,13 +29,12 @@ public class GroupService {
 		return groupDao.findAll();
 	}
 
-	public Group findById(int id) {
+	public Group findById(int id) throws EntityNotFoundException {
 		logger.debug("Find group by id {}", id);
 		try {
-			return groupDao.findById(id);
-		} catch (DaoException e) {
-			logger.error("Cannot find group with id: {}", id, e);
-			return null;
+			return groupDao.findById(id).orElseThrow();
+		} catch (NoSuchElementException e) {
+			throw new EntityNotFoundException("Can`t find any group", e);
 		}
 	}
 

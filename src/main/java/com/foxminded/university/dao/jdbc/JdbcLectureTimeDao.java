@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,12 +46,12 @@ public class JdbcLectureTimeDao implements LectureTimeDao {
 	}
 
 	@Override
-	public LectureTime findById(int id) throws DaoException {
+	public Optional<LectureTime> findById(int id) throws DaoException {
 		logger.debug("Find lecture time by id: {}", id);
 		try {
-			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id));
 		} catch (EmptyResultDataAccessException e) {
-			throw new DaoException("Cant find lecture time by id", e);
+			return Optional.empty();
 		}
 	}
 

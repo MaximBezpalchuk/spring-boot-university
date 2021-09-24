@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.foxminded.university.dao.jdbc.JdbcStudentDao;
+import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Student;
 
@@ -45,12 +47,12 @@ public class StudentServiceTest {
 	}
 
 	@Test
-	void givenExistingStudent_whenFindById_thenStudentFound() {
-		Student expected = Student.builder().id(1).build();
+	void givenExistingStudent_whenFindById_thenStudentFound() throws EntityNotFoundException {
+		Optional<Student> expected = Optional.of(Student.builder().id(1).build());
 		when(studentDao.findById(1)).thenReturn(expected);
 		Student actual = studentService.findById(1);
 
-		assertEquals(expected, actual);
+		assertEquals(expected.get(), actual);
 	}
 
 	@Test
