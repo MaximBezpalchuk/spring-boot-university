@@ -56,7 +56,7 @@ public class JdbcAudienceDao implements AudienceDao {
 
 	@Override
 	public void save(Audience audience) {
-		logger.debug("Save audience");
+		logger.debug("Save audience {}", audience);
 		if (audience.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {

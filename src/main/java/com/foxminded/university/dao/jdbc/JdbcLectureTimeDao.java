@@ -57,7 +57,7 @@ public class JdbcLectureTimeDao implements LectureTimeDao {
 
 	@Override
 	public void save(LectureTime lectureTime) {
-		logger.debug("Save lecture time");
+		logger.debug("Save lecture time {}", lectureTime);
 		if (lectureTime.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {

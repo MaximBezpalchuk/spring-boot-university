@@ -56,7 +56,7 @@ public class JdbcCathedraDao implements CathedraDao {
 
 	@Override
 	public void save(Cathedra cathedra) {
-		logger.debug("Save cathedra");
+		logger.debug("Save cathedra {}", cathedra);
 		if (cathedra.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {

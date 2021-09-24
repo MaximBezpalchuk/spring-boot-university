@@ -57,7 +57,7 @@ public class JdbcSubjectDao implements SubjectDao {
 
 	@Override
 	public void save(Subject subject) {
-		logger.debug("Save subject");
+		logger.debug("Save subject {}", subject);
 		if (subject.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {

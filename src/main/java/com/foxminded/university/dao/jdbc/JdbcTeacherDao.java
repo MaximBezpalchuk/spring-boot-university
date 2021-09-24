@@ -62,7 +62,7 @@ public class JdbcTeacherDao implements TeacherDao {
 	@Override
 	@Transactional
 	public void save(Teacher teacher) {
-		logger.debug("Save teacher");
+		logger.debug("Save teacher {}", teacher);
 		if (teacher.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {

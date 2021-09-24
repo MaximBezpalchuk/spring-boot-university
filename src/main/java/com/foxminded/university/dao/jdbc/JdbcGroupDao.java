@@ -57,7 +57,7 @@ public class JdbcGroupDao implements GroupDao {
 
 	@Override
 	public void save(Group group) {
-		logger.debug("Save group");
+		logger.debug("Save group {}", group);
 		if (group.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {

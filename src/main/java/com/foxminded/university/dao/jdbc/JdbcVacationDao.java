@@ -61,7 +61,7 @@ public class JdbcVacationDao implements VacationDao {
 
 	@Override
 	public void save(Vacation vacation) {
-		logger.debug("Save vacation");
+		logger.debug("Save vacation {}", vacation);
 		if (vacation.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {

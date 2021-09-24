@@ -59,7 +59,7 @@ public class JdbcStudentDao implements StudentDao {
 
 	@Override
 	public void save(Student student) {
-		logger.debug("Save student");
+		logger.debug("Save student {}", student);
 		if (student.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			Group group = student.getGroup();

@@ -58,7 +58,7 @@ public class JdbcHolidayDao implements HolidayDao {
 
 	@Override
 	public void save(Holiday holiday) {
-		logger.debug("Save holiday");
+		logger.debug("Save holiday {}", holiday);
 		if (holiday.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {

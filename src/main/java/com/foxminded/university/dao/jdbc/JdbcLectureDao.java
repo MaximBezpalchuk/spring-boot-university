@@ -67,7 +67,7 @@ public class JdbcLectureDao implements LectureDao {
 	@Override
 	@Transactional
 	public void save(Lecture lecture) {
-		logger.debug("Save lecture");
+		logger.debug("Save lecture {}", lecture);
 		if (lecture.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {
