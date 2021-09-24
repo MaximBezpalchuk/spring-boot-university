@@ -39,7 +39,7 @@ public class CathedraService {
 		}
 	}
 
-	public void save(Cathedra cathedra) throws EntityNotUniqueException {
+	public void save(Cathedra cathedra) throws Exception {
 		logger.debug("Save cathedra");
 		if (isUnique(cathedra)) {
 			cathedraDao.save(cathedra);

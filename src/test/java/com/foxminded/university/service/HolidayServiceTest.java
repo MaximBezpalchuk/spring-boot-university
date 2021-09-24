@@ -17,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
 import com.foxminded.university.exception.EntityNotFoundException;
-import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Holiday;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,7 +47,7 @@ public class HolidayServiceTest {
 	}
 
 	@Test
-	void givenNewHoliday_whenSave_thenSaved() throws EntityNotUniqueException {
+	void givenNewHoliday_whenSave_thenSaved() throws Exception {
 		Holiday holiday = Holiday.builder().build();
 		holidayService.save(holiday);
 
@@ -56,7 +55,7 @@ public class HolidayServiceTest {
 	}
 
 	@Test
-	void givenExistingHoliday_whenSave_thenSaved() throws EntityNotUniqueException {
+	void givenExistingHoliday_whenSave_thenSaved() throws Exception {
 		Holiday holiday = Holiday.builder()
 				.name("TestName")
 				.date(LocalDate.of(2020, 1, 1))

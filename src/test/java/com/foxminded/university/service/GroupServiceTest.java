@@ -16,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.foxminded.university.dao.jdbc.JdbcGroupDao;
 import com.foxminded.university.exception.EntityNotFoundException;
-import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Group;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,7 +47,7 @@ public class GroupServiceTest {
 	}
 
 	@Test
-	void givenNewGroup_whenSave_thenSaved() throws EntityNotUniqueException {
+	void givenNewGroup_whenSave_thenSaved() throws Exception {
 		Group group = Group.builder().build();
 		groupService.save(group);
 
@@ -56,7 +55,7 @@ public class GroupServiceTest {
 	}
 
 	@Test
-	void givenExistingGroup_whenSave_thenSaved() throws EntityNotUniqueException {
+	void givenExistingGroup_whenSave_thenSaved() throws Exception {
 		Group group = Group.builder()
 				.name("TestName")
 				.build();

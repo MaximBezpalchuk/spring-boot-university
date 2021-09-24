@@ -39,7 +39,7 @@ public class HolidayService {
 		}
 	}
 
-	public void save(Holiday holiday) throws EntityNotUniqueException {
+	public void save(Holiday holiday) throws Exception {
 		logger.debug("Save holiday");
 		if (isUnique(holiday)) {
 			holidayDao.save(holiday);

@@ -16,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
 import com.foxminded.university.exception.EntityNotFoundException;
-import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Cathedra;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,7 +45,7 @@ public class CathedraServiceTest {
 	}
 
 	@Test
-	void givenNewCathedra_whenSave_thenSaved() throws EntityNotUniqueException {
+	void givenNewCathedra_whenSave_thenSaved() throws Exception {
 		Cathedra cathedra = Cathedra.builder().build();
 		cathedraService.save(cathedra);
 		
@@ -54,7 +53,7 @@ public class CathedraServiceTest {
 	}
 	
 	@Test
-	void givenExistingCathedra_whenSave_thenSaved() throws EntityNotUniqueException {
+	void givenExistingCathedra_whenSave_thenSaved() throws Exception {
 		Cathedra cathedra = Cathedra.builder().name("TestName").build();
 		when(cathedraDao.findByName(cathedra.getName())).thenReturn(Optional.of(cathedra));
 		cathedraService.save(cathedra);

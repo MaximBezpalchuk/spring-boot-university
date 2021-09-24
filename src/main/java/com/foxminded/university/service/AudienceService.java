@@ -40,7 +40,7 @@ public class AudienceService {
 
 	}
 
-	public void save(Audience audience) throws EntityNotUniqueException {
+	public void save(Audience audience) throws Exception {
 		logger.debug("Save audience");
 		if (isUnique(audience)) {
 			audienceDao.save(audience);

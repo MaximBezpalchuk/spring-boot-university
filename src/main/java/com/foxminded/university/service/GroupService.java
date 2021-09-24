@@ -39,7 +39,7 @@ public class GroupService {
 		}
 	}
 
-	public void save(Group group) throws EntityNotUniqueException {
+	public void save(Group group) throws Exception {
 		logger.debug("Save group");
 		if (isUnique(group)) {
 			groupDao.save(group);
