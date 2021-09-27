@@ -47,6 +47,16 @@ public class TeacherServiceTest {
 
 		assertEquals(expected.get(), actual);
 	}
+	
+	@Test
+	void givenExistingTeacher_whenFindById_thenEntityNotFoundException() {
+		when(teacherDao.findById(10)).thenReturn(Optional.empty());
+		Exception exception = assertThrows(EntityNotFoundException.class, () -> {
+			teacherService.findById(10);
+		});
+
+		assertEquals("Can`t find any teacher with specified id!", exception.getMessage());
+	}
 
 	@Test
 	void givenNewTeacher_whenSave_thenSaved() throws Exception {

@@ -82,6 +82,16 @@ public class LectureServiceTest {
 
 		assertEquals(expected.get(), actual);
 	}
+	
+	@Test
+	void givenExistingLecture_whenFindById_thenEntityNotFoundException() {
+		when(lectureDao.findById(10)).thenReturn(Optional.empty());
+		Exception exception = assertThrows(EntityNotFoundException.class, () -> {
+			lectureService.findById(10);
+		});
+
+		assertEquals("Can`t find any lecture with specified id!", exception.getMessage());
+	}
 
 	@Test
 	void givenNewLecture_whenSave_thenSaved() throws Exception {

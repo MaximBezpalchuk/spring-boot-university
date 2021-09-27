@@ -47,6 +47,16 @@ public class HolidayServiceTest {
 
 		assertEquals(expected.get(), actual);
 	}
+	
+	@Test
+	void givenExistingHoliday_whenFindById_thenEntityNotFoundException() {
+		when(holidayDao.findById(10)).thenReturn(Optional.empty());
+		Exception exception = assertThrows(EntityNotFoundException.class, () -> {
+			holidayService.findById(10);
+		});
+
+		assertEquals("Can`t find any holiday with specified id!", exception.getMessage());
+	}
 
 	@Test
 	void givenNewHoliday_whenSave_thenSaved() throws Exception {

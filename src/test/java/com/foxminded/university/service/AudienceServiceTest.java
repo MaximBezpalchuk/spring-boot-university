@@ -40,12 +40,22 @@ public class AudienceServiceTest {
 	}
 
 	@Test
-	void givenExistingAudience_whenFindById_thenAudienceFound() throws EntityNotFoundException {
+	void givenExistingAudience_whenFindById_thenAudienceFound() {
 		Optional<Audience> expected = Optional.of(Audience.builder().id(1).build());
 		when(audienceDao.findById(1)).thenReturn(expected);
 		Audience actual = audienceService.findById(1);
 
 		assertEquals(expected.get(), actual);
+	}
+	
+	@Test
+	void givenExistingAudience_whenFindById_thenEntityNotFoundException() {
+		when(audienceDao.findById(10)).thenReturn(Optional.empty());
+		Exception exception = assertThrows(EntityNotFoundException.class, () -> {
+			audienceService.findById(10);
+		});
+
+		assertEquals("Can`t find any audience with specified id!", exception.getMessage());
 	}
 
 	@Test

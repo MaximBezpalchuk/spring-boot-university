@@ -46,6 +46,16 @@ public class SubjectServiceTest {
 
 		assertEquals(expected.get(), actual);
 	}
+	
+	@Test
+	void givenExistingSubject_whenFindById_thenEntityNotFoundException() {
+		when(subjectDao.findById(10)).thenReturn(Optional.empty());
+		Exception exception = assertThrows(EntityNotFoundException.class, () -> {
+			subjectService.findById(10);
+		});
+
+		assertEquals("Can`t find any subject with specified id!", exception.getMessage());
+	}
 
 	@Test
 	void givenNewSubject_whenSave_thenSaved() throws Exception {

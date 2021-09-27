@@ -47,6 +47,16 @@ public class GroupServiceTest {
 
 		assertEquals(expected.get(), actual);
 	}
+	
+	@Test
+	void givenExistingGroup_whenFindById_thenEntityNotFoundException() {
+		when(groupDao.findById(10)).thenReturn(Optional.empty());
+		Exception exception = assertThrows(EntityNotFoundException.class, () -> {
+			groupService.findById(10);
+		});
+
+		assertEquals("Can`t find any group with specified id!", exception.getMessage());
+	}
 
 	@Test
 	void givenNewGroup_whenSave_thenSaved() throws Exception {

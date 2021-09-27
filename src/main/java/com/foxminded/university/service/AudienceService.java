@@ -32,7 +32,8 @@ public class AudienceService {
 
 	public Audience findById(int id) throws EntityNotFoundException {
 		logger.debug("Find audience by id {}", id);
-		return audienceDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Can`t find any audience with id", id));
+		return audienceDao.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Can`t find any audience with specified id!", "Id is: " + id));
 	}
 
 	public void save(Audience audience) throws ServiceLayerException {

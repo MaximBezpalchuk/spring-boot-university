@@ -65,6 +65,16 @@ public class VacationServiceTest {
 
 		assertEquals(expected.get(), actual);
 	}
+	
+	@Test
+	void givenExistingVacation_whenFindById_thenEntityNotFoundException() {
+		when(vacationDao.findById(10)).thenReturn(Optional.empty());
+		Exception exception = assertThrows(EntityNotFoundException.class, () -> {
+			vacationService.findById(10);
+		});
+
+		assertEquals("Can`t find any vacation with specified id!", exception.getMessage());
+	}
 
 	@Test
 	void givenNewVacation_whenSave_thenSaved() throws Exception {

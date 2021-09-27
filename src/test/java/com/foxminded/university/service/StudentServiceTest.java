@@ -56,6 +56,16 @@ public class StudentServiceTest {
 
 		assertEquals(expected.get(), actual);
 	}
+	
+	@Test
+	void givenExistingStudent_whenFindById_thenEntityNotFoundException() {
+		when(studentDao.findById(10)).thenReturn(Optional.empty());
+		Exception exception = assertThrows(EntityNotFoundException.class, () -> {
+			studentService.findById(10);
+		});
+
+		assertEquals("Can`t find any student with specified id!", exception.getMessage());
+	}
 
 	@Test
 	void givenNewStudent_whenSave_thenSaved() throws Exception {

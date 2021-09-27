@@ -45,6 +45,16 @@ public class CathedraServiceTest {
 
 		assertEquals(expected.get(), actual);
 	}
+	
+	@Test
+	void givenExistingCathedra_whenFindById_thenEntityNotFoundException() {
+		when(cathedraDao.findById(10)).thenReturn(Optional.empty());
+		Exception exception = assertThrows(EntityNotFoundException.class, () -> {
+			cathedraService.findById(10);
+		});
+
+		assertEquals("Can`t find any cathedra with specified id!", exception.getMessage());
+	}
 
 	@Test
 	void givenNewCathedra_whenSave_thenSaved() throws Exception {
