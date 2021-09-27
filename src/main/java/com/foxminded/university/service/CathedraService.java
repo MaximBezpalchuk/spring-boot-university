@@ -11,6 +11,7 @@ import com.foxminded.university.dao.CathedraDao;
 import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
+import com.foxminded.university.exception.ServiceLayerException;
 import com.foxminded.university.model.Cathedra;
 
 @Service
@@ -31,10 +32,10 @@ public class CathedraService {
 
 	public Cathedra findById(int id) throws EntityNotFoundException {
 		logger.debug("Find cathedra by id {}", id);
-		return cathedraDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Can`t find any cathedra"));
+		return cathedraDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Can`t find any cathedra with specified id!", "Id is: " + id));
 	}
 
-	public void save(Cathedra cathedra) throws Exception {
+	public void save(Cathedra cathedra) throws ServiceLayerException {
 		logger.debug("Save cathedra");
 		isUniqueCheck(cathedra);
 		cathedraDao.save(cathedra);
@@ -51,7 +52,7 @@ public class CathedraService {
 		if (existingCathedra.isEmpty() || existingCathedra.get().getId() == cathedra.getId()) {
 			return;
 		} else {
-			throw new EntityNotUniqueException("Cathedra with same name is already exists!");
+			throw new EntityNotUniqueException("Cathedra with same name is already exists!", "Cathedra name is: " + cathedra.getName());
 		}
 	}
 }

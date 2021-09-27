@@ -11,6 +11,7 @@ import com.foxminded.university.dao.HolidayDao;
 import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
+import com.foxminded.university.exception.ServiceLayerException;
 import com.foxminded.university.model.Holiday;
 
 @Service
@@ -31,10 +32,11 @@ public class HolidayService {
 
 	public Holiday findById(int id) throws EntityNotFoundException {
 		logger.debug("Find holiday by id {}", id);
-		return holidayDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Can`t find any holiday"));
+		return holidayDao.findById(id).orElseThrow(
+				() -> new EntityNotFoundException("Can`t find any holiday with specified id!", "Id is: " + id));
 	}
 
-	public void save(Holiday holiday) throws Exception {
+	public void save(Holiday holiday) throws ServiceLayerException {
 		logger.debug("Save holiday");
 		isUniqueCheck(holiday);
 		holidayDao.save(holiday);
@@ -52,7 +54,8 @@ public class HolidayService {
 		if (existingHoliday.isEmpty() || (existingHoliday.get().getId() == holiday.getId())) {
 			return;
 		} else {
-			throw new EntityNotUniqueException("Holiday with same name and date is already exists!");
+			throw new EntityNotUniqueException("Holiday with same name and date is already exists!",
+					"Holiday name is: " + holiday.getName(), "Holiday date is: " + holiday.getDate());
 		}
 	}
 }

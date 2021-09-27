@@ -1,10 +1,12 @@
 package com.foxminded.university.exception;
 
-public class EntityNotFoundException extends Exception {
+import org.springframework.lang.Nullable;
+
+public class EntityNotFoundException extends ServiceLayerException {
 
 	private static final long serialVersionUID = 498582879177323236L;
 
-	public EntityNotFoundException(String errorMessage) {
-		super(errorMessage);
+	public EntityNotFoundException(String errorMessage, @Nullable Object... args) {
+		super(errorMessage, args);
 	}
 }

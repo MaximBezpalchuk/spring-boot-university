@@ -11,6 +11,7 @@ import com.foxminded.university.dao.TeacherDao;
 import com.foxminded.university.dao.jdbc.JdbcTeacherDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
+import com.foxminded.university.exception.ServiceLayerException;
 import com.foxminded.university.model.Teacher;
 
 @Service
@@ -31,10 +32,11 @@ public class TeacherService {
 
 	public Teacher findById(int id) throws EntityNotFoundException {
 		logger.debug("Find teacher by id {}", id);
-		return teacherDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Can`t find any teacher"));
+		return teacherDao.findById(id).orElseThrow(
+				() -> new EntityNotFoundException("Can`t find any teacher with specified id!", "Id is: " + id));
 	}
 
-	public void save(Teacher teacher) throws Exception {
+	public void save(Teacher teacher) throws ServiceLayerException {
 		logger.debug("Save teacher");
 		isUniqueCheck(teacher);
 		teacherDao.save(teacher);
@@ -54,7 +56,9 @@ public class TeacherService {
 			return;
 		} else {
 			throw new EntityNotUniqueException(
-					"Teacher with same first name, last name and birth date is already exists!");
+					"Teacher with same first name, last name and birth date is already exists!",
+					"Teacher name is: " + teacher.getFirstName() + " " + teacher.getLastName(),
+					"Teacher birth date is: " + teacher.getBirthDate());
 		}
 	}
 }

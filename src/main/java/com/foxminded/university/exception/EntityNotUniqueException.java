@@ -1,10 +1,12 @@
 package com.foxminded.university.exception;
 
-public class EntityNotUniqueException extends Exception {
+import org.springframework.lang.Nullable;
+
+public class EntityNotUniqueException extends ServiceLayerException {
 
 	private static final long serialVersionUID = -682774621895081494L;
 
-	public EntityNotUniqueException(String errorMessage) {
-		super(errorMessage);
+	public EntityNotUniqueException(String errorMessage, @Nullable Object... args) {
+		super(errorMessage, args);
 	}
 }

@@ -12,7 +12,8 @@ import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.dao.jdbc.JdbcStudentDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
-import com.foxminded.university.exception.StudentGroupIsFullException;
+import com.foxminded.university.exception.GroupOverflowException;
+import com.foxminded.university.exception.ServiceLayerException;
 import com.foxminded.university.model.Student;
 
 @Service
@@ -35,10 +36,11 @@ public class StudentService {
 
 	public Student findById(int id) throws EntityNotFoundException {
 		logger.debug("Find student by id {}", id);
-		return studentDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Can`t find any student"));
+		return studentDao.findById(id).orElseThrow(
+				() -> new EntityNotFoundException("Can`t find any student with specified id!", "Id is: " + id));
 	}
 
-	public void save(Student student) throws Exception {
+	public void save(Student student) throws ServiceLayerException {
 		logger.debug("Save student");
 		isUniqueCheck(student);
 		isGroupFilledCheck(student);
@@ -59,15 +61,19 @@ public class StudentService {
 			return;
 		} else {
 			throw new EntityNotUniqueException(
-					"Student with same first name, last name and  birth date is already exists!");
+					"Student with same first name, last name and  birth date is already exists!",
+					"Student name is: " + student.getFirstName() + " " + student.getLastName(),
+					"Student birth date is: " + student.getBirthDate());
 		}
 	}
 
-	private void isGroupFilledCheck(Student student) throws StudentGroupIsFullException {
+	private void isGroupFilledCheck(Student student) throws GroupOverflowException {
 		logger.debug("Check that group is filled");
 		if (student.getGroup() != null) {
-			if (studentDao.findByGroupId(student.getGroup().getId()).size() >= maxGroupSize) {
-				throw new StudentGroupIsFullException("This group is already full!");
+			int groupSize = studentDao.findByGroupId(student.getGroup().getId()).size();
+			if (groupSize >= maxGroupSize) {
+				throw new GroupOverflowException("This group is already full!", "Group size is: " + groupSize,
+						"Max is: " + maxGroupSize);
 			}
 		}
 	}

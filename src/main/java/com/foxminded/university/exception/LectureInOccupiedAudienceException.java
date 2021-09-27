@@ -1,10 +1,12 @@
 package com.foxminded.university.exception;
 
-public class LectureInOccupiedAudienceException extends Exception {
+import org.springframework.lang.Nullable;
+
+public class LectureInOccupiedAudienceException extends ServiceLayerException {
 
 	private static final long serialVersionUID = 671307787028933096L;
 
-	public LectureInOccupiedAudienceException(String errorMessage) {
-		super(errorMessage);
+	public LectureInOccupiedAudienceException(String errorMessage, @Nullable Object... args) {
+		super(errorMessage, args);
 	}
 }

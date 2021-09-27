@@ -11,6 +11,7 @@ import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.jdbc.JdbcGroupDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
+import com.foxminded.university.exception.ServiceLayerException;
 import com.foxminded.university.model.Group;
 
 @Service
@@ -31,10 +32,10 @@ public class GroupService {
 
 	public Group findById(int id) throws EntityNotFoundException {
 		logger.debug("Find group by id {}", id);
-		return groupDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Can`t find any group"));
+		return groupDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Can`t find any group with specified id!", "Id is: " + id));
 	}
 
-	public void save(Group group) throws Exception {
+	public void save(Group group) throws ServiceLayerException {
 		logger.debug("Save group");
 		isUniqueCheck(group);
 		groupDao.save(group);
@@ -56,7 +57,7 @@ public class GroupService {
 		if (existingGroup.isEmpty() || (existingGroup.get().getId() == group.getId())) {
 			return;
 		} else {
-			throw new EntityNotUniqueException("Group with same name is already exists!");
+			throw new EntityNotUniqueException("Group with same name is already exists!", "Group name is: " + group.getName());
 		}
 	}
 }

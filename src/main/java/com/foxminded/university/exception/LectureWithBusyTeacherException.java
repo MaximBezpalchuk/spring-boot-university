@@ -1,10 +1,12 @@
 package com.foxminded.university.exception;
 
-public class LectureWithBusyTeacherException extends Exception {
+import org.springframework.lang.Nullable;
+
+public class LectureWithBusyTeacherException extends ServiceLayerException {
 
 	private static final long serialVersionUID = -5519529451211215102L;
 
-	public LectureWithBusyTeacherException(String errorMessage) {
-		super(errorMessage);
+	public LectureWithBusyTeacherException(String errorMessage,  @Nullable Object... args) {
+		super(errorMessage, args);
 	}
 }

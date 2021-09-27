@@ -11,6 +11,7 @@ import com.foxminded.university.dao.SubjectDao;
 import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
+import com.foxminded.university.exception.ServiceLayerException;
 import com.foxminded.university.model.Subject;
 
 @Service
@@ -31,10 +32,11 @@ public class SubjectService {
 
 	public Subject findById(int id) throws EntityNotFoundException {
 		logger.debug("Find subject by id {}", id);
-		return subjectDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Can`t find any subject"));
+		return subjectDao.findById(id).orElseThrow(
+				() -> new EntityNotFoundException("Can`t find any subject with specified id!", "Id is: " + id));
 	}
 
-	public void save(Subject subject) throws Exception {
+	public void save(Subject subject) throws ServiceLayerException {
 		logger.debug("Save subject");
 		isUniqueCheck(subject);
 		subjectDao.save(subject);
@@ -56,7 +58,8 @@ public class SubjectService {
 		if (existingSubject.isEmpty() || (existingSubject.get().getId() == subject.getId())) {
 			return;
 		} else {
-			throw new EntityNotUniqueException("Subject with same name is already exists!");
+			throw new EntityNotUniqueException("Subject with same name is already exists!",
+					"Subject name is: " + subject.getName());
 		}
 	}
 }

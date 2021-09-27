@@ -14,6 +14,7 @@ import com.foxminded.university.dao.VacationDao;
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
+import com.foxminded.university.exception.ServiceLayerException;
 import com.foxminded.university.exception.VacationDurationMoreThanMaxException;
 import com.foxminded.university.exception.VacationLessOneDayException;
 import com.foxminded.university.exception.VacationNotCorrectDateException;
@@ -40,10 +41,11 @@ public class VacationService {
 
 	public Vacation findById(int id) throws EntityNotFoundException {
 		logger.debug("Find vacation by id {}", id);
-		return vacationDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Can`t find any vacation"));
+		return vacationDao.findById(id).orElseThrow(
+				() -> new EntityNotFoundException("Can`t find any vacation with specified id!", "Id is: " + id));
 	}
 
-	public void save(Vacation vacation) throws Exception {
+	public void save(Vacation vacation) throws ServiceLayerException {
 		logger.debug("Save vacation");
 		isUniqueCheck(vacation);
 		isDateCorrectCheck(vacation);
@@ -70,7 +72,9 @@ public class VacationService {
 		if (existingVacation.isEmpty() || (existingVacation.get().getId() == vacation.getId())) {
 			return;
 		} else {
-			throw new EntityNotUniqueException("Vacation with same start, end and teacher id is already exists!");
+			throw new EntityNotUniqueException("Vacation with same start, end and teacher id is already exists!",
+					"Vacation duration is: from " + vacation.getStart() + "to " + vacation.getEnd(), "Teacher name is: "
+							+ vacation.getTeacher().getFirstName() + " " + vacation.getTeacher().getLastName());
 		}
 	}
 
@@ -79,14 +83,16 @@ public class VacationService {
 		if (vacation.getStart().isBefore(vacation.getEnd()) || vacation.getStart().equals(vacation.getEnd())) {
 			return;
 		} else {
-			throw new VacationNotCorrectDateException("Vacation start date can`t be after vacation end date!");
+			throw new VacationNotCorrectDateException("Vacation start date can`t be after vacation end date!",
+					"Vacation start is: " + vacation.getStart(), "Vacation end is: " + vacation.getEnd());
 		}
 	}
 
 	private void isDateMoreThenOneDayCheck(Vacation vacation) throws VacationLessOneDayException {
 		logger.debug("Check vacation duration more or equals 1 day");
 		if (getVacationDaysCount(vacation) < 1) {
-			throw new VacationLessOneDayException("Vacation can`t be less than 1 day!");
+			throw new VacationLessOneDayException("Vacation can`t be less than 1 day!",
+					"Vacation start is: " + vacation.getStart(), "Vacation end is: " + vacation.getEnd());
 		}
 	}
 
@@ -103,7 +109,10 @@ public class VacationService {
 
 		if ((teacherVacationDays + getVacationDaysCount(vacation)) >= maxVacation
 				.get(vacation.getTeacher().getDegree())) {
-			throw new VacationDurationMoreThanMaxException("Vacations duration can`t be more than max!");
+			throw new VacationDurationMoreThanMaxException("Vacations duration can`t be more than max!",
+					"Existing teachers vacation days count: " + teacherVacationDays,
+					"Vacation duration is: " + getVacationDaysCount(vacation),
+					"Max vacation for degree " + vacation.getTeacher().getDegree() + "is: " + maxVacation);
 		}
 	}
 }

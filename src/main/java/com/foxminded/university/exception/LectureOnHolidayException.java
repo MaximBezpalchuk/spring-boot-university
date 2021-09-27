@@ -1,10 +1,12 @@
 package com.foxminded.university.exception;
 
-public class LectureOnHolidayException extends Exception {
+import org.springframework.lang.Nullable;
+
+public class LectureOnHolidayException extends ServiceLayerException {
 
 	private static final long serialVersionUID = 5514958227818771916L;
 
-	public LectureOnHolidayException(String errorMessage) {
-		super(errorMessage);
+	public LectureOnHolidayException(String errorMessage,  @Nullable Object... args) {
+		super(errorMessage, args);
 	}
 }

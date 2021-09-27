@@ -21,7 +21,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.foxminded.university.dao.jdbc.JdbcStudentDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
-import com.foxminded.university.exception.StudentGroupIsFullException;
+import com.foxminded.university.exception.GroupOverflowException;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Student;
 
@@ -118,7 +118,7 @@ public class StudentServiceTest {
 		when(studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
 				student.getBirthDate())).thenReturn(Optional.of(student));
 		when(studentDao.findByGroupId(student.getGroup().getId())).thenReturn(Arrays.asList(student, student));
-		Exception exception = assertThrows(StudentGroupIsFullException.class, () -> {
+		Exception exception = assertThrows(GroupOverflowException.class, () -> {
 			studentService.save(student);
 			});
 

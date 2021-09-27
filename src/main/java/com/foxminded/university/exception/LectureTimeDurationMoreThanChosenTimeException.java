@@ -1,10 +1,12 @@
 package com.foxminded.university.exception;
 
-public class LectureTimeDurationMoreThanChosenTimeException extends Exception {
+import org.springframework.lang.Nullable;
+
+public class LectureTimeDurationMoreThanChosenTimeException extends ServiceLayerException {
 
 	private static final long serialVersionUID = 8555248693604462716L;
 
-	public LectureTimeDurationMoreThanChosenTimeException(String errorMessage) {
-		super(errorMessage);
+	public LectureTimeDurationMoreThanChosenTimeException(String errorMessage,  @Nullable Object... args) {
+		super(errorMessage, args);
 	}
 }

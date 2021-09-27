@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.MonthDay;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,7 +19,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import com.foxminded.university.config.SpringConfig;
-import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.ServiceLayerException;
 import com.foxminded.university.service.AudienceService;
 import com.foxminded.university.service.CathedraService;
 import com.foxminded.university.service.GroupService;
@@ -259,12 +260,12 @@ public class MenuCreator {
 				}
 			}
 			reader.close();
-		} catch (IOException | EntityNotFoundException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void submenuCreate() throws IOException, EntityNotFoundException {
+	private void submenuCreate() throws IOException {
 		System.out.println(printCreateMenu());
 		int choise = getInput(7);
 		switch (choise) {
@@ -309,9 +310,10 @@ public class MenuCreator {
 					.build();
 			try {
 				studentService.save(student);
-			} catch (Exception e1) {
-				System.out.println(e1.getMessage());
-				logger.error(e1.getMessage());
+			} catch (ServiceLayerException e) {
+				System.out.println(e.getMessage());
+				Arrays.stream(e.getArgs()).forEach(System.out::println);
+				logger.error(e.getMessage(), e.getArgs());
 			}
 			break;
 		case 2:
@@ -386,9 +388,10 @@ public class MenuCreator {
 			}
 			try {
 				teacherService.save(teacher);
-			} catch (Exception e) {
+			} catch (ServiceLayerException e) {
 				System.out.println(e.getMessage());
-				logger.error(e.getMessage());
+				Arrays.stream(e.getArgs()).forEach(System.out::println);
+				logger.error(e.getMessage(), e.getArgs());
 			}
 			break;
 		case 3:
@@ -406,9 +409,10 @@ public class MenuCreator {
 						.name(subjectName3)
 						.description(subjectDescription3)
 						.build());
-			} catch (Exception e) {
+			} catch (ServiceLayerException e) {
 				System.out.println(e.getMessage());
-				logger.error(e.getMessage());
+				Arrays.stream(e.getArgs()).forEach(System.out::println);
+				logger.error(e.getMessage(), e.getArgs());
 			}
 			break;
 		case 4:
@@ -422,9 +426,10 @@ public class MenuCreator {
 						.name(groupName4)
 						.cathedra(cathedraService.findById(1))
 						.build());
-			} catch (Exception e) {
+			} catch (ServiceLayerException e) {
 				System.out.println(e.getMessage());
-				logger.error(e.getMessage());
+				Arrays.stream(e.getArgs()).forEach(System.out::println);
+				logger.error(e.getMessage(), e.getArgs());
 			}
 			break;
 		case 5:
@@ -465,9 +470,10 @@ public class MenuCreator {
 						.audience(audience5)
 						.teacher(teacher5)
 						.build());
-			} catch (Exception e) {
+			} catch (ServiceLayerException e) {
 				System.out.println(e.getMessage());
-				logger.error(e.getMessage());
+				Arrays.stream(e.getArgs()).forEach(System.out::println);
+				logger.error(e.getMessage(), e.getArgs());
 			}
 			break;
 		case 6:
@@ -491,9 +497,10 @@ public class MenuCreator {
 					.build();
 			try {
 				holidayService.save(holiday6);
-			} catch (Exception e) {
+			} catch (ServiceLayerException e) {
 				System.out.println(e.getMessage());
-				logger.error(e.getMessage());
+				Arrays.stream(e.getArgs()).forEach(System.out::println);
+				logger.error(e.getMessage(), e.getArgs());
 			}
 			break;
 		case 7:
@@ -511,8 +518,9 @@ public class MenuCreator {
 					.build();
 			try {
 				audienceService.save(audience7);
-			} catch (Exception e) {
+			} catch (ServiceLayerException e) {
 				System.out.println(e.getMessage());
+				Arrays.stream(e.getArgs()).forEach(System.out::println);
 				logger.error(e.getMessage());
 			}
 			break;
@@ -666,9 +674,10 @@ public class MenuCreator {
 			student1.setGroup(group1);
 			try {
 				studentService.save(student1);
-			} catch (Exception e1) {
-				System.out.println(e1.getMessage());
-				logger.error(e1.getMessage());
+			} catch (ServiceLayerException e) {
+				System.out.println(e.getMessage());
+				Arrays.stream(e.getArgs()).forEach(System.out::println);
+				logger.error(e.getMessage(), e.getArgs());
 			}
 			break;
 		case 2:
@@ -690,9 +699,10 @@ public class MenuCreator {
 					.build();
 			try {
 				vacationService.save(vacation2);
-			} catch (Exception e) {
+			} catch (ServiceLayerException e) {
 				System.out.println(e.getMessage());
-				logger.error(e.getMessage());
+				Arrays.stream(e.getArgs()).forEach(System.out::println);
+				logger.error(e.getMessage(), e.getArgs());
 			}
 			break;
 		case 3:
@@ -713,9 +723,10 @@ public class MenuCreator {
 				teacher3.getSubjects().add(subject3);
 				try {
 					teacherService.save(teacher3);
-				} catch (Exception e) {
+				} catch (ServiceLayerException e) {
 					System.out.println(e.getMessage());
-					logger.error(e.getMessage());
+					Arrays.stream(e.getArgs()).forEach(System.out::println);
+					logger.error(e.getMessage(), e.getArgs());
 				}
 			} else {
 				System.out.println("Teacher already have this subject");
@@ -739,9 +750,10 @@ public class MenuCreator {
 			lecture4.setAudience(audience4);
 			try {
 				lectureService.save(lecture4);
-			} catch (Exception e) {
+			} catch (ServiceLayerException e) {
 				System.out.println(e.getMessage());
-				logger.error(e.getMessage());
+				Arrays.stream(e.getArgs()).forEach(System.out::println);
+				logger.error(e.getMessage(), e.getArgs());
 			}
 			break;
 		case 5:
@@ -756,9 +768,10 @@ public class MenuCreator {
 			lecture5.setDate(setupLocalDate());
 			try {
 				lectureService.save(lecture5);
-			} catch (Exception e) {
+			} catch (ServiceLayerException e) {
 				System.out.println(e.getMessage());
-				logger.error(e.getMessage());
+				Arrays.stream(e.getArgs()).forEach(System.out::println);
+				logger.error(e.getMessage(), e.getArgs());
 			}
 			break;
 		case 6:
@@ -778,9 +791,10 @@ public class MenuCreator {
 			lecture6.setTime(lectureTime6);
 			try {
 				lectureService.save(lecture6);
-			} catch (Exception e) {
+			} catch (ServiceLayerException e) {
 				System.out.println(e.getMessage());
-				logger.error(e.getMessage());
+				Arrays.stream(e.getArgs()).forEach(System.out::println);
+				logger.error(e.getMessage(), e.getArgs());
 			}
 			break;
 		case 7:
@@ -801,9 +815,10 @@ public class MenuCreator {
 				lecture7.getGroups().add(group7);
 				try {
 					lectureService.save(lecture7);
-				} catch (Exception e) {
+				} catch (ServiceLayerException e) {
 					System.out.println(e.getMessage());
-					logger.error(e.getMessage());
+					Arrays.stream(e.getArgs()).forEach(System.out::println);
+					logger.error(e.getMessage(), e.getArgs());
 				}
 			} else {
 				System.out.println("Lecture already have this group!");
@@ -941,9 +956,10 @@ public class MenuCreator {
 			lecture9.getGroups().remove(group9);
 			try {
 				lectureService.save(lecture9);
-			} catch (Exception e) {
+			} catch (ServiceLayerException e) {
 				System.out.println(e.getMessage());
-				logger.error(e.getMessage());
+				Arrays.stream(e.getArgs()).forEach(System.out::println);
+				logger.error(e.getMessage(), e.getArgs());
 			}
 			break;
 		case 10:
@@ -967,9 +983,10 @@ public class MenuCreator {
 			teacher10.getSubjects().remove(subject10);
 			try {
 				teacherService.save(teacher10);
-			} catch (Exception e) {
+			} catch (ServiceLayerException e) {
 				System.out.println(e.getMessage());
-				logger.error(e.getMessage());
+				Arrays.stream(e.getArgs()).forEach(System.out::println);
+				logger.error(e.getMessage(), e.getArgs());
 			}
 			break;
 		case 0:
