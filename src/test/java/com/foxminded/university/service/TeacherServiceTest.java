@@ -40,7 +40,7 @@ public class TeacherServiceTest {
 	}
 
 	@Test
-	void givenExistingTeacher_whenFindById_thenTeacherFound() throws EntityNotFoundException {
+	void givenExistingTeacher_whenFindById_thenTeacherFound() {
 		Optional<Teacher> expected = Optional.of(Teacher.builder().id(1).build());
 		when(teacherDao.findById(1)).thenReturn(expected);
 		Teacher actual = teacherService.findById(1);
@@ -59,7 +59,7 @@ public class TeacherServiceTest {
 	}
 
 	@Test
-	void givenNewTeacher_whenSave_thenSaved() throws Exception {
+	void givenNewTeacher_whenSave_thenSaved() {
 		Teacher teacher = Teacher.builder().id(1).build();
 		teacherService.save(teacher);
 
@@ -67,7 +67,7 @@ public class TeacherServiceTest {
 	}
 
 	@Test
-	void givenExistingTeacher_whenSave_thenSaved() throws Exception {
+	void givenExistingTeacher_whenSave_thenSaved() {
 		Teacher teacher = Teacher.builder().id(1)
 				.firstName("TestFirstName")
 				.lastName("TestLastName")

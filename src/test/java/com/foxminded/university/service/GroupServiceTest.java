@@ -40,7 +40,7 @@ public class GroupServiceTest {
 	}
 
 	@Test
-	void givenExistingGroup_whenFindById_thenGroupFound() throws EntityNotFoundException {
+	void givenExistingGroup_whenFindById_thenGroupFound() {
 		Optional<Group> expected = Optional.of(Group.builder().id(1).build());
 		when(groupDao.findById(1)).thenReturn(expected);
 		Group actual = groupService.findById(1);
@@ -67,7 +67,7 @@ public class GroupServiceTest {
 	}
 
 	@Test
-	void givenExistingGroup_whenSave_thenSaved() throws Exception {
+	void givenExistingGroup_whenSave_thenSaved() {
 		Group group = Group.builder()
 				.name("TestName")
 				.build();

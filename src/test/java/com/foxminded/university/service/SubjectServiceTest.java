@@ -39,7 +39,7 @@ public class SubjectServiceTest {
 	}
 
 	@Test
-	void givenExistingSubject_whenFindById_thenSubjectFound() throws EntityNotFoundException {
+	void givenExistingSubject_whenFindById_thenSubjectFound() {
 		Optional<Subject> expected = Optional.of(Subject.builder().id(1).build());
 		when(subjectDao.findById(1)).thenReturn(expected);
 		Subject actual = subjectService.findById(1);
@@ -58,7 +58,7 @@ public class SubjectServiceTest {
 	}
 
 	@Test
-	void givenNewSubject_whenSave_thenSaved() throws Exception {
+	void givenNewSubject_whenSave_thenSaved() {
 		Subject subject = Subject.builder().id(1).build();
 		subjectService.save(subject);
 
@@ -66,7 +66,7 @@ public class SubjectServiceTest {
 	}
 
 	@Test
-	void givenExistingSubject_whenSave_thenSaved() throws Exception {
+	void givenExistingSubject_whenSave_thenSaved() {
 		Subject subject = Subject.builder().id(1).name("TestName").build();
 		when(subjectDao.findByName(subject.getName())).thenReturn(Optional.of(subject));
 		subjectService.save(subject);

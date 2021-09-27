@@ -57,7 +57,7 @@ public class CathedraServiceTest {
 	}
 
 	@Test
-	void givenNewCathedra_whenSave_thenSaved() throws Exception {
+	void givenNewCathedra_whenSave_thenSaved() {
 		Cathedra cathedra = Cathedra.builder().build();
 		cathedraService.save(cathedra);
 		
@@ -65,7 +65,7 @@ public class CathedraServiceTest {
 	}
 	
 	@Test
-	void givenExistingCathedra_whenSave_thenSaved() throws Exception {
+	void givenExistingCathedra_whenSave_thenSaved() {
 		Cathedra cathedra = Cathedra.builder().name("TestName").build();
 		when(cathedraDao.findByName(cathedra.getName())).thenReturn(Optional.of(cathedra));
 		cathedraService.save(cathedra);

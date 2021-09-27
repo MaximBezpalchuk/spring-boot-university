@@ -59,7 +59,7 @@ public class AudienceServiceTest {
 	}
 
 	@Test
-	void givenNewAudience_whenSave_thenSaved() throws Exception {
+	void givenNewAudience_whenSave_thenSaved() {
 		Audience audience = Audience.builder().build();
 		audienceService.save(audience);
 		
@@ -67,7 +67,7 @@ public class AudienceServiceTest {
 	}
 	
 	@Test
-	void givenExistingAudience_whenSave_thenSaved() throws Exception {
+	void givenExistingAudience_whenSave_thenSaved() {
 		Audience audience = Audience.builder().id(1).room(123).build();
 		when(audienceDao.findByRoom(audience.getRoom())).thenReturn(Optional.of(audience));
 		audienceService.save(audience);

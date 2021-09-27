@@ -50,7 +50,7 @@ public class LectureTimeServiceTest {
 	}
 
 	@Test
-	void givenExistingLectureTime_whenFindById_thenLectureTimeFound() throws EntityNotFoundException {
+	void givenExistingLectureTime_whenFindById_thenLectureTimeFound() {
 		Optional<LectureTime> expected = Optional.of(LectureTime.builder().id(1).build());
 		when(lectureTimeDao.findById(1)).thenReturn(expected);
 		LectureTime actual = lectureTimeService.findById(1);
@@ -69,7 +69,7 @@ public class LectureTimeServiceTest {
 	}
 
 	@Test
-	void givenNewLectureTime_whenSave_thenSaved() throws Exception {
+	void givenNewLectureTime_whenSave_thenSaved() {
 		LocalTime start = LocalTime.of(9, 0);
 		LocalTime end = LocalTime.of(10, 0);
 		LectureTime lectureTime = LectureTime.builder()
@@ -82,7 +82,7 @@ public class LectureTimeServiceTest {
 	}
 	
 	@Test
-	void givenExistingLectureTime_whenSave_thenSaved() throws Exception {
+	void givenExistingLectureTime_whenSave_thenSaved() {
 		LocalTime start = LocalTime.of(9, 0);
 		LocalTime end = LocalTime.of(10, 0);
 		LectureTime lectureTime = LectureTime.builder()

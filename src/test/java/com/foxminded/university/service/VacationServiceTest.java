@@ -58,7 +58,7 @@ public class VacationServiceTest {
 	}
 
 	@Test
-	void givenExistingVacation_whenFindById_thenVacationFound() throws EntityNotFoundException {
+	void givenExistingVacation_whenFindById_thenVacationFound() {
 		Optional<Vacation> expected = Optional.of(Vacation.builder().id(1).build());
 		when(vacationDao.findById(1)).thenReturn(expected);
 		Vacation actual = vacationService.findById(1);
@@ -77,7 +77,7 @@ public class VacationServiceTest {
 	}
 
 	@Test
-	void givenNewVacation_whenSave_thenSaved() throws Exception {
+	void givenNewVacation_whenSave_thenSaved() {
 		LocalDate start = LocalDate.of(2021, 1, 1);
 		LocalDate end = LocalDate.of(2021, 1, 2);
 		Vacation vacation = Vacation.builder()
@@ -91,7 +91,7 @@ public class VacationServiceTest {
 	}
 
 	@Test
-	void givenExistingVacation_whenSave_thenSaved() throws Exception {
+	void givenExistingVacation_whenSave_thenSaved() {
 		LocalDate start = LocalDate.of(2021, 1, 1);
 		LocalDate end = LocalDate.of(2021, 1, 2);
 		Vacation vacation = Vacation.builder()

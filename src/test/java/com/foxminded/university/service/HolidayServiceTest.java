@@ -40,7 +40,7 @@ public class HolidayServiceTest {
 	}
 
 	@Test
-	void givenExistingHoliday_whenFindById_thenHolidayFound() throws EntityNotFoundException {
+	void givenExistingHoliday_whenFindById_thenHolidayFound() {
 		Optional<Holiday> expected = Optional.of(Holiday.builder().id(1).build());
 		when(holidayDao.findById(1)).thenReturn(expected);
 		Holiday actual = holidayService.findById(1);
@@ -59,7 +59,7 @@ public class HolidayServiceTest {
 	}
 
 	@Test
-	void givenNewHoliday_whenSave_thenSaved() throws Exception {
+	void givenNewHoliday_whenSave_thenSaved()  {
 		Holiday holiday = Holiday.builder().build();
 		holidayService.save(holiday);
 
@@ -67,7 +67,7 @@ public class HolidayServiceTest {
 	}
 
 	@Test
-	void givenExistingHoliday_whenSave_thenSaved() throws Exception {
+	void givenExistingHoliday_whenSave_thenSaved() {
 		Holiday holiday = Holiday.builder()
 				.name("TestName")
 				.date(LocalDate.of(2020, 1, 1))

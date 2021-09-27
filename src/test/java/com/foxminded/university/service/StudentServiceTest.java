@@ -49,7 +49,7 @@ public class StudentServiceTest {
 	}
 
 	@Test
-	void givenExistingStudent_whenFindById_thenStudentFound() throws EntityNotFoundException {
+	void givenExistingStudent_whenFindById_thenStudentFound() {
 		Optional<Student> expected = Optional.of(Student.builder().id(1).build());
 		when(studentDao.findById(1)).thenReturn(expected);
 		Student actual = studentService.findById(1);
@@ -68,7 +68,7 @@ public class StudentServiceTest {
 	}
 
 	@Test
-	void givenNewStudent_whenSave_thenSaved() throws Exception {
+	void givenNewStudent_whenSave_thenSaved() {
 		Student student = Student.builder().id(1).group(Group.builder().name("Test").build()).build();
 		when(studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
 				student.getBirthDate())).thenReturn(Optional.of(student));
@@ -79,7 +79,7 @@ public class StudentServiceTest {
 	}
 
 	@Test
-	void givenExistingStudent_whenSave_thenSaved() throws Exception {
+	void givenExistingStudent_whenSave_thenSaved() {
 		Student student = Student.builder()
 				.id(1)
 				.firstName("TestFirstName")
