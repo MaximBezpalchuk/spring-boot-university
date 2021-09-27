@@ -46,7 +46,7 @@ public class JdbcStudentDaoTest {
 
 	@Test
 	void givenExistingStudent_whenFindById_thenStudentFound() {
-		Student actual = studentDao.findById(1).get();
+		Student actual = studentDao.findById(1).orElse(null);
 		Student expected = Student.builder()
 				.firstName("Petr")
 				.lastName("Orlov")
@@ -143,7 +143,7 @@ public class JdbcStudentDaoTest {
 				.group(Group.builder().id(1).name("Killers").cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build()).build())
 				.id(1)
 				.build();
-		Student actual = studentDao.findByFullNameAndBirthDate(expected.getFirstName(), expected.getLastName(), expected.getBirthDate()).get();
+		Student actual = studentDao.findByFullNameAndBirthDate(expected.getFirstName(), expected.getLastName(), expected.getBirthDate()).orElse(null);
 
 		assertEquals(expected, actual);
 	}

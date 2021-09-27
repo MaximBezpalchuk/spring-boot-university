@@ -40,12 +40,12 @@ public class LectureRowMapper implements RowMapper<Lecture> {
 
 		Lecture lecture = Lecture.builder()
 				.id(resultSet.getInt("id"))
-				.cathedra(cathedraDao.findById(resultSet.getInt("cathedra_id")).get())
-				.subject(subjectDao.findById(resultSet.getInt("subject_id")).get())
+				.cathedra(cathedraDao.findById(resultSet.getInt("cathedra_id")).orElse(null))
+				.subject(subjectDao.findById(resultSet.getInt("subject_id")).orElse(null))
 				.date(resultSet.getObject("date", LocalDate.class))
-				.time(lectureTimeDao.findById(resultSet.getInt("lecture_time_id")).get())
-				.audience(audienceDao.findById(resultSet.getInt("audience_id")).get())
-				.teacher(teacherDao.findById(resultSet.getInt("teacher_id")).get())
+				.time(lectureTimeDao.findById(resultSet.getInt("lecture_time_id")).orElse(null))
+				.audience(audienceDao.findById(resultSet.getInt("audience_id")).orElse(null))
+				.teacher(teacherDao.findById(resultSet.getInt("teacher_id")).orElse(null))
 				.group(groupDao.findByLectureId(resultSet.getInt("id")))
 				.build();
 		return lecture;

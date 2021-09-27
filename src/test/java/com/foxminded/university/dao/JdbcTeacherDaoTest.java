@@ -48,7 +48,7 @@ public class JdbcTeacherDaoTest {
 
 	@Test
 	void givenExistingTeacher_whenFindById_thenTeacherFound() {
-		Teacher actual = teacherDao.findById(1).get();
+		Teacher actual = teacherDao.findById(1).orElse(null);
 		Teacher expected = Teacher.builder()
 				.firstName("Daniel")
 				.lastName("Morpheus")
@@ -164,7 +164,7 @@ public class JdbcTeacherDaoTest {
 	@Test
 	void givenExitstingTeacher_whenUpdateSubjects_thenAllExistingTeachersFound() {
 		int expected = countRowsInTable(template, "subjects_teachers") + 1;
-		Teacher teacher = teacherDao.findById(1).get();
+		Teacher teacher = teacherDao.findById(1).orElse(null);
 		teacher.getSubjects().add(Subject.builder()
 				.cathedra(teacher.getCathedra())
 				.name("Wandless Magic")
@@ -199,7 +199,7 @@ public class JdbcTeacherDaoTest {
 				.description("Learning how to use heavy weapon and guerrilla tactics").id(1).build();
 		subjects.add(subject);
 		expected.setSubjects(subjects);
-		Teacher actual = teacherDao.findByFullNameAndBirthDate(expected.getFirstName(), expected.getLastName(), expected.getBirthDate()).get();
+		Teacher actual = teacherDao.findByFullNameAndBirthDate(expected.getFirstName(), expected.getLastName(), expected.getBirthDate()).orElse(null);
 
 		assertEquals(expected, actual);
 	}

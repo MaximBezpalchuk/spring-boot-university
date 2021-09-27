@@ -40,7 +40,7 @@ public class JdbcGroupDaoTest {
 
 	@Test
 	void givenExistingGroup_whenFindById_thenGroupFound() {
-		Group actual = groupDao.findById(1).get();
+		Group actual = groupDao.findById(1).orElse(null);
 		Group expected = Group.builder()
 				.id(1)
 				.name("Killers")
@@ -70,7 +70,7 @@ public class JdbcGroupDaoTest {
 	
 	@Test
 	void givenExitstingGroup_whenSaveWithChanges_thenChangesApplied() {
-		Group expected = groupDao.findById(1).get();
+		Group expected = groupDao.findById(1).orElse(null);
 		expected.setName("Killers 2");
 		groupDao.save(expected);
 		
@@ -87,7 +87,7 @@ public class JdbcGroupDaoTest {
 	
 	@Test
 	void givenGroupName_whenFindByName_thenGroupFound() {
-		Group actual = groupDao.findByName("Killers").get();
+		Group actual = groupDao.findByName("Killers").orElse(null);
 		Group expected = Group.builder()
 				.id(1)
 				.name("Killers")

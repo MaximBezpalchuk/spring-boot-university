@@ -22,7 +22,7 @@ public class SubjectRowMapper implements RowMapper<Subject> {
 	public Subject mapRow(ResultSet resultSet, int rowNum) throws SQLException {
 		return Subject.builder()
 				.id(resultSet.getInt("id"))
-				.cathedra(cathedraDao.findById(resultSet.getInt("cathedra_id")).get())
+				.cathedra(cathedraDao.findById(resultSet.getInt("cathedra_id")).orElse(null))
 				.name(resultSet.getString("name"))
 				.description(resultSet.getString("description"))
 				.build();

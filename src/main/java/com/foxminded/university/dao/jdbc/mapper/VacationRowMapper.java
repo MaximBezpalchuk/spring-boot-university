@@ -24,7 +24,7 @@ public class VacationRowMapper implements RowMapper<Vacation> {
 		return Vacation.builder()
 				.start(resultSet.getObject("start", LocalDate.class))
 				.end(resultSet.getObject("finish", LocalDate.class))
-				.teacher(teacherDao.findById(resultSet.getInt("teacher_id")).get())
+				.teacher(teacherDao.findById(resultSet.getInt("teacher_id")).orElse(null))
 				.id(resultSet.getInt("id"))
 				.build();
 	}

@@ -47,7 +47,7 @@ public class JdbcLectureDaoTest {
 
 	@Test
 	void givenExistingLecture_whenFindById_thenLectureFound() {
-		Lecture actual = lectureDao.findById(1).get();
+		Lecture actual = lectureDao.findById(1).orElse(null);
 		Lecture expected = Lecture.builder()
 				.id(1)
 				.group(actual.getGroups())
@@ -120,7 +120,7 @@ public class JdbcLectureDaoTest {
 	void givenAudienceAndDate_whenFindByAudienceAndDate_thenLectureFound() {
 		Lecture actual = lectureDao.findByAudienceDateAndLectureTime(Audience.builder().id(1).build(), 
 				LocalDate.of(2021, 4, 4), 
-				LectureTime.builder().id(1).build()).get();
+				LectureTime.builder().id(1).build()).orElse(null);
 		Lecture expected = Lecture.builder()
 				.id(1)
 				.group(actual.getGroups())
@@ -138,7 +138,7 @@ public class JdbcLectureDaoTest {
 	
 	@Test
 	void givenAudienceDateAndLectureTime_whenFindByAudienceDateAndLectureTime_thenLectureFound() {
-		Lecture actual = lectureDao.findByAudienceDateAndLectureTime(Audience.builder().id(1).build(), LocalDate.of(2021, 4, 4), LectureTime.builder().id(1).build()).get();
+		Lecture actual = lectureDao.findByAudienceDateAndLectureTime(Audience.builder().id(1).build(), LocalDate.of(2021, 4, 4), LectureTime.builder().id(1).build()).orElse(null);
 		Lecture expected = Lecture.builder()
 				.id(1)
 				.group(actual.getGroups())

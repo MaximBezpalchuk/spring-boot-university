@@ -43,7 +43,7 @@ public class JdbcSubjectDaoTest {
 
 	@Test
 	void givenExistingSubject_whenFindById_thenSubjectFound() {
-		Subject actual = subjectDao.findById(1).get();
+		Subject actual = subjectDao.findById(1).orElse(null);
 		Subject expected = Subject.builder()
 				.cathedra(actual.getCathedra())
 				.name("Weapon Tactics")
@@ -62,7 +62,7 @@ public class JdbcSubjectDaoTest {
 	@Test
 	void givenNewSubject_whenSaveSubject_thenAllExistingSubjectsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		Subject actual = subjectDao.findById(1).get();
+		Subject actual = subjectDao.findById(1).orElse(null);
 		subjectDao.save(Subject.builder()
 				.cathedra(actual.getCathedra())
 				.name("Weapon Tactics123")
@@ -110,7 +110,7 @@ public class JdbcSubjectDaoTest {
 	
 	@Test
 	void givenSubjectName_whenFindByName_thenSubjectFound() {
-		Subject actual = subjectDao.findByName("Weapon Tactics").get();
+		Subject actual = subjectDao.findByName("Weapon Tactics").orElse(null);
 		Subject expected = Subject.builder()
 				.cathedra(actual.getCathedra())
 				.name("Weapon Tactics")

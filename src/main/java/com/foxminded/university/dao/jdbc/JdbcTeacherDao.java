@@ -90,7 +90,7 @@ public class JdbcTeacherDao implements TeacherDao {
 					teacher.getEducation(), teacher.getBirthDate(), teacher.getCathedra().getId(),
 					teacher.getDegree().toString(), teacher.getId());
 
-			Teacher teacherOld = findById(teacher.getId()).get();
+			Teacher teacherOld = findById(teacher.getId()).orElse(null);
 			updateSubjects(teacherOld, teacher);
 			deleteSubjects(teacherOld, teacher);
 			logger.debug("Teacher with id {} was updated", teacher.getId());

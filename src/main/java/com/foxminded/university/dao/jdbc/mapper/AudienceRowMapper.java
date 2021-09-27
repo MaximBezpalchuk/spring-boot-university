@@ -24,7 +24,7 @@ public class AudienceRowMapper implements RowMapper<Audience> {
 				.id(resultSet.getInt("id"))
 				.room(resultSet.getInt("room"))
 				.capacity(resultSet.getInt("capacity"))
-				.cathedra(cathedraDao.findById(resultSet.getInt("cathedra_id")).get())
+				.cathedra(cathedraDao.findById(resultSet.getInt("cathedra_id")).orElse(null))
 				.build();
 		return audience;
 	}
