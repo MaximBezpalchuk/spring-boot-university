@@ -36,9 +36,8 @@ public class TeacherService {
 
 	public void save(Teacher teacher) throws Exception {
 		logger.debug("Save teacher");
-		if (isUnique(teacher)) {
-			teacherDao.save(teacher);
-		}
+		isUniqueCheck(teacher);
+		teacherDao.save(teacher);
 	}
 
 	public void deleteById(int id) {
@@ -46,13 +45,13 @@ public class TeacherService {
 		teacherDao.deleteById(id);
 	}
 
-	private boolean isUnique(Teacher teacher) throws EntityNotUniqueException {
+	private void isUniqueCheck(Teacher teacher) throws EntityNotUniqueException {
 		logger.debug("Check teacher is unique");
 
 		Optional<Teacher> existingTeacher = teacherDao.findByFullNameAndBirthDate(teacher.getFirstName(),
 				teacher.getLastName(), teacher.getBirthDate());
 		if (existingTeacher.isEmpty() || (existingTeacher.get().getId() == teacher.getId())) {
-			return true;
+			return;
 		} else {
 			throw new EntityNotUniqueException(
 					"Teacher with same first name, last name and birth date is already exists!");

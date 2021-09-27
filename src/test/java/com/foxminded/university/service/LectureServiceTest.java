@@ -112,7 +112,7 @@ public class LectureServiceTest {
 				.id(1)
 				.subjects(Arrays.asList(Subject.builder().id(1).cathedra(cathedra).build()))
 				.build();
-		Audience audience = Audience.builder().id(1).build();
+		Audience audience = Audience.builder().id(1).capacity(100).build();
 		LocalDate date = LocalDate.of(2021, 9, 8);
 		LectureTime lectureTime = LectureTime.builder().start(LocalTime.of(9, 0)).end(LocalTime.of(10, 0)).build();
 		Lecture lecture = Lecture.builder()

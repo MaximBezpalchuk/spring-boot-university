@@ -43,9 +43,11 @@ public class LectureTimeService {
 
 	public void save(LectureTime lectureTime) throws Exception {
 		logger.debug("Save lecture time");
-		if (isUnique(lectureTime) && isTimeCorrect(lectureTime) && isDurationMoreThanChosenTime(lectureTime)) {
-			lectureTimeDao.save(lectureTime);
-		}
+		isUniqueCheck(lectureTime);
+		isTimeCorrectCheck(lectureTime);
+		isDurationMoreThanChosenTimeCheck(lectureTime);
+		lectureTimeDao.save(lectureTime);
+
 	}
 
 	public void deleteById(int id) {
@@ -53,33 +55,29 @@ public class LectureTimeService {
 		lectureTimeDao.deleteById(id);
 	}
 
-	private boolean isUnique(LectureTime lectureTime) throws EntityNotUniqueException {
+	private void isUniqueCheck(LectureTime lectureTime) throws EntityNotUniqueException {
 		logger.debug("Check lecture time is unique");
 		Optional<LectureTime> existingLectureTime = lectureTimeDao.findByPeriod(lectureTime.getStart(),
 				lectureTime.getEnd());
 
 		if (existingLectureTime.isEmpty() || (existingLectureTime.get().getId() == lectureTime.getId())) {
-			return true;
+			return;
 		} else {
 			throw new EntityNotUniqueException("Lecture time with same start and end times is already exists!");
 		}
 	}
 
-	private boolean isTimeCorrect(LectureTime lectureTime) throws LectureTimeNotCorrectException {
+	private void isTimeCorrectCheck(LectureTime lectureTime) throws LectureTimeNotCorrectException {
 		logger.debug("Check that start time is after end time");
-		if (lectureTime.getStart().isBefore(lectureTime.getEnd())) {
-			return true;
-		} else {
+		if (!lectureTime.getStart().isBefore(lectureTime.getEnd())) {
 			throw new LectureTimeNotCorrectException("Lecture time`s start can`t be after lecture time`s end!");
 		}
 	}
 
-	private boolean isDurationMoreThanChosenTime(LectureTime lectureTime)
+	private void isDurationMoreThanChosenTimeCheck(LectureTime lectureTime)
 			throws LectureTimeDurationMoreThanChosenTimeException {
 		logger.debug("Check that duration is more than min lecture duration");
-		if (Duration.between(lectureTime.getStart(), lectureTime.getEnd()).toMinutes() >= minLectureDurationInMinutes) {
-			return true;
-		} else {
+		if (Duration.between(lectureTime.getStart(), lectureTime.getEnd()).toMinutes() <= minLectureDurationInMinutes) {
 			throw new LectureTimeDurationMoreThanChosenTimeException("Duration is less than min lecture duration!");
 		}
 	}

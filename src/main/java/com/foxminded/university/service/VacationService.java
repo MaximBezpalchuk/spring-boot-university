@@ -45,10 +45,11 @@ public class VacationService {
 
 	public void save(Vacation vacation) throws Exception {
 		logger.debug("Save vacation");
-		if (isDateCorrect(vacation) && isDateMoreThenOneDay(vacation) && isVacationDurationLessOrEqualsThanMax(vacation)
-				&& isUnique(vacation)) {
-			vacationDao.save(vacation);
-		}
+		isUniqueCheck(vacation);
+		isDateCorrectCheck(vacation);
+		isDateMoreThenOneDayCheck(vacation);
+		isVacationDurationLessOrEqualsThanMaxCheck(vacation);
+		vacationDao.save(vacation);
 	}
 
 	public void deleteById(int id) {
@@ -61,32 +62,30 @@ public class VacationService {
 		return vacationDao.findByTeacherId(id);
 	}
 
-	private boolean isUnique(Vacation vacation) throws EntityNotUniqueException {
+	private void isUniqueCheck(Vacation vacation) throws EntityNotUniqueException {
 		logger.debug("Check vacation is unique");
 		Optional<Vacation> existingVacation = vacationDao.findByPeriodAndTeacher(vacation.getStart(), vacation.getEnd(),
 				vacation.getTeacher());
 
 		if (existingVacation.isEmpty() || (existingVacation.get().getId() == vacation.getId())) {
-			return true;
+			return;
 		} else {
 			throw new EntityNotUniqueException("Vacation with same start, end and teacher id is already exists!");
 		}
 	}
 
-	private boolean isDateCorrect(Vacation vacation) throws VacationNotCorrectDateException {
+	private void isDateCorrectCheck(Vacation vacation) throws VacationNotCorrectDateException {
 		logger.debug("Check vacation start is after end");
 		if (vacation.getStart().isBefore(vacation.getEnd()) || vacation.getStart().equals(vacation.getEnd())) {
-			return true;
+			return;
 		} else {
 			throw new VacationNotCorrectDateException("Vacation start date can`t be after vacation end date!");
 		}
 	}
 
-	private boolean isDateMoreThenOneDay(Vacation vacation) throws VacationLessOneDayException {
+	private void isDateMoreThenOneDayCheck(Vacation vacation) throws VacationLessOneDayException {
 		logger.debug("Check vacation duration more or equals 1 day");
-		if (getVacationDaysCount(vacation) >= 1) {
-			return true;
-		} else {
+		if (getVacationDaysCount(vacation) < 1) {
 			throw new VacationLessOneDayException("Vacation can`t be less than 1 day!");
 		}
 	}
@@ -95,17 +94,15 @@ public class VacationService {
 		return Math.abs(Period.between(vacation.getStart(), vacation.getEnd()).getDays());
 	}
 
-	private boolean isVacationDurationLessOrEqualsThanMax(Vacation vacation)
+	private void isVacationDurationLessOrEqualsThanMaxCheck(Vacation vacation)
 			throws VacationDurationMoreThanMaxException {
 		logger.debug("Check vacation duration less or equals than max");
 		int teacherVacationDays = vacationDao
 				.findByTeacherIdAndYear(vacation.getTeacher().getId(), vacation.getStart().getYear()).stream()
 				.map(vac -> getVacationDaysCount(vac)).mapToInt(Integer::intValue).sum();
 
-		if ((teacherVacationDays + getVacationDaysCount(vacation)) <= maxVacation
+		if ((teacherVacationDays + getVacationDaysCount(vacation)) >= maxVacation
 				.get(vacation.getTeacher().getDegree())) {
-			return true;
-		} else {
 			throw new VacationDurationMoreThanMaxException("Vacations duration can`t be more than max!");
 		}
 	}

@@ -36,9 +36,8 @@ public class SubjectService {
 
 	public void save(Subject subject) throws Exception {
 		logger.debug("Save subject");
-		if (isUnique(subject)) {
-			subjectDao.save(subject);
-		}
+		isUniqueCheck(subject);
+		subjectDao.save(subject);
 	}
 
 	public void deleteById(int id) {
@@ -51,11 +50,11 @@ public class SubjectService {
 		return subjectDao.findByTeacherId(id);
 	}
 
-	private boolean isUnique(Subject subject) throws EntityNotUniqueException {
+	private void isUniqueCheck(Subject subject) throws EntityNotUniqueException {
 		logger.debug("Check subject is unique");
 		Optional<Subject> existingSubject = subjectDao.findByName(subject.getName());
 		if (existingSubject.isEmpty() || (existingSubject.get().getId() == subject.getId())) {
-			return true;
+			return;
 		} else {
 			throw new EntityNotUniqueException("Subject with same name is already exists!");
 		}

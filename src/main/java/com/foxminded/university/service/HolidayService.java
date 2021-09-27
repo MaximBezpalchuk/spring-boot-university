@@ -36,9 +36,8 @@ public class HolidayService {
 
 	public void save(Holiday holiday) throws Exception {
 		logger.debug("Save holiday");
-		if (isUnique(holiday)) {
-			holidayDao.save(holiday);
-		}
+		isUniqueCheck(holiday);
+		holidayDao.save(holiday);
 	}
 
 	public void deleteById(int id) {
@@ -46,12 +45,12 @@ public class HolidayService {
 		holidayDao.deleteById(id);
 	}
 
-	private boolean isUnique(Holiday holiday) throws EntityNotUniqueException {
+	private void isUniqueCheck(Holiday holiday) throws EntityNotUniqueException {
 		logger.debug("Check holiday is unique");
 		Optional<Holiday> existingHoliday = holidayDao.findByNameAndDate(holiday.getName(), holiday.getDate());
 
 		if (existingHoliday.isEmpty() || (existingHoliday.get().getId() == holiday.getId())) {
-			return true;
+			return;
 		} else {
 			throw new EntityNotUniqueException("Holiday with same name and date is already exists!");
 		}

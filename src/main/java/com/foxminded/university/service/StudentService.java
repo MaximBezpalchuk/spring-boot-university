@@ -40,9 +40,9 @@ public class StudentService {
 
 	public void save(Student student) throws Exception {
 		logger.debug("Save student");
-		if (isUnique(student) && !isGroupFilled(student)) {
-			studentDao.save(student);
-		}
+		isUniqueCheck(student);
+		isGroupFilledCheck(student);
+		studentDao.save(student);
 	}
 
 	public void deleteById(int id) {
@@ -50,29 +50,25 @@ public class StudentService {
 		studentDao.deleteById(id);
 	}
 
-	private boolean isUnique(Student student) throws EntityNotUniqueException {
+	private void isUniqueCheck(Student student) throws EntityNotUniqueException {
 		logger.debug("Check student is unique");
 		Optional<Student> existingStudent = studentDao.findByFullNameAndBirthDate(student.getFirstName(),
 				student.getLastName(), student.getBirthDate());
 
 		if (existingStudent.isEmpty() || (existingStudent.get().getId() == student.getId())) {
-			return true;
+			return;
 		} else {
 			throw new EntityNotUniqueException(
 					"Student with same first name, last name and  birth date is already exists!");
 		}
 	}
 
-	private boolean isGroupFilled(Student student) throws StudentGroupIsFullException {
+	private void isGroupFilledCheck(Student student) throws StudentGroupIsFullException {
 		logger.debug("Check that group is filled");
 		if (student.getGroup() != null) {
 			if (studentDao.findByGroupId(student.getGroup().getId()).size() >= maxGroupSize) {
 				throw new StudentGroupIsFullException("This group is already full!");
-			} else {
-				return false;
 			}
 		}
-
-		return false;
 	}
 }

@@ -36,9 +36,8 @@ public class AudienceService {
 
 	public void save(Audience audience) throws Exception {
 		logger.debug("Save audience");
-		if (isUnique(audience)) {
-			audienceDao.save(audience);
-		}
+		isUniqueCheck(audience);
+		audienceDao.save(audience);
 	}
 
 	public void deleteById(int id) {
@@ -46,11 +45,11 @@ public class AudienceService {
 		audienceDao.deleteById(id);
 	}
 
-	private boolean isUnique(Audience audience) throws EntityNotUniqueException {
+	private void isUniqueCheck(Audience audience) throws EntityNotUniqueException {
 		logger.debug("Check audience is unique");
 		Optional<Audience> existingAudience = audienceDao.findByRoom(audience.getRoom());
 		if (existingAudience.isEmpty() || (existingAudience.get().getId() == audience.getId())) {
-			return true;
+			return;
 		} else {
 			throw new EntityNotUniqueException("Audience with this room number is already exists!");
 		}

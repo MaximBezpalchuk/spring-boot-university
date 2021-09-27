@@ -36,9 +36,8 @@ public class GroupService {
 
 	public void save(Group group) throws Exception {
 		logger.debug("Save group");
-		if (isUnique(group)) {
-			groupDao.save(group);
-		}
+		isUniqueCheck(group);
+		groupDao.save(group);
 	}
 
 	public void deleteById(int id) {
@@ -51,11 +50,11 @@ public class GroupService {
 		return groupDao.findByLectureId(id);
 	}
 
-	private boolean isUnique(Group group) throws EntityNotUniqueException {
+	private void isUniqueCheck(Group group) throws EntityNotUniqueException {
 		logger.debug("Check group is unique");
 		Optional<Group> existingGroup = groupDao.findByName(group.getName());
 		if (existingGroup.isEmpty() || (existingGroup.get().getId() == group.getId())) {
-			return true;
+			return;
 		} else {
 			throw new EntityNotUniqueException("Group with same name is already exists!");
 		}

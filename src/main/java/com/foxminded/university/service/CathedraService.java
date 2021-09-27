@@ -36,9 +36,8 @@ public class CathedraService {
 
 	public void save(Cathedra cathedra) throws Exception {
 		logger.debug("Save cathedra");
-		if (isUnique(cathedra)) {
-			cathedraDao.save(cathedra);
-		}
+		isUniqueCheck(cathedra);
+		cathedraDao.save(cathedra);
 	}
 
 	public void deleteById(int id) {
@@ -46,11 +45,11 @@ public class CathedraService {
 		cathedraDao.deleteById(id);
 	}
 
-	private boolean isUnique(Cathedra cathedra) throws EntityNotUniqueException {
+	private void isUniqueCheck(Cathedra cathedra) throws EntityNotUniqueException {
 		logger.debug("Check catheda is unique");
 		Optional<Cathedra> existingCathedra = cathedraDao.findByName(cathedra.getName());
 		if (existingCathedra.isEmpty() || existingCathedra.get().getId() == cathedra.getId()) {
-			return true;
+			return;
 		} else {
 			throw new EntityNotUniqueException("Cathedra with same name is already exists!");
 		}
