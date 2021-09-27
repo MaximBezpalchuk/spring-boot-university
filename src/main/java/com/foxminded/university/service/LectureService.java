@@ -2,7 +2,6 @@ package com.foxminded.university.service;
 
 import java.time.DayOfWeek;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -60,11 +59,7 @@ public class LectureService {
 
 	public Lecture findById(int id) throws EntityNotFoundException {
 		logger.debug("Find lecture by id {}", id);
-		try {
-			return lectureDao.findById(id).orElseThrow();
-		} catch (NoSuchElementException e) {
-			throw new EntityNotFoundException("Can`t find any lecture", e);
-		}
+		return lectureDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Can`t find any lecture"));
 	}
 
 	public void save(Lecture lecture) throws Exception {
@@ -83,8 +78,8 @@ public class LectureService {
 
 	private boolean isUnique(Lecture lecture) throws EntityNotUniqueException {
 		logger.debug("Check lecture is unique");
-		Optional<Lecture> existingLecture = lectureDao.findByTeacherAudienceDateAndLectureTime(lecture.getTeacher(), lecture.getAudience(),
-				lecture.getDate(), lecture.getTime());
+		Optional<Lecture> existingLecture = lectureDao.findByTeacherAudienceDateAndLectureTime(lecture.getTeacher(),
+				lecture.getAudience(), lecture.getDate(), lecture.getTime());
 		if (existingLecture.isEmpty() || (existingLecture.get().getId() == lecture.getId())) {
 			return true;
 		} else {

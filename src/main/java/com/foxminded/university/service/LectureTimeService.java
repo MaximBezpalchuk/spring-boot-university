@@ -2,7 +2,6 @@ package com.foxminded.university.service;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -38,11 +37,8 @@ public class LectureTimeService {
 
 	public LectureTime findById(int id) throws EntityNotFoundException {
 		logger.debug("Find lecture time by id {}", id);
-		try {
-			return lectureTimeDao.findById(id).orElseThrow();
-		} catch (NoSuchElementException e) {
-			throw new EntityNotFoundException("Can`t find any lecture time", e);
-		}
+		return lectureTimeDao.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Can`t find any lecture time"));
 	}
 
 	public void save(LectureTime lectureTime) throws Exception {

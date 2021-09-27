@@ -3,7 +3,6 @@ package com.foxminded.university.service;
 import java.time.Period;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -41,11 +40,7 @@ public class VacationService {
 
 	public Vacation findById(int id) throws EntityNotFoundException {
 		logger.debug("Find vacation by id {}", id);
-		try {
-			return vacationDao.findById(id).orElseThrow();
-		} catch (NoSuchElementException e) {
-			throw new EntityNotFoundException("Can`t find any vacation", e);
-		}
+		return vacationDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Can`t find any vacation"));
 	}
 
 	public void save(Vacation vacation) throws Exception {
@@ -80,7 +75,7 @@ public class VacationService {
 
 	private boolean isDateCorrect(Vacation vacation) throws VacationNotCorrectDateException {
 		logger.debug("Check vacation start is after end");
-		if( vacation.getStart().isBefore(vacation.getEnd()) || vacation.getStart().equals(vacation.getEnd())) {
+		if (vacation.getStart().isBefore(vacation.getEnd()) || vacation.getStart().equals(vacation.getEnd())) {
 			return true;
 		} else {
 			throw new VacationNotCorrectDateException("Vacation start date can`t be after vacation end date!");
@@ -89,7 +84,7 @@ public class VacationService {
 
 	private boolean isDateMoreThenOneDay(Vacation vacation) throws VacationLessOneDayException {
 		logger.debug("Check vacation duration more or equals 1 day");
-		if( getVacationDaysCount(vacation) >= 1) {
+		if (getVacationDaysCount(vacation) >= 1) {
 			return true;
 		} else {
 			throw new VacationLessOneDayException("Vacation can`t be less than 1 day!");
@@ -100,13 +95,14 @@ public class VacationService {
 		return Math.abs(Period.between(vacation.getStart(), vacation.getEnd()).getDays());
 	}
 
-	private boolean isVacationDurationLessOrEqualsThanMax(Vacation vacation) throws VacationDurationMoreThanMaxException {
+	private boolean isVacationDurationLessOrEqualsThanMax(Vacation vacation)
+			throws VacationDurationMoreThanMaxException {
 		logger.debug("Check vacation duration less or equals than max");
 		int teacherVacationDays = vacationDao
 				.findByTeacherIdAndYear(vacation.getTeacher().getId(), vacation.getStart().getYear()).stream()
 				.map(vac -> getVacationDaysCount(vac)).mapToInt(Integer::intValue).sum();
 
-		if( (teacherVacationDays + getVacationDaysCount(vacation)) <= maxVacation
+		if ((teacherVacationDays + getVacationDaysCount(vacation)) <= maxVacation
 				.get(vacation.getTeacher().getDegree())) {
 			return true;
 		} else {

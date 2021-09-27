@@ -1,7 +1,6 @@
 package com.foxminded.university.service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -32,11 +31,7 @@ public class CathedraService {
 
 	public Cathedra findById(int id) throws EntityNotFoundException {
 		logger.debug("Find cathedra by id {}", id);
-		try {
-			return cathedraDao.findById(id).orElseThrow();
-		} catch (NoSuchElementException e) {
-			throw new EntityNotFoundException("Can`t find any cathedra", e);
-		}
+		return cathedraDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Can`t find any cathedra"));
 	}
 
 	public void save(Cathedra cathedra) throws Exception {

@@ -1,7 +1,6 @@
 package com.foxminded.university.service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -32,11 +31,7 @@ public class TeacherService {
 
 	public Teacher findById(int id) throws EntityNotFoundException {
 		logger.debug("Find teacher by id {}", id);
-		try {
-			return teacherDao.findById(id).orElseThrow();
-		} catch (NoSuchElementException e) {
-			throw new EntityNotFoundException("Can`t find any teacher", e);
-		}
+		return teacherDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Can`t find any teacher"));
 	}
 
 	public void save(Teacher teacher) throws Exception {

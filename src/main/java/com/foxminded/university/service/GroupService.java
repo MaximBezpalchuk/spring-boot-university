@@ -1,7 +1,6 @@
 package com.foxminded.university.service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -32,11 +31,7 @@ public class GroupService {
 
 	public Group findById(int id) throws EntityNotFoundException {
 		logger.debug("Find group by id {}", id);
-		try {
-			return groupDao.findById(id).orElseThrow();
-		} catch (NoSuchElementException e) {
-			throw new EntityNotFoundException("Can`t find any group", e);
-		}
+		return groupDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Can`t find any group"));
 	}
 
 	public void save(Group group) throws Exception {
