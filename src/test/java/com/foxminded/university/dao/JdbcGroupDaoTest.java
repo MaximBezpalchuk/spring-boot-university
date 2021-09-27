@@ -1,9 +1,10 @@
 package com.foxminded.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
+
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,7 +53,7 @@ public class JdbcGroupDaoTest {
 
 	@Test
 	void givenNotExistingGroup_whenFindById_thenReturnEmptyOptional() {
-		assertTrue(groupDao.findById(100).isEmpty());
+		assertEquals(groupDao.findById(100), Optional.empty());
 	}
 
 	@Test

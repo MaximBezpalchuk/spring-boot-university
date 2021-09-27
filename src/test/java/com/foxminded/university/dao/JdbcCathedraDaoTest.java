@@ -1,9 +1,10 @@
 package com.foxminded.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
+
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,7 +51,7 @@ public class JdbcCathedraDaoTest {
 
 	@Test
 	void givenNotExistingCathedra_whenFindById_thenReturnEmptyOptional() {
-		assertTrue(cathedraDao.findById(100).isEmpty());
+		assertEquals(cathedraDao.findById(100), Optional.empty());
 	}
 
 	@Test

@@ -1,13 +1,13 @@
 package com.foxminded.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -66,7 +66,7 @@ public class JdbcStudentDaoTest {
 
 	@Test
 	void givenNotExistingStudent_whenFindById_thenReturnEmptyOptional() {
-		assertTrue(studentDao.findById(100).isEmpty());
+		assertEquals(studentDao.findById(100), Optional.empty());
 	}
 
 	@Test

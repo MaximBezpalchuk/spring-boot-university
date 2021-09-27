@@ -1,11 +1,11 @@
 package com.foxminded.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
 import java.time.LocalTime;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -52,7 +52,7 @@ public class JdbcLectureTimeDaoTest {
 
 	@Test
 	void givenNotExistingLectureTime_whenFindById_thenReturnEmptyOptional() {
-		assertTrue(lectureTimeDao.findById(100).isEmpty());
+		assertEquals(lectureTimeDao.findById(100), Optional.empty());
 	}
 
 	@Test

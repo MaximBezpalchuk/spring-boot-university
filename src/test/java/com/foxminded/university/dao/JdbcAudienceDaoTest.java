@@ -18,6 +18,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
+import java.util.Optional;
+
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = SpringTestConfig.class)
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
@@ -52,7 +54,7 @@ public class JdbcAudienceDaoTest {
 
 	@Test
 	void givenNotExistingAudience_whenFindById_thenReturnEmptyOptional() {
-		assertTrue(audienceDao.findById(100).isEmpty());
+		assertEquals(audienceDao.findById(100), Optional.empty());
 	}
 
 	@Test
