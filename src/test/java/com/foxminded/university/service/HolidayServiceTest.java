@@ -55,7 +55,7 @@ public class HolidayServiceTest {
 			holidayService.findById(10);
 		});
 
-		assertEquals("Can`t find any holiday with specified id!", exception.getMessage());
+		assertEquals("Can`t find any holiday with id: 10", exception.getMessage());
 	}
 
 	@Test
@@ -102,6 +102,6 @@ public class HolidayServiceTest {
 				holidayService.save(holiday1);
 			});
 
-		assertEquals("Holiday with same name and date is already exists!", exception.getMessage());
+		assertEquals("Holiday with name TestName and date 2020-01-01 is already exists!", exception.getMessage());
 	}
 }

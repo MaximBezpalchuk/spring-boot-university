@@ -32,8 +32,8 @@ public class HolidayService {
 
 	public Holiday findById(int id) throws EntityNotFoundException {
 		logger.debug("Find holiday by id {}", id);
-		return holidayDao.findById(id).orElseThrow(
-				() -> new EntityNotFoundException("Can`t find any holiday with specified id!", "Id is: " + id));
+		return holidayDao.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Can`t find any holiday with id: " + id));
 	}
 
 	public void save(Holiday holiday) throws ServiceException {
@@ -52,8 +52,8 @@ public class HolidayService {
 		Optional<Holiday> existingHoliday = holidayDao.findByNameAndDate(holiday.getName(), holiday.getDate());
 
 		if (!existingHoliday.isEmpty() && (existingHoliday.get().getId() != holiday.getId())) {
-			throw new EntityNotUniqueException("Holiday with same name and date is already exists!",
-					"Holiday name is: " + holiday.getName(), "Holiday date is: " + holiday.getDate());
+			throw new EntityNotUniqueException("Holiday with name " + holiday.getName() + " and date "
+					+ holiday.getDate() + " is already exists!");
 		}
 	}
 }

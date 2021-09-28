@@ -54,7 +54,7 @@ public class SubjectServiceTest {
 			subjectService.findById(10);
 		});
 
-		assertEquals("Can`t find any subject with specified id!", exception.getMessage());
+		assertEquals("Can`t find any subject with id: 10", exception.getMessage());
 	}
 
 	@Test
@@ -90,7 +90,7 @@ public class SubjectServiceTest {
 			subjectService.save(subject1);
 			});
 
-		assertEquals("Subject with same name is already exists!", exception.getMessage());
+		assertEquals("Subject with name TestName is already exists!", exception.getMessage());
 	}
 
 	@Test

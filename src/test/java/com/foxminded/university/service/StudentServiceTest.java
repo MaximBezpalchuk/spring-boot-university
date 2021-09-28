@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -64,7 +65,7 @@ public class StudentServiceTest {
 			studentService.findById(10);
 		});
 
-		assertEquals("Can`t find any student with specified id!", exception.getMessage());
+		assertEquals("Can`t find any student with id: 10", exception.getMessage());
 	}
 
 	@Test
@@ -100,12 +101,14 @@ public class StudentServiceTest {
 				.id(1)
 				.firstName("TestFirstName")
 				.lastName("TestLastName")
+				.birthDate(LocalDate.of(2020, 1, 1))
 				.group(Group.builder().id(10).name("Test").build())
 				.build();
 		Student student2 = Student.builder()
 				.id(11)
 				.firstName("TestFirstName")
 				.lastName("TestLastName")
+				.birthDate(LocalDate.of(2020, 1, 1))
 				.group(Group.builder().id(10).name("Test").build())
 				.build();
 		when(studentDao.findByFullNameAndBirthDate(student1.getFirstName(),
@@ -114,7 +117,7 @@ public class StudentServiceTest {
 			studentService.save(student1);
 			});
 
-		assertEquals("Student with same first name, last name and  birth date is already exists!", exception.getMessage());
+		assertEquals("Student with full name TestFirstName TestLastName and  birth date 2020-01-01 is already exists!", exception.getMessage());
 	}
 	
 	@Test
@@ -132,7 +135,7 @@ public class StudentServiceTest {
 			studentService.save(student);
 			});
 
-		assertEquals("This group is already full!", exception.getMessage());
+		assertEquals("This group is already full! Group size is: 2. Max group size is: 1", exception.getMessage());
 	}
 
 	@Test

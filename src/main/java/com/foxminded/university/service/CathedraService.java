@@ -32,8 +32,8 @@ public class CathedraService {
 
 	public Cathedra findById(int id) throws EntityNotFoundException {
 		logger.debug("Find cathedra by id {}", id);
-		return cathedraDao.findById(id).orElseThrow(
-				() -> new EntityNotFoundException("Can`t find any cathedra with specified id!", "Id is: " + id));
+		return cathedraDao.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Can`t find any cathedra with id: " + id));
 	}
 
 	public void save(Cathedra cathedra) throws ServiceException {
@@ -51,8 +51,7 @@ public class CathedraService {
 		logger.debug("Check catheda is unique");
 		Optional<Cathedra> existingCathedra = cathedraDao.findByName(cathedra.getName());
 		if (!existingCathedra.isEmpty() && existingCathedra.get().getId() != cathedra.getId()) {
-			throw new EntityNotUniqueException("Cathedra with same name is already exists!",
-					"Cathedra name is: " + cathedra.getName());
+			throw new EntityNotUniqueException("Cathedra with name " + cathedra.getName() + " is already exists!");
 		}
 	}
 }

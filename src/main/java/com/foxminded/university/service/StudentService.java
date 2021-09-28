@@ -36,8 +36,8 @@ public class StudentService {
 
 	public Student findById(int id) throws EntityNotFoundException {
 		logger.debug("Find student by id {}", id);
-		return studentDao.findById(id).orElseThrow(
-				() -> new EntityNotFoundException("Can`t find any student with specified id!", "Id is: " + id));
+		return studentDao.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Can`t find any student with id: " + id));
 	}
 
 	public void save(Student student) throws ServiceException {
@@ -58,10 +58,8 @@ public class StudentService {
 				student.getLastName(), student.getBirthDate());
 
 		if (!existingStudent.isEmpty() && (existingStudent.get().getId() != student.getId())) {
-			throw new EntityNotUniqueException(
-					"Student with same first name, last name and  birth date is already exists!",
-					"Student name is: " + student.getFirstName() + " " + student.getLastName(),
-					"Student birth date is: " + student.getBirthDate());
+			throw new EntityNotUniqueException("Student with full name " + student.getFirstName() + " "
+					+ student.getLastName() + " and  birth date " + student.getBirthDate() + " is already exists!");
 		}
 	}
 
@@ -70,8 +68,8 @@ public class StudentService {
 		if (student.getGroup() != null) {
 			int groupSize = studentDao.findByGroupId(student.getGroup().getId()).size();
 			if (groupSize >= maxGroupSize) {
-				throw new GroupOverflowException("This group is already full!", "Group size is: " + groupSize,
-						"Max is: " + maxGroupSize);
+				throw new GroupOverflowException(
+						"This group is already full! Group size is: " + groupSize + ". Max group size is: " + maxGroupSize);
 			}
 		}
 	}

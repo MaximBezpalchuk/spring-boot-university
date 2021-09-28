@@ -53,7 +53,7 @@ public class CathedraServiceTest {
 			cathedraService.findById(10);
 		});
 
-		assertEquals("Can`t find any cathedra with specified id!", exception.getMessage());
+		assertEquals("Can`t find any cathedra with id: 10", exception.getMessage());
 	}
 
 	@Test
@@ -89,6 +89,6 @@ public class CathedraServiceTest {
 				cathedraService.save(cathedra1);
 			});
 
-		assertEquals("Cathedra with same name is already exists!", exception.getMessage());
+		assertEquals("Cathedra with name Test1 is already exists!", exception.getMessage());
 	}
 }

@@ -55,7 +55,7 @@ public class AudienceServiceTest {
 			audienceService.findById(10);
 		});
 
-		assertEquals("Can`t find any audience with specified id!", exception.getMessage());
+		assertEquals("Can`t find any audience with id: 10", exception.getMessage());
 	}
 
 	@Test
@@ -97,6 +97,6 @@ public class AudienceServiceTest {
 				audienceService.save(audience1);
 			});
 
-		assertEquals("Audience with this room number is already exists!", exception.getMessage());
+		assertEquals("Audience with room number 10 is already exists!", exception.getMessage());
 	}
 }

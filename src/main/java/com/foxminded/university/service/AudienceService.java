@@ -32,8 +32,8 @@ public class AudienceService {
 
 	public Audience findById(int id) throws EntityNotFoundException {
 		logger.debug("Find audience by id {}", id);
-		return audienceDao.findById(id).orElseThrow(
-				() -> new EntityNotFoundException("Can`t find any audience with specified id!", "Id is: " + id));
+		return audienceDao.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Can`t find any audience with id: " + id));
 	}
 
 	public void save(Audience audience) throws ServiceException {
@@ -51,8 +51,8 @@ public class AudienceService {
 		logger.debug("Check audience is unique");
 		Optional<Audience> existingAudience = audienceDao.findByRoom(audience.getRoom());
 		if (!existingAudience.isEmpty() && (existingAudience.get().getId() != audience.getId())) {
-			throw new EntityNotUniqueException("Audience with this room number is already exists!",
-					"Room number is: " + audience.getRoom());
+			throw new EntityNotUniqueException(
+					"Audience with room number " + audience.getRoom() + " is already exists!");
 		}
 	}
 }

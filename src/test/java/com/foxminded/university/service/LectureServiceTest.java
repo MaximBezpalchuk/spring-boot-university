@@ -90,7 +90,7 @@ public class LectureServiceTest {
 			lectureService.findById(10);
 		});
 
-		assertEquals("Can`t find any lecture with specified id!", exception.getMessage());
+		assertEquals("Can`t find any lecture with id: 10", exception.getMessage());
 	}
 
 	@Test
@@ -145,7 +145,7 @@ public class LectureServiceTest {
 				.id(1)
 				.subjects(Arrays.asList(Subject.builder().id(1).cathedra(cathedra).build()))
 				.build();
-		Audience audience = Audience.builder().id(1).build();
+		Audience audience = Audience.builder().id(1).room(100).build();
 		LocalDate date = LocalDate.of(2021, 9, 8);
 		LectureTime lectureTime = LectureTime.builder().start(LocalTime.of(9, 0)).end(LocalTime.of(10, 0)).build();
 		Lecture lecture1 = Lecture.builder()
@@ -168,7 +168,7 @@ public class LectureServiceTest {
 				lectureService.save(lecture1);
 			});
 
-		assertEquals("Lecture with same audience, date and lecture time is already exists!", exception.getMessage());
+		assertEquals("Lecture with audience number 100, date 2021-09-08 and lecture time 09:00 - 10:00 is already exists!", exception.getMessage());
 	}
 	
 	@Test
@@ -181,7 +181,7 @@ public class LectureServiceTest {
 			lectureService.save(lecture);
 		});
 
-	assertEquals("Lecture can`t be on sunday!", exception.getMessage());
+	assertEquals("Lecture can`t be on sunday! Specified date is: 2021-09-05", exception.getMessage());
 	}
 	
 	@Test
@@ -195,7 +195,7 @@ public class LectureServiceTest {
 			lectureService.save(lecture);
 		});
 
-	assertEquals("Lecture can`t be in after hours!", exception.getMessage());
+	assertEquals("Lecture can`t be in after hours! Specified period is: 07:00 - 10:00", exception.getMessage());
 	}
 	
 	@Test
@@ -204,7 +204,7 @@ public class LectureServiceTest {
 				.id(1)
 				.date(LocalDate.of(2021, 9, 6))
 				.time(LectureTime.builder().id(1).start(LocalTime.of(9, 0)).end(LocalTime.of(10, 0)).build())
-				.teacher(Teacher.builder().build())
+				.teacher(Teacher.builder().firstName("TestFirstName").lastName("TestLastName").build())
 				.build();
 		Lecture lecture2 = Lecture.builder()
 				.id(2)
@@ -214,7 +214,7 @@ public class LectureServiceTest {
 			lectureService.save(lecture);
 		});
 		
-		assertEquals("Teacher is on another lecture this time!", exception.getMessage());
+		assertEquals("Teacher is on another lecture this time! Teacher is: TestFirstName TestLastName", exception.getMessage());
 	}
 	
 	@Test
@@ -231,7 +231,7 @@ public class LectureServiceTest {
 			lectureService.save(lecture);
 		});
 		
-		assertEquals("Teacher is in vacation this date!", exception.getMessage());
+		assertEquals("Teacher is in vacation this date! Date is: 2021-09-06", exception.getMessage());
 	}
 	
 	@Test
@@ -247,7 +247,7 @@ public class LectureServiceTest {
 			lectureService.save(lecture);
 		});
 		
-		assertEquals("Lecture can`t be on holiday!", exception.getMessage());
+		assertEquals("Lecture can`t be on holiday! Date is: 2021-09-06", exception.getMessage());
 	}
 	
 	@Test
@@ -256,14 +256,14 @@ public class LectureServiceTest {
 				.id(1)
 				.date(LocalDate.of(2021, 9, 6))
 				.time(LectureTime.builder().id(1).start(LocalTime.of(9, 0)).end(LocalTime.of(10, 0)).build())
-				.teacher(Teacher.builder().id(1).build())
+				.teacher(Teacher.builder().id(1).firstName("TestFirstName").lastName("TestLastName").build())
 				.subject(Subject.builder().build())
 				.build();
 		Exception exception = assertThrows(LectureWithNotCompetentTeacherException.class, () -> {
 			lectureService.save(lecture);
 		});
 		
-		assertEquals("Teacher can`t educate this subject!", exception.getMessage());
+		assertEquals("Teacher TestFirstName TestLastName can`t educatenull!", exception.getMessage());
 	}
 	
 	@Test
@@ -284,7 +284,7 @@ public class LectureServiceTest {
 			lectureService.save(lecture);
 		});
 		
-		assertEquals("Student count more than audience capacity!", exception.getMessage());
+		assertEquals("Student count (2) more than audience capacity (1)!", exception.getMessage());
 	}
 	
 	@Test
@@ -296,7 +296,7 @@ public class LectureServiceTest {
 				.time(LectureTime.builder().id(1).start(LocalTime.of(9, 0)).end(LocalTime.of(10, 0)).build())
 				.teacher(Teacher.builder().id(1).subjects(Arrays.asList(subject)).build())
 				.subject(subject)
-				.audience(Audience.builder().capacity(1).build())
+				.audience(Audience.builder().room(100).capacity(1).build())
 				.build();
 		Lecture lecture2 = Lecture.builder().id(3).build();
 		when(lectureDao.findByAudienceDateAndLectureTime(lecture.getAudience(), lecture.getDate(), lecture.getTime()))
@@ -305,7 +305,7 @@ public class LectureServiceTest {
 			lectureService.save(lecture);
 		});
 		
-		assertEquals("This audience is already occupied!", exception.getMessage());
+		assertEquals("Audience 100 is already occupied!", exception.getMessage());
 	}
 
 	@Test

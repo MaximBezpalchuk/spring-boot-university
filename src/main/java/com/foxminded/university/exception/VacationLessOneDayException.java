@@ -1,12 +1,10 @@
 package com.foxminded.university.exception;
 
-import org.springframework.lang.Nullable;
-
 public class VacationLessOneDayException extends ServiceException {
 
 	private static final long serialVersionUID = 1703508329545329394L;
 
-	public VacationLessOneDayException(String errorMessage,  @Nullable Object... args) {
-		super(errorMessage, args);
+	public VacationLessOneDayException(String errorMessage) {
+		super(errorMessage);
 	}
 }

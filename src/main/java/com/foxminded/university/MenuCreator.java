@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.MonthDay;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -312,8 +311,7 @@ public class MenuCreator {
 				studentService.save(student);
 			} catch (ServiceException e) {
 				System.out.println(e.getMessage());
-				Arrays.stream(e.getArgs()).forEach(System.out::println);
-				logger.error(e.getMessage(), e.getArgs());
+				logger.error(e.getMessage());
 			}
 			break;
 		case 2:
@@ -390,8 +388,7 @@ public class MenuCreator {
 				teacherService.save(teacher);
 			} catch (ServiceException e) {
 				System.out.println(e.getMessage());
-				Arrays.stream(e.getArgs()).forEach(System.out::println);
-				logger.error(e.getMessage(), e.getArgs());
+				logger.error(e.getMessage());
 			}
 			break;
 		case 3:
@@ -411,8 +408,7 @@ public class MenuCreator {
 						.build());
 			} catch (ServiceException e) {
 				System.out.println(e.getMessage());
-				Arrays.stream(e.getArgs()).forEach(System.out::println);
-				logger.error(e.getMessage(), e.getArgs());
+				logger.error(e.getMessage());
 			}
 			break;
 		case 4:
@@ -428,8 +424,7 @@ public class MenuCreator {
 						.build());
 			} catch (ServiceException e) {
 				System.out.println(e.getMessage());
-				Arrays.stream(e.getArgs()).forEach(System.out::println);
-				logger.error(e.getMessage(), e.getArgs());
+				logger.error(e.getMessage());
 			}
 			break;
 		case 5:
@@ -472,8 +467,7 @@ public class MenuCreator {
 						.build());
 			} catch (ServiceException e) {
 				System.out.println(e.getMessage());
-				Arrays.stream(e.getArgs()).forEach(System.out::println);
-				logger.error(e.getMessage(), e.getArgs());
+				logger.error(e.getMessage());
 			}
 			break;
 		case 6:
@@ -499,8 +493,7 @@ public class MenuCreator {
 				holidayService.save(holiday6);
 			} catch (ServiceException e) {
 				System.out.println(e.getMessage());
-				Arrays.stream(e.getArgs()).forEach(System.out::println);
-				logger.error(e.getMessage(), e.getArgs());
+				logger.error(e.getMessage());
 			}
 			break;
 		case 7:
@@ -520,7 +513,6 @@ public class MenuCreator {
 				audienceService.save(audience7);
 			} catch (ServiceException e) {
 				System.out.println(e.getMessage());
-				Arrays.stream(e.getArgs()).forEach(System.out::println);
 				logger.error(e.getMessage());
 			}
 			break;
@@ -676,8 +668,7 @@ public class MenuCreator {
 				studentService.save(student1);
 			} catch (ServiceException e) {
 				System.out.println(e.getMessage());
-				Arrays.stream(e.getArgs()).forEach(System.out::println);
-				logger.error(e.getMessage(), e.getArgs());
+				logger.error(e.getMessage());
 			}
 			break;
 		case 2:
@@ -701,8 +692,7 @@ public class MenuCreator {
 				vacationService.save(vacation2);
 			} catch (ServiceException e) {
 				System.out.println(e.getMessage());
-				Arrays.stream(e.getArgs()).forEach(System.out::println);
-				logger.error(e.getMessage(), e.getArgs());
+				logger.error(e.getMessage());
 			}
 			break;
 		case 3:
@@ -725,8 +715,7 @@ public class MenuCreator {
 					teacherService.save(teacher3);
 				} catch (ServiceException e) {
 					System.out.println(e.getMessage());
-					Arrays.stream(e.getArgs()).forEach(System.out::println);
-					logger.error(e.getMessage(), e.getArgs());
+					logger.error(e.getMessage());
 				}
 			} else {
 				System.out.println("Teacher already have this subject");
@@ -752,8 +741,7 @@ public class MenuCreator {
 				lectureService.save(lecture4);
 			} catch (ServiceException e) {
 				System.out.println(e.getMessage());
-				Arrays.stream(e.getArgs()).forEach(System.out::println);
-				logger.error(e.getMessage(), e.getArgs());
+				logger.error(e.getMessage());
 			}
 			break;
 		case 5:
@@ -770,8 +758,7 @@ public class MenuCreator {
 				lectureService.save(lecture5);
 			} catch (ServiceException e) {
 				System.out.println(e.getMessage());
-				Arrays.stream(e.getArgs()).forEach(System.out::println);
-				logger.error(e.getMessage(), e.getArgs());
+				logger.error(e.getMessage());
 			}
 			break;
 		case 6:
@@ -793,8 +780,7 @@ public class MenuCreator {
 				lectureService.save(lecture6);
 			} catch (ServiceException e) {
 				System.out.println(e.getMessage());
-				Arrays.stream(e.getArgs()).forEach(System.out::println);
-				logger.error(e.getMessage(), e.getArgs());
+				logger.error(e.getMessage());
 			}
 			break;
 		case 7:
@@ -817,8 +803,7 @@ public class MenuCreator {
 					lectureService.save(lecture7);
 				} catch (ServiceException e) {
 					System.out.println(e.getMessage());
-					Arrays.stream(e.getArgs()).forEach(System.out::println);
-					logger.error(e.getMessage(), e.getArgs());
+					logger.error(e.getMessage());
 				}
 			} else {
 				System.out.println("Lecture already have this group!");
@@ -958,8 +943,7 @@ public class MenuCreator {
 				lectureService.save(lecture9);
 			} catch (ServiceException e) {
 				System.out.println(e.getMessage());
-				Arrays.stream(e.getArgs()).forEach(System.out::println);
-				logger.error(e.getMessage(), e.getArgs());
+				logger.error(e.getMessage());
 			}
 			break;
 		case 10:
@@ -985,8 +969,7 @@ public class MenuCreator {
 				teacherService.save(teacher10);
 			} catch (ServiceException e) {
 				System.out.println(e.getMessage());
-				Arrays.stream(e.getArgs()).forEach(System.out::println);
-				logger.error(e.getMessage(), e.getArgs());
+				logger.error(e.getMessage());
 			}
 			break;
 		case 0:

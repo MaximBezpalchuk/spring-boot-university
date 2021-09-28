@@ -73,7 +73,7 @@ public class VacationServiceTest {
 			vacationService.findById(10);
 		});
 
-		assertEquals("Can`t find any vacation with specified id!", exception.getMessage());
+		assertEquals("Can`t find any vacation with id: 10", exception.getMessage());
 	}
 
 	@Test
@@ -114,13 +114,13 @@ public class VacationServiceTest {
 				.id(1)
 				.start(start)
 				.end(end)
-				.teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build())
+				.teacher(Teacher.builder().id(1).firstName("TestFirstName").lastName("TestLastName").degree(Degree.ASSISTANT).build())
 				.build();
 		Vacation vacation2 = Vacation.builder()
 				.id(11)
 				.start(start)
 				.end(end)
-				.teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build())
+				.teacher(Teacher.builder().id(1).firstName("TestFirstName").lastName("TestLastName").degree(Degree.ASSISTANT).build())
 				.build();
 		when(vacationDao.findByPeriodAndTeacher(vacation1.getStart(), vacation1.getEnd(),
 				vacation1.getTeacher())).thenReturn(Optional.of(vacation2));
@@ -128,7 +128,7 @@ public class VacationServiceTest {
 			vacationService.save(vacation1);
 		});
 
-		assertEquals("Vacation with same start, end and teacher id is already exists!", exception.getMessage());
+		assertEquals("Vacation with start(2021-01-01), end(2021-01-02) and teacher(TestFirstName TestLastName) id is already exists!", exception.getMessage());
 	}
 
 	@Test
@@ -140,7 +140,7 @@ public class VacationServiceTest {
 			vacationService.save(vacation);
 		});
 
-		assertEquals("Vacation can`t be less than 1 day!", exception.getMessage());
+		assertEquals("Vacation can`t be less than 1 day! Vacation start is: 2021-01-01. Vacation end is: 2021-01-01", exception.getMessage());
 	}
 
 	@Test
@@ -156,7 +156,7 @@ public class VacationServiceTest {
 			vacationService.save(vacation);
 		});
 
-		assertEquals("Vacation start date can`t be after vacation end date!", exception.getMessage());
+		assertEquals("Vacation start date can`t be after vacation end date! Vacation start is: 2021-01-01. Vacation end is: 2020-01-01", exception.getMessage());
 	}
 
 	@Test
@@ -175,7 +175,7 @@ public class VacationServiceTest {
 			vacationService.save(vacation);
 		});
 
-		assertEquals("Vacations duration can`t be more than max!", exception.getMessage());
+		assertEquals("Vacations duration(existing 9 plus appointed 9) can`t be more than max(16) for degree ASSISTANT!", exception.getMessage());
 	}
 
 	@Test

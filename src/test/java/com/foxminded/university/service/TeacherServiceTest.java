@@ -55,7 +55,7 @@ public class TeacherServiceTest {
 			teacherService.findById(10);
 		});
 
-		assertEquals("Can`t find any teacher with specified id!", exception.getMessage());
+		assertEquals("Can`t find any teacher with id: 10", exception.getMessage());
 	}
 
 	@Test
@@ -105,6 +105,6 @@ public class TeacherServiceTest {
 			teacherService.save(teacher1);
 			});
 
-		assertEquals("Teacher with same first name, last name and birth date is already exists!", exception.getMessage());
+		assertEquals("Teacher with full name TestFirstName TestLastName and birth date 1920-02-12 is already exists!", exception.getMessage());
 	}
 }

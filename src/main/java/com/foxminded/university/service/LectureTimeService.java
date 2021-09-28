@@ -38,8 +38,8 @@ public class LectureTimeService {
 
 	public LectureTime findById(int id) throws EntityNotFoundException {
 		logger.debug("Find lecture time by id {}", id);
-		return lectureTimeDao.findById(id).orElseThrow(
-				() -> new EntityNotFoundException("Can`t find any lecture time with specified id!", "Id is: " + id));
+		return lectureTimeDao.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Can`t find any lecture time with id: " + id));
 	}
 
 	public void save(LectureTime lectureTime) throws ServiceException {
@@ -62,16 +62,16 @@ public class LectureTimeService {
 				lectureTime.getEnd());
 
 		if (!existingLectureTime.isEmpty() && (existingLectureTime.get().getId() != lectureTime.getId())) {
-			throw new EntityNotUniqueException("Lecture time with same start and end times is already exists!",
-					"Lecture time start: " + lectureTime.getStart(), "Lecture time end: " + lectureTime.getEnd());
+			throw new EntityNotUniqueException("Lecture time with start time " + lectureTime.getStart()
+					+ " and end time " + lectureTime.getEnd() + " is already exists!");
 		}
 	}
 
 	private void timeCorrectCheck(LectureTime lectureTime) throws LectureTimeNotCorrectException {
 		logger.debug("Check that start time is after end time");
 		if (!lectureTime.getStart().isBefore(lectureTime.getEnd())) {
-			throw new LectureTimeNotCorrectException("Lecture time`s start can`t be after lecture time`s end!",
-					"Lecture time start: " + lectureTime.getStart(), "Lecture time end: " + lectureTime.getEnd());
+			throw new LectureTimeNotCorrectException("Lecture time`s start (" + lectureTime.getStart()
+					+ ") can`t be after lecture time`s end (" + lectureTime.getEnd() + ")!");
 		}
 	}
 
@@ -80,8 +80,8 @@ public class LectureTimeService {
 		logger.debug("Check that duration is more than min lecture duration");
 		long durationInMinutes = Duration.between(lectureTime.getStart(), lectureTime.getEnd()).toMinutes();
 		if (durationInMinutes <= minLectureDurationInMinutes) {
-			throw new LectureTimeDurationMoreThanChosenTimeException("Duration is less than min lecture duration!",
-					"Duration is: " + durationInMinutes + "minutes", "Min is: " + minLectureDurationInMinutes);
+			throw new LectureTimeDurationMoreThanChosenTimeException("Duration " + durationInMinutes
+					+ " minutes is less than min lecture duration (" + minLectureDurationInMinutes + " minutes)!");
 		}
 	}
 }

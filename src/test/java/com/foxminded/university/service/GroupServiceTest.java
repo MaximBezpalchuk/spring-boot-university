@@ -55,7 +55,7 @@ public class GroupServiceTest {
 			groupService.findById(10);
 		});
 
-		assertEquals("Can`t find any group with specified id!", exception.getMessage());
+		assertEquals("Can`t find any group with id: 10", exception.getMessage());
 	}
 
 	@Test
@@ -104,6 +104,6 @@ public class GroupServiceTest {
 				groupService.save(group1);
 			});
 
-		assertEquals("Group with same name is already exists!", exception.getMessage());
+		assertEquals("Group with name Test1 is already exists!", exception.getMessage());
 	}
 }

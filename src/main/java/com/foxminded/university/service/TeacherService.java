@@ -32,8 +32,8 @@ public class TeacherService {
 
 	public Teacher findById(int id) throws EntityNotFoundException {
 		logger.debug("Find teacher by id {}", id);
-		return teacherDao.findById(id).orElseThrow(
-				() -> new EntityNotFoundException("Can`t find any teacher with specified id!", "Id is: " + id));
+		return teacherDao.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Can`t find any teacher with id: " + id));
 	}
 
 	public void save(Teacher teacher) throws ServiceException {
@@ -53,10 +53,8 @@ public class TeacherService {
 		Optional<Teacher> existingTeacher = teacherDao.findByFullNameAndBirthDate(teacher.getFirstName(),
 				teacher.getLastName(), teacher.getBirthDate());
 		if (!existingTeacher.isEmpty() && (existingTeacher.get().getId() != teacher.getId())) {
-			throw new EntityNotUniqueException(
-					"Teacher with same first name, last name and birth date is already exists!",
-					"Teacher name is: " + teacher.getFirstName() + " " + teacher.getLastName(),
-					"Teacher birth date is: " + teacher.getBirthDate());
+			throw new EntityNotUniqueException("Teacher with full name " + teacher.getFirstName() + " "
+					+ teacher.getLastName() + " and birth date " + teacher.getBirthDate() + " is already exists!");
 		}
 	}
 }

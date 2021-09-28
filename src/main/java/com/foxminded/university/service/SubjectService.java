@@ -32,8 +32,8 @@ public class SubjectService {
 
 	public Subject findById(int id) throws EntityNotFoundException {
 		logger.debug("Find subject by id {}", id);
-		return subjectDao.findById(id).orElseThrow(
-				() -> new EntityNotFoundException("Can`t find any subject with specified id!", "Id is: " + id));
+		return subjectDao.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("Can`t find any subject with id: " + id));
 	}
 
 	public void save(Subject subject) throws ServiceException {
@@ -56,8 +56,7 @@ public class SubjectService {
 		logger.debug("Check subject is unique");
 		Optional<Subject> existingSubject = subjectDao.findByName(subject.getName());
 		if (!existingSubject.isEmpty() && (existingSubject.get().getId() != subject.getId())) {
-			throw new EntityNotUniqueException("Subject with same name is already exists!",
-					"Subject name is: " + subject.getName());
+			throw new EntityNotUniqueException("Subject with name " + subject.getName() + " is already exists!");
 		}
 	}
 }

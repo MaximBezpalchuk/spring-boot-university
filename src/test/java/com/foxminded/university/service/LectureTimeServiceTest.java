@@ -65,7 +65,7 @@ public class LectureTimeServiceTest {
 			lectureTimeService.findById(100);
 		});
 
-		assertEquals("Can`t find any lecture time with specified id!", exception.getMessage());
+		assertEquals("Can`t find any lecture time with id: 100", exception.getMessage());
 	}
 
 	@Test
@@ -115,7 +115,7 @@ public class LectureTimeServiceTest {
 				lectureTimeService.save(lectureTime1);
 			});
 
-		assertEquals("Lecture time with same start and end times is already exists!", exception.getMessage());
+		assertEquals("Lecture time with start time 09:00 and end time 10:00 is already exists!", exception.getMessage());
 	}
 	
 	@Test
@@ -130,7 +130,7 @@ public class LectureTimeServiceTest {
 			lectureTimeService.save(lectureTime);
 		});
 
-	assertEquals("Duration is less than min lecture duration!", exception.getMessage());
+	assertEquals("Duration 20 minutes is less than min lecture duration (30 minutes)!", exception.getMessage());
 }
 	
 	@Test
@@ -145,7 +145,7 @@ public class LectureTimeServiceTest {
 			lectureTimeService.save(lectureTime);
 		});
 
-	assertEquals("Lecture time`s start can`t be after lecture time`s end!", exception.getMessage());
+	assertEquals("Lecture time`s start (09:00) can`t be after lecture time`s end (08:00)!", exception.getMessage());
 }
 
 	@Test
