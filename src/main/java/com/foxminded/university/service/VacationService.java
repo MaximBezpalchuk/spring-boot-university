@@ -69,9 +69,7 @@ public class VacationService {
 		Optional<Vacation> existingVacation = vacationDao.findByPeriodAndTeacher(vacation.getStart(), vacation.getEnd(),
 				vacation.getTeacher());
 
-		if (existingVacation.isEmpty() || (existingVacation.get().getId() == vacation.getId())) {
-			return;
-		} else {
+		if (!existingVacation.isEmpty() && (existingVacation.get().getId() != vacation.getId())) {
 			throw new EntityNotUniqueException("Vacation with same start, end and teacher id is already exists!",
 					"Vacation duration is: from " + vacation.getStart() + "to " + vacation.getEnd(), "Teacher name is: "
 							+ vacation.getTeacher().getFirstName() + " " + vacation.getTeacher().getLastName());
@@ -80,9 +78,7 @@ public class VacationService {
 
 	private void dateCorrectCheck(Vacation vacation) throws VacationNotCorrectDateException {
 		logger.debug("Check vacation start is after end");
-		if (vacation.getStart().isBefore(vacation.getEnd()) || vacation.getStart().equals(vacation.getEnd())) {
-			return;
-		} else {
+		if (!vacation.getStart().isBefore(vacation.getEnd()) && !vacation.getStart().equals(vacation.getEnd())) {
 			throw new VacationNotCorrectDateException("Vacation start date can`t be after vacation end date!",
 					"Vacation start is: " + vacation.getStart(), "Vacation end is: " + vacation.getEnd());
 		}

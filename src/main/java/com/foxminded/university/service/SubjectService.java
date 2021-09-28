@@ -55,9 +55,7 @@ public class SubjectService {
 	private void uniqueCheck(Subject subject) throws EntityNotUniqueException {
 		logger.debug("Check subject is unique");
 		Optional<Subject> existingSubject = subjectDao.findByName(subject.getName());
-		if (existingSubject.isEmpty() || (existingSubject.get().getId() == subject.getId())) {
-			return;
-		} else {
+		if (!existingSubject.isEmpty() && (existingSubject.get().getId() != subject.getId())) {
 			throw new EntityNotUniqueException("Subject with same name is already exists!",
 					"Subject name is: " + subject.getName());
 		}

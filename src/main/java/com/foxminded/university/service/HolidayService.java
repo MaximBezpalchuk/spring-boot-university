@@ -51,9 +51,7 @@ public class HolidayService {
 		logger.debug("Check holiday is unique");
 		Optional<Holiday> existingHoliday = holidayDao.findByNameAndDate(holiday.getName(), holiday.getDate());
 
-		if (existingHoliday.isEmpty() || (existingHoliday.get().getId() == holiday.getId())) {
-			return;
-		} else {
+		if (!existingHoliday.isEmpty() && (existingHoliday.get().getId() != holiday.getId())) {
 			throw new EntityNotUniqueException("Holiday with same name and date is already exists!",
 					"Holiday name is: " + holiday.getName(), "Holiday date is: " + holiday.getDate());
 		}

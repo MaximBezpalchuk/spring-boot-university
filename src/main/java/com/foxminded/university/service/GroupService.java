@@ -32,7 +32,8 @@ public class GroupService {
 
 	public Group findById(int id) throws EntityNotFoundException {
 		logger.debug("Find group by id {}", id);
-		return groupDao.findById(id).orElseThrow(() -> new EntityNotFoundException("Can`t find any group with specified id!", "Id is: " + id));
+		return groupDao.findById(id).orElseThrow(
+				() -> new EntityNotFoundException("Can`t find any group with specified id!", "Id is: " + id));
 	}
 
 	public void save(Group group) throws ServiceLayerException {
@@ -54,10 +55,9 @@ public class GroupService {
 	private void uniqueCheck(Group group) throws EntityNotUniqueException {
 		logger.debug("Check group is unique");
 		Optional<Group> existingGroup = groupDao.findByName(group.getName());
-		if (existingGroup.isEmpty() || (existingGroup.get().getId() == group.getId())) {
-			return;
-		} else {
-			throw new EntityNotUniqueException("Group with same name is already exists!", "Group name is: " + group.getName());
+		if (!existingGroup.isEmpty() && (existingGroup.get().getId() != group.getId())) {
+			throw new EntityNotUniqueException("Group with same name is already exists!",
+					"Group name is: " + group.getName());
 		}
 	}
 }

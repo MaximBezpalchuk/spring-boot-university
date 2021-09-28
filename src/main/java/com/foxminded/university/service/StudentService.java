@@ -57,9 +57,7 @@ public class StudentService {
 		Optional<Student> existingStudent = studentDao.findByFullNameAndBirthDate(student.getFirstName(),
 				student.getLastName(), student.getBirthDate());
 
-		if (existingStudent.isEmpty() || (existingStudent.get().getId() == student.getId())) {
-			return;
-		} else {
+		if (!existingStudent.isEmpty() && (existingStudent.get().getId() != student.getId())) {
 			throw new EntityNotUniqueException(
 					"Student with same first name, last name and  birth date is already exists!",
 					"Student name is: " + student.getFirstName() + " " + student.getLastName(),

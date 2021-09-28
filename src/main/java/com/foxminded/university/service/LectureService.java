@@ -87,9 +87,7 @@ public class LectureService {
 		logger.debug("Check lecture is unique");
 		Optional<Lecture> existingLecture = lectureDao.findByTeacherAudienceDateAndLectureTime(lecture.getTeacher(),
 				lecture.getAudience(), lecture.getDate(), lecture.getTime());
-		if (existingLecture.isEmpty() || (existingLecture.get().getId() == lecture.getId())) {
-			return;
-		} else {
+		if (!existingLecture.isEmpty() && (existingLecture.get().getId() != lecture.getId())) {
 			throw new EntityNotUniqueException("Lecture with same audience, date and lecture time is already exists!",
 					"Audience room number is: " + lecture.getAudience().getRoom(),
 					"Lecture date is: " + lecture.getDate(),

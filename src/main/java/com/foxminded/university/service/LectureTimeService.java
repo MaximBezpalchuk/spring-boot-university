@@ -61,9 +61,7 @@ public class LectureTimeService {
 		Optional<LectureTime> existingLectureTime = lectureTimeDao.findByPeriod(lectureTime.getStart(),
 				lectureTime.getEnd());
 
-		if (existingLectureTime.isEmpty() || (existingLectureTime.get().getId() == lectureTime.getId())) {
-			return;
-		} else {
+		if (!existingLectureTime.isEmpty() && (existingLectureTime.get().getId() != lectureTime.getId())) {
 			throw new EntityNotUniqueException("Lecture time with same start and end times is already exists!",
 					"Lecture time start: " + lectureTime.getStart(), "Lecture time end: " + lectureTime.getEnd());
 		}
