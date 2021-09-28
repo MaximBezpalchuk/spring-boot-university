@@ -37,7 +37,7 @@ public class GroupService {
 
 	public void save(Group group) throws ServiceLayerException {
 		logger.debug("Save group");
-		isUniqueCheck(group);
+		uniqueCheck(group);
 		groupDao.save(group);
 	}
 
@@ -51,7 +51,7 @@ public class GroupService {
 		return groupDao.findByLectureId(id);
 	}
 
-	private void isUniqueCheck(Group group) throws EntityNotUniqueException {
+	private void uniqueCheck(Group group) throws EntityNotUniqueException {
 		logger.debug("Check group is unique");
 		Optional<Group> existingGroup = groupDao.findByName(group.getName());
 		if (existingGroup.isEmpty() || (existingGroup.get().getId() == group.getId())) {

@@ -42,8 +42,8 @@ public class StudentService {
 
 	public void save(Student student) throws ServiceLayerException {
 		logger.debug("Save student");
-		isUniqueCheck(student);
-		isGroupFilledCheck(student);
+		uniqueCheck(student);
+		groupOverflowCheck(student);
 		studentDao.save(student);
 	}
 
@@ -52,7 +52,7 @@ public class StudentService {
 		studentDao.deleteById(id);
 	}
 
-	private void isUniqueCheck(Student student) throws EntityNotUniqueException {
+	private void uniqueCheck(Student student) throws EntityNotUniqueException {
 		logger.debug("Check student is unique");
 		Optional<Student> existingStudent = studentDao.findByFullNameAndBirthDate(student.getFirstName(),
 				student.getLastName(), student.getBirthDate());
@@ -67,7 +67,7 @@ public class StudentService {
 		}
 	}
 
-	private void isGroupFilledCheck(Student student) throws GroupOverflowException {
+	private void groupOverflowCheck(Student student) throws GroupOverflowException {
 		logger.debug("Check that group is filled");
 		if (student.getGroup() != null) {
 			int groupSize = studentDao.findByGroupId(student.getGroup().getId()).size();

@@ -47,10 +47,10 @@ public class VacationService {
 
 	public void save(Vacation vacation) throws ServiceLayerException {
 		logger.debug("Save vacation");
-		isUniqueCheck(vacation);
-		isDateCorrectCheck(vacation);
-		isDateMoreThenOneDayCheck(vacation);
-		isVacationDurationLessOrEqualsThanMaxCheck(vacation);
+		uniqueCheck(vacation);
+		dateCorrectCheck(vacation);
+		dateMoreThenOneDayCheck(vacation);
+		vacationDurationLessOrEqualsThanMaxCheck(vacation);
 		vacationDao.save(vacation);
 	}
 
@@ -64,7 +64,7 @@ public class VacationService {
 		return vacationDao.findByTeacherId(id);
 	}
 
-	private void isUniqueCheck(Vacation vacation) throws EntityNotUniqueException {
+	private void uniqueCheck(Vacation vacation) throws EntityNotUniqueException {
 		logger.debug("Check vacation is unique");
 		Optional<Vacation> existingVacation = vacationDao.findByPeriodAndTeacher(vacation.getStart(), vacation.getEnd(),
 				vacation.getTeacher());
@@ -78,7 +78,7 @@ public class VacationService {
 		}
 	}
 
-	private void isDateCorrectCheck(Vacation vacation) throws VacationNotCorrectDateException {
+	private void dateCorrectCheck(Vacation vacation) throws VacationNotCorrectDateException {
 		logger.debug("Check vacation start is after end");
 		if (vacation.getStart().isBefore(vacation.getEnd()) || vacation.getStart().equals(vacation.getEnd())) {
 			return;
@@ -88,7 +88,7 @@ public class VacationService {
 		}
 	}
 
-	private void isDateMoreThenOneDayCheck(Vacation vacation) throws VacationLessOneDayException {
+	private void dateMoreThenOneDayCheck(Vacation vacation) throws VacationLessOneDayException {
 		logger.debug("Check vacation duration more or equals 1 day");
 		if (getVacationDaysCount(vacation) < 1) {
 			throw new VacationLessOneDayException("Vacation can`t be less than 1 day!",
@@ -100,7 +100,7 @@ public class VacationService {
 		return Math.abs(Period.between(vacation.getStart(), vacation.getEnd()).getDays());
 	}
 
-	private void isVacationDurationLessOrEqualsThanMaxCheck(Vacation vacation)
+	private void vacationDurationLessOrEqualsThanMaxCheck(Vacation vacation)
 			throws VacationDurationMoreThanMaxException {
 		logger.debug("Check vacation duration less or equals than max");
 		int teacherVacationDays = vacationDao

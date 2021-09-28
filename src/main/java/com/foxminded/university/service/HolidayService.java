@@ -38,7 +38,7 @@ public class HolidayService {
 
 	public void save(Holiday holiday) throws ServiceLayerException {
 		logger.debug("Save holiday");
-		isUniqueCheck(holiday);
+		uniqueCheck(holiday);
 		holidayDao.save(holiday);
 	}
 
@@ -47,7 +47,7 @@ public class HolidayService {
 		holidayDao.deleteById(id);
 	}
 
-	private void isUniqueCheck(Holiday holiday) throws EntityNotUniqueException {
+	private void uniqueCheck(Holiday holiday) throws EntityNotUniqueException {
 		logger.debug("Check holiday is unique");
 		Optional<Holiday> existingHoliday = holidayDao.findByNameAndDate(holiday.getName(), holiday.getDate());
 

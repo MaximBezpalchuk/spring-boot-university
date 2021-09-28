@@ -37,7 +37,7 @@ public class CathedraService {
 
 	public void save(Cathedra cathedra) throws ServiceLayerException {
 		logger.debug("Save cathedra");
-		isUniqueCheck(cathedra);
+		uniqueCheck(cathedra);
 		cathedraDao.save(cathedra);
 	}
 
@@ -46,7 +46,7 @@ public class CathedraService {
 		cathedraDao.deleteById(id);
 	}
 
-	private void isUniqueCheck(Cathedra cathedra) throws EntityNotUniqueException {
+	private void uniqueCheck(Cathedra cathedra) throws EntityNotUniqueException {
 		logger.debug("Check catheda is unique");
 		Optional<Cathedra> existingCathedra = cathedraDao.findByName(cathedra.getName());
 		if (existingCathedra.isEmpty() || existingCathedra.get().getId() == cathedra.getId()) {

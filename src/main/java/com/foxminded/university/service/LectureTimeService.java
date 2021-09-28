@@ -44,9 +44,9 @@ public class LectureTimeService {
 
 	public void save(LectureTime lectureTime) throws ServiceLayerException {
 		logger.debug("Save lecture time");
-		isUniqueCheck(lectureTime);
-		isTimeCorrectCheck(lectureTime);
-		isDurationMoreThanChosenTimeCheck(lectureTime);
+		uniqueCheck(lectureTime);
+		timeCorrectCheck(lectureTime);
+		durationMoreThanChosenTimeCheck(lectureTime);
 		lectureTimeDao.save(lectureTime);
 
 	}
@@ -56,7 +56,7 @@ public class LectureTimeService {
 		lectureTimeDao.deleteById(id);
 	}
 
-	private void isUniqueCheck(LectureTime lectureTime) throws EntityNotUniqueException {
+	private void uniqueCheck(LectureTime lectureTime) throws EntityNotUniqueException {
 		logger.debug("Check lecture time is unique");
 		Optional<LectureTime> existingLectureTime = lectureTimeDao.findByPeriod(lectureTime.getStart(),
 				lectureTime.getEnd());
@@ -69,7 +69,7 @@ public class LectureTimeService {
 		}
 	}
 
-	private void isTimeCorrectCheck(LectureTime lectureTime) throws LectureTimeNotCorrectException {
+	private void timeCorrectCheck(LectureTime lectureTime) throws LectureTimeNotCorrectException {
 		logger.debug("Check that start time is after end time");
 		if (!lectureTime.getStart().isBefore(lectureTime.getEnd())) {
 			throw new LectureTimeNotCorrectException("Lecture time`s start can`t be after lecture time`s end!",
@@ -77,7 +77,7 @@ public class LectureTimeService {
 		}
 	}
 
-	private void isDurationMoreThanChosenTimeCheck(LectureTime lectureTime)
+	private void durationMoreThanChosenTimeCheck(LectureTime lectureTime)
 			throws LectureTimeDurationMoreThanChosenTimeException {
 		logger.debug("Check that duration is more than min lecture duration");
 		long durationInMinutes = Duration.between(lectureTime.getStart(), lectureTime.getEnd()).toMinutes();

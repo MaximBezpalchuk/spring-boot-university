@@ -38,7 +38,7 @@ public class TeacherService {
 
 	public void save(Teacher teacher) throws ServiceLayerException {
 		logger.debug("Save teacher");
-		isUniqueCheck(teacher);
+		uniqueCheck(teacher);
 		teacherDao.save(teacher);
 	}
 
@@ -47,7 +47,7 @@ public class TeacherService {
 		teacherDao.deleteById(id);
 	}
 
-	private void isUniqueCheck(Teacher teacher) throws EntityNotUniqueException {
+	private void uniqueCheck(Teacher teacher) throws EntityNotUniqueException {
 		logger.debug("Check teacher is unique");
 
 		Optional<Teacher> existingTeacher = teacherDao.findByFullNameAndBirthDate(teacher.getFirstName(),

@@ -38,7 +38,7 @@ public class AudienceService {
 
 	public void save(Audience audience) throws ServiceLayerException {
 		logger.debug("Save audience");
-		isUniqueCheck(audience);
+		uniqueCheck(audience);
 		audienceDao.save(audience);
 	}
 
@@ -47,7 +47,7 @@ public class AudienceService {
 		audienceDao.deleteById(id);
 	}
 
-	private void isUniqueCheck(Audience audience) throws EntityNotUniqueException {
+	private void uniqueCheck(Audience audience) throws EntityNotUniqueException {
 		logger.debug("Check audience is unique");
 		Optional<Audience> existingAudience = audienceDao.findByRoom(audience.getRoom());
 		if (existingAudience.isEmpty() || (existingAudience.get().getId() == audience.getId())) {
