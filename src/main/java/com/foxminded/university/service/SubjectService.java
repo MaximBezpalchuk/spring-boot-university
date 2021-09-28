@@ -11,7 +11,7 @@ import com.foxminded.university.dao.SubjectDao;
 import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
-import com.foxminded.university.exception.ServiceLayerException;
+import com.foxminded.university.exception.ServiceException;
 import com.foxminded.university.model.Subject;
 
 @Service
@@ -36,7 +36,7 @@ public class SubjectService {
 				() -> new EntityNotFoundException("Can`t find any subject with specified id!", "Id is: " + id));
 	}
 
-	public void save(Subject subject) throws ServiceLayerException {
+	public void save(Subject subject) throws ServiceException {
 		logger.debug("Save subject");
 		uniqueCheck(subject);
 		subjectDao.save(subject);

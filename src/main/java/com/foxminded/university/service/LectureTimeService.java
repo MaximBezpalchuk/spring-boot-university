@@ -15,7 +15,7 @@ import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.exception.LectureTimeDurationMoreThanChosenTimeException;
 import com.foxminded.university.exception.LectureTimeNotCorrectException;
-import com.foxminded.university.exception.ServiceLayerException;
+import com.foxminded.university.exception.ServiceException;
 import com.foxminded.university.model.LectureTime;
 
 @Service
@@ -42,7 +42,7 @@ public class LectureTimeService {
 				() -> new EntityNotFoundException("Can`t find any lecture time with specified id!", "Id is: " + id));
 	}
 
-	public void save(LectureTime lectureTime) throws ServiceLayerException {
+	public void save(LectureTime lectureTime) throws ServiceException {
 		logger.debug("Save lecture time");
 		uniqueCheck(lectureTime);
 		timeCorrectCheck(lectureTime);

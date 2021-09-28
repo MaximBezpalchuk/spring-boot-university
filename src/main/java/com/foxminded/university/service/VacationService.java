@@ -14,7 +14,7 @@ import com.foxminded.university.dao.VacationDao;
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
-import com.foxminded.university.exception.ServiceLayerException;
+import com.foxminded.university.exception.ServiceException;
 import com.foxminded.university.exception.VacationDurationMoreThanMaxException;
 import com.foxminded.university.exception.VacationLessOneDayException;
 import com.foxminded.university.exception.VacationNotCorrectDateException;
@@ -45,7 +45,7 @@ public class VacationService {
 				() -> new EntityNotFoundException("Can`t find any vacation with specified id!", "Id is: " + id));
 	}
 
-	public void save(Vacation vacation) throws ServiceLayerException {
+	public void save(Vacation vacation) throws ServiceException {
 		logger.debug("Save vacation");
 		uniqueCheck(vacation);
 		dateCorrectCheck(vacation);

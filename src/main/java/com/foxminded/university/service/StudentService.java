@@ -13,7 +13,7 @@ import com.foxminded.university.dao.jdbc.JdbcStudentDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.exception.GroupOverflowException;
-import com.foxminded.university.exception.ServiceLayerException;
+import com.foxminded.university.exception.ServiceException;
 import com.foxminded.university.model.Student;
 
 @Service
@@ -40,7 +40,7 @@ public class StudentService {
 				() -> new EntityNotFoundException("Can`t find any student with specified id!", "Id is: " + id));
 	}
 
-	public void save(Student student) throws ServiceLayerException {
+	public void save(Student student) throws ServiceException {
 		logger.debug("Save student");
 		uniqueCheck(student);
 		groupOverflowCheck(student);

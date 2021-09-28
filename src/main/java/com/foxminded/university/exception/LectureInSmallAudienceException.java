@@ -2,7 +2,7 @@ package com.foxminded.university.exception;
 
 import org.springframework.lang.Nullable;
 
-public class LectureInSmallAudienceException extends ServiceLayerException {
+public class LectureInSmallAudienceException extends ServiceException {
 
 	private static final long serialVersionUID = -4852735498788343348L;
 

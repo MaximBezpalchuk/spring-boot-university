@@ -11,7 +11,7 @@ import com.foxminded.university.dao.HolidayDao;
 import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
-import com.foxminded.university.exception.ServiceLayerException;
+import com.foxminded.university.exception.ServiceException;
 import com.foxminded.university.model.Holiday;
 
 @Service
@@ -36,7 +36,7 @@ public class HolidayService {
 				() -> new EntityNotFoundException("Can`t find any holiday with specified id!", "Id is: " + id));
 	}
 
-	public void save(Holiday holiday) throws ServiceLayerException {
+	public void save(Holiday holiday) throws ServiceException {
 		logger.debug("Save holiday");
 		uniqueCheck(holiday);
 		holidayDao.save(holiday);

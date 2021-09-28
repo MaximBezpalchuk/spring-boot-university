@@ -11,7 +11,7 @@ import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.dao.jdbc.JdbcGroupDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
-import com.foxminded.university.exception.ServiceLayerException;
+import com.foxminded.university.exception.ServiceException;
 import com.foxminded.university.model.Group;
 
 @Service
@@ -36,7 +36,7 @@ public class GroupService {
 				() -> new EntityNotFoundException("Can`t find any group with specified id!", "Id is: " + id));
 	}
 
-	public void save(Group group) throws ServiceLayerException {
+	public void save(Group group) throws ServiceException {
 		logger.debug("Save group");
 		uniqueCheck(group);
 		groupDao.save(group);

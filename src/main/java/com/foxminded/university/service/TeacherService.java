@@ -11,7 +11,7 @@ import com.foxminded.university.dao.TeacherDao;
 import com.foxminded.university.dao.jdbc.JdbcTeacherDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
-import com.foxminded.university.exception.ServiceLayerException;
+import com.foxminded.university.exception.ServiceException;
 import com.foxminded.university.model.Teacher;
 
 @Service
@@ -36,7 +36,7 @@ public class TeacherService {
 				() -> new EntityNotFoundException("Can`t find any teacher with specified id!", "Id is: " + id));
 	}
 
-	public void save(Teacher teacher) throws ServiceLayerException {
+	public void save(Teacher teacher) throws ServiceException {
 		logger.debug("Save teacher");
 		uniqueCheck(teacher);
 		teacherDao.save(teacher);

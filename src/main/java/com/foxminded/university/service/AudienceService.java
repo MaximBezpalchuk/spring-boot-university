@@ -11,7 +11,7 @@ import com.foxminded.university.dao.AudienceDao;
 import com.foxminded.university.dao.jdbc.JdbcAudienceDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
-import com.foxminded.university.exception.ServiceLayerException;
+import com.foxminded.university.exception.ServiceException;
 import com.foxminded.university.model.Audience;
 
 @Service
@@ -36,7 +36,7 @@ public class AudienceService {
 				() -> new EntityNotFoundException("Can`t find any audience with specified id!", "Id is: " + id));
 	}
 
-	public void save(Audience audience) throws ServiceLayerException {
+	public void save(Audience audience) throws ServiceException {
 		logger.debug("Save audience");
 		uniqueCheck(audience);
 		audienceDao.save(audience);

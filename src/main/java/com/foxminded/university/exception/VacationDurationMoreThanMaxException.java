@@ -2,7 +2,7 @@ package com.foxminded.university.exception;
 
 import org.springframework.lang.Nullable;
 
-public class VacationDurationMoreThanMaxException extends ServiceLayerException {
+public class VacationDurationMoreThanMaxException extends ServiceException {
 
 	private static final long serialVersionUID = 3371933798695849736L;
 

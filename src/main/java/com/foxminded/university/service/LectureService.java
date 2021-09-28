@@ -27,7 +27,7 @@ import com.foxminded.university.exception.LectureOnSundayException;
 import com.foxminded.university.exception.LectureWithBusyTeacherException;
 import com.foxminded.university.exception.LectureWithNotCompetentTeacherException;
 import com.foxminded.university.exception.LectureWithTeacherInVacationException;
-import com.foxminded.university.exception.ServiceLayerException;
+import com.foxminded.university.exception.ServiceException;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Lecture;
 
@@ -64,7 +64,7 @@ public class LectureService {
 				() -> new EntityNotFoundException("Can`t find any lecture with specified id!", "Id is: " + id));
 	}
 
-	public void save(Lecture lecture) throws ServiceLayerException {
+	public void save(Lecture lecture) throws ServiceException {
 		logger.debug("Save lecture");
 		uniqueCheck(lecture);
 		sundayCheck(lecture);

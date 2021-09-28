@@ -11,7 +11,7 @@ import com.foxminded.university.dao.CathedraDao;
 import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
-import com.foxminded.university.exception.ServiceLayerException;
+import com.foxminded.university.exception.ServiceException;
 import com.foxminded.university.model.Cathedra;
 
 @Service
@@ -36,7 +36,7 @@ public class CathedraService {
 				() -> new EntityNotFoundException("Can`t find any cathedra with specified id!", "Id is: " + id));
 	}
 
-	public void save(Cathedra cathedra) throws ServiceLayerException {
+	public void save(Cathedra cathedra) throws ServiceException {
 		logger.debug("Save cathedra");
 		uniqueCheck(cathedra);
 		cathedraDao.save(cathedra);
