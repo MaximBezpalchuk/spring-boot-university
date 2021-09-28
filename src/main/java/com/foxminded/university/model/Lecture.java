@@ -40,6 +40,10 @@ public class Lecture {
 		return cathedra;
 	}
 
+	public void setCathedra(Cathedra cathedra) {
+		this.cathedra = cathedra;
+	}
+
 	public List<Group> getGroups() {
 		return groups;
 	}
@@ -74,6 +78,14 @@ public class Lecture {
 
 	public Subject getSubject() {
 		return subject;
+	}
+
+	public void setSubject(Subject subject) {
+		this.subject = subject;
+	}
+
+	public void setTeacher(Teacher teacher) {
+		this.teacher = teacher;
 	}
 
 	public LectureTime getTime() {

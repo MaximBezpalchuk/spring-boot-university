@@ -21,12 +21,13 @@ public class VacationRowMapper implements RowMapper<Vacation> {
 
 	@Override
 	public Vacation mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-		return Vacation.builder()
+		Vacation vacation =  Vacation.builder()
 				.start(resultSet.getObject("start", LocalDate.class))
 				.end(resultSet.getObject("finish", LocalDate.class))
-				.teacher(teacherDao.findById(resultSet.getInt("teacher_id")).orElse(null))
 				.id(resultSet.getInt("id"))
 				.build();
+		teacherDao.findById(resultSet.getInt("teacher_id")).ifPresent(vacation::setTeacher);
+		
+		return vacation;
 	}
-
 }

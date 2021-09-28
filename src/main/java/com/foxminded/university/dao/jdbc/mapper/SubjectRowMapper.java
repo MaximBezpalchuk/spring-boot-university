@@ -20,12 +20,13 @@ public class SubjectRowMapper implements RowMapper<Subject> {
 
 	@Override
 	public Subject mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-		return Subject.builder()
+		Subject subject = Subject.builder()
 				.id(resultSet.getInt("id"))
-				.cathedra(cathedraDao.findById(resultSet.getInt("cathedra_id")).orElse(null))
 				.name(resultSet.getString("name"))
 				.description(resultSet.getString("description"))
 				.build();
+		cathedraDao.findById(resultSet.getInt("cathedra_id")).ifPresent(subject::setCathedra);
+		
+		return subject;
 	}
-
 }

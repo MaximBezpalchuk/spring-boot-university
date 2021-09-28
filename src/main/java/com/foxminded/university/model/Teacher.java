@@ -61,6 +61,10 @@ public class Teacher extends Person {
 		return cathedra;
 	}
 
+	public void setCathedra(Cathedra cathedra) {
+		this.cathedra = cathedra;
+	}
+
 	public List<Subject> getSubjects() {
 		return subjects;
 	}
