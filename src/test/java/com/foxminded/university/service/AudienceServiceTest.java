@@ -1,11 +1,13 @@
 package com.foxminded.university.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +16,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.foxminded.university.dao.jdbc.JdbcAudienceDao;
+import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Audience;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,11 +41,21 @@ public class AudienceServiceTest {
 
 	@Test
 	void givenExistingAudience_whenFindById_thenAudienceFound() {
-		Audience expected = Audience.builder().id(1).build();
+		Optional<Audience> expected = Optional.of(Audience.builder().id(1).build());
 		when(audienceDao.findById(1)).thenReturn(expected);
 		Audience actual = audienceService.findById(1);
 
-		assertEquals(expected, actual);
+		assertEquals(expected.get(), actual);
+	}
+	
+	@Test
+	void givenExistingAudience_whenFindById_thenEntityNotFoundException() {
+		when(audienceDao.findById(10)).thenReturn(Optional.empty());
+		Exception exception = assertThrows(EntityNotFoundException.class, () -> {
+			audienceService.findById(10);
+		});
+
+		assertEquals("Can`t find any audience with id: 10", exception.getMessage());
 	}
 
 	@Test
@@ -55,7 +69,7 @@ public class AudienceServiceTest {
 	@Test
 	void givenExistingAudience_whenSave_thenSaved() {
 		Audience audience = Audience.builder().id(1).room(123).build();
-		when(audienceDao.findByRoom(audience.getRoom())).thenReturn(audience);
+		when(audienceDao.findByRoom(audience.getRoom())).thenReturn(Optional.of(audience));
 		audienceService.save(audience);
 		
 		verify(audienceDao).save(audience);
@@ -67,5 +81,22 @@ public class AudienceServiceTest {
 
 		verify(audienceDao).deleteById(3);
 	}
+	
+	@Test
+	void givenNotUniqueAudience_whenSave_thenEntityNotUniqueException() {
+		Audience audience1 = Audience.builder()
+				.id(1)
+				.room(10)
+				.build();
+		Audience audience2 = Audience.builder()
+				.id(5)
+				.room(10)
+				.build();
+		when(audienceDao.findByRoom(audience1.getRoom())).thenReturn(Optional.of(audience2));
+		Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
+				audienceService.save(audience1);
+			});
 
+		assertEquals("Audience with room number 10 is already exists!", exception.getMessage());
+	}
 }

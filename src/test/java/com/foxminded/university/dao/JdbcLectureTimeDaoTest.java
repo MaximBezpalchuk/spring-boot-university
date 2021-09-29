@@ -1,11 +1,11 @@
 package com.foxminded.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
 import java.time.LocalTime;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,18 +41,18 @@ public class JdbcLectureTimeDaoTest {
 
 	@Test
 	void givenExistingLectureTime_whenFindById_thenLectureTimeFound() {
-		LectureTime expected = LectureTime.builder()
+		Optional<LectureTime> expected = Optional.of(LectureTime.builder()
 				.id(1).start(LocalTime.of(8, 0, 0))
 				.end(LocalTime.of(9, 30, 0))
-				.build();
-		LectureTime actual = lectureTimeDao.findById(1);
+				.build());
+		Optional<LectureTime> actual = lectureTimeDao.findById(1);
 
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	void givenNotExistingLectureTime_whenFindById_thenReturnNull() {
-		assertNull(lectureTimeDao.findById(100));
+	void givenNotExistingLectureTime_whenFindById_thenReturnEmptyOptional() {
+		assertEquals(lectureTimeDao.findById(100), Optional.empty());
 	}
 
 	@Test
@@ -90,11 +90,11 @@ public class JdbcLectureTimeDaoTest {
 	
 	@Test
 	void givenPeriod_whenFindByPeriod_thenLectureTimeFound() {
-		LectureTime expected = LectureTime.builder()
+		Optional<LectureTime> expected = Optional.of(LectureTime.builder()
 				.id(1).start(LocalTime.of(8, 0, 0))
 				.end(LocalTime.of(9, 30, 0))
-				.build();
-		LectureTime actual = lectureTimeDao.findByPeriod(expected.getStart(), expected.getEnd());
+				.build());
+		Optional<LectureTime> actual = lectureTimeDao.findByPeriod(expected.get().getStart(), expected.get().getEnd());
 
 		assertEquals(expected, actual);
 	}

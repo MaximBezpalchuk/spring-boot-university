@@ -1,9 +1,10 @@
 package com.foxminded.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
+
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,19 +41,19 @@ public class JdbcGroupDaoTest {
 
 	@Test
 	void givenExistingGroup_whenFindById_thenGroupFound() {
-		Group actual = groupDao.findById(1);
-		Group expected = Group.builder()
+		Optional<Group> actual = groupDao.findById(1);
+		Optional<Group> expected = Optional.of(Group.builder()
 				.id(1)
 				.name("Killers")
-				.cathedra(actual.getCathedra())
-				.build();
+				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+				.build());
 
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	void givenNotExistingGroup_whenFindById_thenReturnNull() {
-		assertNull(groupDao.findById(100));
+	void givenNotExistingGroup_whenFindById_thenReturnEmptyOptional() {
+		assertEquals(groupDao.findById(100), Optional.empty());
 	}
 
 	@Test
@@ -70,7 +71,7 @@ public class JdbcGroupDaoTest {
 	
 	@Test
 	void givenExitstingGroup_whenSaveWithChanges_thenChangesApplied() {
-		Group expected = groupDao.findById(1);
+		Group expected = groupDao.findById(1).get();
 		expected.setName("Killers 2");
 		groupDao.save(expected);
 		
@@ -87,12 +88,12 @@ public class JdbcGroupDaoTest {
 	
 	@Test
 	void givenGroupName_whenFindByName_thenGroupFound() {
-		Group actual = groupDao.findByName("Killers");
-		Group expected = Group.builder()
+		Optional<Group> actual = groupDao.findByName("Killers");
+		Optional<Group> expected =Optional.of(Group.builder()
 				.id(1)
 				.name("Killers")
-				.cathedra(actual.getCathedra())
-				.build();
+				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+				.build());
 
 		assertEquals(expected, actual);
 	}

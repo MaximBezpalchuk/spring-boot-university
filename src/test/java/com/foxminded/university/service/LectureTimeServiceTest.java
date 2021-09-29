@@ -1,13 +1,14 @@
 package com.foxminded.university.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.never;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.foxminded.university.dao.jdbc.JdbcLectureTimeDao;
+import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
+import com.foxminded.university.exception.ChosenDurationException;
+import com.foxminded.university.exception.DurationException;
 import com.foxminded.university.model.LectureTime;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,11 +51,21 @@ public class LectureTimeServiceTest {
 
 	@Test
 	void givenExistingLectureTime_whenFindById_thenLectureTimeFound() {
-		LectureTime expected = LectureTime.builder().id(1).build();
+		Optional<LectureTime> expected = Optional.of(LectureTime.builder().id(1).build());
 		when(lectureTimeDao.findById(1)).thenReturn(expected);
 		LectureTime actual = lectureTimeService.findById(1);
 
-		assertEquals(expected, actual);
+		assertEquals(expected.get(), actual);
+	}
+	
+	@Test
+	void givenExistingLectureTime_whenFindById_thenEntityNotFoundException() {
+		when(lectureTimeDao.findById(100)).thenReturn(Optional.empty());
+		Exception exception = assertThrows(EntityNotFoundException.class, () -> {
+			lectureTimeService.findById(100);
+		});
+
+		assertEquals("Can`t find any lecture time with id: 100", exception.getMessage());
 	}
 
 	@Test
@@ -74,37 +89,64 @@ public class LectureTimeServiceTest {
 				.start(start)
 				.end(end)
 				.build();
-		when(lectureTimeDao.findByPeriod(start, end)).thenReturn(lectureTime);
+		when(lectureTimeDao.findByPeriod(start, end)).thenReturn(Optional.of(lectureTime));
 		lectureTimeService.save(lectureTime);
 		
 		verify(lectureTimeDao).save(lectureTime);
 	}
 	
 	@Test
-	void givenLectureTimeLessThanMinLectureDuration_whenSave_thenNotSaved() {
+	void givenNotUniqueLectureTime_whenSave_thenEntityNotUniqueException() {
+		LocalTime start = LocalTime.of(9, 0);
+		LocalTime end = LocalTime.of(10, 0);
+		LectureTime lectureTime1 = LectureTime.builder()
+				.id(1)
+				.start(start)
+				.end(end)
+				.build();
+		LectureTime lectureTime2 = LectureTime.builder()
+				.id(2)
+				.start(start)
+				.end(end)
+				.build();
+		when(lectureTimeDao.findByPeriod(lectureTime1.getStart(),
+				lectureTime1.getEnd())).thenReturn(Optional.of(lectureTime2));
+		Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
+				lectureTimeService.save(lectureTime1);
+			});
+
+		assertEquals("Lecture time with start time 09:00 and end time 10:00 is already exists!", exception.getMessage());
+	}
+	
+	@Test
+	void givenLectureTimeLessThanMinLectureDuration_whenSave_thenLectureTimeDurationMoreThanChosenTimeException() {
 		LocalTime start = LocalTime.of(9, 0);
 		LocalTime end = LocalTime.of(9, 20);
 		LectureTime lectureTime = LectureTime.builder()
 				.start(start)
 				.end(end)
 				.build();
-		lectureTimeService.save(lectureTime);
-		
-		verify(lectureTimeDao, never()).save(lectureTime);
-	}
+		Exception exception = assertThrows(ChosenDurationException.class, () -> {
+			lectureTimeService.save(lectureTime);
+		});
+
+	assertEquals("Duration 20 minutes is less than min lecture duration (30 minutes)!", exception.getMessage());
+}
 	
 	@Test
-	void givenLectureTimeWithWrongEnd_whenSave_thenSaved() {
+	void givenLectureTimeWithWrongEnd_whenSave_thenLectureTimeNotCorrectException() {
 		LocalTime start = LocalTime.of(9, 0);
 		LocalTime end = LocalTime.of(8, 0);
 		LectureTime lectureTime = LectureTime.builder()
 				.start(start)
 				.end(end)
 				.build();
-		lectureTimeService.save(lectureTime);
-		
-		verify(lectureTimeDao, never()).save(lectureTime);
-	}
+		Exception exception = assertThrows(DurationException.class, () -> {
+			lectureTimeService.save(lectureTime);
+		});
+
+	assertEquals("Lecture time`s start (09:00) can`t be after lecture time`s end (08:00)!", exception.getMessage());
+}
 
 	@Test
 	void givenExistingLectureTimeId_whenDelete_thenDeleted() {

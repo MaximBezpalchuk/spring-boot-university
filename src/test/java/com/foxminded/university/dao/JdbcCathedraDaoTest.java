@@ -1,9 +1,10 @@
 package com.foxminded.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
+
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,18 +40,18 @@ public class JdbcCathedraDaoTest {
 
 	@Test
 	void givenExistingCathedra_whenFindById_thenCathedraFound() {
-		Cathedra expected = Cathedra.builder()
+		Optional<Cathedra> expected = Optional.of(Cathedra.builder()
 				.id(1)
 				.name("Fantastic Cathedra")
-				.build();
-		Cathedra actual = cathedraDao.findById(1);
+				.build());
+		Optional<Cathedra> actual = cathedraDao.findById(1);
 
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	void givenNotExistingCathedra_whenFindById_thenReturnNull() {
-		assertNull(cathedraDao.findById(100));
+	void givenNotExistingCathedra_whenFindById_thenReturnEmptyOptional() {
+		assertEquals(cathedraDao.findById(100), Optional.empty());
 	}
 
 	@Test
@@ -84,11 +85,11 @@ public class JdbcCathedraDaoTest {
 	
 	@Test
 	void givenCathedraName_whenFindByName_thenCathedraFound() {
-		Cathedra expected = Cathedra.builder()
+		Optional<Cathedra> expected = Optional.of(Cathedra.builder()
 				.id(1)
 				.name("Fantastic Cathedra")
-				.build();
-		Cathedra actual = cathedraDao.findByName("Fantastic Cathedra");
+				.build());
+		Optional<Cathedra> actual = cathedraDao.findByName("Fantastic Cathedra");
 
 		assertEquals(expected, actual);
 	}

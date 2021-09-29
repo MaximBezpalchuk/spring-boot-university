@@ -1,11 +1,13 @@
 package com.foxminded.university.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +16,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
+import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Subject;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,11 +40,21 @@ public class SubjectServiceTest {
 
 	@Test
 	void givenExistingSubject_whenFindById_thenSubjectFound() {
-		Subject expected = Subject.builder().id(1).build();
+		Optional<Subject> expected = Optional.of(Subject.builder().id(1).build());
 		when(subjectDao.findById(1)).thenReturn(expected);
 		Subject actual = subjectService.findById(1);
 
-		assertEquals(expected, actual);
+		assertEquals(expected.get(), actual);
+	}
+	
+	@Test
+	void givenExistingSubject_whenFindById_thenEntityNotFoundException() {
+		when(subjectDao.findById(10)).thenReturn(Optional.empty());
+		Exception exception = assertThrows(EntityNotFoundException.class, () -> {
+			subjectService.findById(10);
+		});
+
+		assertEquals("Can`t find any subject with id: 10", exception.getMessage());
 	}
 
 	@Test
@@ -54,7 +68,7 @@ public class SubjectServiceTest {
 	@Test
 	void givenExistingSubject_whenSave_thenSaved() {
 		Subject subject = Subject.builder().id(1).name("TestName").build();
-		when(subjectDao.findByName(subject.getName())).thenReturn(subject);
+		when(subjectDao.findByName(subject.getName())).thenReturn(Optional.of(subject));
 		subjectService.save(subject);
 
 		verify(subjectDao).save(subject);
@@ -65,6 +79,18 @@ public class SubjectServiceTest {
 		subjectService.deleteById(1);
 
 		verify(subjectDao).deleteById(1);
+	}
+	
+	@Test
+	void givenNotUniqueSubject_whenSave_thenEntityNotUniqueException() {
+		Subject subject1 = Subject.builder().id(1).name("TestName").build();
+		Subject subject2 = Subject.builder().id(2).name("TestName").build();
+		when(subjectDao.findByName(subject1.getName())).thenReturn(Optional.of(subject2));
+		Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
+			subjectService.save(subject1);
+			});
+
+		assertEquals("Subject with name TestName is already exists!", exception.getMessage());
 	}
 
 	@Test

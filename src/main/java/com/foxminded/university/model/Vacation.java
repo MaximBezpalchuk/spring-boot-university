@@ -17,6 +17,14 @@ public class Vacation {
 		this.teacher = teacher;
 	}
 
+	public void setStart(LocalDate start) {
+		this.start = start;
+	}
+
+	public void setEnd(LocalDate end) {
+		this.end = end;
+	}
+
 	public int getId() {
 		return id;
 	}

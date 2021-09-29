@@ -1,7 +1,6 @@
 package com.foxminded.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
@@ -9,6 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -49,20 +49,20 @@ public class JdbcVacationDaoTest {
 
 	@Test
 	void givenExistingVacation_whenFindById_thenVacationFound() {
-		Vacation actual = vacationDao.findById(1);
-		Vacation expected = Vacation.builder()
+		Optional<Vacation> actual = vacationDao.findById(1);
+		Optional<Vacation> expected = Optional.of(Vacation.builder()
 				.id(1)
 				.start(LocalDate.of(2021, 1, 15))
 				.end(LocalDate.of(2021, 1, 29))
-				.teacher(actual.getTeacher())
-				.build();
+				.teacher(actual.get().getTeacher())
+				.build());
 
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	void givenNotExistingVacation_whenFindById_thenReturnNull() {
-		assertNull(vacationDao.findById(100));
+	void givenNotExistingVacation_whenFindById_thenReturnEmptyOptional() {
+		assertEquals(vacationDao.findById(100), Optional.empty());
 	}
 
 	@Test
@@ -147,13 +147,14 @@ public class JdbcVacationDaoTest {
 		subjects.add(subject);
 		teacher.setSubjects(subjects);
 		
-		Vacation expected = Vacation.builder()
+		Optional<Vacation> expected = Optional.of(Vacation.builder()
 				.id(1)
 				.start(LocalDate.of(2021, 1, 15))
 				.end(LocalDate.of(2021, 1, 29))
 				.teacher(teacher)
-				.build();
-		Vacation actual = vacationDao.findByPeriodAndTeacher(expected.getStart(), expected.getEnd(), teacher);
+				.build());
+		Optional<Vacation> actual = vacationDao.findByPeriodAndTeacher(expected.get().getStart(),
+				expected.get().getEnd(), teacher);
 
 		assertEquals(expected, actual);
 	}

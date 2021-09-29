@@ -3,7 +3,10 @@ package com.foxminded.university.dao.jdbc;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
+import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -16,6 +19,8 @@ import com.foxminded.university.model.Group;
 
 @Component
 public class JdbcGroupDao implements GroupDao {
+	
+	private final static Logger logger = LoggerFactory.getLogger(JdbcGroupDao.class);
 
 	private final static String SELECT_ALL = "SELECT * FROM groups";
 	private final static String SELECT_BY_ID = "SELECT * FROM groups WHERE id = ?";
@@ -35,20 +40,23 @@ public class JdbcGroupDao implements GroupDao {
 
 	@Override
 	public List<Group> findAll() {
+		logger.debug("Find all groups");
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
 
 	@Override
-	public Group findById(int id) {
+	public Optional<Group> findById(int id) {
+		logger.debug("Find group by id: {}", id);
 		try {
-			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id));
 		} catch (EmptyResultDataAccessException e) {
-			return null;
+			return Optional.empty();
 		}
 	}
 
 	@Override
 	public void save(Group group) {
+		logger.debug("Save group {}", group);
 		if (group.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			jdbcTemplate.update(connection -> {
@@ -59,8 +67,10 @@ public class JdbcGroupDao implements GroupDao {
 				return statement;
 			}, keyHolder);
 			group.setId((int) keyHolder.getKeyList().get(0).get("id"));
+			logger.debug("New group created with id: {}", group.getId());
 		} else {
 			jdbcTemplate.update(UPDATE_GROUP, group.getName(), group.getCathedra().getId(), group.getId());
+			logger.debug("Group with id {} was updated", group.getId());
 		}
 
 	}
@@ -68,19 +78,22 @@ public class JdbcGroupDao implements GroupDao {
 	@Override
 	public void deleteById(int id) {
 		jdbcTemplate.update(DELETE_GROUP, id);
+		logger.debug("Group with id {} was deleted", id);
 	}
 
 	@Override
 	public List<Group> findByLectureId(int id) {
+		logger.debug("Find groups with lecture id: {}", id);
 		return jdbcTemplate.query(SELECT_BY_LECTURE_ID, rowMapper, id);
 	}
 
 	@Override
-	public Group findByName(String name) {
+	public Optional<Group> findByName(String name) {
+		logger.debug("Find group with name {}", name);
 		try {
-			return jdbcTemplate.queryForObject(SELECT_BY_NAME, rowMapper, name);
+			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_NAME, rowMapper, name));
 		} catch (EmptyResultDataAccessException e) {
-			return null;
+			return Optional.empty();
 		}
 	}
 }

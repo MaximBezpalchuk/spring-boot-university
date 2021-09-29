@@ -20,10 +20,12 @@ public class GroupRowMapper implements RowMapper<Group> {
 
 	@Override
 	public Group mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-		return Group.builder()
+		Group group =  Group.builder()
 				.id(resultSet.getInt("id"))
 				.name(resultSet.getString("name"))
-				.cathedra(cathedraDao.findById(resultSet.getInt("cathedra_id")))
 				.build();
+		cathedraDao.findById(resultSet.getInt("cathedra_id")).ifPresent(group::setCathedra);
+		
+		return group;
 	}
 }

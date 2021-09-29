@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 
 import com.foxminded.university.dao.jdbc.JdbcGroupDao;
 import com.foxminded.university.model.Gender;
-import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Student;
 
 @Component
@@ -36,10 +35,8 @@ public class StudentRowMapper implements RowMapper<Student> {
 				.id(resultSet.getInt("id"))
 				.build();
 		int groupId = resultSet.getInt("group_id");
-		if (!resultSet.wasNull()) {
-			Group group = groupDao.findById(groupId);
-			student.setGroup(group);
-		}
+		groupDao.findById(groupId).ifPresent(student::setGroup);
+		
 		return student;
 	}
 }

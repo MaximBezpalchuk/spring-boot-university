@@ -4,7 +4,10 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -18,6 +21,8 @@ import com.foxminded.university.model.Student;
 
 @Component
 public class JdbcStudentDao implements StudentDao {
+
+	private final static Logger logger = LoggerFactory.getLogger(JdbcStudentDao.class);
 
 	private final static String SELECT_ALL = "SELECT * FROM students";
 	private final static String SELECT_BY_ID = "SELECT * FROM students WHERE id = ?";
@@ -37,20 +42,23 @@ public class JdbcStudentDao implements StudentDao {
 
 	@Override
 	public List<Student> findAll() {
+		logger.debug("Find all students");
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
 
 	@Override
-	public Student findById(int id) {
+	public Optional<Student> findById(int id) {
+		logger.debug("Find student by id: {}", id);
 		try {
-			return jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id);
+			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_ID, rowMapper, id));
 		} catch (EmptyResultDataAccessException e) {
-			return null;
+			return Optional.empty();
 		}
 	}
 
 	@Override
 	public void save(Student student) {
+		logger.debug("Save student {}", student);
 		if (student.getId() == 0) {
 			KeyHolder keyHolder = new GeneratedKeyHolder();
 			Group group = student.getGroup();
@@ -74,6 +82,7 @@ public class JdbcStudentDao implements StudentDao {
 				return statement;
 			}, keyHolder);
 			student.setId((int) keyHolder.getKeyList().get(0).get("id"));
+			logger.debug("New studetnt created with id: {}", student.getId());
 		} else {
 
 			Group group = student.getGroup();
@@ -96,27 +105,31 @@ public class JdbcStudentDao implements StudentDao {
 				statement.setInt(11, student.getId());
 				return statement;
 			});
+			logger.debug("Student with id {} was updated", student.getId());
 		}
-
 	}
 
 	@Override
 	public void deleteById(int id) {
 		jdbcTemplate.update(DELETE_STUDENT, id);
+		logger.debug("Student with id {} was deleted", id);
 	}
 
 	@Override
-	public Student findByFullNameAndBirthDate(String firstName, String lastName, LocalDate birthDate) {
+	public Optional<Student> findByFullNameAndBirthDate(String firstName, String lastName, LocalDate birthDate) {
+		logger.debug("Find student with first name: {}, last name: {} and birthDate {}", firstName, lastName,
+				birthDate);
 		try {
-			return jdbcTemplate.queryForObject(SELECT_BY_FULL_NAME_AND_BIRTHDAY, rowMapper, firstName, lastName,
-					birthDate);
+			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_FULL_NAME_AND_BIRTHDAY, rowMapper, firstName,
+					lastName, birthDate));
 		} catch (EmptyResultDataAccessException e) {
-			return null;
+			return Optional.empty();
 		}
 	}
 
 	@Override
 	public List<Student> findByGroupId(int id) {
+		logger.debug("Find students with group id {}", id);
 		return jdbcTemplate.query(SELECT_BY_GROUP_ID, rowMapper, id);
 	}
 }

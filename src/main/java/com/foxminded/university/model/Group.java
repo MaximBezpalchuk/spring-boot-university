@@ -33,6 +33,10 @@ public class Group {
 	public Cathedra getCathedra() {
 		return cathedra;
 	}
+	
+	public void setCathedra(Cathedra cathedra) {
+		this.cathedra = cathedra;
+	}
 
 	public static Builder builder() {
 		return new Builder();

@@ -1,12 +1,12 @@
 package com.foxminded.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,28 +43,27 @@ public class JdbcSubjectDaoTest {
 
 	@Test
 	void givenExistingSubject_whenFindById_thenSubjectFound() {
-		Subject actual = subjectDao.findById(1);
-		Subject expected = Subject.builder()
-				.cathedra(actual.getCathedra())
+		Optional<Subject> actual = subjectDao.findById(1);
+		Optional<Subject> expected = Optional.of(Subject.builder()
+				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
 				.name("Weapon Tactics")
 				.description("Learning how to use heavy weapon and guerrilla tactics")
 				.id(1)
-				.build();
+				.build());
 
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	void givenNotExistingSubject_whenFindById_thenReturnNull() {
-		assertNull(subjectDao.findById(100));
+	void givenNotExistingSubject_whenFindById_thenReturnEmptyOptional() {
+		assertEquals(subjectDao.findById(100), Optional.empty());
 	}
 
 	@Test
 	void givenNewSubject_whenSaveSubject_thenAllExistingSubjectsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		Subject actual = subjectDao.findById(1);
 		subjectDao.save(Subject.builder()
-				.cathedra(actual.getCathedra())
+				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
 				.name("Weapon Tactics123")
 				.description("Learning how to use heavy weapon and guerrilla tactics123")
 				.build());
@@ -110,13 +109,13 @@ public class JdbcSubjectDaoTest {
 	
 	@Test
 	void givenSubjectName_whenFindByName_thenSubjectFound() {
-		Subject actual = subjectDao.findByName("Weapon Tactics");
-		Subject expected = Subject.builder()
-				.cathedra(actual.getCathedra())
+		Optional<Subject> actual = subjectDao.findByName("Weapon Tactics");
+		Optional<Subject> expected = Optional.of(Subject.builder()
+				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
 				.name("Weapon Tactics")
 				.description("Learning how to use heavy weapon and guerrilla tactics")
 				.id(1)
-				.build();
+				.build());
 
 		assertEquals(expected, actual);
 	}

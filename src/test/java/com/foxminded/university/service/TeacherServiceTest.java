@@ -1,12 +1,14 @@
 package com.foxminded.university.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,6 +17,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.foxminded.university.dao.jdbc.JdbcTeacherDao;
+import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Teacher;
 
 @ExtendWith(MockitoExtension.class)
@@ -37,11 +41,21 @@ public class TeacherServiceTest {
 
 	@Test
 	void givenExistingTeacher_whenFindById_thenTeacherFound() {
-		Teacher expected = Teacher.builder().id(1).build();
+		Optional<Teacher> expected = Optional.of(Teacher.builder().id(1).build());
 		when(teacherDao.findById(1)).thenReturn(expected);
 		Teacher actual = teacherService.findById(1);
 
-		assertEquals(expected, actual);
+		assertEquals(expected.get(), actual);
+	}
+	
+	@Test
+	void givenExistingTeacher_whenFindById_thenEntityNotFoundException() {
+		when(teacherDao.findById(10)).thenReturn(Optional.empty());
+		Exception exception = assertThrows(EntityNotFoundException.class, () -> {
+			teacherService.findById(10);
+		});
+
+		assertEquals("Can`t find any teacher with id: 10", exception.getMessage());
 	}
 
 	@Test
@@ -60,7 +74,7 @@ public class TeacherServiceTest {
 				.birthDate(LocalDate.of(1920, 2, 12))
 				.build();
 		when(teacherDao.findByFullNameAndBirthDate(teacher.getFirstName(), teacher.getLastName(),
-				teacher.getBirthDate())).thenReturn(teacher);
+				teacher.getBirthDate())).thenReturn(Optional.of(teacher));
 		teacherService.save(teacher);
 
 		verify(teacherDao).save(teacher);
@@ -71,5 +85,26 @@ public class TeacherServiceTest {
 		teacherService.deleteById(1);
 
 		verify(teacherDao).deleteById(1);
+	}
+	
+	@Test
+	void givenNotUniqueTeacher_whenSave_thenEntityNotUniqueException() {
+		Teacher teacher1 = Teacher.builder().id(1)
+				.firstName("TestFirstName")
+				.lastName("TestLastName")
+				.birthDate(LocalDate.of(1920, 2, 12))
+				.build();
+		Teacher teacher2 = Teacher.builder().id(10)
+				.firstName("TestFirstName")
+				.lastName("TestLastName")
+				.birthDate(LocalDate.of(1920, 2, 12))
+				.build();
+		when(teacherDao.findByFullNameAndBirthDate(teacher1.getFirstName(), teacher1.getLastName(),
+				teacher1.getBirthDate())).thenReturn(Optional.of(teacher2));
+		Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
+			teacherService.save(teacher1);
+			});
+
+		assertEquals("Teacher with full name TestFirstName TestLastName and birth date 1920-02-12 is already exists!", exception.getMessage());
 	}
 }

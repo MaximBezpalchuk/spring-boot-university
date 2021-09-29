@@ -1,7 +1,6 @@
 package com.foxminded.university.dao;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 
@@ -9,6 +8,7 @@ import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,33 +48,37 @@ public class JdbcTeacherDaoTest {
 
 	@Test
 	void givenExistingTeacher_whenFindById_thenTeacherFound() {
-		Teacher actual = teacherDao.findById(1);
-		Teacher expected = Teacher.builder()
+		Optional<Teacher> actual = teacherDao.findById(1);
+		Optional<Teacher> expected = Optional.of(Teacher.builder()
 				.firstName("Daniel")
 				.lastName("Morpheus")
 				.address("Virtual Reality Capsule no 1")
 				.gender(Gender.MALE)
 				.birthDate(LocalDate.of(1970, 1, 1))
-				.cathedra(actual.getCathedra())
+				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
 				.degree(Degree.PROFESSOR)
 				.phone("1")
 				.email("1@bigowl.com")
 				.postalCode("12345")
 				.education("Higher education")
 				.id(1)
-				.build();
+				.build());
 		List<Subject> subjects = new ArrayList<>();
-		Subject subject = Subject.builder().cathedra(actual.getCathedra()).name("Weapon Tactics")
-				.description("Learning how to use heavy weapon and guerrilla tactics").id(1).build();
+		Subject subject = Subject.builder()
+				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+				.name("Weapon Tactics")
+				.description("Learning how to use heavy weapon and guerrilla tactics")
+				.id(1)
+				.build();
 		subjects.add(subject);
-		expected.setSubjects(subjects);
+		expected.get().setSubjects(subjects);
 
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	void givenNotExistingTeacher_whenFindById_thenReturnNull() {
-		assertNull(teacherDao.findById(100));
+	void givenNotExistingTeacher_whenFindById_thenReturnEmptyOptional() {
+		assertEquals(teacherDao.findById(100), Optional.empty());
 	}
 
 	@Test
@@ -164,7 +168,7 @@ public class JdbcTeacherDaoTest {
 	@Test
 	void givenExitstingTeacher_whenUpdateSubjects_thenAllExistingTeachersFound() {
 		int expected = countRowsInTable(template, "subjects_teachers") + 1;
-		Teacher teacher = teacherDao.findById(1);
+		Teacher teacher = teacherDao.findById(1).get();
 		teacher.getSubjects().add(Subject.builder()
 				.cathedra(teacher.getCathedra())
 				.name("Wandless Magic")
@@ -180,7 +184,7 @@ public class JdbcTeacherDaoTest {
 	@Test
 	void givenFirstNameAndLastNameAndBirthDate_whenFindByFullNameAndBirthDate_thenTeacherFound() {
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
-		Teacher expected = Teacher.builder()
+		Optional<Teacher> expected = Optional.of(Teacher.builder()
 				.firstName("Daniel")
 				.lastName("Morpheus")
 				.address("Virtual Reality Capsule no 1")
@@ -193,13 +197,14 @@ public class JdbcTeacherDaoTest {
 				.postalCode("12345")
 				.education("Higher education")
 				.id(1)
-				.build();
+				.build());
 		List<Subject> subjects = new ArrayList<>();
 		Subject subject = Subject.builder().cathedra(cathedra).name("Weapon Tactics")
 				.description("Learning how to use heavy weapon and guerrilla tactics").id(1).build();
 		subjects.add(subject);
-		expected.setSubjects(subjects);
-		Teacher actual = teacherDao.findByFullNameAndBirthDate(expected.getFirstName(), expected.getLastName(), expected.getBirthDate());
+		expected.get().setSubjects(subjects);
+		Optional<Teacher> actual = teacherDao.findByFullNameAndBirthDate(expected.get().getFirstName(),
+				expected.get().getLastName(), expected.get().getBirthDate());
 
 		assertEquals(expected, actual);
 	}

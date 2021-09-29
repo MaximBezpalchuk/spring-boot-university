@@ -1,7 +1,7 @@
 package com.foxminded.university.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.never;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,16 @@ import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
 import com.foxminded.university.dao.jdbc.JdbcLectureDao;
 import com.foxminded.university.dao.jdbc.JdbcStudentDao;
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
+import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
+import com.foxminded.university.exception.AfterHoursException;
+import com.foxminded.university.exception.OccupiedAudienceException;
+import com.foxminded.university.exception.AudienceOverflowException;
+import com.foxminded.university.exception.HolidayException;
+import com.foxminded.university.exception.SundayException;
+import com.foxminded.university.exception.BusyTeacherException;
+import com.foxminded.university.exception.NotCompetentTeacherException;
+import com.foxminded.university.exception.TeacherInVacationException;
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Group;
@@ -65,11 +76,21 @@ public class LectureServiceTest {
 
 	@Test
 	void givenExistingLecture_whenFindById_thenLectureFound() {
-		Lecture expected = Lecture.builder().id(1).build();
+		Optional<Lecture> expected = Optional.of(Lecture.builder().id(1).build());
 		when(lectureDao.findById(1)).thenReturn(expected);
 		Lecture actual = lectureService.findById(1);
 
-		assertEquals(expected, actual);
+		assertEquals(expected.get(), actual);
+	}
+	
+	@Test
+	void givenExistingLecture_whenFindById_thenEntityNotFoundException() {
+		when(lectureDao.findById(10)).thenReturn(Optional.empty());
+		Exception exception = assertThrows(EntityNotFoundException.class, () -> {
+			lectureService.findById(10);
+		});
+
+		assertEquals("Can`t find any lecture with id: 10", exception.getMessage());
 	}
 
 	@Test
@@ -80,7 +101,6 @@ public class LectureServiceTest {
 				.subjects(Arrays.asList(Subject.builder().id(1).cathedra(cathedra).build()))
 				.build();
 		Lecture lecture = Lecture.builder()
-				.id(1)
 				.audience(Audience.builder().capacity(10).build())
 				.date(LocalDate.of(2021, 9, 8))
 				.time(LectureTime.builder()
@@ -89,7 +109,7 @@ public class LectureServiceTest {
 				.teacher(teacher)
 				.subject(Subject.builder().id(1).cathedra(cathedra).build()).build();
 		when(lectureDao.findByAudienceDateAndLectureTime(lecture.getAudience(), lecture.getDate(), lecture.getTime()))
-				.thenReturn(null);
+				.thenReturn(Optional.of(lecture));
 		lectureService.save(lecture);
 		
 		verify(lectureDao).save(lecture);
@@ -102,7 +122,7 @@ public class LectureServiceTest {
 				.id(1)
 				.subjects(Arrays.asList(Subject.builder().id(1).cathedra(cathedra).build()))
 				.build();
-		Audience audience = Audience.builder().id(1).build();
+		Audience audience = Audience.builder().id(1).capacity(100).build();
 		LocalDate date = LocalDate.of(2021, 9, 8);
 		LectureTime lectureTime = LectureTime.builder().start(LocalTime.of(9, 0)).end(LocalTime.of(10, 0)).build();
 		Lecture lecture = Lecture.builder()
@@ -112,51 +132,93 @@ public class LectureServiceTest {
 				.time(lectureTime)
 				.teacher(teacher)
 				.subject(Subject.builder().id(1).cathedra(cathedra).build()).build();
-		when(lectureDao.findByAudienceDateAndLectureTime(audience, date, lectureTime)).thenReturn(lecture);
+		when(lectureDao.findByAudienceDateAndLectureTime(audience, date, lectureTime)).thenReturn(Optional.of(lecture));
 		lectureService.save(lecture);
 		
 		verify(lectureDao).save(lecture);
 	}
 	
 	@Test
-	void givenLectureInSunday_whenSave_thenNotSaved() {
+	void givenNotUniqueLecture_whenSave_thenEntityNotUniqueException() {
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+		Teacher teacher = Teacher.builder()
+				.id(1)
+				.subjects(Arrays.asList(Subject.builder().id(1).cathedra(cathedra).build()))
+				.build();
+		Audience audience = Audience.builder().id(1).room(100).build();
+		LocalDate date = LocalDate.of(2021, 9, 8);
+		LectureTime lectureTime = LectureTime.builder().start(LocalTime.of(9, 0)).end(LocalTime.of(10, 0)).build();
+		Lecture lecture1 = Lecture.builder()
+				.id(1)
+				.date(date)
+				.audience(audience)
+				.time(lectureTime)
+				.teacher(teacher)
+				.subject(Subject.builder().id(1).cathedra(cathedra).build()).build();
+		Lecture lecture2 = Lecture.builder()
+				.id(10)
+				.date(date)
+				.audience(audience)
+				.time(lectureTime)
+				.teacher(teacher)
+				.subject(Subject.builder().id(1).cathedra(cathedra).build()).build();
+		when(lectureDao.findByTeacherAudienceDateAndLectureTime(lecture1.getTeacher(), lecture1.getAudience(),
+				lecture1.getDate(), lecture1.getTime())).thenReturn(Optional.of(lecture2));
+		Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
+				lectureService.save(lecture1);
+			});
+
+		assertEquals("Lecture with audience number 100, date 2021-09-08 and lecture time 09:00 - 10:00 is already exists!", exception.getMessage());
+	}
+	
+	@Test
+	void givenLectureInSunday_whenSave_thenLectureOnSundayException() {
 		Lecture lecture = Lecture.builder()
 				.id(1)
 				.date(LocalDate.of(2021, 9, 5))
 				.build();
-		lectureService.save(lecture);
-		
-		verify(lectureDao, never()).save(lecture);
+		Exception exception = assertThrows(SundayException.class, () -> {
+			lectureService.save(lecture);
+		});
+
+	assertEquals("Lecture can`t be on sunday! Specified date is: 2021-09-05", exception.getMessage());
 	}
 	
 	@Test
-	void givenLectureInNotSupportedTime_whenSave_thenNotSaved() {
+	void givenLectureInNotSupportedTime_whenSave_thenLectureInAfterHoursException() {
 		Lecture lecture = Lecture.builder()
 				.id(1)
 				.date(LocalDate.of(2021, 9, 6))
 				.time(LectureTime.builder().id(1).start(LocalTime.of(7, 0)).end(LocalTime.of(10, 0)).build())
 				.build();
-		lectureService.save(lecture);
-		
-		verify(lectureDao, never()).save(lecture);
+		Exception exception = assertThrows(AfterHoursException.class, () -> {
+			lectureService.save(lecture);
+		});
+
+	assertEquals("Lecture can`t be in after hours! Specified period is: 07:00 - 10:00", exception.getMessage());
 	}
 	
 	@Test
-	void givenLectureWithBusyTeacher_whenSave_thenNotSaved() {
+	void givenLectureWithBusyTeacher_whenSave_thenLectureWithBusyTeacherException() {
 		Lecture lecture = Lecture.builder()
 				.id(1)
 				.date(LocalDate.of(2021, 9, 6))
 				.time(LectureTime.builder().id(1).start(LocalTime.of(9, 0)).end(LocalTime.of(10, 0)).build())
-				.teacher(Teacher.builder().build())
+				.teacher(Teacher.builder().firstName("TestFirstName").lastName("TestLastName").build())
 				.build();
-		when(lectureDao.findLecturesByTeacherDateAndTime(lecture.getTeacher(), lecture.getDate(), lecture.getTime())).thenReturn(Arrays.asList(lecture));
-		lectureService.save(lecture);
+		Lecture lecture2 = Lecture.builder()
+				.id(2)
+				.build();
+		when(lectureDao.findLecturesByTeacherDateAndTime(lecture.getTeacher(), lecture.getDate(), lecture.getTime())).thenReturn(Arrays.asList(lecture2));
+		Exception exception = assertThrows(BusyTeacherException.class, () -> {
+			lectureService.save(lecture);
+		});
 		
-		verify(lectureDao, never()).save(lecture);
+		assertEquals("Teacher is on another lecture this time! Teacher is: TestFirstName TestLastName", exception.getMessage());
 	}
 	
 	@Test
-	void givenLectureWithTeacherHaveVacation_whenSave_thenNotSaved() {
+	void givenLectureWithTeacherHaveVacation_whenSave_thenLectureWithTeacherInVacationException() {
 		Lecture lecture = Lecture.builder()
 				.id(1)
 				.date(LocalDate.of(2021, 9, 6))
@@ -165,13 +227,15 @@ public class LectureServiceTest {
 				.build();
 		Vacation vacation = Vacation.builder().start(LocalDate.of(2021, 9, 5)).end(LocalDate.of(2021, 9, 7)).build();
 		when(vacationDao.findByDateInPeriodAndTeacher(lecture.getDate(), lecture.getTeacher())).thenReturn(Arrays.asList(vacation));
-		lectureService.save(lecture);
+		Exception exception = assertThrows(TeacherInVacationException.class, () -> {
+			lectureService.save(lecture);
+		});
 		
-		verify(lectureDao, never()).save(lecture);
+		assertEquals("Teacher is in vacation this date! Date is: 2021-09-06", exception.getMessage());
 	}
 	
 	@Test
-	void givenLectureInHoliday_whenSave_thenNotSaved() {
+	void givenLectureInHoliday_whenSave_thenLectureOnHolidayException() {
 		Lecture lecture = Lecture.builder()
 				.id(1)
 				.date(LocalDate.of(2021, 9, 6))
@@ -179,27 +243,31 @@ public class LectureServiceTest {
 				.teacher(Teacher.builder().id(1).build())
 				.build();
 		when(holidayDao.findByDate(lecture.getDate())).thenReturn(Arrays.asList(Holiday.builder().date(LocalDate.of(2021, 9, 6)).name("Test").build()));
-		lectureService.save(lecture);
+		Exception exception = assertThrows(HolidayException.class, () -> {
+			lectureService.save(lecture);
+		});
 		
-		verify(lectureDao, never()).save(lecture);
+		assertEquals("Lecture can`t be on holiday! Date is: 2021-09-06", exception.getMessage());
 	}
 	
 	@Test
-	void givenLectureWithTeacherWhoDidntKnowSubject_whenSave_thenNotSaved() {
+	void givenLectureWithTeacherWhoDidntKnowSubject_whenSave_thenLectureWithNotCompetentTeacherException() {
 		Lecture lecture = Lecture.builder()
 				.id(1)
 				.date(LocalDate.of(2021, 9, 6))
 				.time(LectureTime.builder().id(1).start(LocalTime.of(9, 0)).end(LocalTime.of(10, 0)).build())
-				.teacher(Teacher.builder().id(1).build())
+				.teacher(Teacher.builder().id(1).firstName("TestFirstName").lastName("TestLastName").build())
 				.subject(Subject.builder().build())
 				.build();
-		lectureService.save(lecture);
+		Exception exception = assertThrows(NotCompetentTeacherException.class, () -> {
+			lectureService.save(lecture);
+		});
 		
-		verify(lectureDao, never()).save(lecture);
+		assertEquals("Teacher TestFirstName TestLastName can`t educatenull!", exception.getMessage());
 	}
 	
 	@Test
-	void givenLectureWithMoreStudentsThenAudienceCapacity_whenSave_thenNotSaved() {
+	void givenLectureWithMoreStudentsThenAudienceCapacity_whenSave_thenLectureInSmallAudienceException() {
 		Subject subject = Subject.builder().build();
 		Group group = Group.builder().id(1).build();
 		Lecture lecture = Lecture.builder()
@@ -212,13 +280,15 @@ public class LectureServiceTest {
 				.audience(Audience.builder().capacity(1).build())
 				.build();
 		when(studentDao.findByGroupId(1)).thenReturn(Arrays.asList(Student.builder().build(), Student.builder().build()));
-		lectureService.save(lecture);
+		Exception exception = assertThrows(AudienceOverflowException.class, () -> {
+			lectureService.save(lecture);
+		});
 		
-		verify(lectureDao, never()).save(lecture);
+		assertEquals("Student count (2) more than audience capacity (1)!", exception.getMessage());
 	}
 	
 	@Test
-	void givenLectureWithAudienceInUse_whenSave_thenNotSaved() {
+	void givenLectureWithAudienceInUse_whenSave_thenLectureInOccupiedAudienceException() {
 		Subject subject = Subject.builder().build();
 		Lecture lecture = Lecture.builder()
 				.id(1)
@@ -226,14 +296,16 @@ public class LectureServiceTest {
 				.time(LectureTime.builder().id(1).start(LocalTime.of(9, 0)).end(LocalTime.of(10, 0)).build())
 				.teacher(Teacher.builder().id(1).subjects(Arrays.asList(subject)).build())
 				.subject(subject)
-				.audience(Audience.builder().capacity(1).build())
+				.audience(Audience.builder().room(100).capacity(1).build())
 				.build();
-		Lecture lecture2 = Lecture.builder().id(2).build();
+		Lecture lecture2 = Lecture.builder().id(3).build();
 		when(lectureDao.findByAudienceDateAndLectureTime(lecture.getAudience(), lecture.getDate(), lecture.getTime()))
-				.thenReturn(lecture2);
-		lectureService.save(lecture);
+				.thenReturn(Optional.of(lecture2));
+		Exception exception = assertThrows(OccupiedAudienceException.class, () -> {
+			lectureService.save(lecture);
+		});
 		
-		verify(lectureDao, never()).save(lecture);
+		assertEquals("Audience 100 is already occupied!", exception.getMessage());
 	}
 
 	@Test

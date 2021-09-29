@@ -21,11 +21,13 @@ public class HolidayRowMapper implements RowMapper<Holiday> {
 
 	@Override
 	public Holiday mapRow(ResultSet resultSet, int rowNum) throws SQLException {
-		return Holiday.builder()
+		Holiday holiday = Holiday.builder()
 				.id(resultSet.getInt("id"))
 				.name(resultSet.getString("name"))
 				.date(resultSet.getObject("date", LocalDate.class))
-				.cathedra(cathedraDao.findById(resultSet.getInt("cathedra_id")))
 				.build();
+		cathedraDao.findById(resultSet.getInt("cathedra_id")).ifPresent(holiday::setCathedra);
+		
+		return holiday;
 	}
 }

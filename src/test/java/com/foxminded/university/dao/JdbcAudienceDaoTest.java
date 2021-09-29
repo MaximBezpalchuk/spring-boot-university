@@ -18,6 +18,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
+import java.util.Optional;
+
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = SpringTestConfig.class)
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
@@ -39,20 +41,20 @@ public class JdbcAudienceDaoTest {
 
 	@Test
 	void givenExistingAudience_whenFindById_thenAudienceFound() {
-		Audience actual = audienceDao.findById(1);
-		Audience expected = Audience.builder()
+		Optional<Audience> actual = audienceDao.findById(1);
+		Optional<Audience> expected = Optional.of(Audience.builder()
 				.id(1)
 				.room(1)
 				.capacity(10)
-				.cathedra(actual.getCathedra())
-				.build();
+				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+				.build());
 
 		assertEquals(expected, actual);
 	}
 
 	@Test
-	void givenNotExistingAudience_whenFindById_thenReturnNull() {
-		assertNull(audienceDao.findById(100));
+	void givenNotExistingAudience_whenFindById_thenReturnEmptyOptional() {
+		assertEquals(audienceDao.findById(100), Optional.empty());
 	}
 
 	@Test
@@ -92,13 +94,13 @@ public class JdbcAudienceDaoTest {
 	
 	@Test
 	void givenRoom_whenFindByRoom_thenAudienceFound() {
-		Audience actual = audienceDao.findByRoom(1);
-		Audience expected = Audience.builder()
+		Optional<Audience> actual = audienceDao.findByRoom(1);
+		Optional<Audience> expected = Optional.of(Audience.builder()
 				.id(1)
 				.room(1)
 				.capacity(10)
-				.cathedra(actual.getCathedra())
-				.build();
+				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+				.build());
 
 		assertEquals(expected, actual);
 	}

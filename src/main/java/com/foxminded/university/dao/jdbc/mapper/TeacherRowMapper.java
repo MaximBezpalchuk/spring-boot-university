@@ -33,7 +33,6 @@ public class TeacherRowMapper implements RowMapper<Teacher> {
 				.address(resultSet.getString("address"))
 				.gender(Gender.valueOf(resultSet.getString("gender")))
 				.birthDate(resultSet.getObject("birth_date", LocalDate.class))
-				.cathedra(cathedraDao.findById(resultSet.getInt("cathedra_id")))
 				.degree(Degree.valueOf(resultSet.getString("degree")))
 				.phone(resultSet.getString("phone"))
 				.email(resultSet.getString("email"))
@@ -42,6 +41,7 @@ public class TeacherRowMapper implements RowMapper<Teacher> {
 				.id(resultSet.getInt("id"))
 				.subjects(subjectDao.findByTeacherId(resultSet.getInt("id")))
 				.build();
+		cathedraDao.findById(resultSet.getInt("cathedra_id")).ifPresent(teacher::setCathedra);
 
 		return teacher;
 	}
