@@ -21,8 +21,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.foxminded.university.dao.jdbc.JdbcLectureTimeDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
-import com.foxminded.university.exception.LectureTimeDurationMoreThanChosenTimeException;
-import com.foxminded.university.exception.LectureTimeDurationException;
+import com.foxminded.university.exception.ChosenDurationException;
+import com.foxminded.university.exception.DurationException;
 import com.foxminded.university.model.LectureTime;
 
 @ExtendWith(MockitoExtension.class)
@@ -126,7 +126,7 @@ public class LectureTimeServiceTest {
 				.start(start)
 				.end(end)
 				.build();
-		Exception exception = assertThrows(LectureTimeDurationMoreThanChosenTimeException.class, () -> {
+		Exception exception = assertThrows(ChosenDurationException.class, () -> {
 			lectureTimeService.save(lectureTime);
 		});
 
@@ -141,7 +141,7 @@ public class LectureTimeServiceTest {
 				.start(start)
 				.end(end)
 				.build();
-		Exception exception = assertThrows(LectureTimeDurationException.class, () -> {
+		Exception exception = assertThrows(DurationException.class, () -> {
 			lectureTimeService.save(lectureTime);
 		});
 

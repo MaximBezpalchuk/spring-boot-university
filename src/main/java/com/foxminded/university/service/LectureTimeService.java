@@ -11,10 +11,10 @@ import org.springframework.stereotype.Service;
 
 import com.foxminded.university.dao.LectureTimeDao;
 import com.foxminded.university.dao.jdbc.JdbcLectureTimeDao;
+import com.foxminded.university.exception.DurationException;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
-import com.foxminded.university.exception.LectureTimeDurationMoreThanChosenTimeException;
-import com.foxminded.university.exception.LectureTimeDurationException;
+import com.foxminded.university.exception.ChosenDurationException;
 import com.foxminded.university.model.LectureTime;
 
 @Service
@@ -69,7 +69,7 @@ public class LectureTimeService {
 	private void timeCorrectCheck(LectureTime lectureTime) {
 		logger.debug("Check that start time is after end time");
 		if (!lectureTime.getStart().isBefore(lectureTime.getEnd())) {
-			throw new LectureTimeDurationException("Lecture time`s start (" + lectureTime.getStart()
+			throw new DurationException("Lecture time`s start (" + lectureTime.getStart()
 					+ ") can`t be after lecture time`s end (" + lectureTime.getEnd() + ")!");
 		}
 	}
@@ -78,7 +78,7 @@ public class LectureTimeService {
 		logger.debug("Check that duration is more than min lecture duration");
 		long durationInMinutes = Duration.between(lectureTime.getStart(), lectureTime.getEnd()).toMinutes();
 		if (durationInMinutes <= minLectureDurationInMinutes) {
-			throw new LectureTimeDurationMoreThanChosenTimeException("Duration " + durationInMinutes
+			throw new ChosenDurationException("Duration " + durationInMinutes
 					+ " minutes is less than min lecture duration (" + minLectureDurationInMinutes + " minutes)!");
 		}
 	}

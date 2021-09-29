@@ -25,14 +25,14 @@ import com.foxminded.university.dao.jdbc.JdbcStudentDao;
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
-import com.foxminded.university.exception.LectureInAfterHoursException;
-import com.foxminded.university.exception.LectureInOccupiedAudienceException;
-import com.foxminded.university.exception.LectureInSmallAudienceException;
-import com.foxminded.university.exception.LectureOnHolidayException;
-import com.foxminded.university.exception.LectureOnSundayException;
-import com.foxminded.university.exception.LectureWithBusyTeacherException;
-import com.foxminded.university.exception.LectureWithNotCompetentTeacherException;
-import com.foxminded.university.exception.LectureWithTeacherInVacationException;
+import com.foxminded.university.exception.AfterHoursException;
+import com.foxminded.university.exception.OccupiedAudienceException;
+import com.foxminded.university.exception.AudienceOverflowException;
+import com.foxminded.university.exception.HolidayException;
+import com.foxminded.university.exception.SundayException;
+import com.foxminded.university.exception.BusyTeacherException;
+import com.foxminded.university.exception.NotCompetentTeacherException;
+import com.foxminded.university.exception.TeacherInVacationException;
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Group;
@@ -177,7 +177,7 @@ public class LectureServiceTest {
 				.id(1)
 				.date(LocalDate.of(2021, 9, 5))
 				.build();
-		Exception exception = assertThrows(LectureOnSundayException.class, () -> {
+		Exception exception = assertThrows(SundayException.class, () -> {
 			lectureService.save(lecture);
 		});
 
@@ -191,7 +191,7 @@ public class LectureServiceTest {
 				.date(LocalDate.of(2021, 9, 6))
 				.time(LectureTime.builder().id(1).start(LocalTime.of(7, 0)).end(LocalTime.of(10, 0)).build())
 				.build();
-		Exception exception = assertThrows(LectureInAfterHoursException.class, () -> {
+		Exception exception = assertThrows(AfterHoursException.class, () -> {
 			lectureService.save(lecture);
 		});
 
@@ -210,7 +210,7 @@ public class LectureServiceTest {
 				.id(2)
 				.build();
 		when(lectureDao.findLecturesByTeacherDateAndTime(lecture.getTeacher(), lecture.getDate(), lecture.getTime())).thenReturn(Arrays.asList(lecture2));
-		Exception exception = assertThrows(LectureWithBusyTeacherException.class, () -> {
+		Exception exception = assertThrows(BusyTeacherException.class, () -> {
 			lectureService.save(lecture);
 		});
 		
@@ -227,7 +227,7 @@ public class LectureServiceTest {
 				.build();
 		Vacation vacation = Vacation.builder().start(LocalDate.of(2021, 9, 5)).end(LocalDate.of(2021, 9, 7)).build();
 		when(vacationDao.findByDateInPeriodAndTeacher(lecture.getDate(), lecture.getTeacher())).thenReturn(Arrays.asList(vacation));
-		Exception exception = assertThrows(LectureWithTeacherInVacationException.class, () -> {
+		Exception exception = assertThrows(TeacherInVacationException.class, () -> {
 			lectureService.save(lecture);
 		});
 		
@@ -243,7 +243,7 @@ public class LectureServiceTest {
 				.teacher(Teacher.builder().id(1).build())
 				.build();
 		when(holidayDao.findByDate(lecture.getDate())).thenReturn(Arrays.asList(Holiday.builder().date(LocalDate.of(2021, 9, 6)).name("Test").build()));
-		Exception exception = assertThrows(LectureOnHolidayException.class, () -> {
+		Exception exception = assertThrows(HolidayException.class, () -> {
 			lectureService.save(lecture);
 		});
 		
@@ -259,7 +259,7 @@ public class LectureServiceTest {
 				.teacher(Teacher.builder().id(1).firstName("TestFirstName").lastName("TestLastName").build())
 				.subject(Subject.builder().build())
 				.build();
-		Exception exception = assertThrows(LectureWithNotCompetentTeacherException.class, () -> {
+		Exception exception = assertThrows(NotCompetentTeacherException.class, () -> {
 			lectureService.save(lecture);
 		});
 		
@@ -280,7 +280,7 @@ public class LectureServiceTest {
 				.audience(Audience.builder().capacity(1).build())
 				.build();
 		when(studentDao.findByGroupId(1)).thenReturn(Arrays.asList(Student.builder().build(), Student.builder().build()));
-		Exception exception = assertThrows(LectureInSmallAudienceException.class, () -> {
+		Exception exception = assertThrows(AudienceOverflowException.class, () -> {
 			lectureService.save(lecture);
 		});
 		
@@ -301,7 +301,7 @@ public class LectureServiceTest {
 		Lecture lecture2 = Lecture.builder().id(3).build();
 		when(lectureDao.findByAudienceDateAndLectureTime(lecture.getAudience(), lecture.getDate(), lecture.getTime()))
 				.thenReturn(Optional.of(lecture2));
-		Exception exception = assertThrows(LectureInOccupiedAudienceException.class, () -> {
+		Exception exception = assertThrows(OccupiedAudienceException.class, () -> {
 			lectureService.save(lecture);
 		});
 		

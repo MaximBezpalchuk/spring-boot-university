@@ -14,9 +14,8 @@ import com.foxminded.university.dao.VacationDao;
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
-import com.foxminded.university.exception.VacationDurationMoreThanMaxException;
-import com.foxminded.university.exception.VacationLessOneDayException;
-import com.foxminded.university.exception.DateDurationException;
+import com.foxminded.university.exception.ChosenDurationException;
+import com.foxminded.university.exception.DurationException;
 import com.foxminded.university.model.Degree;
 import com.foxminded.university.model.Vacation;
 
@@ -78,7 +77,7 @@ public class VacationService {
 	private void dateCorrectCheck(Vacation vacation) {
 		logger.debug("Check vacation start is after end");
 		if (!vacation.getStart().isBefore(vacation.getEnd()) && !vacation.getStart().equals(vacation.getEnd())) {
-			throw new DateDurationException(
+			throw new DurationException(
 					"Vacation start date can`t be after vacation end date! Vacation start is: " + vacation.getStart()
 							+ ". Vacation end is: " + vacation.getEnd());
 		}
@@ -87,7 +86,7 @@ public class VacationService {
 	private void dateMoreThenOneDayCheck(Vacation vacation) {
 		logger.debug("Check vacation duration more or equals 1 day");
 		if (getVacationDaysCount(vacation) < 1) {
-			throw new VacationLessOneDayException("Vacation can`t be less than 1 day! Vacation start is: "
+			throw new DurationException("Vacation can`t be less than 1 day! Vacation start is: "
 					+ vacation.getStart() + ". Vacation end is: " + vacation.getEnd());
 		}
 	}
@@ -104,7 +103,7 @@ public class VacationService {
 
 		if ((teacherVacationDays + getVacationDaysCount(vacation)) >= maxVacation
 				.get(vacation.getTeacher().getDegree())) {
-			throw new VacationDurationMoreThanMaxException("Vacations duration(existing " + teacherVacationDays
+			throw new ChosenDurationException("Vacations duration(existing " + teacherVacationDays
 					+ " plus appointed " + getVacationDaysCount(vacation) + ") can`t be more than max("
 					+ maxVacation.get(vacation.getTeacher().getDegree()) + ") for degree "
 					+ vacation.getTeacher().getDegree() + "!");

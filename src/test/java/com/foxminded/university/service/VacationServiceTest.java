@@ -23,9 +23,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
-import com.foxminded.university.exception.VacationDurationMoreThanMaxException;
-import com.foxminded.university.exception.VacationLessOneDayException;
-import com.foxminded.university.exception.DateDurationException;
+import com.foxminded.university.exception.ChosenDurationException;
+import com.foxminded.university.exception.DurationException;
 import com.foxminded.university.model.Degree;
 import com.foxminded.university.model.Teacher;
 import com.foxminded.university.model.Vacation;
@@ -136,7 +135,7 @@ public class VacationServiceTest {
 		LocalDate start = LocalDate.of(2021, 1, 1);
 		LocalDate end = LocalDate.of(2021, 1, 1);
 		Vacation vacation = Vacation.builder().id(1).start(start).end(end).build();
-		Exception exception = assertThrows(VacationLessOneDayException.class, () -> {
+		Exception exception = assertThrows(DurationException.class, () -> {
 			vacationService.save(vacation);
 		});
 
@@ -152,7 +151,7 @@ public class VacationServiceTest {
 				.start(start)
 				.end(end)
 				.build();
-		Exception exception = assertThrows(DateDurationException.class, () -> {
+		Exception exception = assertThrows(DurationException.class, () -> {
 			vacationService.save(vacation);
 		});
 
@@ -171,7 +170,7 @@ public class VacationServiceTest {
 				.build();
 		when(vacationDao.findByTeacherIdAndYear(vacation.getTeacher().getId(), vacation.getStart().getYear()))
 				.thenReturn(Arrays.asList(vacation));
-		Exception exception = assertThrows(VacationDurationMoreThanMaxException.class, () -> {
+		Exception exception = assertThrows(ChosenDurationException.class, () -> {
 			vacationService.save(vacation);
 		});
 
