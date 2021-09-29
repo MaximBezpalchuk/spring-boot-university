@@ -49,13 +49,13 @@ public class JdbcVacationDaoTest {
 
 	@Test
 	void givenExistingVacation_whenFindById_thenVacationFound() {
-		Vacation actual = vacationDao.findById(1).orElse(null);
-		Vacation expected = Vacation.builder()
+		Optional<Vacation> actual = vacationDao.findById(1);
+		Optional<Vacation> expected = Optional.of(Vacation.builder()
 				.id(1)
 				.start(LocalDate.of(2021, 1, 15))
 				.end(LocalDate.of(2021, 1, 29))
-				.teacher(actual.getTeacher())
-				.build();
+				.teacher(actual.get().getTeacher())
+				.build());
 
 		assertEquals(expected, actual);
 	}
@@ -147,13 +147,14 @@ public class JdbcVacationDaoTest {
 		subjects.add(subject);
 		teacher.setSubjects(subjects);
 		
-		Vacation expected = Vacation.builder()
+		Optional<Vacation> expected = Optional.of(Vacation.builder()
 				.id(1)
 				.start(LocalDate.of(2021, 1, 15))
 				.end(LocalDate.of(2021, 1, 29))
 				.teacher(teacher)
-				.build();
-		Vacation actual = vacationDao.findByPeriodAndTeacher(expected.getStart(), expected.getEnd(), teacher).orElse(null);
+				.build());
+		Optional<Vacation> actual = vacationDao.findByPeriodAndTeacher(expected.get().getStart(),
+				expected.get().getEnd(), teacher);
 
 		assertEquals(expected, actual);
 	}

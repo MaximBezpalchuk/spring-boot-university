@@ -40,11 +40,11 @@ public class JdbcCathedraDaoTest {
 
 	@Test
 	void givenExistingCathedra_whenFindById_thenCathedraFound() {
-		Cathedra expected = Cathedra.builder()
+		Optional<Cathedra> expected = Optional.of(Cathedra.builder()
 				.id(1)
 				.name("Fantastic Cathedra")
-				.build();
-		Cathedra actual = cathedraDao.findById(1).orElse(null);
+				.build());
+		Optional<Cathedra> actual = cathedraDao.findById(1);
 
 		assertEquals(expected, actual);
 	}
@@ -85,11 +85,11 @@ public class JdbcCathedraDaoTest {
 	
 	@Test
 	void givenCathedraName_whenFindByName_thenCathedraFound() {
-		Cathedra expected = Cathedra.builder()
+		Optional<Cathedra> expected = Optional.of(Cathedra.builder()
 				.id(1)
 				.name("Fantastic Cathedra")
-				.build();
-		Cathedra actual = cathedraDao.findByName("Fantastic Cathedra").orElse(null);
+				.build());
+		Optional<Cathedra> actual = cathedraDao.findByName("Fantastic Cathedra");
 
 		assertEquals(expected, actual);
 	}

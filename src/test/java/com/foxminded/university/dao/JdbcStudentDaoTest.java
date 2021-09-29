@@ -46,8 +46,8 @@ public class JdbcStudentDaoTest {
 
 	@Test
 	void givenExistingStudent_whenFindById_thenStudentFound() {
-		Student actual = studentDao.findById(1).orElse(null);
-		Student expected = Student.builder()
+		Optional<Student> actual = studentDao.findById(1);
+		Optional<Student> expected = Optional.of(Student.builder()
 				.firstName("Petr")
 				.lastName("Orlov")
 				.address("Empty Street 8")
@@ -57,9 +57,9 @@ public class JdbcStudentDaoTest {
 				.email("1@owl.com")
 				.postalCode("999")
 				.education("General secondary education")
-				.group(actual.getGroup())
+				.group(actual.get().getGroup())
 				.id(1)
-				.build();
+				.build());
 
 		assertEquals(expected, actual);
 	}
@@ -130,7 +130,7 @@ public class JdbcStudentDaoTest {
 	
 	@Test
 	void givenFirstNameAndLastNameAndBirthDate_whenFindByFullNameAndBirthDate_thenStudentFound() {
-		Student expected = Student.builder()
+		Optional<Student> expected = Optional.of(Student.builder()
 				.firstName("Petr")
 				.lastName("Orlov")
 				.address("Empty Street 8")
@@ -142,8 +142,9 @@ public class JdbcStudentDaoTest {
 				.education("General secondary education")
 				.group(Group.builder().id(1).name("Killers").cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build()).build())
 				.id(1)
-				.build();
-		Student actual = studentDao.findByFullNameAndBirthDate(expected.getFirstName(), expected.getLastName(), expected.getBirthDate()).orElse(null);
+				.build());
+		Optional<Student> actual = studentDao.findByFullNameAndBirthDate(expected.get().getFirstName(),
+				expected.get().getLastName(), expected.get().getBirthDate());
 
 		assertEquals(expected, actual);
 	}

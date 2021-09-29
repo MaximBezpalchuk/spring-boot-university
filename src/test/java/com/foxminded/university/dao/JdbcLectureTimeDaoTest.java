@@ -41,11 +41,11 @@ public class JdbcLectureTimeDaoTest {
 
 	@Test
 	void givenExistingLectureTime_whenFindById_thenLectureTimeFound() {
-		LectureTime expected = LectureTime.builder()
+		Optional<LectureTime> expected = Optional.of(LectureTime.builder()
 				.id(1).start(LocalTime.of(8, 0, 0))
 				.end(LocalTime.of(9, 30, 0))
-				.build();
-		LectureTime actual = lectureTimeDao.findById(1).orElse(null);
+				.build());
+		Optional<LectureTime> actual = lectureTimeDao.findById(1);
 
 		assertEquals(expected, actual);
 	}
@@ -90,11 +90,11 @@ public class JdbcLectureTimeDaoTest {
 	
 	@Test
 	void givenPeriod_whenFindByPeriod_thenLectureTimeFound() {
-		LectureTime expected = LectureTime.builder()
+		Optional<LectureTime> expected = Optional.of(LectureTime.builder()
 				.id(1).start(LocalTime.of(8, 0, 0))
 				.end(LocalTime.of(9, 30, 0))
-				.build();
-		LectureTime actual = lectureTimeDao.findByPeriod(expected.getStart(), expected.getEnd()).orElse(null);
+				.build());
+		Optional<LectureTime> actual = lectureTimeDao.findByPeriod(expected.get().getStart(), expected.get().getEnd());
 
 		assertEquals(expected, actual);
 	}

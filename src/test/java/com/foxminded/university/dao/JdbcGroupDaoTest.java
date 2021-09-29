@@ -41,12 +41,12 @@ public class JdbcGroupDaoTest {
 
 	@Test
 	void givenExistingGroup_whenFindById_thenGroupFound() {
-		Group actual = groupDao.findById(1).orElse(null);
-		Group expected = Group.builder()
+		Optional<Group> actual = groupDao.findById(1);
+		Optional<Group> expected = Optional.of(Group.builder()
 				.id(1)
 				.name("Killers")
-				.cathedra(actual.getCathedra())
-				.build();
+				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+				.build());
 
 		assertEquals(expected, actual);
 	}
@@ -71,7 +71,7 @@ public class JdbcGroupDaoTest {
 	
 	@Test
 	void givenExitstingGroup_whenSaveWithChanges_thenChangesApplied() {
-		Group expected = groupDao.findById(1).orElse(null);
+		Group expected = groupDao.findById(1).get();
 		expected.setName("Killers 2");
 		groupDao.save(expected);
 		
@@ -88,12 +88,12 @@ public class JdbcGroupDaoTest {
 	
 	@Test
 	void givenGroupName_whenFindByName_thenGroupFound() {
-		Group actual = groupDao.findByName("Killers").orElse(null);
-		Group expected = Group.builder()
+		Optional<Group> actual = groupDao.findByName("Killers");
+		Optional<Group> expected =Optional.of(Group.builder()
 				.id(1)
 				.name("Killers")
-				.cathedra(actual.getCathedra())
-				.build();
+				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+				.build());
 
 		assertEquals(expected, actual);
 	}

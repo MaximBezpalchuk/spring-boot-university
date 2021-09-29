@@ -44,13 +44,13 @@ public class JdbcHolidayDaoTest {
 
 	@Test
 	void givenExistingHoliday_whenFindById_thenHolidayFound() {
-		Holiday actual = holidayDao.findById(1).orElse(null);
-		Holiday expected = Holiday.builder()
+		Optional<Holiday> actual = holidayDao.findById(1);
+		Optional<Holiday> expected = Optional.of(Holiday.builder()
 				.id(1)
 				.name("Christmas")
 				.date(LocalDate.of(2021, 12, 25))
-				.cathedra(actual.getCathedra())
-				.build();
+				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+				.build());
 
 		assertEquals(expected, actual);
 	}
@@ -63,11 +63,10 @@ public class JdbcHolidayDaoTest {
 	@Test
 	void givenNewHoliday_whenSaveHoliday_thenAllExistingHolidaysFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
-		Holiday actual = holidayDao.findById(1).orElse(null);
 		Holiday holiday = Holiday.builder()
 				.name("Christmas2")
 				.date(LocalDate.of(2021, 12, 25))
-				.cathedra(actual.getCathedra())
+				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
 				.build();
 		holidayDao.save(holiday);
 		
@@ -99,13 +98,13 @@ public class JdbcHolidayDaoTest {
 	
 	@Test
 	void givenHolidayName_whenFindByNameAndDate_thenHolidayFound() {
-		Holiday actual = holidayDao.findByNameAndDate("Christmas", LocalDate.of(2021, 12, 25)).orElse(null);
-		Holiday expected = Holiday.builder()
+		Optional<Holiday> actual = holidayDao.findByNameAndDate("Christmas", LocalDate.of(2021, 12, 25));
+		Optional<Holiday> expected = Optional.of(Holiday.builder()
 				.id(1)
 				.name("Christmas")
 				.date(LocalDate.of(2021, 12, 25))
-				.cathedra(actual.getCathedra())
-				.build();
+				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+				.build());
 
 		assertEquals(expected, actual);
 	}

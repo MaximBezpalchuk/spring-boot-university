@@ -47,17 +47,17 @@ public class JdbcLectureDaoTest {
 
 	@Test
 	void givenExistingLecture_whenFindById_thenLectureFound() {
-		Lecture actual = lectureDao.findById(1).orElse(null);
-		Lecture expected = Lecture.builder()
+		Optional<Lecture> actual = lectureDao.findById(1);
+		Optional<Lecture> expected = Optional.of(Lecture.builder()
 				.id(1)
-				.group(actual.getGroups())
-				.cathedra(actual.getCathedra())
-				.subject(actual.getSubject())
+				.group(actual.get().getGroups())
+				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+				.subject(actual.get().getSubject())
 				.date(LocalDate.of(2021, 4, 4))
-				.time(actual.getTime())
-				.audience(actual.getAudience())
-				.teacher(actual.getTeacher())
-				.build();
+				.time(actual.get().getTime())
+				.audience(actual.get().getAudience())
+				.teacher(actual.get().getTeacher())
+				.build());
 
 		assertEquals(expected, actual);
 	}
@@ -118,19 +118,19 @@ public class JdbcLectureDaoTest {
 	
 	@Test
 	void givenAudienceAndDate_whenFindByAudienceAndDate_thenLectureFound() {
-		Lecture actual = lectureDao.findByAudienceDateAndLectureTime(Audience.builder().id(1).build(), 
+		Optional<Lecture> actual = lectureDao.findByAudienceDateAndLectureTime(Audience.builder().id(1).build(), 
 				LocalDate.of(2021, 4, 4), 
-				LectureTime.builder().id(1).build()).orElse(null);
-		Lecture expected = Lecture.builder()
+				LectureTime.builder().id(1).build());
+		Optional<Lecture> expected = Optional.of(Lecture.builder()
 				.id(1)
-				.group(actual.getGroups())
-				.cathedra(actual.getCathedra())
-				.subject(actual.getSubject())
+				.group(actual.get().getGroups())
+				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+				.subject(actual.get().getSubject())
 				.date(LocalDate.of(2021, 4, 4))
-				.time(actual.getTime())
-				.audience(actual.getAudience())
-				.teacher(actual.getTeacher())
-				.build();
+				.time(actual.get().getTime())
+				.audience(actual.get().getAudience())
+				.teacher(actual.get().getTeacher())
+				.build());
 		
 
 		assertEquals(expected, actual);
@@ -138,17 +138,18 @@ public class JdbcLectureDaoTest {
 	
 	@Test
 	void givenAudienceDateAndLectureTime_whenFindByAudienceDateAndLectureTime_thenLectureFound() {
-		Lecture actual = lectureDao.findByAudienceDateAndLectureTime(Audience.builder().id(1).build(), LocalDate.of(2021, 4, 4), LectureTime.builder().id(1).build()).orElse(null);
-		Lecture expected = Lecture.builder()
+		Optional<Lecture> actual = lectureDao.findByAudienceDateAndLectureTime(Audience.builder().id(1).build(),
+				LocalDate.of(2021, 4, 4), LectureTime.builder().id(1).build());
+		Optional<Lecture> expected = Optional.of(Lecture.builder()
 				.id(1)
-				.group(actual.getGroups())
-				.cathedra(actual.getCathedra())
-				.subject(actual.getSubject())
+				.group(actual.get().getGroups())
+				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+				.subject(actual.get().getSubject())
 				.date(LocalDate.of(2021, 4, 4))
-				.time(actual.getTime())
-				.audience(actual.getAudience())
-				.teacher(actual.getTeacher())
-				.build();
+				.time(actual.get().getTime())
+				.audience(actual.get().getAudience())
+				.teacher(actual.get().getTeacher())
+				.build());
 
 		assertEquals(expected, actual);
 	}
