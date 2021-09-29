@@ -1,10 +1,10 @@
 package com.foxminded.university.exception;
 
-public class VacationNotCorrectDateException extends ServiceException {
+public class DateDurationException extends ServiceException {
 
 	private static final long serialVersionUID = -6044831096455817694L;
 
-	public VacationNotCorrectDateException(String errorMessage) {
+	public DateDurationException(String errorMessage) {
 		super(errorMessage);
 	}
 }

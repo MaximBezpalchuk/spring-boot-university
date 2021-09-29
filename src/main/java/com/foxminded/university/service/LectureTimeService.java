@@ -14,8 +14,7 @@ import com.foxminded.university.dao.jdbc.JdbcLectureTimeDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.exception.LectureTimeDurationMoreThanChosenTimeException;
-import com.foxminded.university.exception.LectureTimeNotCorrectException;
-import com.foxminded.university.exception.ServiceException;
+import com.foxminded.university.exception.LectureTimeDurationException;
 import com.foxminded.university.model.LectureTime;
 
 @Service
@@ -36,13 +35,13 @@ public class LectureTimeService {
 		return lectureTimeDao.findAll();
 	}
 
-	public LectureTime findById(int id) throws EntityNotFoundException {
+	public LectureTime findById(int id) {
 		logger.debug("Find lecture time by id {}", id);
 		return lectureTimeDao.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Can`t find any lecture time with id: " + id));
 	}
 
-	public void save(LectureTime lectureTime) throws ServiceException {
+	public void save(LectureTime lectureTime) {
 		logger.debug("Save lecture time");
 		uniqueCheck(lectureTime);
 		timeCorrectCheck(lectureTime);
@@ -56,7 +55,7 @@ public class LectureTimeService {
 		lectureTimeDao.deleteById(id);
 	}
 
-	private void uniqueCheck(LectureTime lectureTime) throws EntityNotUniqueException {
+	private void uniqueCheck(LectureTime lectureTime) {
 		logger.debug("Check lecture time is unique");
 		Optional<LectureTime> existingLectureTime = lectureTimeDao.findByPeriod(lectureTime.getStart(),
 				lectureTime.getEnd());
@@ -67,16 +66,15 @@ public class LectureTimeService {
 		}
 	}
 
-	private void timeCorrectCheck(LectureTime lectureTime) throws LectureTimeNotCorrectException {
+	private void timeCorrectCheck(LectureTime lectureTime) {
 		logger.debug("Check that start time is after end time");
 		if (!lectureTime.getStart().isBefore(lectureTime.getEnd())) {
-			throw new LectureTimeNotCorrectException("Lecture time`s start (" + lectureTime.getStart()
+			throw new LectureTimeDurationException("Lecture time`s start (" + lectureTime.getStart()
 					+ ") can`t be after lecture time`s end (" + lectureTime.getEnd() + ")!");
 		}
 	}
 
-	private void durationMoreThanChosenTimeCheck(LectureTime lectureTime)
-			throws LectureTimeDurationMoreThanChosenTimeException {
+	private void durationMoreThanChosenTimeCheck(LectureTime lectureTime) {
 		logger.debug("Check that duration is more than min lecture duration");
 		long durationInMinutes = Duration.between(lectureTime.getStart(), lectureTime.getEnd()).toMinutes();
 		if (durationInMinutes <= minLectureDurationInMinutes) {

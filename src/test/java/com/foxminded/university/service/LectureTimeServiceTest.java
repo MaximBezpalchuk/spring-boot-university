@@ -22,7 +22,7 @@ import com.foxminded.university.dao.jdbc.JdbcLectureTimeDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.exception.LectureTimeDurationMoreThanChosenTimeException;
-import com.foxminded.university.exception.LectureTimeNotCorrectException;
+import com.foxminded.university.exception.LectureTimeDurationException;
 import com.foxminded.university.model.LectureTime;
 
 @ExtendWith(MockitoExtension.class)
@@ -141,7 +141,7 @@ public class LectureTimeServiceTest {
 				.start(start)
 				.end(end)
 				.build();
-		Exception exception = assertThrows(LectureTimeNotCorrectException.class, () -> {
+		Exception exception = assertThrows(LectureTimeDurationException.class, () -> {
 			lectureTimeService.save(lectureTime);
 		});
 

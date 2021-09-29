@@ -27,7 +27,6 @@ import com.foxminded.university.exception.LectureOnSundayException;
 import com.foxminded.university.exception.LectureWithBusyTeacherException;
 import com.foxminded.university.exception.LectureWithNotCompetentTeacherException;
 import com.foxminded.university.exception.LectureWithTeacherInVacationException;
-import com.foxminded.university.exception.ServiceException;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Lecture;
 
@@ -58,13 +57,13 @@ public class LectureService {
 		return lectureDao.findAll();
 	}
 
-	public Lecture findById(int id) throws EntityNotFoundException {
+	public Lecture findById(int id) {
 		logger.debug("Find lecture by id {}", id);
 		return lectureDao.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Can`t find any lecture with id: " + id));
 	}
 
-	public void save(Lecture lecture) throws ServiceException {
+	public void save(Lecture lecture) {
 		logger.debug("Save lecture");
 		uniqueCheck(lecture);
 		sundayCheck(lecture);
@@ -83,7 +82,7 @@ public class LectureService {
 		lectureDao.deleteById(id);
 	}
 
-	private void uniqueCheck(Lecture lecture) throws EntityNotUniqueException {
+	private void uniqueCheck(Lecture lecture) {
 		logger.debug("Check lecture is unique");
 		Optional<Lecture> existingLecture = lectureDao.findByTeacherAudienceDateAndLectureTime(lecture.getTeacher(),
 				lecture.getAudience(), lecture.getDate(), lecture.getTime());
@@ -94,14 +93,14 @@ public class LectureService {
 		}
 	}
 
-	private void sundayCheck(Lecture lecture) throws LectureOnSundayException {
+	private void sundayCheck(Lecture lecture) {
 		logger.debug("Check lecture is on sunday");
 		if (lecture.getDate().getDayOfWeek().equals(DayOfWeek.SUNDAY)) {
 			throw new LectureOnSundayException("Lecture can`t be on sunday! Specified date is: " + lecture.getDate());
 		}
 	}
 
-	private void afterHoursCheck(Lecture lecture) throws LectureInAfterHoursException {
+	private void afterHoursCheck(Lecture lecture) {
 		logger.debug("Check lecture is after hours");
 		if (lecture.getTime().getEnd().getHour() > endWorkingDay
 				|| lecture.getTime().getStart().getHour() < startWorkingDay) {
@@ -110,7 +109,7 @@ public class LectureService {
 		}
 	}
 
-	private void teacherBusyCheck(Lecture lecture) throws LectureWithBusyTeacherException {
+	private void teacherBusyCheck(Lecture lecture) {
 		logger.debug("Check teacher for this lecture is busy");
 		if (lectureDao.findLecturesByTeacherDateAndTime(lecture.getTeacher(), lecture.getDate(), lecture.getTime())
 				.stream().filter(lec -> lec.getId() != lecture.getId()).findAny().isPresent()) {
@@ -119,7 +118,7 @@ public class LectureService {
 		}
 	}
 
-	private void teacherInVacationCheck(Lecture lecture) throws LectureWithTeacherInVacationException {
+	private void teacherInVacationCheck(Lecture lecture) {
 		logger.debug("Check teacher for this lecture is in vacation");
 		if (!vacationDao.findByDateInPeriodAndTeacher(lecture.getDate(), lecture.getTeacher()).isEmpty()) {
 			throw new LectureWithTeacherInVacationException(
@@ -127,14 +126,14 @@ public class LectureService {
 		}
 	}
 
-	private void holidayCheck(Lecture lecture) throws LectureOnHolidayException {
+	private void holidayCheck(Lecture lecture) {
 		logger.debug("Check lecture is in holiday time");
 		if (!holidayDao.findByDate(lecture.getDate()).isEmpty()) {
 			throw new LectureOnHolidayException("Lecture can`t be on holiday! Date is: " + lecture.getDate());
 		}
 	}
 
-	private void teacherCompetentWithSubjectCheck(Lecture lecture) throws LectureWithNotCompetentTeacherException {
+	private void teacherCompetentWithSubjectCheck(Lecture lecture) {
 		logger.debug("Check teacher for subject");
 		if (!lecture.getTeacher().getSubjects().contains(lecture.getSubject())) {
 			throw new LectureWithNotCompetentTeacherException("Teacher " + lecture.getTeacher().getFirstName() + " "
@@ -142,7 +141,7 @@ public class LectureService {
 		}
 	}
 
-	private void enoughAudienceCapacityCheck(Lecture lecture) throws LectureInSmallAudienceException {
+	private void enoughAudienceCapacityCheck(Lecture lecture) {
 		logger.debug("Check audience size");
 		Integer studentsOnLectureCount = lecture.getGroups().stream().map(Group::getId).map(studentDao::findByGroupId)
 				.mapToInt(List::size).sum();
@@ -152,7 +151,7 @@ public class LectureService {
 		}
 	}
 
-	private void audienceOccupiedCheck(Lecture lecture) throws LectureInOccupiedAudienceException {
+	private void audienceOccupiedCheck(Lecture lecture) {
 		logger.debug("Check audience is occupied");
 		Optional<Lecture> existingLecture = lectureDao.findByAudienceDateAndLectureTime(lecture.getAudience(),
 				lecture.getDate(), lecture.getTime());

@@ -25,7 +25,7 @@ import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.exception.VacationDurationMoreThanMaxException;
 import com.foxminded.university.exception.VacationLessOneDayException;
-import com.foxminded.university.exception.VacationNotCorrectDateException;
+import com.foxminded.university.exception.DateDurationException;
 import com.foxminded.university.model.Degree;
 import com.foxminded.university.model.Teacher;
 import com.foxminded.university.model.Vacation;
@@ -152,7 +152,7 @@ public class VacationServiceTest {
 				.start(start)
 				.end(end)
 				.build();
-		Exception exception = assertThrows(VacationNotCorrectDateException.class, () -> {
+		Exception exception = assertThrows(DateDurationException.class, () -> {
 			vacationService.save(vacation);
 		});
 

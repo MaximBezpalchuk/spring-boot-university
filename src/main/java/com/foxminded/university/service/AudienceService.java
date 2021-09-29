@@ -11,7 +11,6 @@ import com.foxminded.university.dao.AudienceDao;
 import com.foxminded.university.dao.jdbc.JdbcAudienceDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
-import com.foxminded.university.exception.ServiceException;
 import com.foxminded.university.model.Audience;
 
 @Service
@@ -30,13 +29,13 @@ public class AudienceService {
 		return audienceDao.findAll();
 	}
 
-	public Audience findById(int id) throws EntityNotFoundException {
+	public Audience findById(int id) {
 		logger.debug("Find audience by id {}", id);
 		return audienceDao.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Can`t find any audience with id: " + id));
 	}
 
-	public void save(Audience audience) throws ServiceException {
+	public void save(Audience audience) {
 		logger.debug("Save audience");
 		uniqueCheck(audience);
 		audienceDao.save(audience);
@@ -47,7 +46,7 @@ public class AudienceService {
 		audienceDao.deleteById(id);
 	}
 
-	private void uniqueCheck(Audience audience) throws EntityNotUniqueException {
+	private void uniqueCheck(Audience audience) {
 		logger.debug("Check audience is unique");
 		Optional<Audience> existingAudience = audienceDao.findByRoom(audience.getRoom());
 		if (!existingAudience.isEmpty() && (existingAudience.get().getId() != audience.getId())) {

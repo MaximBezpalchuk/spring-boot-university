@@ -13,7 +13,6 @@ import com.foxminded.university.dao.jdbc.JdbcStudentDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.exception.GroupOverflowException;
-import com.foxminded.university.exception.ServiceException;
 import com.foxminded.university.model.Student;
 
 @Service
@@ -34,13 +33,13 @@ public class StudentService {
 		return studentDao.findAll();
 	}
 
-	public Student findById(int id) throws EntityNotFoundException {
+	public Student findById(int id) {
 		logger.debug("Find student by id {}", id);
 		return studentDao.findById(id)
 				.orElseThrow(() -> new EntityNotFoundException("Can`t find any student with id: " + id));
 	}
 
-	public void save(Student student) throws ServiceException {
+	public void save(Student student) {
 		logger.debug("Save student");
 		uniqueCheck(student);
 		groupOverflowCheck(student);
@@ -52,7 +51,7 @@ public class StudentService {
 		studentDao.deleteById(id);
 	}
 
-	private void uniqueCheck(Student student) throws EntityNotUniqueException {
+	private void uniqueCheck(Student student) {
 		logger.debug("Check student is unique");
 		Optional<Student> existingStudent = studentDao.findByFullNameAndBirthDate(student.getFirstName(),
 				student.getLastName(), student.getBirthDate());
@@ -63,7 +62,7 @@ public class StudentService {
 		}
 	}
 
-	private void groupOverflowCheck(Student student) throws GroupOverflowException {
+	private void groupOverflowCheck(Student student) {
 		logger.debug("Check that group is filled");
 		if (student.getGroup() != null) {
 			int groupSize = studentDao.findByGroupId(student.getGroup().getId()).size();
