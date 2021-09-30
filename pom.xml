@@ -12,14 +12,37 @@
 	<properties>
 		<maven.compiler.target>8</maven.compiler.target>
 		<maven.compiler.source>8</maven.compiler.source>
+		<maven-war-plugin.version>3.3.2</maven-war-plugin.version>
+		<tomcat-maven-plugin.version>2.2</tomcat-maven-plugin.version>
 		<junit.jupiter.version>5.7.2</junit.jupiter.version>
-		<spring.version>5.3.9</spring.version>
+		<spring.version>5.3.10</spring.version>
 		<postgresql.version>42.2.23</postgresql.version>
 		<h2.version>1.4.200</h2.version>
 		<mockito.version>3.12.4</mockito.version>
 		<slf4j.version>1.7.32</slf4j.version>
 		<logback.version>1.2.6</logback.version>
+		<javax.servlet.version>4.0.0</javax.servlet.version>
+		<thymeleaf.version>3.0.12.RELEASE</thymeleaf.version>
 	</properties>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.tomcat.maven</groupId>
+				<artifactId>tomcat7-maven-plugin</artifactId>
+				<version>2.2</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>3.2.3</version>
+				<configuration>
+					<failOnMissingWebXml>false</failOnMissingWebXml>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	
 
 	<dependencies>
 		<dependency>
@@ -58,6 +81,27 @@
 			<version>${logback.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>${javax.servlet.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.thymeleaf</groupId>
+			<artifactId>thymeleaf-spring5</artifactId>
+			<version>${thymeleaf.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<version>${h2.version}</version>
@@ -87,7 +131,6 @@
 			<version>${mockito.version}</version>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
 
 </project>
