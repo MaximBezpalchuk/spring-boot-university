@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.foxminded.university.dao.TeacherDao;
 import com.foxminded.university.dao.jdbc.mapper.TeacherRowMapper;
+import com.foxminded.university.model.Subject;
 import com.foxminded.university.model.Teacher;
 
 @Component
@@ -104,13 +105,15 @@ public class JdbcTeacherDao implements TeacherDao {
 	}
 
 	private void updateSubjects(Teacher teacherOld, Teacher teacherNew) {
-		teacherNew.getSubjects().stream().filter(Predicate.not(teacherOld.getSubjects()::contains))
+		Predicate<Subject> subjPredicate = teacherOld.getSubjects()::contains;
+		teacherNew.getSubjects().stream().filter(subjPredicate.negate()::test)
 				.forEach(subject -> jdbcTemplate.update(INSERT_SUBJECT, subject.getId(), teacherNew.getId()));
 		logger.debug("Update subjects in teacher with id {}", teacherNew.getId());
 	}
 
 	private void deleteSubjects(Teacher teacherOld, Teacher teacherNew) {
-		teacherOld.getSubjects().stream().filter(Predicate.not(teacherNew.getSubjects()::contains))
+		Predicate<Subject> subjPredicate = teacherNew.getSubjects()::contains;
+		teacherOld.getSubjects().stream().filter(subjPredicate.negate()::test)
 				.forEach(subject -> jdbcTemplate.update(DELETE_SUBJECT, subject.getId(), teacherNew.getId()));
 		logger.debug("Delete subjects in teacher with id {}", teacherNew.getId());
 	}

@@ -49,7 +49,7 @@ public class AudienceService {
 	private void uniqueCheck(Audience audience) {
 		logger.debug("Check audience is unique");
 		Optional<Audience> existingAudience = audienceDao.findByRoom(audience.getRoom());
-		if (!existingAudience.isEmpty() && (existingAudience.get().getId() != audience.getId())) {
+		if (existingAudience.isPresent() && (existingAudience.get().getId() != audience.getId())) {
 			throw new EntityNotUniqueException(
 					"Audience with room number " + audience.getRoom() + " is already exists!");
 		}

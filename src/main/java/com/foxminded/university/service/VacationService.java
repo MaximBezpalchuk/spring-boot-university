@@ -67,7 +67,7 @@ public class VacationService {
 		Optional<Vacation> existingVacation = vacationDao.findByPeriodAndTeacher(vacation.getStart(), vacation.getEnd(),
 				vacation.getTeacher());
 
-		if (!existingVacation.isEmpty() && (existingVacation.get().getId() != vacation.getId())) {
+		if (existingVacation.isPresent() && (existingVacation.get().getId() != vacation.getId())) {
 			throw new EntityNotUniqueException("Vacation with start(" + vacation.getStart() + "), end("
 					+ vacation.getEnd() + ") and teacher(" + vacation.getTeacher().getFirstName() + " "
 					+ vacation.getTeacher().getLastName() + ") id is already exists!");

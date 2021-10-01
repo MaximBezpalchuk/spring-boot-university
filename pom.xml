@@ -8,6 +8,9 @@
 	<name>UniversityProject</name>
 	<description>Application for non-existent university using
 		jdbcTemplate, Spring Framework</description>
+		<packaging>war</packaging>
+		
+		
 
 	<properties>
 		<maven.compiler.target>8</maven.compiler.target>

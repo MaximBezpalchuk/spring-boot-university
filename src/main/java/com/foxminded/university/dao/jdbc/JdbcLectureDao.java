@@ -101,7 +101,7 @@ public class JdbcLectureDao implements LectureDao {
 
 	private void insertGroup(Lecture lecture) {
 		Optional<Lecture> lectureOpt = findById(lecture.getId());
-		if (!lectureOpt.isEmpty()) {
+		if (lectureOpt.isPresent()) {
 			for (Group group : lecture.getGroups().stream()
 					.filter(group -> !lectureOpt.get().getGroups().contains(group)).collect(Collectors.toList())) {
 				jdbcTemplate.update(INSERT_GROUP, group.getId(), lecture.getId());
@@ -112,7 +112,7 @@ public class JdbcLectureDao implements LectureDao {
 
 	private void deleteGroup(Lecture lecture) {
 		Optional<Lecture> lectureOpt = findById(lecture.getId());
-		if (!lectureOpt.isEmpty()) {
+		if (lectureOpt.isPresent()) {
 			for (Group group : lectureOpt.get().getGroups().stream()
 					.filter(group -> !lecture.getGroups().contains(group)).collect(Collectors.toList())) {
 				jdbcTemplate.update(DELETE_GROUP, group.getId(), lecture.getId());

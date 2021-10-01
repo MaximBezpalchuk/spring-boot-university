@@ -86,7 +86,7 @@ public class LectureService {
 		logger.debug("Check lecture is unique");
 		Optional<Lecture> existingLecture = lectureDao.findByTeacherAudienceDateAndLectureTime(lecture.getTeacher(),
 				lecture.getAudience(), lecture.getDate(), lecture.getTime());
-		if (!existingLecture.isEmpty() && (existingLecture.get().getId() != lecture.getId())) {
+		if (existingLecture.isPresent() && (existingLecture.get().getId() != lecture.getId())) {
 			throw new EntityNotUniqueException("Lecture with audience number " + lecture.getAudience().getRoom()
 					+ ", date " + lecture.getDate() + " and lecture time " + lecture.getTime().getStart() + " - "
 					+ lecture.getTime().getEnd() + " is already exists!");
@@ -155,7 +155,7 @@ public class LectureService {
 		logger.debug("Check audience is occupied");
 		Optional<Lecture> existingLecture = lectureDao.findByAudienceDateAndLectureTime(lecture.getAudience(),
 				lecture.getDate(), lecture.getTime());
-		if (!existingLecture.isEmpty() && existingLecture.get().getId() != lecture.getId()) {
+		if (existingLecture.isPresent() && existingLecture.get().getId() != lecture.getId()) {
 			throw new OccupiedAudienceException(
 					"Audience " + lecture.getAudience().getRoom() + " is already occupied!");
 		}

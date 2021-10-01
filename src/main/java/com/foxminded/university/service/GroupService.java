@@ -54,7 +54,7 @@ public class GroupService {
 	private void uniqueCheck(Group group) {
 		logger.debug("Check group is unique");
 		Optional<Group> existingGroup = groupDao.findByName(group.getName());
-		if (!existingGroup.isEmpty() && (existingGroup.get().getId() != group.getId())) {
+		if (existingGroup.isPresent() && (existingGroup.get().getId() != group.getId())) {
 			throw new EntityNotUniqueException("Group with name " + group.getName() + " is already exists!");
 		}
 	}

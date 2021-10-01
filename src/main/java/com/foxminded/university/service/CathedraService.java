@@ -49,7 +49,7 @@ public class CathedraService {
 	private void uniqueCheck(Cathedra cathedra) {
 		logger.debug("Check catheda is unique");
 		Optional<Cathedra> existingCathedra = cathedraDao.findByName(cathedra.getName());
-		if (!existingCathedra.isEmpty() && existingCathedra.get().getId() != cathedra.getId()) {
+		if (existingCathedra.isPresent() && existingCathedra.get().getId() != cathedra.getId()) {
 			throw new EntityNotUniqueException("Cathedra with name " + cathedra.getName() + " is already exists!");
 		}
 	}

@@ -51,7 +51,7 @@ public class TeacherService {
 
 		Optional<Teacher> existingTeacher = teacherDao.findByFullNameAndBirthDate(teacher.getFirstName(),
 				teacher.getLastName(), teacher.getBirthDate());
-		if (!existingTeacher.isEmpty() && (existingTeacher.get().getId() != teacher.getId())) {
+		if (existingTeacher.isPresent() && (existingTeacher.get().getId() != teacher.getId())) {
 			throw new EntityNotUniqueException("Teacher with full name " + teacher.getFirstName() + " "
 					+ teacher.getLastName() + " and birth date " + teacher.getBirthDate() + " is already exists!");
 		}
