@@ -39,9 +39,9 @@ public class SpringConfig implements WebMvcConfigurer {
 	public String password;
 	@Value("${driverClass}")
 	public String driverClass;
-	@Value("schema.sql")
+	@Value("classpath:schema.sql")
 	Resource schema;
-	@Value("data.sql")
+	@Value("classpath:data.sql")
 	Resource data;
 	
 	@Autowired
