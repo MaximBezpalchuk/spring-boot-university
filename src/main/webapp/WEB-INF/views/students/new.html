@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+<meta charset="ISO-8859-1">
+<title>New student</title>
+</head>
+
+<body>
+	<h1>Create new student</h1>
+
+	<form th:method="POST" th:action="@{/students}" th:object="${student}">
+		<label for="firstName">Enter first name: </label> 
+		<input type="text" th:field="*{firstName}" id="firstName"> </br>
+		
+		<label for="lastName">Enter last name: </label> 
+		<input type="text" th:field="*{lastName}" id="lastName"> </br>
+		
+		<label for="phone">Enter phone number: </label> 
+		<input type="text" th:field="*{phone}" id="phone"> </br>
+		 
+		<label for="address">Enter address: </label> 
+		<input type="text" th:field="*{address}" id="address"> </br>
+		
+		<label for="email">Enter e-mail address: </label> 
+		<input type="text" th:field="*{email}" id="email">  </br>
+		
+		<label for="email">Chose gender: </label> 
+		<select name="gender">
+			<option
+				th:each="genderOpt : ${T(com.foxminded.university.model.Gender).values()}"
+				th:value="${genderOpt}" 
+				th:text="${genderOpt}">
+				Gender				
+			</option>
+		</select>  </br>
+		
+		<label for="education">Enter education: </label> 
+		<input type="text" th:field="*{education}" id="education"> </br>
+		
+		<label for="birthdate">Enter birth date: </label> 
+		<input type="date" th:field="*{birthDate}" id="birthdate">  </br>
+		
+		</br>
+		
+		<input type="submit" value="Create!">
+	</form>
+</body>

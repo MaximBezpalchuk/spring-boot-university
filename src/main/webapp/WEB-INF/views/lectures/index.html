@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+<meta charset="ISO-8859-1">
+<title>Lecture list</title>
+</head>
+
+<body>
+	<h1>Lectures</h1>
+	<table>
+		<tr th:each="lecture : ${lectures}">
+			<td th:text="${lecture.getDate()}">Date</td>
+			<td><span th:text="${lecture.getTime().getStart()}"></span> - <span
+				th:text="${lecture.getTime().getEnd()}"></span></td>
+			<td th:text="${lecture.getAudience().getRoom()}">Audience</td>
+			<td><span th:text="${lecture.getTeacher().getFirstName()}">First
+					name</span> <span th:text="${lecture.getTeacher().getLastName()}">Last name</span></td>
+			<td th:text="${lecture.getSubject().getName()}">Subject</td>
+			<td>Groups</td>
+			<td th:text="${lecture.getId()}">Id (need change to edit)</td>
+			<td th:text="${lecture.getId()}">Id (need change to delete)</td>
+		</tr>
+	</table>
+</body>

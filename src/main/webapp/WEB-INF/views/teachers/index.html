@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+<meta charset="ISO-8859-1">
+<title>Teacher list</title>
+</head>
+
+<body>
+	<h1>Teachers</h1>
+	<table>
+		<tr th:each="teacher : ${teachers}">
+			<td th:text="${teacher.getFirstName()}">First name</td>
+			<td th:text="${teacher.getLastName()}">Last name</td>
+			<td th:text="${teacher.getPhone()}">Phone number</td>
+			<td th:text="${teacher.getAddress()}">Address</td>
+			<td th:text="${teacher.getEmail()}">Email</td>
+			<td th:text="${teacher.getGender()}">Gender</td>
+			<td th:text="${teacher.getPostalCode()}">Postal code</td>
+			<td th:text="${teacher.getEducation()}">Education</td>
+			<td th:text="${teacher.getBirthDate()}">Birth date</td>
+			<td th:text="${teacher.getDegree()}">Degree</td>
+			<td>
+				<ul th:each="subject : ${teacher.getSubjects()}">
+					<li th:text="${subject.getName()}">Subject</li>
+				</ul>
+			</td>
+			<td>Vacations</td>
+			<td th:text="${teacher.getId()}">Id (need change to edit)</td>
+			<td th:text="${teacher.getId()}">Id (need change to delete)</td>
+		</tr>
+	</table>
+</body>

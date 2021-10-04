@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+<meta charset="ISO-8859-1">
+<title>Subject list</title>
+</head>
+
+<body>
+	<h1>Subjects</h1>
+	<table>
+		<tr th:each="subject : ${subjects}">
+			<td th:text="${subject.getName()}">Name</td>
+			<td th:text="${subject.getDescription()}">Description</td>
+			<td th:text="${subject.getId()}">Id (need change to edit)</td>
+			<td th:text="${subject.getId()}">Id (need change to delete)</td>
+		</tr>
+	</table>
+</body>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+<meta charset="ISO-8859-1">
+<title>Audience list</title>
+</head>
+
+<body>
+	<h1>Audiences</h1>
+	<table>
+		<tr th:each="audience : ${audiences}">
+			<td th:text="${audience.getRoom()}">Room</td>
+			<td th:text="${audience.getCapacity()}">Capacity</td>
+			<td th:text="${audience.getId()}">Id (need change to edit)</td>
+			<td th:text="${audience.getId()}">Id (need change to delete)</td>
+		</tr>
+	</table>
+</body>
