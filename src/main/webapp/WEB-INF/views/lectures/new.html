@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+<meta charset="ISO-8859-1">
+<title>New lecture</title>
+</head>
+
+<body>
+	<h1>Create new lecture</h1>
+
+	<form action="#" method="POST" th:action="@{/lectures}" th:object="${lecture}">
+		<select class="form-control" th:field="*{groups}" multiple="multiple">
+    <option th:each="group : ${groupsAttribute}"
+            th:field="*{groups}"
+            th:value="${group.id}"
+            th:text="${group.name}">Group name</option>
+</select>
+		
+		</br>
+		
+		<input type="submit" value="Create!">
+	</form>
+</body>

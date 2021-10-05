@@ -1,5 +1,7 @@
 package com.foxminded.university.config;
 
+import java.util.List;
+
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +17,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
@@ -28,8 +33,8 @@ import org.thymeleaf.templatemode.TemplateMode;
 @PropertySource("classpath:config.properties")
 @EnableWebMvc
 public class SpringConfig implements WebMvcConfigurer {
-	
-	 private final ApplicationContext applicationContext;
+
+	private final ApplicationContext applicationContext;
 
 	@Value("${url}")
 	public String url;
@@ -43,11 +48,11 @@ public class SpringConfig implements WebMvcConfigurer {
 	Resource schema;
 	@Value("classpath:data.sql")
 	Resource data;
-	
+
 	@Autowired
-    public SpringConfig(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
+	public SpringConfig(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
+	}
 
 	@Bean
 	public JdbcTemplate jdbcTemplate(DataSource dataSource) {
@@ -87,29 +92,37 @@ public class SpringConfig implements WebMvcConfigurer {
 	public DataSourceTransactionManager txManager(DataSource dataSource) {
 		return new DataSourceTransactionManager(dataSource);
 	}
-	
+
 	@Bean
-    public SpringResourceTemplateResolver templateResolver() {
-        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
-        templateResolver.setApplicationContext(applicationContext);
-        templateResolver.setPrefix("/WEB-INF/views/");
-        templateResolver.setSuffix(".html");
-        templateResolver.setTemplateMode(TemplateMode.HTML);
-        return templateResolver;
-    }
+	public SpringResourceTemplateResolver templateResolver() {
+		SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
+		templateResolver.setApplicationContext(applicationContext);
+		templateResolver.setPrefix("/WEB-INF/views/");
+		templateResolver.setSuffix(".html");
+		templateResolver.setTemplateMode(TemplateMode.HTML);
+		return templateResolver;
+	}
 
-    @Bean
-    public SpringTemplateEngine templateEngine() {
-        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-        templateEngine.setTemplateResolver(templateResolver());
-        templateEngine.setEnableSpringELCompiler(true);
-        return templateEngine;
-    }
+	@Bean
+	public SpringTemplateEngine templateEngine() {
+		SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+		templateEngine.setTemplateResolver(templateResolver());
+		templateEngine.setEnableSpringELCompiler(true);
+		return templateEngine;
+	}
 
-    @Override
-    public void configureViewResolvers(ViewResolverRegistry registry) {
-        ThymeleafViewResolver resolver = new ThymeleafViewResolver();
-        resolver.setTemplateEngine(templateEngine());
-        registry.viewResolver(resolver);
+	@Override
+	public void configureViewResolvers(ViewResolverRegistry registry) {
+		ThymeleafViewResolver resolver = new ThymeleafViewResolver();
+		resolver.setTemplateEngine(templateEngine());
+		registry.viewResolver(resolver);
+	}
+	
+	@Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+        PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
+        resolver.setFallbackPageable(PageRequest.of(0, 2));
+        argumentResolvers.add(resolver);
+        WebMvcConfigurer.super.addArgumentResolvers(argumentResolvers);
     }
 }

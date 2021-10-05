@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+<meta charset="ISO-8859-1">
+<title>New group</title>
+</head>
+
+<body>
+	<h1>Create new group</h1>
+
+	<form action="#" method="POST" th:action="@{/groups}" th:object="${group}">
+		<label for="name">Enter name: </label> 
+		<input type="text" th:field="*{name}" id="name"> </br>
+		
+		<input type="submit" value="Create!">
+	</form>
+</body>

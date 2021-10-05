@@ -9,7 +9,7 @@
 <body>
 	<h1>Create new student</h1>
 
-	<form th:method="POST" th:action="@{/students}" th:object="${student}">
+	<form action="#" method="POST" th:action="@{/students}" th:object="${student}">
 		<label for="firstName">Enter first name: </label> 
 		<input type="text" th:field="*{firstName}" id="firstName"> </br>
 		
@@ -39,7 +39,7 @@
 		<input type="text" th:field="*{education}" id="education"> </br>
 		
 		<label for="birthdate">Enter birth date: </label> 
-		<input type="date" th:field="*{birthDate}" id="birthdate">  </br>
+		<input type="text" th:field="*{birthDate}" id="birthdate">  </br>
 		
 		</br>
 		
