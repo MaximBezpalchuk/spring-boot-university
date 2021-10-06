@@ -15,6 +15,8 @@ public class Subject {
 		this.name = builder.name;
 		this.description = builder.description;
 	}
+	
+	public Subject() {}
 
 	public void setName(String name) {
 		this.name = name;

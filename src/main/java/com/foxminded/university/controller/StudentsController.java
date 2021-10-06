@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.foxminded.university.model.Student;
+import com.foxminded.university.service.GroupService;
 import com.foxminded.university.service.StudentService;
 
 @Controller
@@ -17,6 +18,8 @@ public class StudentsController {
 
 	@Autowired
 	StudentService studentService;
+	@Autowired
+	GroupService groupService;
 
 	@GetMapping()
 	public String index(Model model) {
@@ -27,6 +30,7 @@ public class StudentsController {
 	@GetMapping("/new")
 	public String newStudent(Model model) {
 		model.addAttribute("student", Student.builder().build());
+		model.addAttribute("groupsAttribute", groupService.findAll());
 		return "students/new";
 	}
 

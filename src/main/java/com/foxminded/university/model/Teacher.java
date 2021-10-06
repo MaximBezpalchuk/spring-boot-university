@@ -19,6 +19,8 @@ public class Teacher extends Person {
 		this.subjects = subjects;
 		this.degree = degree;
 	}
+	
+	public Teacher() {}
 
 	public static Builder builder() {
 		return new Builder();

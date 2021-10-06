@@ -74,10 +74,10 @@ public class JdbcStudentDao implements StudentDao {
 				statement.setString(7, student.getPostalCode());
 				statement.setString(8, student.getEducation());
 				statement.setObject(9, student.getBirthDate());
-				if (group != null) {
+				if (group != null && group.getId() != 0) {
 					statement.setInt(10, student.getGroup().getId());
 				} else {
-					statement.setObject(10, group);
+					statement.setObject(10, null);
 				}
 				return statement;
 			}, keyHolder);
@@ -97,10 +97,10 @@ public class JdbcStudentDao implements StudentDao {
 				statement.setString(7, student.getPostalCode());
 				statement.setString(8, student.getEducation());
 				statement.setObject(9, student.getBirthDate());
-				if (group != null) {
+				if (group != null && group.getId() != 0) {
 					statement.setInt(10, student.getGroup().getId());
 				} else {
-					statement.setObject(10, group);
+					statement.setObject(10, null);
 				}
 				statement.setInt(11, student.getId());
 				return statement;

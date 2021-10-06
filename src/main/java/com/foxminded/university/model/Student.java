@@ -12,6 +12,8 @@ public class Student extends Person {
 		super(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate);
 		this.group = group;
 	}
+	
+	public Student() {}
 
 	public Group getGroup() {
 		return group;

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 public class Lecture {
 
 	private int id;
@@ -12,6 +14,7 @@ public class Lecture {
 	private List<Group> groups = new ArrayList<>();
 	private Teacher teacher;
 	private Audience audience;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate date;
 	private Subject subject;
 	private LectureTime time;
@@ -27,6 +30,8 @@ public class Lecture {
 		this.time = time;
 		this.groups = groups;
 	}
+	
+	public Lecture() {}
 
 	public int getId() {
 		return id;

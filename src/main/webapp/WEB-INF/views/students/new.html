@@ -39,10 +39,26 @@
 		<input type="text" th:field="*{education}" id="education"> </br>
 		
 		<label for="birthdate">Enter birth date: </label> 
-		<input type="text" th:field="*{birthDate}" id="birthdate">  </br>
+		<input type="date" th:field="*{birthDate}" id="birthdate">  </br>
+		<!--
+		<select class="form-control" th:field="*{group.id}" multiple="multiple">
+   	 		<option th:each="anyGroup : ${groupsAttribute}"
+	            th:field="*{group.id}"
+	            th:value="${anyGroup?.id}"
+	            th:text="${anyGroup?.name}">Group name
+	        </option>
+		</select>
+		-->
+		</br> 
 		
-		</br>
-		
+		<select id="groupSelector" th:field="*{group.id}">
+		 	<option value="0">No group</option>
+			<option th:each="anyGroup : ${groupsAttribute}"
+	            th:field="*{group.id}"
+	            th:value="${anyGroup?.id}"
+	            th:text="${anyGroup?.name}">Group name
+	        </option>
+		</select> 
 		<input type="submit" value="Create!">
 	</form>
 </body>

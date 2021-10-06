@@ -8,6 +8,7 @@
 
 <body>
 	<h1>Students</h1>
+	<a href="students/new">New</a>
 	<table border="1px">
 		<tr th:each="student : ${students}">
 			<td th:text="${student.getFirstName()}">First name</td>
@@ -19,7 +20,7 @@
 			<td th:text="${student.getPostalCode()}">Postal code</td>
 			<td th:text="${student.getEducation()}">Education</td>
 			<td th:text="${student.getBirthDate()}">Birth date</td>
-			<td th:text="${student.getGroup().getName()}">Group</td>
+			<td th:text="${student?.getGroup()?.getName()}">Group</td>
 			<td th:text="${student.getId()}">Id (need change to edit)</td>
 			<td th:text="${student.getId()}">Id (need change to delete)</td>
 		</tr>

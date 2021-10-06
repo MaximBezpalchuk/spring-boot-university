@@ -3,10 +3,14 @@ package com.foxminded.university.model;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 public class Vacation {
 
 	private int id;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate start;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate end;
 	private Teacher teacher;
 
@@ -16,6 +20,8 @@ public class Vacation {
 		this.end = end;
 		this.teacher = teacher;
 	}
+	
+	public Vacation() {}
 
 	public void setStart(LocalDate start) {
 		this.start = start;

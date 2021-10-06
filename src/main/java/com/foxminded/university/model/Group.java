@@ -13,6 +13,8 @@ public class Group {
 		this.name = name;
 		this.cathedra = cathedra;
 	}
+	
+	public Group() {}
 
 	public void setName(String name) {
 		this.name = name;
