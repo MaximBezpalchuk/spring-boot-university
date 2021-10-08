@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Subject;
+import com.foxminded.university.service.CathedraService;
 import com.foxminded.university.service.SubjectService;
 
 @Controller
@@ -18,23 +18,28 @@ public class SubjectsController {
 
 	@Autowired
 	SubjectService subjectService;
+	@Autowired
+	CathedraService cathedraService;
 
 	@GetMapping()
 	public String index(Model model) {
 		model.addAttribute("subjects", subjectService.findAll());
+
 		return "subjects/index";
 	}
 
 	@GetMapping("/new")
-	public String newSubject(Model model) {
-		model.addAttribute("subject", Subject.builder().build());
+	public String newSubject(Subject subject, Model model) {
+		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
+
 		return "subjects/new";
 	}
 
 	@PostMapping()
 	public String create(@ModelAttribute("subject") Subject subject, Model model) {
-		subject.setCathedra(Cathedra.builder().id(1).build());
+		subject.setCathedra(cathedraService.findById(subject.getCathedra().getId()));
 		subjectService.save(subject);
+
 		return "redirect:/subjects";
 	}
 }

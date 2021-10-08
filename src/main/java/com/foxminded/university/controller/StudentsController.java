@@ -24,13 +24,14 @@ public class StudentsController {
 	@GetMapping()
 	public String index(Model model) {
 		model.addAttribute("students", studentService.findAll());
+
 		return "students/index";
 	}
 
 	@GetMapping("/new")
-	public String newStudent(Model model) {
-		model.addAttribute("student", Student.builder().build());
+	public String newStudent(Student student, Model model) {
 		model.addAttribute("groupsAttribute", groupService.findAll());
+
 		return "students/new";
 	}
 
@@ -40,7 +41,7 @@ public class StudentsController {
 			student.setGroup(groupService.findById(student.getGroup().getId()));
 		}
 		studentService.save(student);
-		
+
 		return "redirect:/students";
 	}
 }

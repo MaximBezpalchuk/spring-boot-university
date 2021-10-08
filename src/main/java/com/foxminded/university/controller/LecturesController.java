@@ -1,5 +1,7 @@
 package com.foxminded.university.controller;
 
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +24,7 @@ import com.foxminded.university.service.TeacherService;
 public class LecturesController {
 
 	@Autowired
-	LectureService lectureService;	
+	LectureService lectureService;
 	@Autowired
 	GroupService groupService;
 	@Autowired
@@ -39,9 +41,10 @@ public class LecturesController {
 	@GetMapping()
 	public String index(Model model) {
 		model.addAttribute("lectures", lectureService.findAll());
+		
 		return "lectures/index";
 	}
-	
+
 	@GetMapping("/new")
 	public String newLecture(Lecture lecture, Model model) {
 		model.addAttribute("teachersAttribute", teacherService.findAll());
@@ -50,7 +53,7 @@ public class LecturesController {
 		model.addAttribute("groupsAttribute", groupService.findAll());
 		model.addAttribute("subjectsAttribute", subjectService.findAll());
 		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
-		
+
 		return "lectures/new";
 	}
 
@@ -61,8 +64,10 @@ public class LecturesController {
 		lecture.setAudience(audienceService.findById(lecture.getAudience().getId()));
 		lecture.setTime(lectureTimeService.findById(lecture.getTime().getId()));
 		lecture.setSubject(subjectService.findById(lecture.getSubject().getId()));
+		lecture.setGroups(lecture.getGroups().stream().map(group -> groupService.findById(group.getId()))
+				.collect(Collectors.toList()));
 		lectureService.save(lecture);
-		
+
 		return "redirect:/lectures";
 	}
 }

@@ -11,7 +11,7 @@
 
 	<form action="#" method="POST" th:action="@{/lectures}" th:object="${lecture}">
 		<label for="cathedraSelector">Choose cathedra: </label> 
-		<select id="cathedraSelector" th:field="*{cathedra.id}">
+		<select id="cathedraSelector" th:field="*{cathedra.id}" required>
 			<option th:each="anyCathedra : ${cathedrasAttribute}"
 	            th:field="*{cathedra.id}"
 	            th:value="${anyCathedra?.id}"
@@ -20,7 +20,7 @@
 		</select> </br>
 	
 		<label for="teacherSelector">Choose teacher: </label> 
-		<select id="teacherSelector" th:field="*{teacher.id}">
+		<select id="teacherSelector" th:field="*{teacher.id}" required>
 			<option th:each="anyTeacher : ${teachersAttribute}"
 	            th:field="*{teacher.id}"
 	            th:value="${anyTeacher?.id}"
@@ -29,7 +29,7 @@
 		</select> </br>
 		
 		<label for="audienceSelector">Choose audience: </label> 
-		<select id="audienceSelector" th:field="*{audience.id}">
+		<select id="audienceSelector" th:field="*{audience.id}" required>
 			<option th:each="anyAudience : ${audiencesAttribute}"
 	            th:field="*{audience.id}"
 	            th:value="${anyAudience?.id}"
@@ -38,7 +38,7 @@
 		</select> </br>
 		
 		<label for="subjectSelector">Choose subject: </label> 
-		<select id="subjectSelector" th:field="*{subject.id}">
+		<select id="subjectSelector" th:field="*{subject.id}" required>
 			<option th:each="anySubject : ${subjectsAttribute}"
 	            th:field="*{subject.id}"
 	            th:value="${anySubject?.id}"
@@ -47,9 +47,9 @@
 		</select> </br>
 		
 		<label for="date">Enter date: </label> 
-		<input type="date" th:field="*{date}" id="date">  </br>
+		<input type="date" th:field="*{date}" id="date" required>  </br>
 		
-		<select id="timeSelector" th:field="*{time.id}">
+		<select id="timeSelector" th:field="*{time.id}" required>
 			<option th:each="anyTime : ${timesAttribute}"
 	            th:field="*{time.id}"
 	            th:value="${anyTime?.id}"
@@ -57,14 +57,16 @@
 	        </option>
 		</select> </br>
 				
-			<select class="form-control" id="groups" name="groups" multiple required>
-                    <option th:each="group: ${groupsAttribute}"
+		<label for="subjectSelector">Choose group(s): </label> 
+		<select class="form-control" id="groups" name="groups" multiple required>
+			<option th:each="group: ${groupsAttribute}"
                             th:value="${group.id}"
                             th:text="${group.name}">
                             
-                    </option>
-                </select>
+			</option>
+		</select>
 		</br>
+		
 		<input type="submit" value="Create!">
 	</form>
 </body>

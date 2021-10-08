@@ -1,4 +1,4 @@
-package com.foxminded.university;
+package com.foxminded.university.formatter;
 
 import java.text.ParseException;
 import java.util.Locale;

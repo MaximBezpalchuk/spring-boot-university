@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Group;
+import com.foxminded.university.service.CathedraService;
 import com.foxminded.university.service.GroupService;
 
 @Controller
@@ -18,23 +18,28 @@ public class GroupsController {
 
 	@Autowired
 	GroupService groupService;
+	@Autowired
+	CathedraService cathedraService;
 
 	@GetMapping()
 	public String index(Model model) {
 		model.addAttribute("groups", groupService.findAll());
+
 		return "groups/index";
 	}
-	
+
 	@GetMapping("/new")
-	public String newGroup(Model model) {
-		model.addAttribute("group", Group.builder().build());
+	public String newGroup(Group group, Model model) {
+		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
+
 		return "groups/new";
 	}
 
 	@PostMapping()
 	public String create(@ModelAttribute("group") Group group, Model model) {
-		group.setCathedra(Cathedra.builder().id(1).build());
+		group.setCathedra(cathedraService.findById(group.getCathedra().getId()));
 		groupService.save(group);
+
 		return "redirect:/groups";
 	}
 }

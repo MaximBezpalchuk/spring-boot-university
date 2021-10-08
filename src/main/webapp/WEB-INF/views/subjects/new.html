@@ -10,11 +10,20 @@
 	<h1>Create new subject</h1>
 
 	<form action="#" method="POST" th:action="@{/subjects}" th:object="${subject}">
+		<label for="cathedraSelector">Choose cathedra: </label> 
+		<select id="cathedraSelector" th:field="*{cathedra.id}" required>
+			<option th:each="anyCathedra : ${cathedrasAttribute}"
+	            th:field="*{cathedra.id}"
+	            th:value="${anyCathedra?.id}"
+	            th:text="${anyCathedra?.name}">Cathedra name
+	        </option>
+		</select> </br>
+	
 		<label for="name">Enter name: </label> 
-		<input type="text" th:field="*{name}" id="name"> </br>
+		<input type="text" th:field="*{name}" id="name" required> </br>
 		
 		<label for="description">Enter description: </label> 
-		<input type="text" th:field="*{description}" id="description"> </br>
+		<input type="text" th:field="*{description}" id="description" required> </br>
 		
 		<input type="submit" value="Create!">
 	</form>

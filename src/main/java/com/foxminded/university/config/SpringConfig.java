@@ -29,7 +29,8 @@ import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 
-import com.foxminded.university.GroupFormatter;
+import com.foxminded.university.formatter.GroupFormatter;
+import com.foxminded.university.formatter.SubjectFormatter;
 
 @Configuration
 @ComponentScan("com.foxminded.university")
@@ -131,6 +132,7 @@ public class SpringConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addFormatters(FormatterRegistry registry) {
-		registry.addFormatter(new GroupFormatter());
+		registry.addFormatter(new GroupFormatter()); //add multiply group choice on lectures/new
+		registry.addFormatter(new SubjectFormatter()); //add multiply subject choice on teachers/new
 	}
 }

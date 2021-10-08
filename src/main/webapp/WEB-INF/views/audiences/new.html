@@ -10,11 +10,21 @@
 	<h1>Create new audience</h1>
 
 	<form action="#" method="POST" th:action="@{/audiences}" th:object="${audience}">
+	
+	<label for="cathedraSelector">Choose cathedra: </label> 
+		<select id="cathedraSelector" th:field="*{cathedra.id}" required>
+			<option th:each="anyCathedra : ${cathedrasAttribute}"
+	            th:field="*{cathedra.id}"
+	            th:value="${anyCathedra?.id}"
+	            th:text="${anyCathedra?.name}">Cathedra name
+	        </option>
+		</select> </br>
+		
 		<label for="room">Enter room number: </label> 
-		<input type="number" th:field="*{room}" id="room"> </br>
+		<input type="number" th:field="*{room}" id="room" required> </br>
 		
 		<label for="capacity">Enter capacity: </label> 
-		<input type="number" th:field="*{capacity}" id="capacity"> </br>
+		<input type="number" th:field="*{capacity}" id="capacity" required> </br>
 		
 		</br>
 		

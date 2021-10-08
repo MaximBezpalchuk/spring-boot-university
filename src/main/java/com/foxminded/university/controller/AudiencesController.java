@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.foxminded.university.model.Audience;
-import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.service.AudienceService;
+import com.foxminded.university.service.CathedraService;
 
 @Controller
 @RequestMapping("/audiences")
@@ -18,23 +18,28 @@ public class AudiencesController {
 
 	@Autowired
 	AudienceService audienceService;
+	@Autowired
+	CathedraService cathedraService;
 
 	@GetMapping()
 	public String index(Model model) {
 		model.addAttribute("audiences", audienceService.findAll());
+		
 		return "audiences/index";
 	}
 
 	@GetMapping("/new")
-	public String newAudience(Model model) {
-		model.addAttribute("audience", Audience.builder().build());
+	public String newAudience(Audience audience, Model model) {
+		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
+		
 		return "audiences/new";
 	}
 
 	@PostMapping()
 	public String create(@ModelAttribute("audience") Audience audience, Model model) {
-		audience.setCathedra(Cathedra.builder().id(1).build());
+		audience.setCathedra(cathedraService.findById(audience.getCathedra().getId()));
 		audienceService.save(audience);
+		
 		return "redirect:/audiences";
 	}
 }
