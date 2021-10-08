@@ -8,20 +8,33 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Lecture;
+import com.foxminded.university.service.AudienceService;
+import com.foxminded.university.service.CathedraService;
 import com.foxminded.university.service.GroupService;
 import com.foxminded.university.service.LectureService;
+import com.foxminded.university.service.LectureTimeService;
+import com.foxminded.university.service.SubjectService;
+import com.foxminded.university.service.TeacherService;
 
 @Controller
 @RequestMapping("/lectures")
 public class LecturesController {
 
 	@Autowired
-	LectureService lectureService;
-	
+	LectureService lectureService;	
 	@Autowired
 	GroupService groupService;
+	@Autowired
+	TeacherService teacherService;
+	@Autowired
+	AudienceService audienceService;
+	@Autowired
+	SubjectService subjectService;
+	@Autowired
+	CathedraService cathedraService;
+	@Autowired
+	LectureTimeService lectureTimeService;
 
 	@GetMapping()
 	public String index(Model model) {
@@ -30,16 +43,26 @@ public class LecturesController {
 	}
 	
 	@GetMapping("/new")
-	public String newLecture(Model model) {
+	public String newLecture(Lecture lecture, Model model) {
+		model.addAttribute("teachersAttribute", teacherService.findAll());
+		model.addAttribute("audiencesAttribute", audienceService.findAll());
+		model.addAttribute("timesAttribute", lectureTimeService.findAll());
 		model.addAttribute("groupsAttribute", groupService.findAll());
-		model.addAttribute("lecture", Lecture.builder().build());
+		model.addAttribute("subjectsAttribute", subjectService.findAll());
+		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
+		
 		return "lectures/new";
 	}
 
 	@PostMapping()
-	public String create(@ModelAttribute("lecture") Lecture lecture, Model model) {
-		lecture.setCathedra(Cathedra.builder().id(1).build());
+	public String create(@ModelAttribute("lecture") Lecture lecture) {
+		lecture.setCathedra(cathedraService.findById(lecture.getCathedra().getId()));
+		lecture.setTeacher(teacherService.findById(lecture.getTeacher().getId()));
+		lecture.setAudience(audienceService.findById(lecture.getAudience().getId()));
+		lecture.setTime(lectureTimeService.findById(lecture.getTime().getId()));
+		lecture.setSubject(subjectService.findById(lecture.getSubject().getId()));
 		lectureService.save(lecture);
+		
 		return "redirect:/lectures";
 	}
 }

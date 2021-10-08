@@ -23,10 +23,13 @@ import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.format.FormatterRegistry;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
+
+import com.foxminded.university.GroupFormatter;
 
 @Configuration
 @ComponentScan("com.foxminded.university")
@@ -117,12 +120,17 @@ public class SpringConfig implements WebMvcConfigurer {
 		resolver.setTemplateEngine(templateEngine());
 		registry.viewResolver(resolver);
 	}
-	
+
 	@Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
-        resolver.setFallbackPageable(PageRequest.of(0, 2));
-        argumentResolvers.add(resolver);
-        WebMvcConfigurer.super.addArgumentResolvers(argumentResolvers);
-    }
+	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+		PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
+		resolver.setFallbackPageable(PageRequest.of(0, 2));
+		argumentResolvers.add(resolver);
+		WebMvcConfigurer.super.addArgumentResolvers(argumentResolvers);
+	}
+
+	@Override
+	public void addFormatters(FormatterRegistry registry) {
+		registry.addFormatter(new GroupFormatter());
+	}
 }

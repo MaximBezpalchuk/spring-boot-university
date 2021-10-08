@@ -8,7 +8,8 @@
 
 <body>
 	<h1>Holidays</h1>
-	<table>
+	<a href="holidays/new">New</a>
+	<table border="1px">
 		<tr th:each="holiday : ${holidays}">
 			<td th:text="${holiday.getName()}">Name</td>
 			<td th:text="${holiday.getDate()}">Date</td>

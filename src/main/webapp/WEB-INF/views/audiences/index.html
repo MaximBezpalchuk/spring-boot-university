@@ -8,7 +8,8 @@
 
 <body>
 	<h1>Audiences</h1>
-	<table>
+	<a href="audiences/new">New</a>
+	<table border="1px">
 		<tr th:each="audience : ${audiences}">
 			<td th:text="${audience.getRoom()}">Room</td>
 			<td th:text="${audience.getCapacity()}">Capacity</td>

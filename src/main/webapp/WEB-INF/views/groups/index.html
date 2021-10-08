@@ -8,7 +8,8 @@
 
 <body>
 	<h1>Groups</h1>
-	<table>
+	<a href="groups/new">New</a>
+	<table border="1px">
 		<tr th:each="group : ${groups}">
 			<td th:text="${group.getName()}">Name</td>
 			<td th:text="${group.getId()}">Id (need change to edit)</td>

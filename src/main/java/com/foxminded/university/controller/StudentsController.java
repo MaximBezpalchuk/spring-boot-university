@@ -36,7 +36,11 @@ public class StudentsController {
 
 	@PostMapping()
 	public String create(@ModelAttribute("student") Student student, Model model) {
+		if (student.getGroup().getId() != 0) {
+			student.setGroup(groupService.findById(student.getGroup().getId()));
+		}
 		studentService.save(student);
+		
 		return "redirect:/students";
 	}
 }

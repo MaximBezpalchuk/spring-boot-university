@@ -8,7 +8,8 @@
 
 <body>
 	<h1>Subjects</h1>
-	<table>
+	<a href="subjects/new">New</a>
+	<table border="1px">
 		<tr th:each="subject : ${subjects}">
 			<td th:text="${subject.getName()}">Name</td>
 			<td th:text="${subject.getDescription()}">Description</td>

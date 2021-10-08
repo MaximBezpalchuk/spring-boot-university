@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+<meta charset="ISO-8859-1">
+<title>New subject</title>
+</head>
+
+<body>
+	<h1>Create new subject</h1>
+
+	<form action="#" method="POST" th:action="@{/subjects}" th:object="${subject}">
+		<label for="name">Enter name: </label> 
+		<input type="text" th:field="*{name}" id="name"> </br>
+		
+		<label for="description">Enter description: </label> 
+		<input type="text" th:field="*{description}" id="description"> </br>
+		
+		<input type="submit" value="Create!">
+	</form>
+</body>

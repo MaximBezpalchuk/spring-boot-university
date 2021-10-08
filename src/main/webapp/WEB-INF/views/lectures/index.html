@@ -8,7 +8,8 @@
 
 <body>
 	<h1>Lectures</h1>
-	<table>
+	<a href="lectures/new">New</a>
+	<table border="1px">
 		<tr th:each="lecture : ${lectures}">
 			<td th:text="${lecture.getDate()}">Date</td>
 			<td><span th:text="${lecture.getTime().getStart()}"></span> - <span
@@ -17,7 +18,11 @@
 			<td><span th:text="${lecture.getTeacher().getFirstName()}">First
 					name</span> <span th:text="${lecture.getTeacher().getLastName()}">Last name</span></td>
 			<td th:text="${lecture.getSubject().getName()}">Subject</td>
-			<td>Groups</td>
+			<td>
+				<ul th:each="group : ${lecture.getGroups()}">
+					<li th:text="${group?.getName()}">Group</li>
+				</ul>
+			</td>
 			<td th:text="${lecture.getId()}">Id (need change to edit)</td>
 			<td th:text="${lecture.getId()}">Id (need change to delete)</td>
 		</tr>

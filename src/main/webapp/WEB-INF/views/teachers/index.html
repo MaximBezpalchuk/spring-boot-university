@@ -8,7 +8,8 @@
 
 <body>
 	<h1>Teachers</h1>
-	<table>
+	<a href="teachers/new">New</a>
+	<table border="1px">
 		<tr th:each="teacher : ${teachers}">
 			<td th:text="${teacher.getFirstName()}">First name</td>
 			<td th:text="${teacher.getLastName()}">Last name</td>
@@ -22,7 +23,7 @@
 			<td th:text="${teacher.getDegree()}">Degree</td>
 			<td>
 				<ul th:each="subject : ${teacher.getSubjects()}">
-					<li th:text="${subject.getName()}">Subject</li>
+					<li th:text="${subject?.getName()}">Subject</li>
 				</ul>
 			</td>
 			<td>Vacations</td>

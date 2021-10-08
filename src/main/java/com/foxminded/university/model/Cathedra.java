@@ -11,6 +11,8 @@ public class Cathedra {
 		this.id = id;
 		this.name = name;
 	}
+	
+	public Cathedra() {}
 
 	public int getId() {
 		return id;
