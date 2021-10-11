@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
 import com.foxminded.university.config.SpringTestConfig;
@@ -21,6 +22,7 @@ import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
+@WebAppConfiguration
 @ContextConfiguration(classes = SpringTestConfig.class)
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class JdbcAudienceDaoTest {
