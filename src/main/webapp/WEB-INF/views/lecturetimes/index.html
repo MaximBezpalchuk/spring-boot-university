@@ -20,7 +20,9 @@
 				<a th:href="@{/lecturetimes/{id}/edit(id=${lectureTime.id})}" th:text="Edit">Edit lecture time</a>
 			</td>
 			<td>
-				<a th:href="@{/lecturetimes/{id}/delete(id=${lectureTime.id})}" th:text="Delete">Delete lecture time</a>
+				<form th:method="DELETE" th:action="@{/lecturetimes/{id}(id=${lectureTime.id})}">
+					<input type="submit" value="Delete">
+				</form>
 			</td>
 		</tr>
 	</table>

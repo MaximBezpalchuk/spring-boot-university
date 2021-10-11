@@ -3,19 +3,19 @@
 
 <head>
 <meta charset="ISO-8859-1">
-<title>New teachers vacation</title>
+<title>Edit vacation</title>
 </head>
 
 <body>
-	<h1 th:text="'Create new vacation for ' + ${teacher.firstName} + ' ' + ${teacher.lastName}">Hello description</h1>
+	<h1 th:text="'Edit vacation on teacher ' + ${vacation.teacher.firstName} + ' ' + ${vacation.teacher.lastName}">Vacation desc</h1>
 
-	<form method="POST" th:action="@{/teachers/{id}/vacations/(id=${teacher.id})}" th:object="${vacation}">
+	<form th:method="PATCH" th:action="@{/teachers/{id}/vacations/{vacId}(id=${teacher.id},vacId=${vacation.id})}" th:object="${vacation}">
 		<label for="start">Enter vacations start: </label> 
 		<input type="date" th:field="*{start}" id="start" required> <br>
 	
 		<label for="end">Enter vacations end: </label> 
 		<input type="date" th:field="*{end}" id="end" required> <br>
 
-		<input type="submit" value="Create!">
+		<input type="submit" value="Update!">
 	</form>
 </body>

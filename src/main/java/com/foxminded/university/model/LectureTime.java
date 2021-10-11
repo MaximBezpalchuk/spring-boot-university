@@ -3,10 +3,14 @@ package com.foxminded.university.model;
 import java.time.LocalTime;
 import java.util.Objects;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 public class LectureTime {
 
 	private int id;
+	@DateTimeFormat(pattern = "HH:mm")
 	private LocalTime start;
+	@DateTimeFormat(pattern = "HH:mm")
 	private LocalTime end;
 
 	private LectureTime(int id, LocalTime start, LocalTime end) {

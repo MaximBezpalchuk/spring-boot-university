@@ -20,7 +20,9 @@
 				<a th:href="@{/audiences/{id}/edit(id=${audience.id})}" th:text="Edit">Edit audience</a>
 			</td>
 			<td>
-				<a th:href="@{/audiences/{id}/delete(id=${audience.id})}" th:text="Delete">Delete audience</a>
+				<form th:method="DELETE" th:action="@{/audiences/{id}(id=${audience.id})}">
+					<input type="submit" value="Delete">
+				</form>
 			</td>
 		</tr>
 	</table>

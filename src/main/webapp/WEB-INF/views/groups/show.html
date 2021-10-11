@@ -9,7 +9,9 @@
 <body>
 	<h1 th:text="'Group name ' + ${group.name}">Group name</h1>
 	<a th:href="@{/groups/{id}/edit(id=${group.id})}" th:text="Edit">Edit group</a> 
-	<a th:href="@{/groups/{id}/delete(id=${group.id})}" th:text="Delete">Delete group</a>
+	<form th:method="DELETE" th:action="@{/groups/{id}(id=${group.id})}">
+		<input type="submit" value="Delete">
+	</form>
 	<table border="1">
 	<tr>
 		<td>Cathedra</td>

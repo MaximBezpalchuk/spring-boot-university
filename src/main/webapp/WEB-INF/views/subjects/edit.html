@@ -3,13 +3,13 @@
 
 <head>
 <meta charset="ISO-8859-1">
-<title>New holiday</title>
+<title>Edit subject</title>
 </head>
 
 <body>
-	<h1>Create new holiday</h1>
+	<h1 th:text="'Edit subject ' + ${subject.name}">Subject desc</h1>
 
-	<form method="POST" th:action="@{/holidays}" th:object="${holiday}">
+	<form th:method="PATCH" th:action="@{/subjects/{id}(id=${subject.id})}" th:object="${subject}">
 		<label for="cathedraSelector">Choose cathedra: </label> 
 		<select id="cathedraSelector" th:field="*{cathedra.id}" required>
 			<option th:each="anyCathedra : ${cathedrasAttribute}"
@@ -18,13 +18,13 @@
 	            th:text="${anyCathedra?.name}">Cathedra name
 	        </option>
 		</select> <br>
-		
+	
 		<label for="name">Enter name: </label> 
 		<input type="text" th:field="*{name}" id="name" required> <br>
 		
-		<label for="date">Enter date: </label> 
-		<input type="date" th:field="*{date}" id="date" required> <br>
+		<label for="description">Enter description: </label> 
+		<input type="text" th:field="*{description}" id="description" required> <br>
 		
-		<input type="submit" value="Create!">
+		<input type="submit" value="Update!">
 	</form>
 </body>

@@ -3,8 +3,10 @@ package com.foxminded.university.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,21 +27,21 @@ public class HolidaysController {
 	@GetMapping()
 	public String index(Model model) {
 		model.addAttribute("holidays", holidayService.findAll());
-		
+
 		return "holidays/index";
 	}
-	
+
 	@GetMapping("/{id}")
 	public String showHoliday(@PathVariable("id") int id, Model model) {
 		model.addAttribute("holiday", holidayService.findById(id));
 
 		return "holidays/show";
 	}
-	
+
 	@GetMapping("/new")
 	public String newHoliday(Holiday holiday, Model model) {
 		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
-		
+
 		return "holidays/new";
 	}
 
@@ -47,7 +49,30 @@ public class HolidaysController {
 	public String create(@ModelAttribute("holiday") Holiday holiday, Model model) {
 		holiday.setCathedra(cathedraService.findById(holiday.getCathedra().getId()));
 		holidayService.save(holiday);
-		
+
+		return "redirect:/holidays";
+	}
+
+	@GetMapping("/{id}/edit")
+	public String editHoliday(@PathVariable("id") int id, Model model) {
+		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
+		model.addAttribute("holiday", holidayService.findById(id));
+
+		return "holidays/edit";
+	}
+
+	@PatchMapping("/{id}")
+	public String update(@ModelAttribute("holiday") Holiday holiday, @PathVariable("id") int id) {
+		holiday.setCathedra(cathedraService.findById(holiday.getCathedra().getId()));
+		holidayService.save(holiday);
+
+		return "redirect:/holidays";
+	}
+
+	@DeleteMapping("/{id}")
+	public String delete(@PathVariable("id") int id) {
+		holidayService.deleteById(id);
+
 		return "redirect:/holidays";
 	}
 }

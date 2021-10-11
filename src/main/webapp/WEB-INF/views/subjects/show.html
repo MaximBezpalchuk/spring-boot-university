@@ -9,7 +9,9 @@
 <body>
 	<h1 th:text="'Subject ' + ${subject.name}">Subject name</h1>
 	<a th:href="@{/subjects/{id}/edit(id=${subject.id})}" th:text="Edit">Edit subject</a> 
-	<a th:href="@{/subjects/{id}/delete(id=${subject.id})}" th:text="Delete">Delete subject</a>
+	<form th:method="DELETE" th:action="@{/subjects/{id}(id=${subject.id})}">
+		<input type="submit" value="Delete">
+	</form>
 	<table border="1">
 		<tr>
 			<td>Cathedra</td>

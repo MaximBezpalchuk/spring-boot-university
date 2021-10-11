@@ -3,19 +3,19 @@
 
 <head>
 <meta charset="ISO-8859-1">
-<title>New lecture time</title>
+<title>Edit lecture time</title>
 </head>
 
 <body>
-	<h1>Create new lecture time</h1>
+	<h1 th:text="'Edit lecture time ' + ${lectureTime.start} + ' - ' + ${lectureTime.end}">Lecture time desc</h1>
 
-	<form method="POST" th:action="@{/lecturetimes}" th:object="${lectureTime}">
+		<form th:method="PATCH" th:action="@{/lecturetimes/{id}(id=${lectureTime.id})}" th:object="${lectureTime}">
 		<label for="start">Enter start time: </label> 
 		<input type="time" th:field="*{start}" id="start" required>  <br>
 		
 		<label for="end">Enter end time: </label> 
 		<input type="time" th:field="*{end}" id="end" required>  <br>
 
-		<input type="submit" value="Create!">
+		<input type="submit" value="Update!">
 	</form>
 </body>

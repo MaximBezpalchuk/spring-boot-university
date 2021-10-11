@@ -9,7 +9,9 @@
 <body>
 	<h1 th:text="'Audience number ' + ${audience.room}">Audience name</h1>
 	<a th:href="@{/audiences/{id}/edit(id=${audience.id})}" th:text="Edit">Edit audience</a> 
-	<a th:href="@{/audiences/{id}/delete(id=${audience.id})}" th:text="Delete">Delete audience</a>
+	<form th:method="DELETE" th:action="@{/audiences/{id}(id=${audience.id})}">
+		<input type="submit" value="Delete">
+	</form>
 	<table border="1">
 	<tr>
 		<td>Cathedra</td>

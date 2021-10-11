@@ -12,7 +12,7 @@
 	<table border="1">
 		<tr th:each="vacation : ${vacations}">
 			<td>Vacation period</td>
-			<td th:text="${vacation.start} + ' ' + ${vacation.end}">Vacation period</td>
+			<td th:text="${vacation.start} + ' - ' + ${vacation.end}">Vacation period</td>
 			<td>
 				<a th:href="@{/teachers/{id}/vacations/{vacId}(id=${teacher.id}, vacId=${vacation.id})}" th:text="Show">Full info about vacation</a>
 			</td>
@@ -20,7 +20,9 @@
 				<a th:href="@{/teachers/{id}/vacations/{vacId}/edit(id=${teacher.id}, vacId=${vacation.id})}" th:text="Edit">Edit vacation</a>
 			</td>
 			<td>
-				<a th:href="@{/teachers/{id}/vacations/{vacId}/delete(id=${teacher.id},vacId=${vacation.id})}" th:text="Delete">Delete teacher</a>
+				<form th:method="DELETE" th:action="@{/teachers/{id}/vacations/{vacId}(id=${teacher.id},vacId=${vacation.id})}">
+					<input type="submit" value="Delete">
+				</form>
 			</td>
 		</tr>
 	</table>

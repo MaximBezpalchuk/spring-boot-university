@@ -3,22 +3,13 @@
 
 <head>
 <meta charset="ISO-8859-1">
-<title>New teacher</title>
+<title>Edit student</title>
 </head>
 
 <body>
-	<h1>Create new teacher</h1>
+	<h1 th:text="'Edit student ' + ${student.firstName} + ' ' + ${student.lastName}">Student desc</h1>
 
-	<form method="POST" th:action="@{/teachers}" th:object="${teacher}">
-		<label for="cathedraSelector">Choose cathedra: </label> 
-		<select id="cathedraSelector" th:field="*{cathedra.id}" required>
-			<option th:each="anyCathedra : ${cathedrasAttribute}"
-	            th:field="*{cathedra.id}"
-	            th:value="${anyCathedra?.id}"
-	            th:text="${anyCathedra?.name}">Cathedra name
-	        </option>
-		</select> <br>
-	
+	<form th:method="PATCH" th:action="@{/students/{id}(id=${student.id})}" th:object="${student}">
 		<label for="firstName">Enter first name: </label> 
 		<input type="text" th:field="*{firstName}" id="firstName" required> <br>
 		
@@ -52,26 +43,16 @@
 		
 		<label for="birthdate">Enter birth date: </label> 
 		<input type="date" th:field="*{birthDate}" id="birthdate" required>  <br>
-		
-		<label for="degree">Chose degree: </label> 
-		<select name="degree" required>
-			<option
-				th:each="degreeOpt : ${T(com.foxminded.university.model.Degree).values()}"
-				th:value="${degreeOpt}" 
-				th:text="${degreeOpt}">
-				Degree				
-			</option>
-		</select>  <br>
 
-		<label for="subjectSelector">Choose subject(s): </label> 
-		<select class="form-control" id="subjects" name="subjects" multiple required>
-        	<option th:each="subject: ${subjectsAttribute}"
-                            th:value="${subject.id}"
-                            th:text="${subject.name}">
-                            
-        	</option>
-		</select> <br>
-		
-		<input type="submit" value="Create!">
+		<label for="groupSelector">Choose group: </label> 
+		<select id="groupSelector" th:field="*{group.id}">
+		 	<option value="0">No group</option>
+			<option th:each="anyGroup : ${groupsAttribute}"
+	            th:field="*{group.id}"
+	            th:value="${anyGroup?.id}"
+	            th:text="${anyGroup?.name}">Group name
+	        </option>
+		</select>  <br>
+		<input type="submit" value="Update!">
 	</form>
 </body>

@@ -9,7 +9,9 @@
 <body>
 	<h1 th:text="'Holiday name ' + ${holiday.name}">Holiday name</h1>
 	<a th:href="@{/holidays/{id}/edit(id=${holiday.id})}" th:text="Edit">Edit holiday</a> 
-	<a th:href="@{/holidays/{id}/delete(id=${holiday.id})}" th:text="Delete">Delete holiday</a>
+	<form th:method="DELETE" th:action="@{/holidays/{id}(id=${holiday.id})}">
+		<input type="submit" value="Delete">
+	</form>
 	<table border="1">
 	<tr>
 		<td>Cathedra</td>

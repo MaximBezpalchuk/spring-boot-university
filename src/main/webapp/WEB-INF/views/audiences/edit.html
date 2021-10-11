@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-
 <head>
-<meta charset="ISO-8859-1">
-<title>New audience</title>
+<meta charset="UTF-8">
+<title>Edit audience</title>
 </head>
-
 <body>
-	<h1>Create new audience</h1>
+<h1 th:text="'Edit audience with room number ' + ${audience.room}">Edit audience</h1>
 
-	<form method="POST" th:action="@{/audiences}" th:object="${audience}">
+	<form th:method="PATCH" th:action="@{/audiences/{id}(id=${audience.id})}" th:object="${audience}">
 	
 	<label for="cathedraSelector">Choose cathedra: </label> 
 		<select id="cathedraSelector" th:field="*{cathedra.id}" required>
@@ -28,6 +26,7 @@
 		
 		<br>
 		
-		<input type="submit" value="Create!">
+		<input type="submit" value="Update!">
 	</form>
 </body>
+</html>

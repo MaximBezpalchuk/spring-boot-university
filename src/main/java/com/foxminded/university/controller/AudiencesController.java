@@ -3,8 +3,10 @@ package com.foxminded.university.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,10 +46,33 @@ public class AudiencesController {
 	}
 
 	@PostMapping()
-	public String create(@ModelAttribute("audience") Audience audience, Model model) {
+	public String create(@ModelAttribute("audience") Audience audience) {
 		audience.setCathedra(cathedraService.findById(audience.getCathedra().getId()));
 		audienceService.save(audience);
 
 		return "redirect:/audiences";
+	}
+	
+	@GetMapping("/{id}/edit")
+	public String editAudience(@PathVariable("id") int id, Model model) {
+		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
+		model.addAttribute("audience", audienceService.findById(id));
+
+		return "audiences/edit";
+	}
+	
+	@PatchMapping("/{id}")
+	public String update(@ModelAttribute("audience") Audience audience, @PathVariable("id") int id) {
+		audience.setCathedra(cathedraService.findById(audience.getCathedra().getId()));
+		audienceService.save(audience);
+		
+		return"redirect:/audiences";
+	}
+	
+	@DeleteMapping("/{id}")
+	public String delete(@PathVariable("id") int id) {
+		audienceService.deleteById(id);
+		
+		return"redirect:/audiences";
 	}
 }

@@ -9,7 +9,7 @@
 <body>
 	<h1>Create new group</h1>
 
-	<form action="#" method="POST" th:action="@{/groups}" th:object="${group}">
+	<form method="POST" th:action="@{/groups}" th:object="${group}">
 	<label for="cathedraSelector">Choose cathedra: </label> 
 		<select id="cathedraSelector" th:field="*{cathedra.id}" required>
 			<option th:each="anyCathedra : ${cathedrasAttribute}"
@@ -17,10 +17,10 @@
 	            th:value="${anyCathedra?.id}"
 	            th:text="${anyCathedra?.name}">Cathedra name
 	        </option>
-		</select> </br>
+		</select> <br>
 	
 		<label for="name">Enter name: </label> 
-		<input type="text" th:field="*{name}" id="name" required></br>
+		<input type="text" th:field="*{name}" id="name" required><br>
 		
 		<input type="submit" value="Create!">
 	</form>

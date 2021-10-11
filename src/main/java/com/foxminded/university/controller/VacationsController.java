@@ -3,8 +3,10 @@ package com.foxminded.university.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,6 +51,29 @@ public class VacationsController {
 			Model model) {
 		vacation.setTeacher(teacherService.findById(id));
 		vacationService.save(vacation);
+
+		return "redirect:/teachers/" + id + "/vacations";
+	}
+	
+	@GetMapping("/{id}/edit")
+	public String editVacation(@PathVariable("id") int id, Model model) {
+		model.addAttribute("teacher", teacherService.findById(id));
+		model.addAttribute("vacation", vacationService.findById(id));
+
+		return "teachers/vacations/edit";
+	}
+
+	@PatchMapping("/{vacationId}")
+	public String update(@ModelAttribute("vacation") Vacation vacation, @PathVariable("id") int id) {
+		vacation.setTeacher(teacherService.findById(id));
+		vacationService.save(vacation);
+
+		return "redirect:/teachers/" + id + "/vacations";
+	}
+
+	@DeleteMapping("/{id}")
+	public String delete(@PathVariable("id") int id) {
+		vacationService.deleteById(id);
 
 		return "redirect:/teachers/" + id + "/vacations";
 	}

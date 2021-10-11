@@ -9,24 +9,24 @@
 <body>
 	<h1>Create new student</h1>
 
-	<form action="#" method="POST" th:action="@{/students}" th:object="${student}">
+	<form method="POST" th:action="@{/students}" th:object="${student}">
 		<label for="firstName">Enter first name: </label> 
-		<input type="text" th:field="*{firstName}" id="firstName" required> </br>
+		<input type="text" th:field="*{firstName}" id="firstName" required> <br>
 		
 		<label for="lastName">Enter last name: </label> 
-		<input type="text" th:field="*{lastName}" id="lastName" required> </br>
+		<input type="text" th:field="*{lastName}" id="lastName" required> <br>
 		
 		<label for="phone">Enter phone number: </label> 
-		<input type="text" th:field="*{phone}" id="phone"> </br>
+		<input type="text" th:field="*{phone}" id="phone"> <br>
 		 
 		<label for="address">Enter address: </label> 
-		<input type="text" th:field="*{address}" id="address" required> </br>
+		<input type="text" th:field="*{address}" id="address" required> <br>
 		
 		<label for="postalCode">Enter postal code: </label> 
-		<input type="number" th:field="*{postalCode}" id="postalCode"> </br>
+		<input type="number" th:field="*{postalCode}" id="postalCode"> <br>
 		
 		<label for="email">Enter e-mail address: </label> 
-		<input type="text" th:field="*{email}" id="email">  </br>
+		<input type="text" th:field="*{email}" id="email">  <br>
 		
 		<label for="gender">Chose gender: </label> 
 		<select name="gender" required>
@@ -36,13 +36,13 @@
 				th:text="${genderOpt}">
 				Gender				
 			</option>
-		</select>  </br>
+		</select>  <br>
 		
 		<label for="education">Enter education: </label> 
-		<input type="text" th:field="*{education}" id="education"> </br>
+		<input type="text" th:field="*{education}" id="education"> <br>
 		
 		<label for="birthdate">Enter birth date: </label> 
-		<input type="date" th:field="*{birthDate}" id="birthdate" required>  </br>
+		<input type="date" th:field="*{birthDate}" id="birthdate" required>  <br>
 
 		<label for="groupSelector">Choose group: </label> 
 		<select id="groupSelector" th:field="*{group.id}">
@@ -52,7 +52,7 @@
 	            th:value="${anyGroup?.id}"
 	            th:text="${anyGroup?.name}">Group name
 	        </option>
-		</select>  </br>
+		</select>  <br>
 		<input type="submit" value="Create!">
 	</form>
 </body>

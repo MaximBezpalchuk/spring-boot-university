@@ -20,7 +20,9 @@
 				<a th:href="@{/holidays/{id}/edit(id=${holiday.id})}" th:text="Edit">Edit holiday</a>
 			</td>
 			<td>
-				<a th:href="@{/holidays/{id}/delete(id=${holiday.id})}" th:text="Delete">Delete holiday</a>
+				<form th:method="DELETE" th:action="@{/holidays/{id}(id=${holiday.id})}">
+					<input type="submit" value="Delete">
+				</form>
 			</td>
 		</tr>
 	</table>

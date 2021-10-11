@@ -3,13 +3,13 @@
 
 <head>
 <meta charset="ISO-8859-1">
-<title>New lecture</title>
+<title>Edit lecture</title>
 </head>
 
 <body>
-	<h1>Create new lecture</h1>
+	<h1 th:text="'Edit lecture (subject ' + ${lecture.subject.name} + ' on ' + ${lecture.date} + ')'">Lecture desc</h1>
 
-	<form method="POST" th:action="@{/lectures}" th:object="${lecture}">
+		<form th:method="PATCH" th:action="@{/lectures/{id}(id=${lecture.id})}" th:object="${lecture}">
 		<label for="cathedraSelector">Choose cathedra: </label> 
 		<select id="cathedraSelector" th:field="*{cathedra.id}" required>
 			<option th:each="anyCathedra : ${cathedrasAttribute}"
@@ -67,6 +67,6 @@
 		</select>
 		<br>
 		
-		<input type="submit" value="Create!">
+		<input type="submit" value="Update!">
 	</form>
 </body>
