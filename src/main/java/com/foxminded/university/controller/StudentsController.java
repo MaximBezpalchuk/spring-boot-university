@@ -1,5 +1,7 @@
 package com.foxminded.university.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +20,8 @@ import com.foxminded.university.service.StudentService;
 @Controller
 @RequestMapping("/students")
 public class StudentsController {
+	
+	private final static Logger logger = LoggerFactory.getLogger(StudentsController.class);
 
 	@Autowired
 	StudentService studentService;
@@ -26,6 +30,7 @@ public class StudentsController {
 
 	@GetMapping()
 	public String index(Model model) {
+		logger.debug("Show index page");
 		model.addAttribute("students", studentService.findAll());
 
 		return "students/index";
@@ -33,6 +38,7 @@ public class StudentsController {
 
 	@GetMapping("/{id}")
 	public String showStudent(@PathVariable("id") int id, Model model) {
+		logger.debug("Show student page with id {}", id);
 		model.addAttribute("student", studentService.findById(id));
 
 		return "students/show";
@@ -40,6 +46,7 @@ public class StudentsController {
 
 	@GetMapping("/new")
 	public String newStudent(Student student, Model model) {
+		logger.debug("Show create page");
 		model.addAttribute("groupsAttribute", groupService.findAll());
 
 		return "students/new";
@@ -51,6 +58,7 @@ public class StudentsController {
 			student.setGroup(groupService.findById(student.getGroup().getId()));
 		}
 		studentService.save(student);
+		logger.debug("Create new student. Id {}", student.getId());
 
 		return "redirect:/students";
 	}
@@ -59,12 +67,14 @@ public class StudentsController {
 	public String editStudent(@PathVariable("id") int id, Model model) {
 		model.addAttribute("student", studentService.findById(id));
 		model.addAttribute("groupsAttribute", groupService.findAll());
+		logger.debug("Show edit student page");
 
 		return "students/edit";
 	}
 
 	@PatchMapping("/{id}")
 	public String update(@ModelAttribute("student") Student student, @PathVariable("id") int id) {
+		logger.debug("Update student with id {}", id);
 		if (student.getGroup().getId() != 0) {
 			student.setGroup(groupService.findById(student.getGroup().getId()));
 		}
@@ -75,6 +85,7 @@ public class StudentsController {
 
 	@DeleteMapping("/{id}")
 	public String delete(@PathVariable("id") int id) {
+		logger.debug("Delete student with id {}", id);
 		studentService.deleteById(id);
 
 		return "redirect:/students";

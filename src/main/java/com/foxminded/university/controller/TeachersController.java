@@ -2,6 +2,8 @@ package com.foxminded.university.controller;
 
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +24,8 @@ import com.foxminded.university.service.VacationService;
 @Controller
 @RequestMapping("/teachers")
 public class TeachersController {
+	
+	private final static Logger logger = LoggerFactory.getLogger(TeachersController.class);
 
 	@Autowired
 	TeacherService teacherService;
@@ -34,6 +38,7 @@ public class TeachersController {
 
 	@GetMapping()
 	public String index(Model model) {
+		logger.debug("Show index page");
 		model.addAttribute("teachers", teacherService.findAll());
 
 		return "teachers/index";
@@ -41,6 +46,7 @@ public class TeachersController {
 
 	@GetMapping("/{id}")
 	public String showTeacher(@PathVariable("id") int id, Model model) {
+		logger.debug("Show teacher page with id {}", id);
 		model.addAttribute("teacher", teacherService.findById(id));
 
 		return "teachers/show";
@@ -48,6 +54,7 @@ public class TeachersController {
 
 	@GetMapping("/new")
 	public String newStudent(Teacher teacher, Model model) {
+		logger.debug("Show create page");
 		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
 		model.addAttribute("subjectsAttribute", subjectService.findAll());
 
@@ -60,6 +67,7 @@ public class TeachersController {
 		teacher.setSubjects(teacher.getSubjects().stream().map(subject -> subjectService.findById(subject.getId()))
 				.collect(Collectors.toList()));
 		teacherService.save(teacher);
+		logger.debug("Create new teacher. Id {}", teacher.getId());
 
 		return "redirect:/teachers";
 	}
@@ -69,12 +77,14 @@ public class TeachersController {
 		model.addAttribute("teacher", teacherService.findById(id));
 		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
 		model.addAttribute("subjectsAttribute", subjectService.findAll());
+		logger.debug("Show edit teacher page");
 
 		return "teachers/edit";
 	}
 
 	@PatchMapping("/{id}")
 	public String update(@ModelAttribute("teacher") Teacher teacher, @PathVariable("id") int id) {
+		logger.debug("Update teacher with id {}", id);
 		teacher.setCathedra(cathedraService.findById(teacher.getCathedra().getId()));
 		teacher.setSubjects(teacher.getSubjects().stream().map(subject -> subjectService.findById(subject.getId()))
 				.collect(Collectors.toList()));
@@ -85,6 +95,7 @@ public class TeachersController {
 
 	@DeleteMapping("/{id}")
 	public String delete(@PathVariable("id") int id) {
+		logger.debug("Delete teacher with id {}", id);
 		teacherService.deleteById(id);
 
 		return "redirect:/teachers";

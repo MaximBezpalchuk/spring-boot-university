@@ -2,6 +2,8 @@ package com.foxminded.university.controller;
 
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +27,8 @@ import com.foxminded.university.service.TeacherService;
 @Controller
 @RequestMapping("/lectures")
 public class LecturesController {
+	
+	private final static Logger logger = LoggerFactory.getLogger(LecturesController.class);
 
 	@Autowired
 	LectureService lectureService;
@@ -43,6 +47,7 @@ public class LecturesController {
 
 	@GetMapping()
 	public String index(Model model) {
+		logger.debug("Show index page");
 		model.addAttribute("lectures", lectureService.findAll());
 		
 		return "lectures/index";
@@ -50,6 +55,7 @@ public class LecturesController {
 	
 	@GetMapping("/{id}")
 	public String showLecture(@PathVariable("id") int id, Model model) {
+		logger.debug("Show lecture page with id {}", id);
 		model.addAttribute("lecture", lectureService.findById(id));
 
 		return "lectures/show";
@@ -57,6 +63,7 @@ public class LecturesController {
 
 	@GetMapping("/new")
 	public String newLecture(Lecture lecture, Model model) {
+		logger.debug("Show create page");
 		model.addAttribute("teachersAttribute", teacherService.findAll());
 		model.addAttribute("audiencesAttribute", audienceService.findAll());
 		model.addAttribute("timesAttribute", lectureTimeService.findAll());
@@ -77,6 +84,7 @@ public class LecturesController {
 		lecture.setGroups(lecture.getGroups().stream().map(group -> groupService.findById(group.getId()))
 				.collect(Collectors.toList()));
 		lectureService.save(lecture);
+		logger.debug("Create new lecture. Id {}", lecture.getId());
 
 		return "redirect:/lectures";
 	}
@@ -90,12 +98,14 @@ public class LecturesController {
 		model.addAttribute("subjectsAttribute", subjectService.findAll());
 		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
 		model.addAttribute("lecture", lectureService.findById(id));
+		logger.debug("Show edit lecture page");
 
 		return "lectures/edit";
 	}
 
 	@PatchMapping("/{id}")
 	public String update(@ModelAttribute("lecture") Lecture lecture, @PathVariable("id") int id) {
+		logger.debug("Update lecture with id {}", id);
 		lecture.setCathedra(cathedraService.findById(lecture.getCathedra().getId()));
 		lecture.setTeacher(teacherService.findById(lecture.getTeacher().getId()));
 		lecture.setAudience(audienceService.findById(lecture.getAudience().getId()));
@@ -110,6 +120,7 @@ public class LecturesController {
 
 	@DeleteMapping("/{id}")
 	public String delete(@PathVariable("id") int id) {
+		logger.debug("Delete lecture with id {}", id);
 		lectureService.deleteById(id);
 
 		return "redirect:/lectures";

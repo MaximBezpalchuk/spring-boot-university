@@ -1,5 +1,7 @@
 package com.foxminded.university.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,6 +20,8 @@ import com.foxminded.university.service.HolidayService;
 @Controller
 @RequestMapping("/holidays")
 public class HolidaysController {
+	
+	private final static Logger logger = LoggerFactory.getLogger(HolidaysController.class);
 
 	@Autowired
 	HolidayService holidayService;
@@ -26,6 +30,7 @@ public class HolidaysController {
 
 	@GetMapping()
 	public String index(Model model) {
+		logger.debug("Show index page");
 		model.addAttribute("holidays", holidayService.findAll());
 
 		return "holidays/index";
@@ -33,6 +38,7 @@ public class HolidaysController {
 
 	@GetMapping("/{id}")
 	public String showHoliday(@PathVariable("id") int id, Model model) {
+		logger.debug("Show holiday page with id {}", id);
 		model.addAttribute("holiday", holidayService.findById(id));
 
 		return "holidays/show";
@@ -40,6 +46,7 @@ public class HolidaysController {
 
 	@GetMapping("/new")
 	public String newHoliday(Holiday holiday, Model model) {
+		logger.debug("Show create page");
 		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
 
 		return "holidays/new";
@@ -49,6 +56,7 @@ public class HolidaysController {
 	public String create(@ModelAttribute("holiday") Holiday holiday, Model model) {
 		holiday.setCathedra(cathedraService.findById(holiday.getCathedra().getId()));
 		holidayService.save(holiday);
+		logger.debug("Create new holiday. Id {}", holiday.getId());
 
 		return "redirect:/holidays";
 	}
@@ -57,12 +65,14 @@ public class HolidaysController {
 	public String editHoliday(@PathVariable("id") int id, Model model) {
 		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
 		model.addAttribute("holiday", holidayService.findById(id));
+		logger.debug("Show edit holiday page");
 
 		return "holidays/edit";
 	}
 
 	@PatchMapping("/{id}")
 	public String update(@ModelAttribute("holiday") Holiday holiday, @PathVariable("id") int id) {
+		logger.debug("Update holiday with id {}", id);
 		holiday.setCathedra(cathedraService.findById(holiday.getCathedra().getId()));
 		holidayService.save(holiday);
 
@@ -71,6 +81,7 @@ public class HolidaysController {
 
 	@DeleteMapping("/{id}")
 	public String delete(@PathVariable("id") int id) {
+		logger.debug("Delete holiday with id {}", id);
 		holidayService.deleteById(id);
 
 		return "redirect:/holidays";

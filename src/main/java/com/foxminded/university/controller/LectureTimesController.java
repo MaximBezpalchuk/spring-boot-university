@@ -1,5 +1,7 @@
 package com.foxminded.university.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,12 +19,15 @@ import com.foxminded.university.service.LectureTimeService;
 @Controller
 @RequestMapping("/lecturetimes")
 public class LectureTimesController {
+	
+	private final static Logger logger = LoggerFactory.getLogger(LectureTimesController.class);
 
 	@Autowired
 	LectureTimeService lectureTimeService;
 
 	@GetMapping()
 	public String index(Model model) {
+		logger.debug("Show index page");
 		model.addAttribute("lectureTimes", lectureTimeService.findAll());
 
 		return "lecturetimes/index";
@@ -30,6 +35,7 @@ public class LectureTimesController {
 
 	@GetMapping("/{id}")
 	public String showLectureTime(@PathVariable("id") int id, Model model) {
+		logger.debug("Show lecture time page with id {}", id);
 		model.addAttribute("lectureTime", lectureTimeService.findById(id));
 
 		return "lecturetimes/show";
@@ -37,12 +43,14 @@ public class LectureTimesController {
 
 	@GetMapping("/new")
 	public String newLecture(LectureTime lectureTime, Model model) {
+		logger.debug("Show create page");
 		return "lecturetimes/new";
 	}
 
 	@PostMapping()
 	public String create(@ModelAttribute("lectureTime") LectureTime lectureTime) {
 		lectureTimeService.save(lectureTime);
+		logger.debug("Create new lecture time. Id {}", lectureTime.getId());
 
 		return "redirect:/lecturetimes";
 	}
@@ -50,12 +58,14 @@ public class LectureTimesController {
 	@GetMapping("/{id}/edit")
 	public String editLectureTime(@PathVariable("id") int id, Model model) {
 		model.addAttribute("lectureTime", lectureTimeService.findById(id));
+		logger.debug("Show edit lecture time page");
 
 		return "lecturetimes/edit";
 	}
 
 	@PatchMapping("/{id}")
 	public String update(@ModelAttribute("lectureTime") LectureTime lectureTime, @PathVariable("id") int id) {
+		logger.debug("Update lecture time with id {}", id);
 		lectureTimeService.save(lectureTime);
 
 		return "redirect:/lecturetimes";
@@ -63,6 +73,7 @@ public class LectureTimesController {
 
 	@DeleteMapping("/{id}")
 	public String delete(@PathVariable("id") int id) {
+		logger.debug("Delete lecture time with id {}", id);
 		lectureTimeService.deleteById(id);
 
 		return "redirect:/lecturetimes";
