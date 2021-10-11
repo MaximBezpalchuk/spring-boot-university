@@ -8,21 +8,27 @@
 
 <body>
 	<h1>Students</h1>
-	<a href="students/new">New</a>
-	<table border="1px">
+	<a th:href="@{students/new}" th:text="New">New</a>
+	<table border="1">
 		<tr th:each="student : ${students}">
-			<td th:text="${student.getFirstName()}">First name</td>
-			<td th:text="${student.getLastName()}">Last name</td>
-			<td th:text="${student.getPhone()}">Phone number</td>
-			<td th:text="${student.getAddress()}">Address</td>
-			<td th:text="${student.getEmail()}">Email</td>
-			<td th:text="${student.getGender()}">Gender</td>
-			<td th:text="${student.getPostalCode()}">Postal code</td>
-			<td th:text="${student.getEducation()}">Education</td>
-			<td th:text="${student.getBirthDate()}">Birth date</td>
-			<td th:text="${student?.getGroup()?.getName()}">Group</td>
-			<td th:text="${student.getId()}">Id (need change to edit)</td>
-			<td th:text="${student.getId()}">Id (need change to delete)</td>
+			<td th:text="${student.firstName} + ' ' + ${student.lastName}">Name</td>
+			<td th:text="${student.phone}">Phone number</td>
+			<td th:text="${student.address}">Address</td>
+			<td th:text="${student.email}">Email</td>
+			<td th:text="${student.gender}">Gender</td>
+			<td th:text="${student.postalCode}">Postal code</td>
+			<td th:text="${student.education}">Education</td>
+			<td th:text="${student.birthDate}">Birth date</td>
+			<td th:text="${student?.group?.name}">Group</td>
+			<td>
+				<a th:href="@{/students/{id}(id=${student.id})}" th:text="Show">Full info about student</a>
+			</td>
+			<td>
+				<a th:href="@{/students/{id}/edit(id=${student.id})}" th:text="Edit">Edit student</a>
+			</td>
+			<td>
+				<a th:href="@{/students/{id}/delete(id=${student.id})}" th:text="Delete">Delete student</a>
+			</td>
 		</tr>
 	</table>
 </body>

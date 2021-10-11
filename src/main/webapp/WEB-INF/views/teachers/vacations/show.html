@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+<meta charset="ISO-8859-1">
+<title>Show teacher</title>
+</head>
+
+<body>
+	<h1 th:text="'Vacation for ' + ${vacation.teacher.firstName} + ' ' + ${vacation.teacher.lastName}">Hello description</h1>
+	<a th:href="@{/teachers/{id}/vacations/{vacationId}/edit(id=${vacation.teacher.id}, vacationId=${vacation.id})}" th:text="Edit">Edit vacation</a> 
+	<a th:href="@{/teachers/{id}/vacations/{vacationId}/delete(id=${vacation.teacher.id}, vacationId=${vacation.id})}" th:text="Delete">Delete vacation</a>
+	<table border="1">
+		<tr>
+			<td>Teacher</td>
+			<td th:text="${vacation.teacher.firstName} + ' ' + ${vacation.teacher.lastName}">Teacher name</td>
+		</tr>
+		<tr>
+			<td>Vacation start</td>
+			<td th:text="${vacation.start}">Start</td>
+		</tr>
+		<tr>
+			<td>Vacation end</td>
+			<td th:text="${vacation.end}">End</td>
+		</tr>
+	</table>
+</body>

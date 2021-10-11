@@ -8,13 +8,20 @@
 
 <body>
 	<h1>Holidays</h1>
-	<a href="holidays/new">New</a>
-	<table border="1px">
+	<a th:href="@{holidays/new}" th:text="New">New</a>
+	<table border="1">
 		<tr th:each="holiday : ${holidays}">
-			<td th:text="${holiday.getName()}">Name</td>
-			<td th:text="${holiday.getDate()}">Date</td>
-			<td th:text="${holiday.getId()}">Id (need change to edit)</td>
-			<td th:text="${holiday.getId()}">Id (need change to delete)</td>
+			<td th:text="${holiday.name}">Name</td>
+			<td th:text="${holiday.date}">Date</td>
+			<td>
+				<a th:href="@{/holidays/{id}(id=${holiday.id})}" th:text="Show">Full info about holiday</a>
+			</td>
+			<td>
+				<a th:href="@{/holidays/{id}/edit(id=${holiday.id})}" th:text="Edit">Edit holiday</a>
+			</td>
+			<td>
+				<a th:href="@{/holidays/{id}/delete(id=${holiday.id})}" th:text="Delete">Delete holiday</a>
+			</td>
 		</tr>
 	</table>
 </body>

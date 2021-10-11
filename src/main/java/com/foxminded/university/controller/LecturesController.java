@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -43,6 +44,13 @@ public class LecturesController {
 		model.addAttribute("lectures", lectureService.findAll());
 		
 		return "lectures/index";
+	}
+	
+	@GetMapping("/{id}")
+	public String showLecture(@PathVariable("id") int id, Model model) {
+		model.addAttribute("lecture", lectureService.findById(id));
+
+		return "lectures/show";
 	}
 
 	@GetMapping("/new")

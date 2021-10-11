@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+<meta charset="ISO-8859-1">
+<title>Show subject</title>
+</head>
+
+<body>
+	<h1 th:text="'Subject ' + ${subject.name}">Subject name</h1>
+	<a th:href="@{/subjects/{id}/edit(id=${subject.id})}" th:text="Edit">Edit subject</a> 
+	<a th:href="@{/subjects/{id}/delete(id=${subject.id})}" th:text="Delete">Delete subject</a>
+	<table border="1">
+		<tr>
+			<td>Cathedra</td>
+			<td th:text="${subject.cathedra.name}">Cathedra name</td>
+		</tr>
+		<tr>
+			<td>Name</td>
+			<td th:text="${subject.name}">Subject name</td>
+		</tr>
+		<tr>
+			<td>Description</td>
+			<td th:text="${subject.description}">Subject description</td>
+		</tr>
+	</table>
+</body>

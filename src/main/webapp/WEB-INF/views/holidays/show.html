@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+<meta charset="ISO-8859-1">
+<title>Show holiday</title>
+</head>
+
+<body>
+	<h1 th:text="'Holiday name ' + ${holiday.name}">Holiday name</h1>
+	<a th:href="@{/holidays/{id}/edit(id=${holiday.id})}" th:text="Edit">Edit holiday</a> 
+	<a th:href="@{/holidays/{id}/delete(id=${holiday.id})}" th:text="Delete">Delete holiday</a>
+	<table border="1">
+	<tr>
+		<td>Cathedra</td>
+		<td th:text="${holiday.cathedra.name}"></td>
+	</tr>
+	<tr>
+		<td>Holiday name</td>
+		<td th:text="${holiday.name}">room</td>
+	</tr>
+	<tr >
+		<td>Holiday date</td>
+		<td th:text="${holiday.date}"></td>
+	</tr>
+	</table>
+
+	
+</body>

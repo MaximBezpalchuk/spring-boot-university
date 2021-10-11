@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+<meta charset="ISO-8859-1">
+<title>Show audience</title>
+</head>
+
+<body>
+	<h1 th:text="'Audience number ' + ${audience.room}">Audience name</h1>
+	<a th:href="@{/audiences/{id}/edit(id=${audience.id})}" th:text="Edit">Edit audience</a> 
+	<a th:href="@{/audiences/{id}/delete(id=${audience.id})}" th:text="Delete">Delete audience</a>
+	<table border="1">
+	<tr>
+		<td>Cathedra</td>
+		<td th:text="${audience.cathedra.name}"></td>
+	</tr>
+	<tr>
+		<td>Room number</td>
+		<td th:text="${audience.room}">room</td>
+	</tr>
+	<tr >
+		<td>Audience capacity</td>
+		<td th:text="${audience.capacity}"></td>
+	</tr>
+	</table>
+
+	
+</body>

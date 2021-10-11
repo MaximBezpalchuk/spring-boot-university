@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+<meta charset="ISO-8859-1">
+<title>Show student</title>
+</head>
+
+<body>
+	<h1 th:text="'Student ' + ${student.firstName} + ' ' + ${student.lastName}">Student name</h1>
+	<a th:href="@{/students/{id}/edit(id=${student.id})}" th:text="Edit">Edit student</a> 
+	<a th:href="@{/students/{id}/delete(id=${student.id})}" th:text="Delete">Delete student</a>
+	<table border="1">
+		<tr>
+			<td>Name</td>
+			<td th:text="${student.firstName} + ' ' + ${student.lastName}">Name</td>
+		</tr>
+		<tr>
+			<td>Phone number</td>
+			<td th:text="${student.phone}">Phone number</td>
+		</tr>
+		<tr>
+			<td>Address</td>
+			<td th:text="${student.address}">Address</td>
+		</tr>
+		<tr>
+			<td>Email</td>
+			<td th:text="${student.email}">Email</td>
+		</tr>
+		<tr>
+			<td>Gender</td>
+			<td th:text="${student.gender}">Gender</td>
+		</tr>
+		<tr>
+			<td>Postal code</td>
+			<td th:text="${student.postalCode}">Postal code</td>
+		</tr>
+		<tr>
+			<td>Education</td>
+			<td th:text="${student.education}">Education</td>
+		</tr>
+		<tr>
+			<td>Birth date</td>
+			<td th:text="${student.birthDate}">Birth date</td>
+		</tr>
+		<tr>
+			<td>Group</td>
+			<td th:text="${student?.group?.name}">Group</td>
+		</tr>	
+	</table>
+</body>

@@ -8,23 +8,28 @@
 
 <body>
 	<h1>Lectures</h1>
-	<a href="lectures/new">New</a>
-	<table border="1px">
+	<a th:href="@{lectures/new}" th:text="New">New</a>
+	<table border="1">
 		<tr th:each="lecture : ${lectures}">
-			<td th:text="${lecture.getDate()}">Date</td>
-			<td><span th:text="${lecture.getTime().getStart()}"></span> - <span
-				th:text="${lecture.getTime().getEnd()}"></span></td>
-			<td th:text="${lecture.getAudience().getRoom()}">Audience</td>
-			<td><span th:text="${lecture.getTeacher().getFirstName()}">First
-					name</span> <span th:text="${lecture.getTeacher().getLastName()}">Last name</span></td>
-			<td th:text="${lecture.getSubject().getName()}">Subject</td>
+			<td th:text="${lecture.date}">Date</td>
+			<td th:text="${lecture.time.start} + ' - ' + ${lecture.time.end}">Time</td>
+			<td th:text="${lecture.audience.room}">Audience</td>
+			<td th:text="${lecture.teacher.firstName} + ' ' + ${lecture.teacher.lastName}">Name</td>
+			<td th:text="${lecture.subject.name}">Subject</td>
 			<td>
-				<ul th:each="group : ${lecture.getGroups()}">
-					<li th:text="${group?.getName()}">Group</li>
+				<ul th:each="group : ${lecture.groups}">
+					<li th:text="${group?.name}">Group</li>
 				</ul>
 			</td>
-			<td th:text="${lecture.getId()}">Id (need change to edit)</td>
-			<td th:text="${lecture.getId()}">Id (need change to delete)</td>
+			<td>
+				<a th:href="@{/lectures/{id}(id=${lecture.id})}" th:text="Show">Full info about lecture</a>
+			</td>
+			<td>
+				<a th:href="@{/lectures/{id}/edit(id=${lecture.id})}" th:text="Edit">Edit lecture</a>
+			</td>
+			<td>
+				<a th:href="@{/lectures/{id}/delete(id=${lecture.id})}" th:text="Delete">Delete lecture</a>
+			</td>
 		</tr>
 	</table>
 </body>

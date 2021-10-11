@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+<meta charset="ISO-8859-1">
+<title>Show lecture</title>
+</head>
+
+<body>
+	<h1 th:text="'lecture time ' + ${lectureTime.start} + ' - ' + ${lectureTime.end}">Lecture time desc</h1>
+	<a th:href="@{/lecturetimes/{id}/edit(id=${lectureTime.id})}" th:text="Edit">Edit lecture time</a> 
+	<a th:href="@{/lecturetimes/{id}/delete(id=${lectureTime.id})}" th:text="Delete">Delete lecture time</a>
+	<table border="1">
+	<tr>
+		<td>Lecture time start</td>
+		<td th:text="${lectureTime.start}"></td>
+	</tr>
+	<tr>
+		<td>Lecture time end</td>
+		<td th:text="${lectureTime.end}"></td>
+	</tr>
+	</table>
+</body>

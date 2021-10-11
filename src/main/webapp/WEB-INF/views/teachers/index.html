@@ -8,27 +8,35 @@
 
 <body>
 	<h1>Teachers</h1>
-	<a href="teachers/new">New</a>
-	<table border="1px">
+	<a th:href="@{teachers/new}" th:text="New">New</a>
+	<table border="1">
 		<tr th:each="teacher : ${teachers}">
-			<td th:text="${teacher.getFirstName()}">First name</td>
-			<td th:text="${teacher.getLastName()}">Last name</td>
-			<td th:text="${teacher.getPhone()}">Phone number</td>
-			<td th:text="${teacher.getAddress()}">Address</td>
-			<td th:text="${teacher.getEmail()}">Email</td>
-			<td th:text="${teacher.getGender()}">Gender</td>
-			<td th:text="${teacher.getPostalCode()}">Postal code</td>
-			<td th:text="${teacher.getEducation()}">Education</td>
-			<td th:text="${teacher.getBirthDate()}">Birth date</td>
-			<td th:text="${teacher.getDegree()}">Degree</td>
+			<td th:text="${teacher.firstName} + ' ' + ${teacher.getLastName()}">Name</td>
+			<td th:text="${teacher.phone}">Phone number</td>
+			<td th:text="${teacher.address}">Address</td>
+			<td th:text="${teacher.email}">Email</td>
+			<td th:text="${teacher.gender}">Gender</td>
+			<td th:text="${teacher.postalCode}">Postal code</td>
+			<td th:text="${teacher.education}">Education</td>
+			<td th:text="${teacher.birthDate}">Birth date</td>
+			<td th:text="${teacher.degree}">Degree</td>
 			<td>
-				<ul th:each="subject : ${teacher.getSubjects()}">
-					<li th:text="${subject?.getName()}">Subject</li>
+				<ul th:each="subject : ${teacher.subjects}">
+					<li th:text="${subject.name}">Subject</li>
 				</ul>
 			</td>
-			<td>Vacations</td>
-			<td th:text="${teacher.getId()}">Id (need change to edit)</td>
-			<td th:text="${teacher.getId()}">Id (need change to delete)</td>
+			<td>
+				<a th:href="@{/teachers/{id}/vacations(id=${teacher.id})}" th:text="Vacations">Teachers vacations</a>
+			</td>
+			<td>
+				<a th:href="@{/teachers/{id}(id=${teacher.id})}" th:text="Show">Full info about teacher</a>
+			</td>
+			<td>
+				<a th:href="@{/teachers/{id}/edit(id=${teacher.id})}" th:text="Edit">Edit teacher</a>
+			</td>
+			<td>
+				<a th:href="@{/teachers/{id}/delete(id=${teacher.id})}" th:text="Delete">Delete teacher</a>
+			</td>
 		</tr>
 	</table>
 </body>

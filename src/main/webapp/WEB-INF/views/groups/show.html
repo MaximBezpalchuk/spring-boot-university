@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+<meta charset="ISO-8859-1">
+<title>Show group</title>
+</head>
+
+<body>
+	<h1 th:text="'Group name ' + ${group.name}">Group name</h1>
+	<a th:href="@{/groups/{id}/edit(id=${group.id})}" th:text="Edit">Edit group</a> 
+	<a th:href="@{/groups/{id}/delete(id=${group.id})}" th:text="Delete">Delete group</a>
+	<table border="1">
+	<tr>
+		<td>Cathedra</td>
+		<td th:text="${group.cathedra.name}"></td>
+	</tr>
+	<tr >
+		<td>Group name</td>
+		<td th:text="${group.name}"></td>
+	</tr>
+	</table>
+
+	
+</body>

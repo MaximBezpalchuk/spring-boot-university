@@ -8,13 +8,20 @@
 
 <body>
 	<h1>Subjects</h1>
-	<a href="subjects/new">New</a>
-	<table border="1px">
+	<a th:href="@{subjects/new}" th:text="New">New</a>
+	<table border="1">
 		<tr th:each="subject : ${subjects}">
-			<td th:text="${subject.getName()}">Name</td>
-			<td th:text="${subject.getDescription()}">Description</td>
-			<td th:text="${subject.getId()}">Id (need change to edit)</td>
-			<td th:text="${subject.getId()}">Id (need change to delete)</td>
+			<td th:text="${subject.name}">Name</td>
+			<td th:text="${subject.description}">Description</td>
+			<td>
+				<a th:href="@{/subjects/{id}(id=${subject.id})}" th:text="Show">Full info about subject</a>
+			</td>
+			<td>
+				<a th:href="@{/subjects/{id}/edit(id=${subject.id})}" th:text="Edit">Edit subject</a>
+			</td>
+			<td>
+				<a th:href="@{/subjects/{id}/delete(id=${subject.id})}" th:text="Delete">Delete subject</a>
+			</td>
 		</tr>
 	</table>
 </body>

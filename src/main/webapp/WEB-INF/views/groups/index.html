@@ -8,12 +8,19 @@
 
 <body>
 	<h1>Groups</h1>
-	<a href="groups/new">New</a>
-	<table border="1px">
+	<a th:href="@{/groups/new}" th:text="New">New</a>
+	<table border="1">
 		<tr th:each="group : ${groups}">
-			<td th:text="${group.getName()}">Name</td>
-			<td th:text="${group.getId()}">Id (need change to edit)</td>
-			<td th:text="${group.getId()}">Id (need change to delete)</td>
+			<td th:text="${group.name}">Name</td>
+			<td>
+				<a th:href="@{/groups/{id}(id=${group.id})}" th:text="Show">Full info about group</a>
+			</td>
+			<td>
+				<a th:href="@{/groups/{id}/edit(id=${group.id})}" th:text="Edit">Edit group</a>
+			</td>
+			<td>
+				<a th:href="@{/groups/{id}/delete(id=${group.id})}" th:text="Delete">Delete group</a>
+			</td>
 		</tr>
 	</table>
 </body>

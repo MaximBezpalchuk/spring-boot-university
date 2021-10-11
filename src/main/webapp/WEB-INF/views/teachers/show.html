@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+<meta charset="ISO-8859-1">
+<title>Show teacher</title>
+</head>
+
+<body>
+	<h1 th:text="'Teacher ' + ${teacher.firstName} + ' ' + ${teacher.lastName}">Teacher name</h1>
+	<a th:href="@{/teachers/{id}/edit(id=${teacher.id})}" th:text="Edit">Edit teacher</a> 
+	<a th:href="@{/teachers/{id}/delete(id=${teacher.id})}" th:text="Delete">Delete teacher</a>
+	<table border="1">
+		<tr>
+			<td>Cathedra</td>
+			<td th:text="${teacher.cathedra.name}">Cathedra name</td>
+		</tr>
+		<tr>
+			<td>Name</td>
+			<td th:text="${teacher.firstName} + ' ' + ${teacher.lastName}">Name</td>
+		</tr>
+		<tr>
+			<td>Phone number</td>
+			<td th:text="${teacher.phone}">Phone number</td>
+		</tr>
+		<tr>
+			<td>Address</td>
+			<td th:text="${teacher.address}">Address</td>
+		</tr>
+		<tr>
+			<td>Email</td>
+			<td th:text="${teacher.email}">Email</td>
+		</tr>
+		<tr>
+			<td>Gender</td>
+			<td th:text="${teacher.gender}">Gender</td>
+		</tr>
+		<tr>
+			<td>Postal code</td>
+			<td th:text="${teacher.postalCode}">Postal code</td>
+		</tr>
+		<tr>
+			<td>Education</td>
+			<td th:text="${teacher.education}">Education</td>
+		</tr>
+		<tr>
+			<td>Birth date</td>
+			<td th:text="${teacher.birthDate}">Birth date</td>
+		</tr>
+		<tr>
+			<td>Degree</td>
+			<td th:text="${teacher.degree}">Degree</td>
+		</tr>
+		<tr>
+			<td>Subjects</td>
+			<td>
+				<ul th:each="subject : ${teacher.subjects}">
+					<li th:text="${subject.name}">Subject</li>
+				</ul>
+			</td>
+		</tr>
+		<tr>
+			<td>Vacations</td>
+			<td><a th:href="@{/teachers/{id}/vacations(id=${teacher.id})}" th:text="Vacations">Teachers vacations</a></td>
+		</tr>
+	</table>
+</body>

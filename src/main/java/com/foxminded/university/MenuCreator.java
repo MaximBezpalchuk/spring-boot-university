@@ -19,6 +19,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 import com.foxminded.university.config.SpringConfig;
 import com.foxminded.university.exception.ServiceException;
+import com.foxminded.university.formatter.Formatter;
 import com.foxminded.university.service.AudienceService;
 import com.foxminded.university.service.CathedraService;
 import com.foxminded.university.service.GroupService;

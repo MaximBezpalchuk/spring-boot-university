@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -26,6 +27,13 @@ public class SubjectsController {
 		model.addAttribute("subjects", subjectService.findAll());
 
 		return "subjects/index";
+	}
+	
+	@GetMapping("/{id}")
+	public String showSubject(@PathVariable("id") int id, Model model) {
+		model.addAttribute("subject", subjectService.findById(id));
+
+		return "subjects/show";
 	}
 
 	@GetMapping("/new")

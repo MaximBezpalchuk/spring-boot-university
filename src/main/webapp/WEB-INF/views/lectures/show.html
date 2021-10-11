@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<head>
+<meta charset="ISO-8859-1">
+<title>Show lecture</title>
+</head>
+
+<body>
+	<h1 th:text="'Lecture subject ' + ${lecture.subject.name} + ' on ' + ${lecture.date}">Lecture desc</h1>
+	<a th:href="@{/lectures/{id}/edit(id=${lecture.id})}" th:text="Edit">Edit lecture</a> 
+	<a th:href="@{/lectures/{id}/delete(id=${lecture.id})}" th:text="Delete">Delete lecture</a>
+	<table border="1">
+	<tr>
+		<td>Cathedra</td>
+		<td th:text="${lecture.cathedra.name}"></td>
+	</tr>
+	<tr>
+		<td>Teacher name</td>
+		<td th:text="${lecture.teacher.firstName} + ' ' + ${lecture.teacher.lastName}">teacher</td>
+	</tr>
+	<tr>
+		<td>Audience room number</td>
+		<td th:text="${lecture.audience.room}"></td>
+	</tr>
+	<tr>
+		<td>Subject</td>
+		<td th:text="${lecture.subject.name}"></td>
+	</tr>
+	<tr>
+		<td>Date</td>
+		<td th:text="${lecture.date}"></td>
+	</tr>
+	<tr>
+		<td>Time</td>
+		<td th:text="${lecture.time.start} + ' ' + ${lecture.time.end}"></td>
+	</tr>
+	<tr>
+		<td>Groups</td>
+		<td>
+			<ul th:each="group : ${lecture.getGroups()}">
+				<li th:text="${group?.getName()}">Group</li>
+			</ul>
+		</td>
+	</tr>
+	</table>
+</body>
