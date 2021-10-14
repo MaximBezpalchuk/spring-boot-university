@@ -25,7 +25,7 @@ import com.foxminded.university.service.VacationService;
 @RequestMapping("/teachers")
 public class TeacherController {
 	
-	private final static Logger logger = LoggerFactory.getLogger(TeacherController.class);
+	private static final Logger logger = LoggerFactory.getLogger(TeacherController.class);
 
 	@Autowired
 	TeacherService teacherService;

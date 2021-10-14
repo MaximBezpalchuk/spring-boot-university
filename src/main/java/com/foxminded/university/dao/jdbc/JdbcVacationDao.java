@@ -22,17 +22,17 @@ import com.foxminded.university.model.Vacation;
 @Component
 public class JdbcVacationDao implements VacationDao {
 
-	private final static Logger logger = LoggerFactory.getLogger(JdbcVacationDao.class);
+	private static final Logger logger = LoggerFactory.getLogger(JdbcVacationDao.class);
 
-	private final static String SELECT_ALL = "SELECT * FROM vacations";
-	private final static String SELECT_BY_ID = "SELECT * FROM vacations WHERE id = ?";
-	private final static String INSERT_VACATION = "INSERT INTO vacations(start, finish, teacher_id) VALUES(?, ?, ?)";
-	private final static String UPDATE_VACATION = "UPDATE vacations SET start=?, finish=?, teacher_id=? WHERE id=?";
-	private final static String DELETE_VACATION = "DELETE FROM vacations WHERE id = ?";
-	private final static String SELECT_BY_TEACHER_ID = "SELECT * FROM vacations WHERE teacher_id=?";
-	private final static String SELECT_BY_TEACHER_ID_AND_YEAR = "SELECT * FROM vacations WHERE teacher_id = ? AND EXTRACT(YEAR FROM start) = ?";
-	private final static String SELECT_BY_PERIOD_AND_TEACHER_ID = "SELECT * FROM vacations WHERE start = ? AND finish = ? AND teacher_id = ?";
-	private final static String SELECT_BY_DATE_IN_PERIOD_AND_TEACHER_ID = "SELECT * FROM vacations WHERE start >= ? AND finish <= ? AND teacher_id = ?";
+	private static final String SELECT_ALL = "SELECT * FROM vacations";
+	private static final String SELECT_BY_ID = "SELECT * FROM vacations WHERE id = ?";
+	private static final String INSERT_VACATION = "INSERT INTO vacations(start, finish, teacher_id) VALUES(?, ?, ?)";
+	private static final String UPDATE_VACATION = "UPDATE vacations SET start=?, finish=?, teacher_id=? WHERE id=?";
+	private static final String DELETE_VACATION = "DELETE FROM vacations WHERE id = ?";
+	private static final String SELECT_BY_TEACHER_ID = "SELECT * FROM vacations WHERE teacher_id=?";
+	private static final String SELECT_BY_TEACHER_ID_AND_YEAR = "SELECT * FROM vacations WHERE teacher_id = ? AND EXTRACT(YEAR FROM start) = ?";
+	private static final String SELECT_BY_PERIOD_AND_TEACHER_ID = "SELECT * FROM vacations WHERE start = ? AND finish = ? AND teacher_id = ?";
+	private static final String SELECT_BY_DATE_IN_PERIOD_AND_TEACHER_ID = "SELECT * FROM vacations WHERE start >= ? AND finish <= ? AND teacher_id = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private VacationRowMapper rowMapper;

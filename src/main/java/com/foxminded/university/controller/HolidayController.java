@@ -21,7 +21,7 @@ import com.foxminded.university.service.HolidayService;
 @RequestMapping("/holidays")
 public class HolidayController {
 	
-	private final static Logger logger = LoggerFactory.getLogger(HolidayController.class);
+	private static final Logger logger = LoggerFactory.getLogger(HolidayController.class);
 
 	@Autowired
 	HolidayService holidayService;

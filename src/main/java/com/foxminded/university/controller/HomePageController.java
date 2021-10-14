@@ -12,7 +12,7 @@ import com.foxminded.university.service.CathedraService;
 @Controller
 public class HomePageController {
 	
-	private final static Logger logger = LoggerFactory.getLogger(HomePageController.class);
+	private static final Logger logger = LoggerFactory.getLogger(HomePageController.class);
 	
 	@Autowired
 	CathedraService cathedraService;

@@ -20,7 +20,7 @@ import com.foxminded.university.service.LectureTimeService;
 @RequestMapping("/lecturetimes")
 public class LectureTimeController {
 	
-	private final static Logger logger = LoggerFactory.getLogger(LectureTimeController.class);
+	private static final Logger logger = LoggerFactory.getLogger(LectureTimeController.class);
 
 	@Autowired
 	LectureTimeService lectureTimeService;

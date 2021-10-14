@@ -21,7 +21,7 @@ import com.foxminded.university.service.SubjectService;
 @RequestMapping("/subjects")
 public class SubjectController {
 	
-	private final static Logger logger = LoggerFactory.getLogger(SubjectController.class);
+	private static final Logger logger = LoggerFactory.getLogger(SubjectController.class);
 
 	@Autowired
 	SubjectService subjectService;

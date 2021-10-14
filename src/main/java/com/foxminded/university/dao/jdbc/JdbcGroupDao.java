@@ -20,15 +20,15 @@ import com.foxminded.university.model.Group;
 @Component
 public class JdbcGroupDao implements GroupDao {
 	
-	private final static Logger logger = LoggerFactory.getLogger(JdbcGroupDao.class);
+	private static final Logger logger = LoggerFactory.getLogger(JdbcGroupDao.class);
 
-	private final static String SELECT_ALL = "SELECT * FROM groups";
-	private final static String SELECT_BY_ID = "SELECT * FROM groups WHERE id = ?";
-	private final static String INSERT_GROUP = "INSERT INTO groups(name, cathedra_id) VALUES(?, ?)";
-	private final static String UPDATE_GROUP = "UPDATE groups SET name=?, cathedra_id=? WHERE id=?";
-	private final static String DELETE_GROUP = "DELETE FROM groups WHERE id = ?";
-	private final static String SELECT_BY_LECTURE_ID = "SELECT * FROM groups WHERE id IN (SELECT group_id FROM lectures_groups WHERE lecture_id =?)";
-	private final static String SELECT_BY_NAME = "SELECT * FROM groups WHERE name = ?";
+	private static final String SELECT_ALL = "SELECT * FROM groups";
+	private static final String SELECT_BY_ID = "SELECT * FROM groups WHERE id = ?";
+	private static final String INSERT_GROUP = "INSERT INTO groups(name, cathedra_id) VALUES(?, ?)";
+	private static final String UPDATE_GROUP = "UPDATE groups SET name=?, cathedra_id=? WHERE id=?";
+	private static final String DELETE_GROUP = "DELETE FROM groups WHERE id = ?";
+	private static final String SELECT_BY_LECTURE_ID = "SELECT * FROM groups WHERE id IN (SELECT group_id FROM lectures_groups WHERE lecture_id =?)";
+	private static final String SELECT_BY_NAME = "SELECT * FROM groups WHERE name = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private GroupRowMapper rowMapper;

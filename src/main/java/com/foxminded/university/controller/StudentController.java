@@ -21,7 +21,7 @@ import com.foxminded.university.service.StudentService;
 @RequestMapping("/students")
 public class StudentController {
 	
-	private final static Logger logger = LoggerFactory.getLogger(StudentController.class);
+	private static final Logger logger = LoggerFactory.getLogger(StudentController.class);
 
 	@Autowired
 	StudentService studentService;

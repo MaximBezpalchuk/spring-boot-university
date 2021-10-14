@@ -24,16 +24,16 @@ import com.foxminded.university.model.Teacher;
 @Component
 public class JdbcTeacherDao implements TeacherDao {
 
-	private final static Logger logger = LoggerFactory.getLogger(JdbcTeacherDao.class);
+	private static final Logger logger = LoggerFactory.getLogger(JdbcTeacherDao.class);
 
-	private final static String SELECT_ALL = "SELECT * FROM teachers";
-	private final static String SELECT_BY_ID = "SELECT * FROM teachers WHERE id = ?";
-	private final static String INSERT_TEACHER = "INSERT INTO teachers(id, first_name, last_name, phone, address, email, gender, postal_code, education, birth_date, cathedra_id,  degree) VALUES(DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-	private final static String UPDATE_TEACHER = "UPDATE teachers SET first_name=?, last_name=?, phone=?, address=?, email=?, gender=?, postal_code=?, education=?, birth_date=?, cathedra_id=?, degree=? WHERE id=?";
-	private final static String DELETE_TEACHER = "DELETE FROM teachers WHERE id = ?";
-	private final static String INSERT_SUBJECT = "INSERT INTO subjects_teachers(subject_id, teacher_id) VALUES (?,?)";
-	private final static String DELETE_SUBJECT = "DELETE FROM subjects_teachers WHERE subject_id = ? AND teacher_id = ?";
-	private final static String SELECT_BY_FULL_NAME_AND_BIRTHDAY = "SELECT * FROM teachers WHERE first_name = ? AND last_name = ? AND birth_date = ?";
+	private static final String SELECT_ALL = "SELECT * FROM teachers";
+	private static final String SELECT_BY_ID = "SELECT * FROM teachers WHERE id = ?";
+	private static final String INSERT_TEACHER = "INSERT INTO teachers(id, first_name, last_name, phone, address, email, gender, postal_code, education, birth_date, cathedra_id,  degree) VALUES(DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	private static final String UPDATE_TEACHER = "UPDATE teachers SET first_name=?, last_name=?, phone=?, address=?, email=?, gender=?, postal_code=?, education=?, birth_date=?, cathedra_id=?, degree=? WHERE id=?";
+	private static final String DELETE_TEACHER = "DELETE FROM teachers WHERE id = ?";
+	private static final String INSERT_SUBJECT = "INSERT INTO subjects_teachers(subject_id, teacher_id) VALUES (?,?)";
+	private static final String DELETE_SUBJECT = "DELETE FROM subjects_teachers WHERE subject_id = ? AND teacher_id = ?";
+	private static final String SELECT_BY_FULL_NAME_AND_BIRTHDAY = "SELECT * FROM teachers WHERE first_name = ? AND last_name = ? AND birth_date = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private TeacherRowMapper rowMapper;

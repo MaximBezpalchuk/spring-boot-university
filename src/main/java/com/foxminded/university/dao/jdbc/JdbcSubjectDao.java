@@ -20,15 +20,15 @@ import com.foxminded.university.model.Subject;
 @Component
 public class JdbcSubjectDao implements SubjectDao {
 	
-	private final static Logger logger = LoggerFactory.getLogger(JdbcSubjectDao.class);
+	private static final Logger logger = LoggerFactory.getLogger(JdbcSubjectDao.class);
 
-	private final static String SELECT_ALL = "SELECT * FROM subjects";
-	private final static String SELECT_BY_ID = "SELECT * FROM subjects WHERE id = ?";
-	private final static String INSERT_SUBJECT = "INSERT INTO subjects(name, description, cathedra_id) VALUES(?, ?, ?)";
-	private final static String UPDATE_SUBJECT = "UPDATE subjects SET name=?, description=?, cathedra_id=? WHERE id=?";
-	private final static String DELETE_SUBJECT = "DELETE FROM subjects WHERE id = ?";
-	private final static String SELECT_BY_TEACHER_ID = "SELECT * FROM subjects WHERE id IN (SELECT subject_id FROM subjects_teachers WHERE teacher_id =?)";
-	private final static String SELECT_BY_NAME = "SELECT * FROM subjects WHERE name = ?";
+	private static final String SELECT_ALL = "SELECT * FROM subjects";
+	private static final String SELECT_BY_ID = "SELECT * FROM subjects WHERE id = ?";
+	private static final String INSERT_SUBJECT = "INSERT INTO subjects(name, description, cathedra_id) VALUES(?, ?, ?)";
+	private static final String UPDATE_SUBJECT = "UPDATE subjects SET name=?, description=?, cathedra_id=? WHERE id=?";
+	private static final String DELETE_SUBJECT = "DELETE FROM subjects WHERE id = ?";
+	private static final String SELECT_BY_TEACHER_ID = "SELECT * FROM subjects WHERE id IN (SELECT subject_id FROM subjects_teachers WHERE teacher_id =?)";
+	private static final String SELECT_BY_NAME = "SELECT * FROM subjects WHERE name = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private SubjectRowMapper rowMapper;

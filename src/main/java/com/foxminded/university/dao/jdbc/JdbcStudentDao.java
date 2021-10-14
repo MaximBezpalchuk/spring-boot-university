@@ -22,15 +22,15 @@ import com.foxminded.university.model.Student;
 @Component
 public class JdbcStudentDao implements StudentDao {
 
-	private final static Logger logger = LoggerFactory.getLogger(JdbcStudentDao.class);
+	private static final Logger logger = LoggerFactory.getLogger(JdbcStudentDao.class);
 
-	private final static String SELECT_ALL = "SELECT * FROM students";
-	private final static String SELECT_BY_ID = "SELECT * FROM students WHERE id = ?";
-	private final static String INSERT_STUDENT = "INSERT INTO students(first_name, last_name, phone, address, email, gender, postal_code, education, birth_date, group_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-	private final static String UPDATE_STUDENT = "UPDATE students SET first_name=?, last_name=?, phone=?, address=?, email=?, gender=?, postal_code=?, education=?, birth_date=?, group_id=? WHERE id=?";
-	private final static String DELETE_STUDENT = "DELETE FROM students WHERE id = ?";
-	private final static String SELECT_BY_FULL_NAME_AND_BIRTHDAY = "SELECT * FROM students WHERE first_name = ? AND last_name = ? AND birth_date = ?";
-	private final static String SELECT_BY_GROUP_ID = "SELECT * FROM students WHERE group_id = ?";
+	private static final String SELECT_ALL = "SELECT * FROM students";
+	private static final String SELECT_BY_ID = "SELECT * FROM students WHERE id = ?";
+	private static final String INSERT_STUDENT = "INSERT INTO students(first_name, last_name, phone, address, email, gender, postal_code, education, birth_date, group_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	private static final String UPDATE_STUDENT = "UPDATE students SET first_name=?, last_name=?, phone=?, address=?, email=?, gender=?, postal_code=?, education=?, birth_date=?, group_id=? WHERE id=?";
+	private static final String DELETE_STUDENT = "DELETE FROM students WHERE id = ?";
+	private static final String SELECT_BY_FULL_NAME_AND_BIRTHDAY = "SELECT * FROM students WHERE first_name = ? AND last_name = ? AND birth_date = ?";
+	private static final String SELECT_BY_GROUP_ID = "SELECT * FROM students WHERE group_id = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private StudentRowMapper rowMapper;

@@ -27,18 +27,18 @@ import com.foxminded.university.model.Teacher;
 @Component
 public class JdbcLectureDao implements LectureDao {
 
-	private final static Logger logger = LoggerFactory.getLogger(JdbcLectureDao.class);
+	private static final Logger logger = LoggerFactory.getLogger(JdbcLectureDao.class);
 
-	private final static String SELECT_ALL = "SELECT * FROM lectures";
-	private final static String SELECT_BY_ID = "SELECT * FROM lectures WHERE id = ?";
-	private final static String INSERT_LECTURE = "INSERT INTO lectures(cathedra_id, subject_id, date, lecture_time_id, audience_id, teacher_id) VALUES(?, ?, ?, ?, ?, ?)";
-	private final static String UPDATE_LECTURE = "UPDATE lectures SET cathedra_id=?, subject_id=?, date=?, lecture_time_id=?, audience_id=?, teacher_id=? WHERE id=?";
-	private final static String DELETE_LECTURE = "DELETE FROM lectures WHERE id = ?";
-	private final static String INSERT_GROUP = "INSERT INTO lectures_groups(group_id, lecture_id) VALUES (?,?)";
-	private final static String DELETE_GROUP = "DELETE FROM lectures_groups WHERE group_id = ? AND lecture_id = ?";
-	private final static String SELECT_BY_AUDIENCE_DATE_LECTURE_TIME = "SELECT * FROM lectures WHERE audience_id = ? AND date = ? AND lecture_time_id = ?";
-	private final static String SELECT_BY_TEACHER_ID_DATE_AND_LECTURE_TIME_ID = "SELECT * FROM lectures WHERE teacher_id = ? AND date = ? AND lecture_time_id = ?";
-	private final static String SELECT_BY_TEACHER_AUDIENCE_DATE_LECTURE_TIME = "SELECT * FROM lectures WHERE teacher_id = ? AND audience_id = ? AND date = ? AND lecture_time_id = ?";
+	private static final String SELECT_ALL = "SELECT * FROM lectures";
+	private static final String SELECT_BY_ID = "SELECT * FROM lectures WHERE id = ?";
+	private static final String INSERT_LECTURE = "INSERT INTO lectures(cathedra_id, subject_id, date, lecture_time_id, audience_id, teacher_id) VALUES(?, ?, ?, ?, ?, ?)";
+	private static final String UPDATE_LECTURE = "UPDATE lectures SET cathedra_id=?, subject_id=?, date=?, lecture_time_id=?, audience_id=?, teacher_id=? WHERE id=?";
+	private static final String DELETE_LECTURE = "DELETE FROM lectures WHERE id = ?";
+	private static final String INSERT_GROUP = "INSERT INTO lectures_groups(group_id, lecture_id) VALUES (?,?)";
+	private static final String DELETE_GROUP = "DELETE FROM lectures_groups WHERE group_id = ? AND lecture_id = ?";
+	private static final String SELECT_BY_AUDIENCE_DATE_LECTURE_TIME = "SELECT * FROM lectures WHERE audience_id = ? AND date = ? AND lecture_time_id = ?";
+	private static final String SELECT_BY_TEACHER_ID_DATE_AND_LECTURE_TIME_ID = "SELECT * FROM lectures WHERE teacher_id = ? AND date = ? AND lecture_time_id = ?";
+	private static final String SELECT_BY_TEACHER_AUDIENCE_DATE_LECTURE_TIME = "SELECT * FROM lectures WHERE teacher_id = ? AND audience_id = ? AND date = ? AND lecture_time_id = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private LectureRowMapper rowMapper;

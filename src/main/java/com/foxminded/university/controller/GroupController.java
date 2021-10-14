@@ -21,7 +21,7 @@ import com.foxminded.university.service.GroupService;
 @RequestMapping("/groups")
 public class GroupController {
 	
-	private final static Logger logger = LoggerFactory.getLogger(GroupController.class);
+	private static final Logger logger = LoggerFactory.getLogger(GroupController.class);
 
 	@Autowired
 	GroupService groupService;
