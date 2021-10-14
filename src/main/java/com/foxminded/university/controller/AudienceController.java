@@ -19,9 +19,9 @@ import com.foxminded.university.service.CathedraService;
 
 @Controller
 @RequestMapping("/audiences")
-public class AudiencesController {
+public class AudienceController {
 	
-	private final static Logger logger = LoggerFactory.getLogger(AudiencesController.class);
+	private final static Logger logger = LoggerFactory.getLogger(AudienceController.class);
 
 	@Autowired
 	AudienceService audienceService;

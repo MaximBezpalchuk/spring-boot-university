@@ -19,6 +19,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
+import org.thymeleaf.templateresolver.ITemplateResolver;
 
 import com.foxminded.university.formatter.GroupFormatter;
 import com.foxminded.university.formatter.SubjectFormatter;
@@ -47,9 +48,9 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	}
 
 	@Bean
-	public SpringTemplateEngine templateEngine() {
+	public SpringTemplateEngine templateEngine(ITemplateResolver templateResolver) {
 		SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-		templateEngine.setTemplateResolver(templateResolver());
+		templateEngine.setTemplateResolver(templateResolver);
 		templateEngine.setEnableSpringELCompiler(true);
 		return templateEngine;
 	}
@@ -57,7 +58,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	@Override
 	public void configureViewResolvers(ViewResolverRegistry registry) {
 		ThymeleafViewResolver resolver = new ThymeleafViewResolver();
-		resolver.setTemplateEngine(templateEngine());
+		resolver.setTemplateEngine(templateEngine(templateResolver()));
 		registry.viewResolver(resolver);
 	}
 

@@ -26,9 +26,9 @@ import com.foxminded.university.service.TeacherService;
 
 @Controller
 @RequestMapping("/lectures")
-public class LecturesController {
+public class LectureController {
 	
-	private final static Logger logger = LoggerFactory.getLogger(LecturesController.class);
+	private final static Logger logger = LoggerFactory.getLogger(LectureController.class);
 
 	@Autowired
 	LectureService lectureService;

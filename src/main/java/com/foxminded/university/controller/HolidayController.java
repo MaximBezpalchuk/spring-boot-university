@@ -19,9 +19,9 @@ import com.foxminded.university.service.HolidayService;
 
 @Controller
 @RequestMapping("/holidays")
-public class HolidaysController {
+public class HolidayController {
 	
-	private final static Logger logger = LoggerFactory.getLogger(HolidaysController.class);
+	private final static Logger logger = LoggerFactory.getLogger(HolidayController.class);
 
 	@Autowired
 	HolidayService holidayService;

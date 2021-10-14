@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import com.foxminded.university.service.CathedraService;
 
 @Controller
-public class IndexPageController {
+public class HomePageController {
 	
-	private final static Logger logger = LoggerFactory.getLogger(IndexPageController.class);
+	private final static Logger logger = LoggerFactory.getLogger(HomePageController.class);
 	
 	@Autowired
 	CathedraService cathedraService;
