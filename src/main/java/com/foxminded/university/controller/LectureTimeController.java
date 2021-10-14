@@ -2,7 +2,6 @@ package com.foxminded.university.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,8 +21,11 @@ public class LectureTimeController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(LectureTimeController.class);
 
-	@Autowired
-	LectureTimeService lectureTimeService;
+	private LectureTimeService lectureTimeService;
+	
+	public LectureTimeController(LectureTimeService lectureTimeService) {
+		this.lectureTimeService = lectureTimeService;
+	}
 
 	@GetMapping()
 	public String index(Model model) {

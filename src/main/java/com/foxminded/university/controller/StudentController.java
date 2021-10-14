@@ -2,7 +2,6 @@ package com.foxminded.university.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,13 +19,16 @@ import com.foxminded.university.service.StudentService;
 @Controller
 @RequestMapping("/students")
 public class StudentController {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(StudentController.class);
 
-	@Autowired
-	StudentService studentService;
-	@Autowired
-	GroupService groupService;
+	private StudentService studentService;
+	private GroupService groupService;
+
+	public StudentController(StudentService studentService, GroupService groupService) {
+		this.studentService = studentService;
+		this.groupService = groupService;
+	}
 
 	@GetMapping()
 	public String index(Model model) {

@@ -2,7 +2,6 @@ package com.foxminded.university.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,13 +19,16 @@ import com.foxminded.university.service.HolidayService;
 @Controller
 @RequestMapping("/holidays")
 public class HolidayController {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(HolidayController.class);
 
-	@Autowired
-	HolidayService holidayService;
-	@Autowired
-	CathedraService cathedraService;
+	private HolidayService holidayService;
+	private CathedraService cathedraService;
+
+	public HolidayController(HolidayService holidayService, CathedraService cathedraService) {
+		this.holidayService = holidayService;
+		this.cathedraService = cathedraService;
+	}
 
 	@GetMapping()
 	public String index(Model model) {

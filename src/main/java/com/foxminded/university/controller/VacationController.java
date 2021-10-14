@@ -2,7 +2,6 @@ package com.foxminded.university.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,13 +19,16 @@ import com.foxminded.university.service.VacationService;
 @Controller
 @RequestMapping("/teachers/{id}/vacations")
 public class VacationController {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(VacationController.class);
 
-	@Autowired
-	TeacherService teacherService;
-	@Autowired
-	VacationService vacationService;
+	private TeacherService teacherService;
+	private VacationService vacationService;
+
+	public VacationController(TeacherService teacherService, VacationService vacationService) {
+		this.teacherService = teacherService;
+		this.vacationService = vacationService;
+	}
 
 	@GetMapping()
 	public String index(@PathVariable("id") int id, Model model) {
@@ -36,7 +38,7 @@ public class VacationController {
 
 		return "teachers/vacations/index";
 	}
-	
+
 	@GetMapping("/{vacationId}")
 	public String showVacation(@PathVariable("vacationId") int id, Model model) {
 		logger.debug("Show vacation page with id {}", id);
@@ -62,7 +64,7 @@ public class VacationController {
 
 		return "redirect:/teachers/" + id + "/vacations";
 	}
-	
+
 	@GetMapping("/{id}/edit")
 	public String editVacation(@PathVariable("id") int id, Model model) {
 		model.addAttribute("teacher", teacherService.findById(id));

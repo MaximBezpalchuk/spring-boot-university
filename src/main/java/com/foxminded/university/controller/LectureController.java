@@ -4,7 +4,6 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,32 +26,37 @@ import com.foxminded.university.service.TeacherService;
 @Controller
 @RequestMapping("/lectures")
 public class LectureController {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(LectureController.class);
 
-	@Autowired
-	LectureService lectureService;
-	@Autowired
-	GroupService groupService;
-	@Autowired
-	TeacherService teacherService;
-	@Autowired
-	AudienceService audienceService;
-	@Autowired
-	SubjectService subjectService;
-	@Autowired
-	CathedraService cathedraService;
-	@Autowired
-	LectureTimeService lectureTimeService;
+	private LectureService lectureService;
+	private GroupService groupService;
+	private TeacherService teacherService;
+	private AudienceService audienceService;
+	private SubjectService subjectService;
+	private CathedraService cathedraService;
+	private LectureTimeService lectureTimeService;
+
+	public LectureController(LectureService lectureService, GroupService groupService, TeacherService teacherService,
+			AudienceService audienceService, SubjectService subjectService, CathedraService cathedraService,
+			LectureTimeService lectureTimeService) {
+		this.lectureService = lectureService;
+		this.groupService = groupService;
+		this.teacherService = teacherService;
+		this.audienceService = audienceService;
+		this.subjectService = subjectService;
+		this.cathedraService = cathedraService;
+		this.lectureTimeService = lectureTimeService;
+	}
 
 	@GetMapping()
 	public String index(Model model) {
 		logger.debug("Show index page");
 		model.addAttribute("lectures", lectureService.findAll());
-		
+
 		return "lectures/index";
 	}
-	
+
 	@GetMapping("/{id}")
 	public String showLecture(@PathVariable("id") int id, Model model) {
 		logger.debug("Show lecture page with id {}", id);
@@ -88,7 +92,7 @@ public class LectureController {
 
 		return "redirect:/lectures";
 	}
-	
+
 	@GetMapping("/{id}/edit")
 	public String editLecture(@PathVariable("id") int id, Model model) {
 		model.addAttribute("teachersAttribute", teacherService.findAll());
