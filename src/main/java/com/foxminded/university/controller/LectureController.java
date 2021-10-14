@@ -49,8 +49,8 @@ public class LectureController {
 		this.lectureTimeService = lectureTimeService;
 	}
 
-	@GetMapping()
-	public String index(Model model) {
+	@GetMapping
+	public String getAllLectures(Model model) {
 		logger.debug("Show index page");
 		model.addAttribute("lectures", lectureService.findAll());
 
@@ -78,7 +78,7 @@ public class LectureController {
 		return "lectures/new";
 	}
 
-	@PostMapping()
+	@PostMapping
 	public String create(@ModelAttribute("lecture") Lecture lecture) {
 		lecture.setCathedra(cathedraService.findById(lecture.getCathedra().getId()));
 		lecture.setTeacher(teacherService.findById(lecture.getTeacher().getId()));

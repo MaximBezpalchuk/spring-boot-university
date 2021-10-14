@@ -36,8 +36,8 @@ public class TeacherController {
 		this.cathedraService = cathedraService;
 	}
 
-	@GetMapping()
-	public String index(Model model) {
+	@GetMapping
+	public String getAllTeachers(Model model) {
 		logger.debug("Show index page");
 		model.addAttribute("teachers", teacherService.findAll());
 
@@ -61,7 +61,7 @@ public class TeacherController {
 		return "teachers/new";
 	}
 
-	@PostMapping()
+	@PostMapping
 	public String create(@ModelAttribute("teacher") Teacher teacher, Model model) {
 		teacher.setCathedra(cathedraService.findById(teacher.getCathedra().getId()));
 		teacher.setSubjects(teacher.getSubjects().stream().map(subject -> subjectService.findById(subject.getId()))

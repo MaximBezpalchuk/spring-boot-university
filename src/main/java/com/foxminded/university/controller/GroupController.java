@@ -30,8 +30,8 @@ public class GroupController {
 		this.cathedraService = cathedraService;
 	}
 
-	@GetMapping()
-	public String index(Model model) {
+	@GetMapping
+	public String getAllGroups(Model model) {
 		logger.debug("Show index page");
 		model.addAttribute("groups", groupService.findAll());
 
@@ -54,7 +54,7 @@ public class GroupController {
 		return "groups/new";
 	}
 
-	@PostMapping()
+	@PostMapping
 	public String create(@ModelAttribute("group") Group group, Model model) {
 		group.setCathedra(cathedraService.findById(group.getCathedra().getId()));
 		groupService.save(group);

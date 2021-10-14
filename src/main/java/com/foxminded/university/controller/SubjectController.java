@@ -30,8 +30,8 @@ public class SubjectController {
 		this.cathedraService = cathedraService;
 	}
 
-	@GetMapping()
-	public String index(Model model) {
+	@GetMapping
+	public String getAllSubjects(Model model) {
 		logger.debug("Show index page");
 		model.addAttribute("subjects", subjectService.findAll());
 
@@ -54,7 +54,7 @@ public class SubjectController {
 		return "subjects/new";
 	}
 
-	@PostMapping()
+	@PostMapping
 	public String create(@ModelAttribute("subject") Subject subject, Model model) {
 		subject.setCathedra(cathedraService.findById(subject.getCathedra().getId()));
 		subjectService.save(subject);

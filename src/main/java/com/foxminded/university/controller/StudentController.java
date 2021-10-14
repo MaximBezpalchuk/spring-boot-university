@@ -30,8 +30,8 @@ public class StudentController {
 		this.groupService = groupService;
 	}
 
-	@GetMapping()
-	public String index(Model model) {
+	@GetMapping
+	public String getAllStudents(Model model) {
 		logger.debug("Show index page");
 		model.addAttribute("students", studentService.findAll());
 
@@ -54,7 +54,7 @@ public class StudentController {
 		return "students/new";
 	}
 
-	@PostMapping()
+	@PostMapping
 	public String create(@ModelAttribute("student") Student student, Model model) {
 		if (student.getGroup().getId() != 0) {
 			student.setGroup(groupService.findById(student.getGroup().getId()));

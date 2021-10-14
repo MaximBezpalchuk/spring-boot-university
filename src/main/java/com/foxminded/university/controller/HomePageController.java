@@ -19,8 +19,8 @@ public class HomePageController {
 		this.cathedraService = cathedraService;
 	}
 
-	@GetMapping()
-	public String index(Model model) {
+	@GetMapping
+	public String getMainMenu(Model model) {
 		logger.debug("Show index page");
 		model.addAttribute("cathedraName", cathedraService.findById(1).getName());
 		

@@ -30,8 +30,8 @@ public class AudienceController {
 		this.cathedraService = cathedraService;
 	}
 
-	@GetMapping()
-	public String index(Model model) {
+	@GetMapping
+	public String getAllAudiences(Model model) {
 		logger.debug("Show index page");
 		model.addAttribute("audiences", audienceService.findAll());
 
@@ -54,7 +54,7 @@ public class AudienceController {
 		return "audiences/new";
 	}
 
-	@PostMapping()
+	@PostMapping
 	public String create(@ModelAttribute("audience") Audience audience) {
 		audience.setCathedra(cathedraService.findById(audience.getCathedra().getId()));
 		audienceService.save(audience);

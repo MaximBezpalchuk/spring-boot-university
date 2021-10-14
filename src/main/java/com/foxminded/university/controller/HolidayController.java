@@ -30,8 +30,8 @@ public class HolidayController {
 		this.cathedraService = cathedraService;
 	}
 
-	@GetMapping()
-	public String index(Model model) {
+	@GetMapping
+	public String getAllHolidays(Model model) {
 		logger.debug("Show index page");
 		model.addAttribute("holidays", holidayService.findAll());
 
@@ -54,7 +54,7 @@ public class HolidayController {
 		return "holidays/new";
 	}
 
-	@PostMapping()
+	@PostMapping
 	public String create(@ModelAttribute("holiday") Holiday holiday, Model model) {
 		holiday.setCathedra(cathedraService.findById(holiday.getCathedra().getId()));
 		holidayService.save(holiday);

@@ -30,8 +30,8 @@ public class VacationController {
 		this.vacationService = vacationService;
 	}
 
-	@GetMapping()
-	public String index(@PathVariable("id") int id, Model model) {
+	@GetMapping
+	public String getAllVacations(@PathVariable("id") int id, Model model) {
 		logger.debug("Show index page");
 		model.addAttribute("teacher", teacherService.findById(id));
 		model.addAttribute("vacations", vacationService.findByTeacherId(id));
@@ -55,7 +55,7 @@ public class VacationController {
 		return "teachers/vacations/new";
 	}
 
-	@PostMapping()
+	@PostMapping
 	public String createVacation(@PathVariable("id") int id, @ModelAttribute("vacation") Vacation vacation,
 			Model model) {
 		vacation.setTeacher(teacherService.findById(id));

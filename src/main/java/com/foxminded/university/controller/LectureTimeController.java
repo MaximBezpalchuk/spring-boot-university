@@ -27,8 +27,8 @@ public class LectureTimeController {
 		this.lectureTimeService = lectureTimeService;
 	}
 
-	@GetMapping()
-	public String index(Model model) {
+	@GetMapping
+	public String getAllLectureTimes(Model model) {
 		logger.debug("Show index page");
 		model.addAttribute("lectureTimes", lectureTimeService.findAll());
 
@@ -49,7 +49,7 @@ public class LectureTimeController {
 		return "lecturetimes/new";
 	}
 
-	@PostMapping()
+	@PostMapping
 	public String create(@ModelAttribute("lectureTime") LectureTime lectureTime) {
 		lectureTimeService.save(lectureTime);
 		logger.debug("Create new lecture time. Id {}", lectureTime.getId());
