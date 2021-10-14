@@ -17,16 +17,14 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.web.WebAppConfiguration;
 
-import com.foxminded.university.config.SpringTestConfig;
+import com.foxminded.university.config.WebMvcTestConfig;
 import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Holiday;
 
 @ExtendWith(SpringExtension.class)
-@WebAppConfiguration
-@ContextConfiguration(classes = SpringTestConfig.class)
+@ContextConfiguration(classes = WebMvcTestConfig.class)
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class JdbcHolidayDaoTest {
 

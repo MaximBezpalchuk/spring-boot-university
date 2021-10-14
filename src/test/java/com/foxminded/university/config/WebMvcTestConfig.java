@@ -9,8 +9,8 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 @Configuration
-@Import(SpringConfig.class)
-public class SpringTestConfig {
+@Import(DatabaseConfig.class)
+public class WebMvcTestConfig {
 
 	@Bean
 	public DataSource dataSource() {
