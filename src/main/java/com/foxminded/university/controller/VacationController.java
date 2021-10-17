@@ -90,10 +90,10 @@ public class VacationController {
 		return "redirect:/teachers/" + id + "/vacations";
 	}
 
-	@GetMapping("/{id}/edit")
-	public String editVacation(@PathVariable("id") int id, Model model) {
+	@GetMapping("/{vacationId}/edit")
+	public String editVacation(@PathVariable("id") int id, @PathVariable("vacationId") int vacationId, Model model) {
 		model.addAttribute("teacher", teacherService.findById(id));
-		model.addAttribute("vacation", vacationService.findById(id));
+		model.addAttribute("vacation", vacationService.findById(vacationId));
 		logger.debug("Show edit vacation page");
 
 		return "teachers/vacations/edit";
@@ -108,10 +108,10 @@ public class VacationController {
 		return "redirect:/teachers/" + id + "/vacations";
 	}
 
-	@DeleteMapping("/{id}")
-	public String delete(@PathVariable("id") int id) {
-		logger.debug("Delete vacation with id {}", id);
-		vacationService.deleteById(id);
+	@DeleteMapping("/{vacationId}")
+	public String delete( @PathVariable("id") int id, @PathVariable("vacationId") int vacationId) {
+		logger.debug("Delete vacation with id {}", vacationId);
+		vacationService.deleteById(vacationId);
 
 		return "redirect:/teachers/" + id + "/vacations";
 	}

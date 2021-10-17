@@ -18,10 +18,10 @@
 				<a th:href="@{/teachers/{id}/vacations/{vacId}(id=${teacher.id}, vacId=${vacation.id})}" th:text="Show">Full info about vacation</a>
 			</td>
 			<td>
-				<a th:href="@{/teachers/{id}/vacations/{vacId}/edit(id=${teacher.id}, vacId=${vacation.id})}" th:text="Edit">Edit vacation</a>
+				<a th:href="@{/teachers/{id}/vacations/{vacationId}/edit(id=${teacher.id}, vacationId=${vacation.id})}" th:text="Edit">Edit vacation</a>
 			</td>
 			<td>
-				<form th:method="DELETE" th:action="@{/teachers/{id}/vacations/{vacId}(id=${teacher.id},vacId=${vacation.id})}">
+				<form th:method="DELETE" th:action="@{/teachers/{id}/vacations/{vacationId}(id=${teacher.id}, vacationId=${vacation.id})}">
 					<input type="submit" value="Delete">
 				</form>
 			</td>

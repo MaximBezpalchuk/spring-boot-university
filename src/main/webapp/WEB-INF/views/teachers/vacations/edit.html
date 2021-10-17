@@ -8,9 +8,9 @@
 </head>
 
 <body>
-	<h1 th:text="'Edit vacation on teacher ' + ${vacation.teacher.firstName} + ' ' + ${vacation.teacher.lastName}">Vacation desc</h1>
+	<h1 th:text="'Edit vacation on teacher ' + ${teacher.firstName} + ' ' + ${teacher.lastName}">Vacation desc</h1>
 
-	<form th:method="PATCH" th:action="@{/teachers/{id}/vacations/{vacId}(id=${teacher.id},vacId=${vacation.id})}" th:object="${vacation}">
+	<form th:method="PATCH" th:action="@{/teachers/{id}/vacations/{vacationId}(id=${teacher.id}, vacationId=${vacation.id})}" th:object="${vacation}">
 		<label for="start">Enter vacations start: </label> 
 		<input type="date" th:field="*{start}" id="start" required> <br>
 	
