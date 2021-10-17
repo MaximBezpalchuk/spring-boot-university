@@ -1,7 +1,16 @@
 package com.foxminded.university.controller;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,6 +20,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.foxminded.university.model.Student;
 import com.foxminded.university.service.GroupService;
@@ -18,12 +28,15 @@ import com.foxminded.university.service.StudentService;
 
 @Controller
 @RequestMapping("/students")
+@PropertySource("classpath:config.properties")
 public class StudentController {
 
 	private static final Logger logger = LoggerFactory.getLogger(StudentController.class);
 
 	private StudentService studentService;
 	private GroupService groupService;
+	@Value("${studentsPageSize}")
+	private int pageSize;
 
 	public StudentController(StudentService studentService, GroupService groupService) {
 		this.studentService = studentService;
@@ -31,11 +44,23 @@ public class StudentController {
 	}
 
 	@GetMapping
-	public String getAllStudents(Model model) {
+	public String getAllPageableStudents(Model model,
+            @RequestParam("page") Optional<Integer> page,
+            @RequestParam("size") Optional<Integer> size) {
 		logger.debug("Show index page");
-		model.addAttribute("students", studentService.findAll());
+		int currentPage = page.orElse(1);
+        int currentPageSize = size.orElse(pageSize);
 
-		return "students/index";
+        Page<Student> studentPage = studentService.findPaginatedStudents(PageRequest.of(currentPage - 1, currentPageSize));
+        model.addAttribute("studentPage", studentPage);
+        int totalPages = studentPage.getTotalPages();
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                    .boxed()
+                    .collect(Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
+        return "students/index";
 	}
 
 	@GetMapping("/{id}")

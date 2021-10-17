@@ -1,10 +1,15 @@
 package com.foxminded.university.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.foxminded.university.dao.HolidayDao;
@@ -54,5 +59,21 @@ public class HolidayService {
 			throw new EntityNotUniqueException("Holiday with name " + holiday.getName() + " and date "
 					+ holiday.getDate() + " is already exists!");
 		}
+	}
+	
+	public Page<Holiday> findPaginatedHolidays(final Pageable pageable){
+		List<Holiday> holidays = holidayDao.findAll();
+		int pageSize = pageable.getPageSize();
+        int currentPage = pageable.getPageNumber();
+        int startItem = currentPage * pageSize;
+        final List<Holiday> list;
+        if (holidays.size() < startItem) {
+            list = Collections.emptyList();
+        } else {
+            int toIndex = Math.min(startItem + pageSize, holidays.size());
+            list = holidays.subList(startItem, toIndex);
+        }
+        
+        return new PageImpl<>(list, PageRequest.of(currentPage, pageSize), holidays.size());
 	}
 }

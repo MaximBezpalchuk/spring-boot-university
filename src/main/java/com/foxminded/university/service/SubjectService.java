@@ -1,10 +1,15 @@
 package com.foxminded.university.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.foxminded.university.dao.SubjectDao;
@@ -57,5 +62,21 @@ public class SubjectService {
 		if (existingSubject.isPresent() && (existingSubject.get().getId() != subject.getId())) {
 			throw new EntityNotUniqueException("Subject with name " + subject.getName() + " is already exists!");
 		}
+	}
+	
+	public Page<Subject> findPaginatedSubjects(final Pageable pageable){
+		List<Subject> subjects = subjectDao.findAll();
+		int pageSize = pageable.getPageSize();
+        int currentPage = pageable.getPageNumber();
+        int startItem = currentPage * pageSize;
+        final List<Subject> list;
+        if (subjects.size() < startItem) {
+            list = Collections.emptyList();
+        } else {
+            int toIndex = Math.min(startItem + pageSize, subjects.size());
+            list = subjects.subList(startItem, toIndex);
+        }
+        
+        return new PageImpl<>(list, PageRequest.of(currentPage, pageSize), subjects.size());
 	}
 }

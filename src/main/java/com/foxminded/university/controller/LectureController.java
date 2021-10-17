@@ -1,9 +1,15 @@
 package com.foxminded.university.controller;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,6 +19,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.foxminded.university.model.Lecture;
 import com.foxminded.university.service.AudienceService;
@@ -36,6 +43,8 @@ public class LectureController {
 	private SubjectService subjectService;
 	private CathedraService cathedraService;
 	private LectureTimeService lectureTimeService;
+	@Value("${lecturesPageSize}")
+	private int pageSize;
 
 	public LectureController(LectureService lectureService, GroupService groupService, TeacherService teacherService,
 			AudienceService audienceService, SubjectService subjectService, CathedraService cathedraService,
@@ -50,11 +59,23 @@ public class LectureController {
 	}
 
 	@GetMapping
-	public String getAllLectures(Model model) {
+	public String getAllPageableLectures(Model model,
+            @RequestParam("page") Optional<Integer> page,
+            @RequestParam("size") Optional<Integer> size) {
 		logger.debug("Show index page");
-		model.addAttribute("lectures", lectureService.findAll());
+		int currentPage = page.orElse(1);
+        int currentPageSize = size.orElse(pageSize);
 
-		return "lectures/index";
+        Page<Lecture> lecturePage = lectureService.findPaginatedLectures(PageRequest.of(currentPage - 1, currentPageSize));
+        model.addAttribute("lecturePage", lecturePage);
+        int totalPages = lecturePage.getTotalPages();
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                    .boxed()
+                    .collect(Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
+        return "lectures/index";
 	}
 
 	@GetMapping("/{id}")

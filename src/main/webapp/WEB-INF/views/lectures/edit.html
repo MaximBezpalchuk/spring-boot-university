@@ -25,7 +25,7 @@
 			<option th:each="anyTeacher : ${teachersAttribute}"
 	            th:field="*{teacher.id}"
 	            th:value="${anyTeacher?.id}"
-	            th:text="${anyTeacher?.firstName}">Teacher name
+	            th:text="${anyTeacher?.firstName} + ' ' + ${anyTeacher?.lastName}">Teacher name
 	        </option>
 		</select> <br>
 		

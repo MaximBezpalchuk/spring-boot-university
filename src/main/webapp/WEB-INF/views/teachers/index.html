@@ -14,7 +14,7 @@
 	<h1>Teachers</h1>
 	<a th:href="@{teachers/new}" th:text="New">New</a>
 	<table border="1">
-		<tr th:each="teacher : ${teachers}">
+		<tr th:each="teacher : ${teacherPage.content}">
 			<td th:text="${teacher.firstName} + ' ' + ${teacher.getLastName()}">Name</td>
 			<td th:text="${teacher.phone}">Phone number</td>
 			<td th:text="${teacher.address}">Address</td>
@@ -43,6 +43,31 @@
 			</td>
 		</tr>
 	</table>
+	<br>
+	<nav aria-label="Page navigation" class="paging">
+		<ul class="pagination" th:if="${teacherPage.totalPages > 1}">
+			<li class="page-item"
+				th:classappend="${(teacherPage.pageable.pageNumber <= 0)? 'disabled' : ''}">
+				<a class="page-link"
+				th:href="@{/teachers(size=${teacherPage.size}, page=${teacherPage.pageable.pageNumber})}"
+				tabindex="-1">Previous</a>
+			</li>
+			<th:block th:each="page : ${pageNumbers}">
+				<li class="page-item"
+					th:classappend="${page == teacherPage.pageable.pageNumber + 1? 'active' : ''}">
+					<a class="page-link"
+					th:href="@{'/teachers?size=' + ${teacherPage.size} + '&page=' + ${page}}"
+					th:text="${page}"></a>
+				</li>
+			</th:block>
+			<li class="page-item"
+				th:classappend="${(teacherPage.pageable.pageNumber+1 >= teacherPage.totalPages)? 'disabled' : ''}">
+				<a class="page-link"
+				th:href="@{/teachers(size=${teacherPage.size}, page=${teacherPage.pageable.pageNumber + 2})}">Next</a>
+			</li>
+		</ul>
+	</nav>
+	
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
 		integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
 		crossorigin="anonymous"></script>
