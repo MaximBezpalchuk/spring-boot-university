@@ -8,6 +8,7 @@ import java.util.stream.IntStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,7 @@ import com.foxminded.university.service.SubjectService;
 import com.foxminded.university.service.TeacherService;
 
 @Controller
+@PropertySource("classpath:config.properties")
 @RequestMapping("/teachers")
 public class TeacherController {
 
