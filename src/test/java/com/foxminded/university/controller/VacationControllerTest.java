@@ -18,12 +18,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.foxminded.university.model.Degree;
 import com.foxminded.university.model.Teacher;
 import com.foxminded.university.model.Vacation;
+import com.foxminded.university.service.TeacherService;
 import com.foxminded.university.service.VacationService;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,12 +35,16 @@ public class VacationControllerTest {
 
 	@Mock
 	private VacationService vacationService;
+	@Mock
+	private TeacherService teacherService;
 	@InjectMocks
 	private VacationController vacationController;
 	
 	@BeforeEach
     public void setMocks() {
-        mockMvc = MockMvcBuilders.standaloneSetup(vacationController).build();
+		PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
+        resolver.setFallbackPageable(PageRequest.of(0, 1));
+        mockMvc = MockMvcBuilders.standaloneSetup(vacationController).setCustomArgumentResolvers(resolver).build();
     }
 	
 	@Test
@@ -57,16 +63,17 @@ public class VacationControllerTest {
 				.end(LocalDate.of(2020, 1, 2))
 				.build();
 		List<Vacation> list = Arrays.asList(first, second);
-		Page<Vacation> vacationPage = new PageImpl<>(list, PageRequest.of(0, 1), 2);
-
-		when(vacationService.findByTeacherId(PageRequest.of(0, 1), teacher.getId())).thenReturn(vacationPage);
+		Page<Vacation> page = new PageImpl<>(list, PageRequest.of(0, 1), 2);
+		
+		when(teacherService.findById(teacher.getId())).thenReturn(teacher);
+		when(this.vacationService.findByTeacherId(PageRequest.of(0, 1), teacher.getId())).thenReturn(page);
+		
 
 		mockMvc.perform(get("/teachers/{id}/vacations", teacher.getId()))
 				.andExpect(status().isOk())
 				.andExpect(view().name("teachers/vacations/index"))
 				.andExpect(forwardedUrl("teachers/vacations/index"))
-				.andExpect(model().attribute("vacationPage", vacationPage))
-				.andExpect(model().attribute("pageNumbers", Arrays.asList(1, 2)));
+				.andExpect(model().attribute("vacations", page));
 
 		verify(vacationService, times(1)).findByTeacherId(PageRequest.of(0, 1), teacher.getId());
 		verifyNoMoreInteractions(vacationService);

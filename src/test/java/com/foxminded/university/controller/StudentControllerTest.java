@@ -17,6 +17,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -36,7 +38,9 @@ public class StudentControllerTest {
 	
 	@BeforeEach
     public void setMocks() {
-        mockMvc = MockMvcBuilders.standaloneSetup(studentController).build();
+		PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
+        resolver.setFallbackPageable(PageRequest.of(0, 1));
+        mockMvc = MockMvcBuilders.standaloneSetup(studentController).setCustomArgumentResolvers(resolver).build();
     }
 	
 	@Test
@@ -55,16 +59,16 @@ public class StudentControllerTest {
 				.group(group)
 				.build();
 		List<Student> list = Arrays.asList(first, second);
-		Page<Student> studentPage = new PageImpl<>(list, PageRequest.of(0, 1), 2);
+		Page<Student> page = new PageImpl<>(list, PageRequest.of(0, 1), 2);
 
-		when(studentService.findAll(PageRequest.of(0, 1))).thenReturn(studentPage);
+
+		when(this.studentService.findAll(isA(Pageable.class))).thenReturn(page);
 
 		mockMvc.perform(get("/students"))
 				.andExpect(status().isOk())
 				.andExpect(view().name("students/index"))
 				.andExpect(forwardedUrl("students/index"))
-				.andExpect(model().attribute("studentPage", studentPage))
-				.andExpect(model().attribute("pageNumbers", Arrays.asList(1, 2)));
+				.andExpect(model().attribute("students", page));
 
 		verify(studentService, times(1)).findAll(PageRequest.of(0, 1));
 		verifyNoMoreInteractions(studentService);

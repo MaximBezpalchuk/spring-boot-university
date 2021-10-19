@@ -1,5 +1,6 @@
 package com.foxminded.university.controller;
 
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -19,6 +20,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -43,7 +46,9 @@ public class LectureControllerTest {
 	
 	@BeforeEach
     public void setMocks() {
-        mockMvc = MockMvcBuilders.standaloneSetup(lectureController).build();
+		PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
+        resolver.setFallbackPageable(PageRequest.of(0, 1));
+        mockMvc = MockMvcBuilders.standaloneSetup(lectureController).setCustomArgumentResolvers(resolver).build();
     }
 	
 	@Test
@@ -76,16 +81,15 @@ public class LectureControllerTest {
 				.time(time)
 				.build();
 		List<Lecture> list = Arrays.asList(first, second);
-		Page<Lecture> lecturePage = new PageImpl<>(list, PageRequest.of(0, 1), 2);
+		Page<Lecture> page = new PageImpl<>(list, PageRequest.of(0, 1), 2);
 
-		when(lectureService.findAll(PageRequest.of(0, 1))).thenReturn(lecturePage);
+		when(this.lectureService.findAll(isA(Pageable.class))).thenReturn(page);
 
 		mockMvc.perform(get("/lectures"))
 				.andExpect(status().isOk())
 				.andExpect(view().name("lectures/index"))
 				.andExpect(forwardedUrl("lectures/index"))
-				.andExpect(model().attribute("lecturePage", lecturePage))
-				.andExpect(model().attribute("pageNumbers", Arrays.asList(1, 2)));
+				.andExpect(model().attribute("lectures", page));
 
 		verify(lectureService, times(1)).findAll(PageRequest.of(0, 1));
 		verifyNoMoreInteractions(lectureService);
