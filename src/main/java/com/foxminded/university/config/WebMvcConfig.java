@@ -1,7 +1,5 @@
 package com.foxminded.university.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -25,17 +23,9 @@ import com.foxminded.university.formatter.SubjectFormatter;
 @EnableWebMvc
 public class WebMvcConfig implements WebMvcConfigurer {
 
-	private final ApplicationContext applicationContext;
-
-	@Autowired
-	public WebMvcConfig(ApplicationContext applicationContext) {
-		this.applicationContext = applicationContext;
-	}
-
 	@Bean
 	public SpringResourceTemplateResolver templateResolver() {
 		SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
-		templateResolver.setApplicationContext(applicationContext);
 		templateResolver.setPrefix("/WEB-INF/views/");
 		templateResolver.setSuffix(".html");
 		templateResolver.setTemplateMode(TemplateMode.HTML);
