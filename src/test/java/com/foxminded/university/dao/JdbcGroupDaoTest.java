@@ -17,11 +17,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Group;
-import com.foxminded.university.config.WebMvcTestConfig;
+import com.foxminded.university.config.TestConfig;
 import com.foxminded.university.dao.jdbc.JdbcGroupDao;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = WebMvcTestConfig.class)
+@ContextConfiguration(classes = TestConfig.class)
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class JdbcGroupDaoTest {
 

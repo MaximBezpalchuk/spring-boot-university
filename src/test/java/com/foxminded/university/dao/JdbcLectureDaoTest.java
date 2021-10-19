@@ -23,11 +23,11 @@ import com.foxminded.university.model.Lecture;
 import com.foxminded.university.model.LectureTime;
 import com.foxminded.university.model.Subject;
 import com.foxminded.university.model.Teacher;
-import com.foxminded.university.config.WebMvcTestConfig;
+import com.foxminded.university.config.TestConfig;
 import com.foxminded.university.dao.jdbc.JdbcLectureDao;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = WebMvcTestConfig.class)
+@ContextConfiguration(classes = TestConfig.class)
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class JdbcLectureDaoTest {
 

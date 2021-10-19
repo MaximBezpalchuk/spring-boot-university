@@ -10,7 +10,7 @@ import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
 @Configuration
 @Import(DatabaseConfig.class)
-public class WebMvcTestConfig {
+public class TestConfig {
 
 	@Bean
 	public DataSource dataSource() {
