@@ -12,7 +12,6 @@
 
 <body>
 	<h1>Teachers</h1>
-	<a th:href="@{teachers/new}" th:text="New">New</a>
 	<table border="1">
 		<tr th:each="teacher : ${teachers.content}">
 			<td th:text="${teacher.firstName} + ' ' + ${teacher.getLastName()}">Name</td>
@@ -33,14 +32,6 @@
 				th:text="Vacations">Teachers vacations</a></td>
 			<td><a th:href="@{/teachers/{id}(id=${teacher.id})}"
 				th:text="Show">Full info about teacher</a></td>
-			<td><a th:href="@{/teachers/{id}/edit(id=${teacher.id})}"
-				th:text="Edit">Edit teacher</a></td>
-			<td>
-				<form th:method="DELETE"
-					th:action="@{/teachers/{id}(id=${teacher.id})}">
-					<input type="submit" value="Delete">
-				</form>
-			</td>
 		</tr>
 	</table>
 	<br>

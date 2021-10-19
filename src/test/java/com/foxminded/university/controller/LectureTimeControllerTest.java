@@ -2,9 +2,7 @@ package com.foxminded.university.controller;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
@@ -66,50 +64,4 @@ public class LectureTimeControllerTest {
         verify(lectureTimeService, times(1)).findAll();
         verifyNoMoreInteractions(lectureTimeService);
     }
-	
-	@Test
-	void whenCreateNewLectureTime_thenLectureTimeCreated() throws Exception {		
-		mockMvc.perform(get("/lecturetimes/new"))
-				.andExpect(status().isOk())
-				.andExpect(view().name("lecturetimes/new"))
-				.andExpect(forwardedUrl("lecturetimes/new"))
-				.andExpect(model().attribute("lectureTime", instanceOf(LectureTime.class)));
-	}
-	
-	@Test
-	void whenSaveLectureTime_thenLectureTimeSaved() throws Exception {
-		LectureTime lectureTime = LectureTime.builder()
-				.start(LocalTime.of(8, 0))
-				.end(LocalTime.of(9, 45))
-				.build();
-		mockMvc.perform(post("/lecturetimes").flashAttr("lectureTime", lectureTime))		
-				.andExpect(redirectedUrl("/lecturetimes"));
-		
-		verify(lectureTimeService).save(lectureTime);
-	}
-
-	@Test
-	void whenEditLectureTime_thenLectureTimeFound() throws Exception {
-		LectureTime expected = LectureTime.builder()
-				.id(1)
-				.start(LocalTime.of(8, 0))
-				.end(LocalTime.of(9, 45))
-				.build();
-		
-		when(lectureTimeService.findById(1)).thenReturn(expected);
-		
-		mockMvc.perform(get("/lecturetimes/{id}/edit", 1))
-				.andExpect(status().isOk())
-				.andExpect(view().name("lecturetimes/edit"))
-				.andExpect(forwardedUrl("lecturetimes/edit"))
-				.andExpect(model().attribute("lectureTime", is(expected)));
-	}
-	
-	@Test
-	void whenDeleteLectureTime_thenLectureTimeDeleted() throws Exception {
-		mockMvc.perform(delete("/lecturetimes/{id}", 1))
-				.andExpect(redirectedUrl("/lecturetimes"));
-		
-		verify(lectureTimeService).deleteById(1);
-	}
 }

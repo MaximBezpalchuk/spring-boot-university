@@ -13,15 +13,11 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.format.FormatterRegistry;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ITemplateResolver;
-
-import com.foxminded.university.formatter.GroupFormatter;
-import com.foxminded.university.formatter.SubjectFormatter;
 
 @Configuration
 @ComponentScan("com.foxminded.university")
@@ -54,12 +50,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
 		ThymeleafViewResolver resolver = new ThymeleafViewResolver();
 		resolver.setTemplateEngine(templateEngine(templateResolver()));
 		registry.viewResolver(resolver);
-	}
-
-	@Override
-	public void addFormatters(FormatterRegistry registry) {
-		registry.addFormatter(new GroupFormatter()); // add multiply group choice on lectures/new
-		registry.addFormatter(new SubjectFormatter()); // add multiply subject choice on teachers/new
 	}
 	
 	@Override

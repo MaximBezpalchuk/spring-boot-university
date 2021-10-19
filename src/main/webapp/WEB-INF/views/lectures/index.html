@@ -12,7 +12,6 @@
 
 <body>
 	<h1>Lectures</h1>
-	<a th:href="@{lectures/new}" th:text="New">New</a>
 	<table border="1">
 		<tr th:each="lecture : ${lectures.content}">
 			<td th:text="${lecture.date}">Date</td>
@@ -28,14 +27,6 @@
 			</td>
 			<td><a th:href="@{/lectures/{id}(id=${lecture.id})}"
 				th:text="Show">Full info about lecture</a></td>
-			<td><a th:href="@{/lectures/{id}/edit(id=${lecture.id})}"
-				th:text="Edit">Edit lecture</a></td>
-			<td>
-				<form th:method="DELETE"
-					th:action="@{/lectures/{id}(id=${lecture.id})}">
-					<input type="submit" value="Delete">
-				</form>
-			</td>
 		</tr>
 	</table>
 	<br>

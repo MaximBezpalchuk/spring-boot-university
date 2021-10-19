@@ -2,9 +2,7 @@ package com.foxminded.university.controller;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
@@ -65,57 +63,4 @@ public class GroupControllerTest {
         verify(groupService, times(1)).findAll();
         verifyNoMoreInteractions(groupService);
     }
-	
-	@Test
-	void whenCreateNewGroup_thenNewGroupCreated() throws Exception {
-		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
-		
-		when(cathedraService.findAll()).thenReturn(Arrays.asList(cathedra));
-		
-		mockMvc.perform(get("/groups/new"))
-				.andExpect(status().isOk())
-				.andExpect(view().name("groups/new"))
-				.andExpect(forwardedUrl("groups/new"))
-				.andExpect(model().attribute("group", instanceOf(Group.class)));
-	}
-	
-	@Test
-	void whenSaveGroup_thenGroupSaved() throws Exception {
-		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
-		Group group = Group.builder()
-				.name("Killers2")
-				.cathedra(cathedra)
-				.build();
-		mockMvc.perform(post("/groups").flashAttr("group", group))		
-				.andExpect(redirectedUrl("/groups"));
-		
-		verify(groupService).save(group);
-	}
-
-	@Test
-	void whenEditGroup_thenGroupFound() throws Exception {
-		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
-		Group expected = Group.builder()
-				.id(1)
-				.name("Killers")
-				.cathedra(cathedra)
-				.build();
-		
-		when(groupService.findById(1)).thenReturn(expected);
-		when(cathedraService.findAll()).thenReturn(Arrays.asList(cathedra));
-		
-		mockMvc.perform(get("/groups/{id}/edit", 1))
-		.andExpect(status().isOk())
-		.andExpect(view().name("groups/edit"))
-		.andExpect(forwardedUrl("groups/edit"))
-		.andExpect(model().attribute("group", is(expected)));
-	}
-	
-	@Test
-	void whenDeleteGroup_thenGroupDeleted() throws Exception {
-		mockMvc.perform(delete("/groups/{id}", 1))
-				.andExpect(redirectedUrl("/groups"));
-		
-		verify(groupService).deleteById(1);
-	}
 }
