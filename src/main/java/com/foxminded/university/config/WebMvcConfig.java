@@ -1,9 +1,15 @@
 package com.foxminded.university.config;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -22,6 +28,9 @@ import com.foxminded.university.formatter.SubjectFormatter;
 @PropertySource("classpath:config.properties")
 @EnableWebMvc
 public class WebMvcConfig implements WebMvcConfigurer {
+	
+	@Value("${defaultPageSize}")
+	private int defaultPageSize;
 
 	@Bean
 	public SpringResourceTemplateResolver templateResolver() {
@@ -52,4 +61,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
 		registry.addFormatter(new GroupFormatter()); // add multiply group choice on lectures/new
 		registry.addFormatter(new SubjectFormatter()); // add multiply subject choice on teachers/new
 	}
+	
+	@Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+        PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
+        resolver.setFallbackPageable(PageRequest.of(0, defaultPageSize));
+        resolver.setOneIndexedParameters(true);
+        argumentResolvers.add(resolver);
+        WebMvcConfigurer.super.addArgumentResolvers(argumentResolvers);
+    }
 }

@@ -14,7 +14,7 @@
 	<h1>Teachers</h1>
 	<a th:href="@{teachers/new}" th:text="New">New</a>
 	<table border="1">
-		<tr th:each="teacher : ${teacherPage.content}">
+		<tr th:each="teacher : ${teachers.content}">
 			<td th:text="${teacher.firstName} + ' ' + ${teacher.getLastName()}">Name</td>
 			<td th:text="${teacher.phone}">Phone number</td>
 			<td th:text="${teacher.address}">Address</td>
@@ -44,30 +44,31 @@
 		</tr>
 	</table>
 	<br>
-	<nav aria-label="Page navigation" class="paging">
-		<ul class="pagination" th:if="${teacherPage.totalPages > 1}">
+	<nav aria-label="Pagination" th:if="${teachers.totalPages gt 0}">
+		<ul class="pagination justify-content-center font-weight-bold">
 			<li class="page-item"
-				th:classappend="${(teacherPage.pageable.pageNumber <= 0)? 'disabled' : ''}">
-				<a class="page-link"
-				th:href="@{/teachers(size=${teacherPage.size}, page=${teacherPage.pageable.pageNumber})}"
-				tabindex="-1">Previous</a>
+				th:classappend="${teachers.number eq 0} ? 'disabled'"><a
+				class="page-link"
+				th:href="@{/teachers?page={id}(id=${teachers.number lt 2 ? 1 : teachers.number})}"
+				aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+					<span aria-hidden="true">&laquo;</span>
+			</a></li>
+			<li class="page-item"
+				th:classappend="${i eq teachers.number + 1} ? 'active'"
+				th:each="i : ${#numbers.sequence( 1, teachers.totalPages, 1)}">
+				<a class="page-link" th:href="@{/teachers?page={id}(id=${i})}"
+				th:text="${i}" th:title="${'Page '+ i}" data-toggle="tooltip"></a>
 			</li>
-			<th:block th:each="page : ${pageNumbers}">
-				<li class="page-item"
-					th:classappend="${page == teacherPage.pageable.pageNumber + 1? 'active' : ''}">
-					<a class="page-link"
-					th:href="@{'/teachers?size=' + ${teacherPage.size} + '&page=' + ${page}}"
-					th:text="${page}"></a>
-				</li>
-			</th:block>
 			<li class="page-item"
-				th:classappend="${(teacherPage.pageable.pageNumber+1 >= teacherPage.totalPages)? 'disabled' : ''}">
+				th:classappend="${teachers.number + 1 eq teachers.totalPages} ? 'disabled'">
 				<a class="page-link"
-				th:href="@{/teachers(size=${teacherPage.size}, page=${teacherPage.pageable.pageNumber + 2})}">Next</a>
+				th:href="@{/teachers?page={id}(id=${teachers.number + 2})}"
+				aria-label="Next" title="Next Page" data-toggle="tooltip"> <span
+					aria-hidden="true">&raquo;</span>
+			</a>
 			</li>
 		</ul>
 	</nav>
-	
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
 		integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
 		crossorigin="anonymous"></script>

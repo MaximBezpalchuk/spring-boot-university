@@ -62,6 +62,22 @@ public class LectureService {
 		return lectureDao.findAll();
 	}
 
+	public Page<Lecture> findAll(final Pageable pageable) {
+		List<Lecture> lectures = lectureDao.findAll();
+		int pageSize = pageable.getPageSize();
+		int currentPage = pageable.getPageNumber();
+		int startItem = currentPage * pageSize;
+		final List<Lecture> list;
+		if (lectures.size() < startItem) {
+			list = Collections.emptyList();
+		} else {
+			int toIndex = Math.min(startItem + pageSize, lectures.size());
+			list = lectures.subList(startItem, toIndex);
+		}
+
+		return new PageImpl<>(list, PageRequest.of(currentPage, pageSize), lectures.size());
+	}
+
 	public Lecture findById(int id) {
 		logger.debug("Find lecture by id {}", id);
 		return lectureDao.findById(id)
@@ -126,8 +142,7 @@ public class LectureService {
 	private void teacherInVacationCheck(Lecture lecture) {
 		logger.debug("Check teacher for this lecture is in vacation");
 		if (!vacationDao.findByDateInPeriodAndTeacher(lecture.getDate(), lecture.getTeacher()).isEmpty()) {
-			throw new TeacherInVacationException(
-					"Teacher is in vacation this date! Date is: " + lecture.getDate());
+			throw new TeacherInVacationException("Teacher is in vacation this date! Date is: " + lecture.getDate());
 		}
 	}
 
@@ -164,21 +179,5 @@ public class LectureService {
 			throw new OccupiedAudienceException(
 					"Audience " + lecture.getAudience().getRoom() + " is already occupied!");
 		}
-	}
-	
-	public Page<Lecture> findPaginatedLectures(final Pageable pageable){
-		List<Lecture> lectures = lectureDao.findAll();
-		int pageSize = pageable.getPageSize();
-        int currentPage = pageable.getPageNumber();
-        int startItem = currentPage * pageSize;
-        final List<Lecture> list;
-        if (lectures.size() < startItem) {
-            list = Collections.emptyList();
-        } else {
-            int toIndex = Math.min(startItem + pageSize, lectures.size());
-            list = lectures.subList(startItem, toIndex);
-        }
-        
-        return new PageImpl<>(list, PageRequest.of(currentPage, pageSize), lectures.size());
 	}
 }

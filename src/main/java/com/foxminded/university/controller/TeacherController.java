@@ -1,16 +1,12 @@
 package com.foxminded.university.controller;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,7 +16,6 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.foxminded.university.model.Teacher;
 import com.foxminded.university.service.CathedraService;
@@ -28,7 +23,6 @@ import com.foxminded.university.service.SubjectService;
 import com.foxminded.university.service.TeacherService;
 
 @Controller
-@PropertySource("classpath:config.properties")
 @RequestMapping("/teachers")
 public class TeacherController {
 
@@ -37,8 +31,6 @@ public class TeacherController {
 	private TeacherService teacherService;
 	private SubjectService subjectService;
 	private CathedraService cathedraService;
-	@Value("${teachersPageSize}")
-	private int pageSize;
 
 	public TeacherController(TeacherService teacherService, SubjectService subjectService,
 			CathedraService cathedraService) {
@@ -48,23 +40,11 @@ public class TeacherController {
 	}
 
 	@GetMapping
-	public String getAllPageableStudents(Model model,
-            @RequestParam("page") Optional<Integer> page,
-            @RequestParam("size") Optional<Integer> size) {
-		logger.debug("Show index page");
-		int currentPage = page.orElse(1);
-        int currentPageSize = size.orElse(pageSize);
+	public String all(Model model, Pageable pageable) {
+		Page<Teacher> page = teacherService.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()));
+		model.addAttribute("teachers", page);
 
-        Page<Teacher> teacherPage = teacherService.findPaginatedTeachers(PageRequest.of(currentPage - 1, currentPageSize));
-        model.addAttribute("teacherPage", teacherPage);
-        int totalPages = teacherPage.getTotalPages();
-        if (totalPages > 0) {
-            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-                    .boxed()
-                    .collect(Collectors.toList());
-            model.addAttribute("pageNumbers", pageNumbers);
-        }
-        return "teachers/index";
+		return "teachers/index";
 	}
 
 	@GetMapping("/{id}")

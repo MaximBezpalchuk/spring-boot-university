@@ -34,6 +34,22 @@ public class HolidayService {
 		return holidayDao.findAll();
 	}
 
+	public Page<Holiday> findAll(final Pageable pageable) {
+		List<Holiday> holidays = holidayDao.findAll();
+		int pageSize = pageable.getPageSize();
+		int currentPage = pageable.getPageNumber();
+		int startItem = currentPage * pageSize;
+		final List<Holiday> list;
+		if (holidays.size() < startItem) {
+			list = Collections.emptyList();
+		} else {
+			int toIndex = Math.min(startItem + pageSize, holidays.size());
+			list = holidays.subList(startItem, toIndex);
+		}
+
+		return new PageImpl<>(list, PageRequest.of(currentPage, pageSize), holidays.size());
+	}
+
 	public Holiday findById(int id) {
 		logger.debug("Find holiday by id {}", id);
 		return holidayDao.findById(id)
@@ -59,21 +75,5 @@ public class HolidayService {
 			throw new EntityNotUniqueException("Holiday with name " + holiday.getName() + " and date "
 					+ holiday.getDate() + " is already exists!");
 		}
-	}
-	
-	public Page<Holiday> findPaginatedHolidays(final Pageable pageable){
-		List<Holiday> holidays = holidayDao.findAll();
-		int pageSize = pageable.getPageSize();
-        int currentPage = pageable.getPageNumber();
-        int startItem = currentPage * pageSize;
-        final List<Holiday> list;
-        if (holidays.size() < startItem) {
-            list = Collections.emptyList();
-        } else {
-            int toIndex = Math.min(startItem + pageSize, holidays.size());
-            list = holidays.subList(startItem, toIndex);
-        }
-        
-        return new PageImpl<>(list, PageRequest.of(currentPage, pageSize), holidays.size());
 	}
 }

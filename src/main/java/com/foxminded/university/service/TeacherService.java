@@ -34,6 +34,22 @@ public class TeacherService {
 		return teacherDao.findAll();
 	}
 
+	public Page<Teacher> findAll(final Pageable pageable) {
+		List<Teacher> teachers = teacherDao.findAll();
+		int pageSize = pageable.getPageSize();
+		int currentPage = pageable.getPageNumber();
+		int startItem = currentPage * pageSize;
+		final List<Teacher> list;
+		if (teachers.size() < startItem) {
+			list = Collections.emptyList();
+		} else {
+			int toIndex = Math.min(startItem + pageSize, teachers.size());
+			list = teachers.subList(startItem, toIndex);
+		}
+
+		return new PageImpl<>(list, PageRequest.of(currentPage, pageSize), teachers.size());
+	}
+
 	public Teacher findById(int id) {
 		logger.debug("Find teacher by id {}", id);
 		return teacherDao.findById(id)
@@ -60,21 +76,5 @@ public class TeacherService {
 			throw new EntityNotUniqueException("Teacher with full name " + teacher.getFirstName() + " "
 					+ teacher.getLastName() + " and birth date " + teacher.getBirthDate() + " is already exists!");
 		}
-	}
-	
-	public Page<Teacher> findPaginatedTeachers(final Pageable pageable){
-		List<Teacher> teachers = teacherDao.findAll();
-		int pageSize = pageable.getPageSize();
-        int currentPage = pageable.getPageNumber();
-        int startItem = currentPage * pageSize;
-        final List<Teacher> list;
-        if (teachers.size() < startItem) {
-            list = Collections.emptyList();
-        } else {
-            int toIndex = Math.min(startItem + pageSize, teachers.size());
-            list = teachers.subList(startItem, toIndex);
-        }
-        
-        return new PageImpl<>(list, PageRequest.of(currentPage, pageSize), teachers.size());
 	}
 }

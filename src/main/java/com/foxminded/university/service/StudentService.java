@@ -38,6 +38,22 @@ public class StudentService {
 		return studentDao.findAll();
 	}
 
+	public Page<Student> findAll(final Pageable pageable) {
+		List<Student> students = studentDao.findAll();
+		int pageSize = pageable.getPageSize();
+		int currentPage = pageable.getPageNumber();
+		int startItem = currentPage * pageSize;
+		final List<Student> list;
+		if (students.size() < startItem) {
+			list = Collections.emptyList();
+		} else {
+			int toIndex = Math.min(startItem + pageSize, students.size());
+			list = students.subList(startItem, toIndex);
+		}
+
+		return new PageImpl<>(list, PageRequest.of(currentPage, pageSize), students.size());
+	}
+
 	public Student findById(int id) {
 		logger.debug("Find student by id {}", id);
 		return studentDao.findById(id)
@@ -72,25 +88,9 @@ public class StudentService {
 		if (student.getGroup() != null) {
 			int groupSize = studentDao.findByGroupId(student.getGroup().getId()).size();
 			if (groupSize >= maxGroupSize) {
-				throw new GroupOverflowException(
-						"This group is already full! Group size is: " + groupSize + ". Max group size is: " + maxGroupSize);
+				throw new GroupOverflowException("This group is already full! Group size is: " + groupSize
+						+ ". Max group size is: " + maxGroupSize);
 			}
 		}
-	}
-	
-	public Page<Student> findPaginatedStudents(final Pageable pageable){
-		List<Student> students = studentDao.findAll();
-		int pageSize = pageable.getPageSize();
-        int currentPage = pageable.getPageNumber();
-        int startItem = currentPage * pageSize;
-        final List<Student> list;
-        if (students.size() < startItem) {
-            list = Collections.emptyList();
-        } else {
-            int toIndex = Math.min(startItem + pageSize, students.size());
-            list = students.subList(startItem, toIndex);
-        }
-        
-        return new PageImpl<>(list, PageRequest.of(currentPage, pageSize), students.size());
 	}
 }

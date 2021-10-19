@@ -4,55 +4,67 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Subject list</title>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous"/>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+	integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
+	crossorigin="anonymous" />
 </head>
 
 <body>
 	<h1>Subjects</h1>
 	<a th:href="@{subjects/new}" th:text="New">New</a>
 	<table border="1">
-		<tr th:each="subject : ${subjectPage.content}">
+		<tr th:each="subject : ${subjects.content}">
 			<td th:text="${subject.name}">Name</td>
 			<td th:text="${subject.description}">Description</td>
+			<td><a th:href="@{/subjects/{id}(id=${subject.id})}"
+				th:text="Show">Full info about subject</a></td>
+			<td><a th:href="@{/subjects/{id}/edit(id=${subject.id})}"
+				th:text="Edit">Edit subject</a></td>
 			<td>
-				<a th:href="@{/subjects/{id}(id=${subject.id})}" th:text="Show">Full info about subject</a>
-			</td>
-			<td>
-				<a th:href="@{/subjects/{id}/edit(id=${subject.id})}" th:text="Edit">Edit subject</a>
-			</td>
-			<td>
-				<form th:method="DELETE" th:action="@{/subjects/{id}(id=${subject.id})}">
+				<form th:method="DELETE"
+					th:action="@{/subjects/{id}(id=${subject.id})}">
 					<input type="submit" value="Delete">
 				</form>
 			</td>
 		</tr>
 	</table>
 	<br>
-	<nav aria-label="Page navigation" class="paging">
-		<ul class="pagination" th:if="${subjectPage.totalPages > 1}">
+	<nav aria-label="Pagination" th:if="${subjects.totalPages gt 0}">
+		<ul class="pagination justify-content-center font-weight-bold">
 			<li class="page-item"
-				th:classappend="${(subjectPage.pageable.pageNumber <= 0)? 'disabled' : ''}">
-				<a class="page-link"
-				th:href="@{/subjects(size=${subjectPage.size}, page=${subjectPage.pageable.pageNumber})}"
-				tabindex="-1">Previous</a>
+				th:classappend="${subjects.number eq 0} ? 'disabled'"><a
+				class="page-link"
+				th:href="@{/subjects?page={id}(id=${subjects.number lt 2 ? 1 : subjects.number})}"
+				aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+					<span aria-hidden="true">&laquo;</span>
+			</a></li>
+			<li class="page-item"
+				th:classappend="${i eq subjects.number + 1} ? 'active'"
+				th:each="i : ${#numbers.sequence( 1, subjects.totalPages, 1)}">
+				<a class="page-link" th:href="@{/subjects?page={id}(id=${i})}"
+				th:text="${i}" th:title="${'Page '+ i}" data-toggle="tooltip"></a>
 			</li>
-			<th:block th:each="page : ${pageNumbers}">
-				<li class="page-item"
-					th:classappend="${page == subjectPage.pageable.pageNumber + 1? 'active' : ''}">
-					<a class="page-link"
-					th:href="@{'/subjects?size=' + ${subjectPage.size} + '&page=' + ${page}}"
-					th:text="${page}"></a>
-				</li>
-			</th:block>
 			<li class="page-item"
-				th:classappend="${(subjectPage.pageable.pageNumber+1 >= subjectPage.totalPages)? 'disabled' : ''}">
+				th:classappend="${subjects.number + 1 eq subjects.totalPages} ? 'disabled'">
 				<a class="page-link"
-				th:href="@{/subjects(size=${subjectPage.size}, page=${subjectPage.pageable.pageNumber + 2})}">Next</a>
+				th:href="@{/subjects?page={id}(id=${subjects.number + 2})}"
+				aria-label="Next" title="Next Page" data-toggle="tooltip"> <span
+					aria-hidden="true">&raquo;</span>
+			</a>
 			</li>
 		</ul>
 	</nav>
-	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+		integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+		integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"
+		integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1"
+		crossorigin="anonymous"></script>
 </body>
 </html>

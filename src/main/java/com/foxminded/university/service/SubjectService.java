@@ -34,6 +34,22 @@ public class SubjectService {
 		return subjectDao.findAll();
 	}
 
+	public Page<Subject> findAll(final Pageable pageable) {
+		List<Subject> subjects = subjectDao.findAll();
+		int pageSize = pageable.getPageSize();
+		int currentPage = pageable.getPageNumber();
+		int startItem = currentPage * pageSize;
+		final List<Subject> list;
+		if (subjects.size() < startItem) {
+			list = Collections.emptyList();
+		} else {
+			int toIndex = Math.min(startItem + pageSize, subjects.size());
+			list = subjects.subList(startItem, toIndex);
+		}
+
+		return new PageImpl<>(list, PageRequest.of(currentPage, pageSize), subjects.size());
+	}
+
 	public Subject findById(int id) {
 		logger.debug("Find subject by id {}", id);
 		return subjectDao.findById(id)
@@ -62,21 +78,5 @@ public class SubjectService {
 		if (existingSubject.isPresent() && (existingSubject.get().getId() != subject.getId())) {
 			throw new EntityNotUniqueException("Subject with name " + subject.getName() + " is already exists!");
 		}
-	}
-	
-	public Page<Subject> findPaginatedSubjects(final Pageable pageable){
-		List<Subject> subjects = subjectDao.findAll();
-		int pageSize = pageable.getPageSize();
-        int currentPage = pageable.getPageNumber();
-        int startItem = currentPage * pageSize;
-        final List<Subject> list;
-        if (subjects.size() < startItem) {
-            list = Collections.emptyList();
-        } else {
-            int toIndex = Math.min(startItem + pageSize, subjects.size());
-            list = subjects.subList(startItem, toIndex);
-        }
-        
-        return new PageImpl<>(list, PageRequest.of(currentPage, pageSize), subjects.size());
 	}
 }
