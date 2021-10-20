@@ -1,6 +1,5 @@
 package com.foxminded.university.controller;
 
-import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -66,7 +65,6 @@ public class AudienceControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("audiences/index"))
                 .andExpect(forwardedUrl("audiences/index"))
-                .andExpect(model().attribute("audiences", hasSize(3)))
                 .andExpect(model().attribute("audiences", audiences));
  
         verifyNoMoreInteractions(audienceService);
