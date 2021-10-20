@@ -70,7 +70,7 @@ public class HolidayControllerTest {
 				.andExpect(view().name("holidays/index"))
 				.andExpect(forwardedUrl("holidays/index"))
 				.andExpect(model().attribute("holidays", page));
-		verify(holidayService, times(1)).findAll(PageRequest.of(0, 1));
+		
 		verifyNoMoreInteractions(holidayService);
 	}
 }

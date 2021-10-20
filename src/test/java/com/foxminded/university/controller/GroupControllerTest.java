@@ -60,7 +60,6 @@ public class GroupControllerTest {
                 .andExpect(model().attribute("groups", hasSize(2)))
                 .andExpect(model().attribute("groups", groups));
  
-        verify(groupService, times(1)).findAll();
         verifyNoMoreInteractions(groupService);
     }
 }

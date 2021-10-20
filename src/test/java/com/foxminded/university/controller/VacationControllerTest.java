@@ -75,7 +75,6 @@ public class VacationControllerTest {
 				.andExpect(forwardedUrl("teachers/vacations/index"))
 				.andExpect(model().attribute("vacations", page));
 
-		verify(vacationService, times(1)).findByTeacherId(PageRequest.of(0, 1), teacher.getId());
 		verifyNoMoreInteractions(vacationService);
 	}
 }

@@ -76,7 +76,7 @@ public class TeacherControllerTest {
 				.andExpect(view().name("teachers/index"))
 				.andExpect(forwardedUrl("teachers/index"))
 				.andExpect(model().attribute("teachers", page));
-		verify(teacherService, times(1)).findAll(PageRequest.of(0, 2));
+		
 		verifyNoMoreInteractions(teacherService);
 	}
 }

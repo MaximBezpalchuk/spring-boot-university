@@ -91,7 +91,6 @@ public class LectureControllerTest {
 				.andExpect(forwardedUrl("lectures/index"))
 				.andExpect(model().attribute("lectures", page));
 
-		verify(lectureService, times(1)).findAll(PageRequest.of(0, 1));
 		verifyNoMoreInteractions(lectureService);
 	}
 }

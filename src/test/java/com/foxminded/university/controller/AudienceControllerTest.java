@@ -69,7 +69,6 @@ public class AudienceControllerTest {
                 .andExpect(model().attribute("audiences", hasSize(3)))
                 .andExpect(model().attribute("audiences", audiences));
  
-        verify(audienceService, times(1)).findAll();
         verifyNoMoreInteractions(audienceService);
     }
 }

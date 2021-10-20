@@ -61,7 +61,6 @@ public class LectureTimeControllerTest {
                 .andExpect(model().attribute("lectureTimes", hasSize(2)))
                 .andExpect(model().attribute("lectureTimes", lectureTimes));
  
-        verify(lectureTimeService, times(1)).findAll();
         verifyNoMoreInteractions(lectureTimeService);
     }
 }

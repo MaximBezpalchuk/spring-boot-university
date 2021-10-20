@@ -70,7 +70,6 @@ public class StudentControllerTest {
 				.andExpect(forwardedUrl("students/index"))
 				.andExpect(model().attribute("students", page));
 
-		verify(studentService, times(1)).findAll(PageRequest.of(0, 1));
 		verifyNoMoreInteractions(studentService);
 	}
 }
