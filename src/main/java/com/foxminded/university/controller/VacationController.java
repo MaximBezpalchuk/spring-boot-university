@@ -3,7 +3,6 @@ package com.foxminded.university.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,7 +31,7 @@ public class VacationController {
 	@GetMapping
 	public String all(@PathVariable int id, Model model, Pageable pageable) {
 		Page<Vacation> page = vacationService
-				.findByTeacherId(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()), id);
+				.findByTeacherId(pageable, id);
 		model.addAttribute("vacations", page);
 		model.addAttribute("teacher", teacherService.findById(id));
 

@@ -3,7 +3,6 @@ package com.foxminded.university.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,7 +27,7 @@ public class StudentController {
 
 	@GetMapping
 	public String all(Model model, Pageable pageable) {
-		Page<Student> page = studentService.findAll(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()));
+		Page<Student> page = studentService.findAll(pageable);
 		model.addAttribute("students", page);
 
 		return "students/index";
