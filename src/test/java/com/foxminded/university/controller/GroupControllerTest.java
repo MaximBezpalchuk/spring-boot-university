@@ -43,22 +43,22 @@ public class GroupControllerTest {
 	@Test
     public void whenGetAllGroups_thenAllGroupsReturned() throws Exception {
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
-		Group first = Group.builder().id(1).name("Killers").cathedra(cathedra).build();
-		Group second = Group.builder()
+		Group group1 = Group.builder().id(1).name("Killers").cathedra(cathedra).build();
+		Group group2 = Group.builder()
 				.id(2)
 				.name("Mages")
 				.cathedra(cathedra)
 				.build();
-		List<Group> list = Arrays.asList(first, second);
+		List<Group> groups = Arrays.asList(group1, group2);
 		
-        when(groupService.findAll()).thenReturn(list);
+        when(groupService.findAll()).thenReturn(groups);
  
         mockMvc.perform(get("/groups"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("groups/index"))
                 .andExpect(forwardedUrl("groups/index"))
                 .andExpect(model().attribute("groups", hasSize(2)))
-                .andExpect(model().attribute("groups", list));
+                .andExpect(model().attribute("groups", groups));
  
         verify(groupService, times(1)).findAll();
         verifyNoMoreInteractions(groupService);

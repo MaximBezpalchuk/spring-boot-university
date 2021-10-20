@@ -46,20 +46,20 @@ public class StudentControllerTest {
 	@Test
 	public void whenGetAllStudents_thenAllStudentsReturned() throws Exception {
 		Group group = Group.builder().id(1).name("Killers").build();
-		Student first = Student.builder()
+		Student student1 = Student.builder()
 				.id(1)
 				.firstName("Name")
 				.lastName("Last name")
 				.group(group)
 				.build();
-		Student second = Student.builder()
+		Student student2 = Student.builder()
 				.id(2)
 				.firstName("Name")
 				.lastName("Last name")
 				.group(group)
 				.build();
-		List<Student> list = Arrays.asList(first, second);
-		Page<Student> page = new PageImpl<>(list, PageRequest.of(0, 1), 2);
+		List<Student> students = Arrays.asList(student1, student2);
+		Page<Student> page = new PageImpl<>(students, PageRequest.of(0, 1), 2);
 
 
 		when(this.studentService.findAll(isA(Pageable.class))).thenReturn(page);

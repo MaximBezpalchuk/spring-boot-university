@@ -39,27 +39,27 @@ public class LectureTimeControllerTest {
 	
 	@Test
     public void whenGetAllLectureTimes_thenAllLectureTimesReturned() throws Exception {
-		LectureTime first = LectureTime.builder()
+		LectureTime lectureTime1 = LectureTime.builder()
 				.id(1)
 				.start(LocalTime.of(8, 0))
 				.end(LocalTime.of(9, 45))
 				.build();
-		LectureTime second = LectureTime.builder()
+		LectureTime lectureTime2 = LectureTime.builder()
 				.id(2)
 				.start(LocalTime.of(10, 0))
 				.end(LocalTime.of(12, 45))
 				.build();
 		
-		List<LectureTime> list = Arrays.asList(first, second);
+		List<LectureTime> lectureTimes = Arrays.asList(lectureTime1, lectureTime2);
 		
-        when(lectureTimeService.findAll()).thenReturn(list);
+        when(lectureTimeService.findAll()).thenReturn(lectureTimes);
  
         mockMvc.perform(get("/lecturetimes"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("lecturetimes/index"))
                 .andExpect(forwardedUrl("lecturetimes/index"))
                 .andExpect(model().attribute("lectureTimes", hasSize(2)))
-                .andExpect(model().attribute("lectureTimes", list));
+                .andExpect(model().attribute("lectureTimes", lectureTimes));
  
         verify(lectureTimeService, times(1)).findAll();
         verifyNoMoreInteractions(lectureTimeService);

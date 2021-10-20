@@ -50,20 +50,20 @@ public class VacationControllerTest {
 	@Test
 	public void whenGetAllVacations_thenAllVacationsReturned() throws Exception {
 		Teacher teacher = Teacher.builder().id(1).firstName("Name").lastName("Last name").degree(Degree.ASSISTANT).build();
-		Vacation first = Vacation.builder()
+		Vacation vacation1 = Vacation.builder()
 				.id(1)
 				.teacher(teacher)
 				.start(LocalDate.of(2021, 1, 1))
 				.end(LocalDate.of(2021, 1, 2))
 				.build();
-		Vacation second = Vacation.builder()
+		Vacation vacation2 = Vacation.builder()
 				.id(1)
 				.teacher(teacher)
 				.start(LocalDate.of(2020, 1, 1))
 				.end(LocalDate.of(2020, 1, 2))
 				.build();
-		List<Vacation> list = Arrays.asList(first, second);
-		Page<Vacation> page = new PageImpl<>(list, PageRequest.of(0, 1), 2);
+		List<Vacation> vacations = Arrays.asList(vacation1, vacation2);
+		Page<Vacation> page = new PageImpl<>(vacations, PageRequest.of(0, 1), 2);
 		
 		when(teacherService.findById(teacher.getId())).thenReturn(teacher);
 		when(this.vacationService.findByTeacherId(PageRequest.of(0, 1), teacher.getId())).thenReturn(page);

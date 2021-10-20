@@ -40,34 +40,34 @@ public class AudienceControllerTest {
 	@Test
     public void whenGetAllAudiences_thenAllAudiencesReturned() throws Exception {
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
-		Audience first = Audience.builder()
+		Audience audience1 = Audience.builder()
 				.id(1)
 				.room(1)
 				.capacity(10)
 				.cathedra(cathedra)
 				.build();
-		Audience second = Audience.builder()
+		Audience audience2 = Audience.builder()
 				.id(2)
 				.room(2)
 				.capacity(30)
 				.cathedra(cathedra)
 				.build();
-		Audience third = Audience.builder()
+		Audience audience3 = Audience.builder()
 				.id(3)
 				.room(1)
 				.capacity(10)
 				.cathedra(cathedra)
 				.build();
-		List<Audience> list = Arrays.asList(first, second, third);
+		List<Audience> audiences = Arrays.asList(audience1, audience2, audience3);
 		
-        when(audienceService.findAll()).thenReturn(list);
+        when(audienceService.findAll()).thenReturn(audiences);
  
         mockMvc.perform(get("/audiences"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("audiences/index"))
                 .andExpect(forwardedUrl("audiences/index"))
                 .andExpect(model().attribute("audiences", hasSize(3)))
-                .andExpect(model().attribute("audiences", list));
+                .andExpect(model().attribute("audiences", audiences));
  
         verify(audienceService, times(1)).findAll();
         verifyNoMoreInteractions(audienceService);

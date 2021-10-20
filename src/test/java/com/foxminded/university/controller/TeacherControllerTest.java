@@ -51,22 +51,22 @@ public class TeacherControllerTest {
 		
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
 		Subject subject = Subject.builder().id(1).name("Subject name").build();
-		Teacher first = Teacher.builder()
+		Teacher teacher1 = Teacher.builder()
 				.id(1)
 				.firstName("Name")
 				.lastName("Last name")
 				.cathedra(cathedra)
 				.subjects(Arrays.asList(subject))
 				.build();
-		Teacher second = Teacher.builder()
+		Teacher teacher2 = Teacher.builder()
 				.id(2)
 				.firstName("Name2")
 				.lastName("Last name")
 				.cathedra(cathedra)
 				.subjects(Arrays.asList(subject))
 				.build();
-		List<Teacher> list = Arrays.asList(first, second);
-		Page<Teacher> page = new PageImpl<>(list, PageRequest.of(0, 2), 1);
+		List<Teacher> teachers = Arrays.asList(teacher1, teacher2);
+		Page<Teacher> page = new PageImpl<>(teachers, PageRequest.of(0, 2), 1);
 		
 
 		when(this.teacherService.findAll(isA(Pageable.class))).thenReturn(page);

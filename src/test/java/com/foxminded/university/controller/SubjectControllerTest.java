@@ -46,20 +46,20 @@ public class SubjectControllerTest {
 	@Test
 	public void whenGetAllSubjects_thenAllSubjectsReturned() throws Exception {
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
-		Subject first = Subject.builder()
+		Subject subject1 = Subject.builder()
 				.id(1)
 				.name("Subject Name")
 				.description("Subject desc")
 				.cathedra(cathedra)
 				.build();
-		Subject second = Subject.builder()
+		Subject subject2 = Subject.builder()
 				.id(2)
 				.name("Subject2 Name")
 				.description("Subject2 desc")
 				.cathedra(cathedra)
 				.build();
-		List<Subject> list = Arrays.asList(first, second);
-		Page<Subject> page = new PageImpl<>(list, PageRequest.of(0, 1), 2);
+		List<Subject> subjects = Arrays.asList(subject1, subject2);
+		Page<Subject> page = new PageImpl<>(subjects, PageRequest.of(0, 1), 2);
 
 
 		when(this.subjectService.findAll(isA(Pageable.class))).thenReturn(page);

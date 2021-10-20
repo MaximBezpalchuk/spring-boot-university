@@ -48,20 +48,20 @@ public class HolidayControllerTest {
 	@Test
 	public void whenGetAllHolidays_thenAllHolidaysReturned() throws Exception {
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
-		Holiday first = Holiday.builder()
+		Holiday holiday1 = Holiday.builder()
 				.id(1)
 				.name("Test Name")
 				.date(LocalDate.of(2021, 1, 1))
 				.cathedra(cathedra)
 				.build();
-		Holiday second = Holiday.builder()
+		Holiday holiday2 = Holiday.builder()
 				.id(2)
 				.name("Test Name2")
 				.date(LocalDate.of(2021, 1, 2))
 				.cathedra(cathedra)
 				.build();
-		List<Holiday> list = Arrays.asList(first, second);
-		Page<Holiday> page = new PageImpl<>(list, PageRequest.of(0, 1), 2);
+		List<Holiday> holidays = Arrays.asList(holiday1, holiday2);
+		Page<Holiday> page = new PageImpl<>(holidays, PageRequest.of(0, 1), 2);
 
 		when(this.holidayService.findAll(isA(Pageable.class))).thenReturn(page);
 

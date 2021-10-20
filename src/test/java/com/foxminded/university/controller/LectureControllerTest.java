@@ -60,7 +60,7 @@ public class LectureControllerTest {
 		Teacher teacher = Teacher.builder().id(1).firstName("Test Name").lastName("Last Name").cathedra(cathedra).subjects(Arrays.asList(subject)).build();
 		LectureTime time = LectureTime.builder().id(1).start(LocalTime.of(8, 0)).end(LocalTime.of(9, 45)).build();
 		
-		Lecture first = Lecture.builder()
+		Lecture lecture1 = Lecture.builder()
 				.id(1)
 				.audience(audience)
 				.cathedra(cathedra)
@@ -70,7 +70,7 @@ public class LectureControllerTest {
 				.teacher(teacher)
 				.time(time)
 				.build();
-		Lecture second = Lecture.builder()
+		Lecture lecture2 = Lecture.builder()
 				.id(2)
 				.audience(audience)
 				.cathedra(cathedra)
@@ -80,8 +80,8 @@ public class LectureControllerTest {
 				.teacher(teacher)
 				.time(time)
 				.build();
-		List<Lecture> list = Arrays.asList(first, second);
-		Page<Lecture> page = new PageImpl<>(list, PageRequest.of(0, 1), 2);
+		List<Lecture> lectures = Arrays.asList(lecture1, lecture2);
+		Page<Lecture> page = new PageImpl<>(lectures, PageRequest.of(0, 1), 2);
 
 		when(this.lectureService.findAll(isA(Pageable.class))).thenReturn(page);
 
