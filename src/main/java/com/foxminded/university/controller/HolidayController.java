@@ -35,7 +35,7 @@ public class HolidayController {
 	}
 
 	@GetMapping("/{id}")
-	public String showHoliday(@PathVariable("id") int id, Model model) {
+	public String showHoliday(@PathVariable int id, Model model) {
 		logger.debug("Show holiday page with id {}", id);
 		model.addAttribute("holiday", holidayService.findById(id));
 

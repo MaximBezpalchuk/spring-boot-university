@@ -30,7 +30,7 @@ public class VacationController {
 	}
 
 	@GetMapping
-	public String all(@PathVariable("id") int id, Model model, Pageable pageable) {
+	public String all(@PathVariable int id, Model model, Pageable pageable) {
 		Page<Vacation> page = vacationService
 				.findByTeacherId(PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()), id);
 		model.addAttribute("vacations", page);
@@ -40,9 +40,9 @@ public class VacationController {
 	}
 
 	@GetMapping("/{vacationId}")
-	public String showVacation(@PathVariable("vacationId") int id, Model model) {
-		logger.debug("Show vacation page with id {}", id);
-		model.addAttribute("vacation", vacationService.findById(id));
+	public String showVacation(@PathVariable int vacationId, Model model) {
+		logger.debug("Show vacation page with id {}", vacationId);
+		model.addAttribute("vacation", vacationService.findById(vacationId));
 
 		return "teachers/vacations/show";
 	}

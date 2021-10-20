@@ -35,7 +35,7 @@ public class LectureController {
 	}
 
 	@GetMapping("/{id}")
-	public String showLecture(@PathVariable("id") int id, Model model) {
+	public String showLecture(@PathVariable int id, Model model) {
 		logger.debug("Show lecture page with id {}", id);
 		model.addAttribute("lecture", lectureService.findById(id));
 

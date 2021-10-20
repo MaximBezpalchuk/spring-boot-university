@@ -31,7 +31,7 @@ public class AudienceController {
 	}
 
 	@GetMapping("/{id}")
-	public String showAudience(@PathVariable("id") int id, Model model) {
+	public String showAudience(@PathVariable int id, Model model) {
 		logger.debug("Show audience page with id {}", id);
 		model.addAttribute("audience", audienceService.findById(id));
 

@@ -35,7 +35,7 @@ public class StudentController {
 	}
 
 	@GetMapping("/{id}")
-	public String showStudent(@PathVariable("id") int id, Model model) {
+	public String showStudent(@PathVariable int id, Model model) {
 		logger.debug("Show student page with id {}", id);
 		model.addAttribute("student", studentService.findById(id));
 

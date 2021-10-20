@@ -31,7 +31,7 @@ public class LectureTimeController {
 	}
 
 	@GetMapping("/{id}")
-	public String showLectureTime(@PathVariable("id") int id, Model model) {
+	public String showLectureTime(@PathVariable int id, Model model) {
 		logger.debug("Show lecture time page with id {}", id);
 		model.addAttribute("lectureTime", lectureTimeService.findById(id));
 

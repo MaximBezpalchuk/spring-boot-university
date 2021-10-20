@@ -35,7 +35,7 @@ public class SubjectController {
 	}
 
 	@GetMapping("/{id}")
-	public String showSubject(@PathVariable("id") int id, Model model) {
+	public String showSubject(@PathVariable int id, Model model) {
 		logger.debug("Show subject page with id {}", id);
 		model.addAttribute("subject", subjectService.findById(id));
 

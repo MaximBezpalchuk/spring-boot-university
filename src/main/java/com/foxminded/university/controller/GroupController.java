@@ -31,7 +31,7 @@ public class GroupController {
 	}
 
 	@GetMapping("/{id}")
-	public String showGroup(@PathVariable("id") int id, Model model) {
+	public String showGroup(@PathVariable int id, Model model) {
 		logger.debug("Show group page with id {}", id);
 		model.addAttribute("group", groupService.findById(id));
 
