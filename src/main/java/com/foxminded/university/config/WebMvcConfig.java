@@ -58,6 +58,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
         resolver.setFallbackPageable(PageRequest.of(0, defaultPageSize));
         resolver.setOneIndexedParameters(true);
         argumentResolvers.add(resolver);
-        WebMvcConfigurer.super.addArgumentResolvers(argumentResolvers);
-    }
+		WebMvcConfigurer.super.addArgumentResolvers(argumentResolvers);
+	}
 }
