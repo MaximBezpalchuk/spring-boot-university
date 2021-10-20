@@ -9,6 +9,9 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -25,6 +28,8 @@ public class JdbcStudentDao implements StudentDao {
 	private static final Logger logger = LoggerFactory.getLogger(JdbcStudentDao.class);
 
 	private static final String SELECT_ALL = "SELECT * FROM students";
+	private static final String COUNT_ALL = "SELECT COUNT(*) FROM students";
+	private static final String SELECT_BY_PAGE = "SELECT * FROM students LIMIT ? OFFSET ?";
 	private static final String SELECT_BY_ID = "SELECT * FROM students WHERE id = ?";
 	private static final String INSERT_STUDENT = "INSERT INTO students(first_name, last_name, phone, address, email, gender, postal_code, education, birth_date, group_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	private static final String UPDATE_STUDENT = "UPDATE students SET first_name=?, last_name=?, phone=?, address=?, email=?, gender=?, postal_code=?, education=?, birth_date=?, group_id=? WHERE id=?";
@@ -44,6 +49,15 @@ public class JdbcStudentDao implements StudentDao {
 	public List<Student> findAll() {
 		logger.debug("Find all students");
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
+	}
+	
+	@Override
+	public Page<Student> findPaginatedStudents(Pageable pageable) {
+		logger.debug("Find all students with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
+		int total = jdbcTemplate.queryForObject(COUNT_ALL, Integer.class);
+		List<Student> students = jdbcTemplate.query(SELECT_BY_PAGE, rowMapper, pageable.getPageSize(), pageable.getOffset());
+		
+		return new PageImpl<>(students, pageable, total);
 	}
 
 	@Override

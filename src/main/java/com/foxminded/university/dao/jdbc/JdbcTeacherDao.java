@@ -10,6 +10,9 @@ import java.util.function.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -27,6 +30,8 @@ public class JdbcTeacherDao implements TeacherDao {
 	private static final Logger logger = LoggerFactory.getLogger(JdbcTeacherDao.class);
 
 	private static final String SELECT_ALL = "SELECT * FROM teachers";
+	private static final String COUNT_ALL = "SELECT COUNT(*) FROM teachers";
+	private static final String SELECT_BY_PAGE = "SELECT * FROM teachers LIMIT ? OFFSET ?";
 	private static final String SELECT_BY_ID = "SELECT * FROM teachers WHERE id = ?";
 	private static final String INSERT_TEACHER = "INSERT INTO teachers(id, first_name, last_name, phone, address, email, gender, postal_code, education, birth_date, cathedra_id,  degree) VALUES(DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	private static final String UPDATE_TEACHER = "UPDATE teachers SET first_name=?, last_name=?, phone=?, address=?, email=?, gender=?, postal_code=?, education=?, birth_date=?, cathedra_id=?, degree=? WHERE id=?";
@@ -47,6 +52,15 @@ public class JdbcTeacherDao implements TeacherDao {
 	public List<Teacher> findAll() {
 		logger.debug("Find all teachers");
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
+	}
+	
+	@Override
+	public Page<Teacher> findPaginatedTeachers(Pageable pageable) {
+		logger.debug("Find all teachers with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
+		int total = jdbcTemplate.queryForObject(COUNT_ALL, Integer.class);
+		List<Teacher> teachers = jdbcTemplate.query(SELECT_BY_PAGE, rowMapper, pageable.getPageSize(), pageable.getOffset());
+		
+		return new PageImpl<>(teachers, pageable, total);
 	}
 
 	@Override

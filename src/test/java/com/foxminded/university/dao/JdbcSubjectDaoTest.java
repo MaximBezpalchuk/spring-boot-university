@@ -11,6 +11,9 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
@@ -38,6 +41,20 @@ public class JdbcSubjectDaoTest {
 		int expected = countRowsInTable(template, TABLE_NAME);
 		int actual = subjectDao.findAll().size();
 
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	void givenPageable_whenFindPaginatedSubjects_thenSubjectsFound() {
+		Page<Subject> actual = subjectDao.findPaginatedSubjects(PageRequest.of(0,1));
+		List<Subject> subjects = List.of(Subject.builder()
+				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+				.name("Weapon Tactics")
+				.description("Learning how to use heavy weapon and guerrilla tactics")
+				.id(1)
+				.build());
+		Page<Subject> expected = new PageImpl<>(subjects, PageRequest.of(0, 1), 3);
+		
 		assertEquals(expected, actual);
 	}
 

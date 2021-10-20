@@ -30,6 +30,7 @@ public class VacationController {
 
 	@GetMapping
 	public String all(@PathVariable int id, Model model, Pageable pageable) {
+		logger.debug("Show index page");
 		Page<Vacation> page = vacationService
 				.findByTeacherId(pageable, id);
 		model.addAttribute("vacations", page);

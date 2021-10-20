@@ -10,6 +10,9 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -30,6 +33,8 @@ public class JdbcLectureDao implements LectureDao {
 	private static final Logger logger = LoggerFactory.getLogger(JdbcLectureDao.class);
 
 	private static final String SELECT_ALL = "SELECT * FROM lectures";
+	private static final String COUNT_ALL = "SELECT COUNT(*) FROM lectures";
+	private static final String SELECT_BY_PAGE = "SELECT * FROM lectures LIMIT ? OFFSET ?";
 	private static final String SELECT_BY_ID = "SELECT * FROM lectures WHERE id = ?";
 	private static final String INSERT_LECTURE = "INSERT INTO lectures(cathedra_id, subject_id, date, lecture_time_id, audience_id, teacher_id) VALUES(?, ?, ?, ?, ?, ?)";
 	private static final String UPDATE_LECTURE = "UPDATE lectures SET cathedra_id=?, subject_id=?, date=?, lecture_time_id=?, audience_id=?, teacher_id=? WHERE id=?";
@@ -52,6 +57,15 @@ public class JdbcLectureDao implements LectureDao {
 	public List<Lecture> findAll() {
 		logger.debug("Find all lectures");
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
+	}
+	
+	@Override
+	public Page<Lecture> findPaginatedLectures(Pageable pageable) {
+		logger.debug("Find all lectures with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
+		int total = jdbcTemplate.queryForObject(COUNT_ALL, Integer.class);
+		List<Lecture> lectures = jdbcTemplate.query(SELECT_BY_PAGE, rowMapper, pageable.getPageSize(), pageable.getOffset());
+		
+		return new PageImpl<>(lectures, pageable, total);
 	}
 
 	@Override

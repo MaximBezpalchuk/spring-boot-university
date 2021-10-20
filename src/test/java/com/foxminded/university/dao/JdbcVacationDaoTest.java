@@ -13,6 +13,9 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
@@ -44,6 +47,20 @@ public class JdbcVacationDaoTest {
 		int expected = countRowsInTable(template, TABLE_NAME);
 		int actual = vacationDao.findAll().size();
 
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	void givenPageable_whenFindPaginatedVacations_thenVacationsFound() {
+		Page<Vacation> actual = vacationDao.findPaginatedVacationsByTeacherId(PageRequest.of(0,1), 1);
+		List<Vacation> vacations = List.of(Vacation.builder()
+				.id(1)
+				.start(LocalDate.of(2021, 1, 15))
+				.end(LocalDate.of(2021, 1, 29))
+				.teacher(actual.getContent().get(0).getTeacher())
+				.build());
+		Page<Vacation> expected = new PageImpl<>(vacations, PageRequest.of(0, 1), 2);
+		
 		assertEquals(expected, actual);
 	}
 

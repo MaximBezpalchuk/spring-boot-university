@@ -12,6 +12,9 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
@@ -41,6 +44,27 @@ public class JdbcStudentDaoTest {
 		int expected = countRowsInTable(template, TABLE_NAME);
 		int actual = studentDao.findAll().size();
 
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	void givenPageable_whenFindPaginatedStudents_thenStudentsFound() {
+		Page<Student> actual = studentDao.findPaginatedStudents(PageRequest.of(0,1));
+		List<Student> students = List.of(Student.builder()
+				.firstName("Petr")
+				.lastName("Orlov")
+				.address("Empty Street 8")
+				.gender(Gender.MALE)
+				.birthDate(LocalDate.of(1994, 3, 3))
+				.phone("888005353535")
+				.email("1@owl.com")
+				.postalCode("999")
+				.education("General secondary education")
+				.group(actual.getContent().get(0).getGroup())
+				.id(1)
+				.build());
+		Page<Student> expected = new PageImpl<>(students, PageRequest.of(0, 1), 5);
+		
 		assertEquals(expected, actual);
 	}
 

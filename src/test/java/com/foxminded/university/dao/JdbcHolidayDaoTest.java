@@ -12,6 +12,9 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
@@ -39,6 +42,20 @@ public class JdbcHolidayDaoTest {
 		int expected = countRowsInTable(template, TABLE_NAME);
 		int actual = holidayDao.findAll().size();
 
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	void givenPageable_whenFindPaginatedHolidays_thenHolidaysFound() {
+		Page<Holiday> actual = holidayDao.findPaginatedHolidays(PageRequest.of(0,1));
+		List<Holiday> holidays = List.of(Holiday.builder()
+				.id(1)
+				.name("Christmas")
+				.date(LocalDate.of(2021, 12, 25))
+				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+				.build());
+		Page<Holiday> expected = new PageImpl<>(holidays, PageRequest.of(0, 1), 6);
+		
 		assertEquals(expected, actual);
 	}
 

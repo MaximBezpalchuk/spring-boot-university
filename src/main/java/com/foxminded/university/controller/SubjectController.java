@@ -27,6 +27,7 @@ public class SubjectController {
 
 	@GetMapping
 	public String all(Model model, Pageable pageable) {
+		logger.debug("Show index page");
 		Page<Subject> page = subjectService.findAll(pageable);
 		model.addAttribute("subjects", page);
 

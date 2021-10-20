@@ -6,11 +6,15 @@ import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
@@ -59,6 +63,24 @@ public class JdbcLectureDaoTest {
 				.teacher(actual.get().getTeacher())
 				.build());
 
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	void givenPageable_whenFindPaginatedLectures_thenLecturesFound() {
+		Page<Lecture> actual = lectureDao.findPaginatedLectures(PageRequest.of(0,1));
+		List<Lecture> lectures = List.of(Lecture.builder()
+				.id(1)
+				.group(actual.getContent().get(0).getGroups())
+				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+				.subject(actual.getContent().get(0).getSubject())
+				.date(LocalDate.of(2021, 4, 4))
+				.time(actual.getContent().get(0).getTime())
+				.audience(actual.getContent().get(0).getAudience())
+				.teacher(actual.getContent().get(0).getTeacher())
+				.build());
+		Page<Lecture> expected = new PageImpl<>(lectures, PageRequest.of(0, 1), 11);
+		
 		assertEquals(expected, actual);
 	}
 

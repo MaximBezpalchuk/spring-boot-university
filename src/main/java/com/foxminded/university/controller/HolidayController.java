@@ -27,6 +27,7 @@ public class HolidayController {
 
 	@GetMapping
 	public String all(Model model, Pageable pageable) {
+		logger.debug("Show index page");
 		Page<Holiday> page = holidayService.findAll(pageable);
 		model.addAttribute("holidays", page);
 

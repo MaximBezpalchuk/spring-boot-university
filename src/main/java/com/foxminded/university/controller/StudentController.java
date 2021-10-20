@@ -27,6 +27,7 @@ public class StudentController {
 
 	@GetMapping
 	public String all(Model model, Pageable pageable) {
+		logger.debug("Show index page");
 		Page<Student> page = studentService.findAll(pageable);
 		model.addAttribute("students", page);
 

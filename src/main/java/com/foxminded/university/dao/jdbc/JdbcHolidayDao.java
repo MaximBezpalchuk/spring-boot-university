@@ -9,6 +9,9 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -24,6 +27,8 @@ public class JdbcHolidayDao implements HolidayDao {
 	private static final Logger logger = LoggerFactory.getLogger(JdbcHolidayDao.class);
 
 	private static final String SELECT_ALL = "SELECT * FROM holidays";
+	private static final String COUNT_ALL = "SELECT COUNT(*) FROM holidays";
+	private static final String SELECT_BY_PAGE = "SELECT * FROM holidays LIMIT ? OFFSET ?";
 	private static final String SELECT_BY_ID = "SELECT * FROM holidays WHERE id = ?";
 	private static final String INSERT_HOLIDAY = "INSERT INTO holidays(name, date, cathedra_id) VALUES(?, ?, ?)";
 	private static final String UPDATE_HOLIDAY = "UPDATE holidays SET name=?, date=?, cathedra_id=? WHERE id=?";
@@ -43,6 +48,15 @@ public class JdbcHolidayDao implements HolidayDao {
 	public List<Holiday> findAll() {
 		logger.debug("Find all holidays");
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
+	}
+	
+	@Override
+	public Page<Holiday> findPaginatedHolidays(Pageable pageable) {
+		logger.debug("Find all holidays with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
+		int total = jdbcTemplate.queryForObject(COUNT_ALL, Integer.class);
+		List<Holiday> holidays = jdbcTemplate.query(SELECT_BY_PAGE, rowMapper, pageable.getPageSize(), pageable.getOffset());
+		
+		return new PageImpl<>(holidays, pageable, total);
 	}
 
 	@Override
