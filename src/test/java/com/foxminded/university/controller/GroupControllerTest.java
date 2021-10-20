@@ -60,4 +60,18 @@ public class GroupControllerTest {
  
         verifyNoMoreInteractions(groupService);
     }
+	
+	@Test
+    public void whenGetOneGroup_thenOneGroupReturned() throws Exception {
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+		Group group = Group.builder().id(1).name("Killers").cathedra(cathedra).build();
+		
+		when(groupService.findById(group.getId())).thenReturn(group);
+		
+		 mockMvc.perform(get("/groups/{id}", group.getId()))
+		 .andExpect(status().isOk())
+         .andExpect(view().name("groups/show"))
+         .andExpect(forwardedUrl("groups/show"))
+         .andExpect(model().attribute("group", group));
+	}
 }

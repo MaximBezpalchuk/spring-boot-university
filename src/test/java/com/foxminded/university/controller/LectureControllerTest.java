@@ -4,7 +4,6 @@ import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -92,5 +91,34 @@ public class LectureControllerTest {
 				.andExpect(model().attribute("lectures", page));
 
 		verifyNoMoreInteractions(lectureService);
+	}
+	
+	@Test
+    public void whenGetOneLecture_thenOneLectureReturned() throws Exception {
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+		Audience audience = Audience.builder().id(1).room(1).capacity(10).build();
+		Group group = Group.builder().id(1).name("Group Name").cathedra(cathedra).build();
+		Subject subject = Subject.builder().id(1).name("Subject name").description("Subject desc").cathedra(cathedra).build();
+		Teacher teacher = Teacher.builder().id(1).firstName("Test Name").lastName("Last Name").cathedra(cathedra).subjects(Arrays.asList(subject)).build();
+		LectureTime time = LectureTime.builder().id(1).start(LocalTime.of(8, 0)).end(LocalTime.of(9, 45)).build();
+		
+		Lecture lecture = Lecture.builder()
+				.id(1)
+				.audience(audience)
+				.cathedra(cathedra)
+				.date(LocalDate.of(2021, 1, 1))
+				.group(Arrays.asList(group))
+				.subject(subject)
+				.teacher(teacher)
+				.time(time)
+				.build();
+		
+		when(lectureService.findById(lecture.getId())).thenReturn(lecture);
+		
+		 mockMvc.perform(get("/lectures/{id}", lecture.getId()))
+		 .andExpect(status().isOk())
+         .andExpect(view().name("lectures/show"))
+         .andExpect(forwardedUrl("lectures/show"))
+         .andExpect(model().attribute("lecture", lecture));
 	}
 }

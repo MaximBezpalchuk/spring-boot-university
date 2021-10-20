@@ -3,7 +3,6 @@ package com.foxminded.university.controller;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -76,5 +75,24 @@ public class VacationControllerTest {
 				.andExpect(model().attribute("vacations", page));
 
 		verifyNoMoreInteractions(vacationService);
+	}
+	
+	@Test
+    public void whenGetOneVacation_thenOneVacationReturned() throws Exception {
+		Teacher teacher = Teacher.builder().id(1).firstName("Name").lastName("Last name").degree(Degree.ASSISTANT).build();
+		Vacation vacation = Vacation.builder()
+				.id(1)
+				.teacher(teacher)
+				.start(LocalDate.of(2021, 1, 1))
+				.end(LocalDate.of(2021, 1, 2))
+				.build();
+		
+		when(vacationService.findById(vacation.getId())).thenReturn(vacation);
+		
+		 mockMvc.perform(get("/teachers/{teacherId}/vacations/{id}", teacher.getId(), vacation.getId()))
+		 .andExpect(status().isOk())
+         .andExpect(view().name("teachers/vacations/show"))
+         .andExpect(forwardedUrl("teachers/vacations/show"))
+         .andExpect(model().attribute("vacation", vacation));
 	}
 }

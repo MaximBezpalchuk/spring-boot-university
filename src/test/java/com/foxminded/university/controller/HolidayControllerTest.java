@@ -4,7 +4,6 @@ import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -72,5 +71,24 @@ public class HolidayControllerTest {
 				.andExpect(model().attribute("holidays", page));
 		
 		verifyNoMoreInteractions(holidayService);
+	}
+	
+	@Test
+    public void whenGetOneHoliday_thenOneHolidayReturned() throws Exception {
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+		Holiday holiday = Holiday.builder()
+				.id(1)
+				.name("Test Name")
+				.date(LocalDate.of(2021, 1, 1))
+				.cathedra(cathedra)
+				.build();
+		
+		when(holidayService.findById(holiday.getId())).thenReturn(holiday);
+		
+		 mockMvc.perform(get("/holidays/{id}", holiday.getId()))
+		 .andExpect(status().isOk())
+         .andExpect(view().name("holidays/show"))
+         .andExpect(forwardedUrl("holidays/show"))
+         .andExpect(model().attribute("holiday", holiday));
 	}
 }

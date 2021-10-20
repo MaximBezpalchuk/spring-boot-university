@@ -3,7 +3,6 @@ package com.foxminded.university.controller;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -61,4 +60,21 @@ public class LectureTimeControllerTest {
  
         verifyNoMoreInteractions(lectureTimeService);
     }
+	
+	@Test
+    public void whenGetOneLectureTime_thenOneLectureTimeReturned() throws Exception {
+		LectureTime lectureTime = LectureTime.builder()
+				.id(1)
+				.start(LocalTime.of(8, 0))
+				.end(LocalTime.of(9, 45))
+				.build();
+		
+		when(lectureTimeService.findById(lectureTime.getId())).thenReturn(lectureTime);
+		
+		 mockMvc.perform(get("/lecturetimes/{id}", lectureTime.getId()))
+		 .andExpect(status().isOk())
+         .andExpect(view().name("lecturetimes/show"))
+         .andExpect(forwardedUrl("lecturetimes/show"))
+         .andExpect(model().attribute("lectureTime", lectureTime));
+	}
 }

@@ -3,7 +3,6 @@ package com.foxminded.university.controller;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 import java.util.Arrays;
 import java.util.List;
@@ -71,5 +70,24 @@ public class SubjectControllerTest {
 				.andExpect(model().attribute("subjects", page));
 
 		verifyNoMoreInteractions(subjectService);
+	}
+	
+	@Test
+    public void whenGetOneSubject_thenOneSubjectReturned() throws Exception {
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+		Subject subject = Subject.builder()
+				.id(1)
+				.name("Subject Name")
+				.description("Subject desc")
+				.cathedra(cathedra)
+				.build();
+		
+		when(subjectService.findById(subject.getId())).thenReturn(subject);
+		
+		 mockMvc.perform(get("/subjects/{id}", subject.getId()))
+		 .andExpect(status().isOk())
+         .andExpect(view().name("subjects/show"))
+         .andExpect(forwardedUrl("subjects/show"))
+         .andExpect(model().attribute("subject", subject));
 	}
 }

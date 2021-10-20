@@ -3,7 +3,6 @@ package com.foxminded.university.controller;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 import java.util.Arrays;
 import java.util.List;
@@ -47,8 +46,6 @@ public class TeacherControllerTest {
 	
 	@Test
 	public void whenGetAllTeachers_thenAllTeachersReturned() throws Exception {
-		
-		
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
 		Subject subject = Subject.builder().id(1).name("Subject name").build();
 		Teacher teacher1 = Teacher.builder()
@@ -78,5 +75,26 @@ public class TeacherControllerTest {
 				.andExpect(model().attribute("teachers", page));
 		
 		verifyNoMoreInteractions(teacherService);
+	}
+	
+	@Test
+    public void whenGetOneTeacher_thenOneTeacherReturned() throws Exception {
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+		Subject subject = Subject.builder().id(1).name("Subject name").build();
+		Teacher teacher = Teacher.builder()
+				.id(1)
+				.firstName("Name")
+				.lastName("Last name")
+				.cathedra(cathedra)
+				.subjects(Arrays.asList(subject))
+				.build();
+		
+		when(teacherService.findById(teacher.getId())).thenReturn(teacher);
+		
+		 mockMvc.perform(get("/teachers/{id}", teacher.getId()))
+		 .andExpect(status().isOk())
+         .andExpect(view().name("teachers/show"))
+         .andExpect(forwardedUrl("teachers/show"))
+         .andExpect(model().attribute("teacher", teacher));
 	}
 }

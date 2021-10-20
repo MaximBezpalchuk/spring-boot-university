@@ -3,7 +3,6 @@ package com.foxminded.university.controller;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 import java.util.Arrays;
 import java.util.List;
@@ -69,4 +68,23 @@ public class AudienceControllerTest {
  
         verifyNoMoreInteractions(audienceService);
     }
+	
+	@Test
+    public void whenGetOneAudience_thenOneAudienceReturned() throws Exception {
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+		Audience audience = Audience.builder()
+				.id(1)
+				.room(1)
+				.capacity(10)
+				.cathedra(cathedra)
+				.build();
+		
+		when(audienceService.findById(audience.getId())).thenReturn(audience);
+		
+		 mockMvc.perform(get("/audiences/{id}", audience.getId()))
+		 .andExpect(status().isOk())
+         .andExpect(view().name("audiences/show"))
+         .andExpect(forwardedUrl("audiences/show"))
+         .andExpect(model().attribute("audience", audience));
+	}
 }
