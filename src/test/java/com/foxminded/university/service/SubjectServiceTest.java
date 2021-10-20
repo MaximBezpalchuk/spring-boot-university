@@ -2,6 +2,7 @@ package com.foxminded.university.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -14,6 +15,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
 import com.foxminded.university.exception.EntityNotFoundException;
@@ -35,6 +40,16 @@ public class SubjectServiceTest {
 		when(subjectDao.findAll()).thenReturn(expected);
 		List<Subject> actual = subjectService.findAll();
 
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	void givenPageable_whenFindAll_thenAllPageableSubjectsFound() {
+		List<Subject> subjects = Arrays.asList(Subject.builder().id(1).build());
+		Page<Subject> expected = new PageImpl<>(subjects, PageRequest.of(0, 1), 1);
+		when(subjectDao.findPaginatedSubjects(isA(Pageable.class))).thenReturn(expected);
+		Page<Subject> actual = subjectService.findAll(PageRequest.of(0, 1));
+		
 		assertEquals(expected, actual);
 	}
 

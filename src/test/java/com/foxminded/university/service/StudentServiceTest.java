@@ -2,6 +2,7 @@ package com.foxminded.university.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -17,6 +18,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.foxminded.university.dao.jdbc.JdbcStudentDao;
@@ -46,6 +51,16 @@ public class StudentServiceTest {
 		when(studentDao.findAll()).thenReturn(expected);
 		List<Student> actual = studentService.findAll();
 
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	void givenPageable_whenFindAll_thenAllPageableStudentsFound() {
+		List<Student> students = Arrays.asList(Student.builder().id(1).build());
+		Page<Student> expected = new PageImpl<>(students, PageRequest.of(0, 1), 1);
+		when(studentDao.findPaginatedStudents(isA(Pageable.class))).thenReturn(expected);
+		Page<Student> actual = studentService.findAll(PageRequest.of(0, 1));
+		
 		assertEquals(expected, actual);
 	}
 

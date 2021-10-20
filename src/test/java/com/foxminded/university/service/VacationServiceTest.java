@@ -18,6 +18,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
@@ -53,6 +56,16 @@ public class VacationServiceTest {
 		when(vacationDao.findAll()).thenReturn(expected);
 		List<Vacation> actual = vacationService.findAll();
 
+		assertEquals(expected, actual);
+	}
+	
+	@Test
+	void givenPageable_whenFindAll_thenAllPageableVacationsFound() {
+		List<Vacation> vacations = Arrays.asList(Vacation.builder().id(1).build());
+		Page<Vacation> expected = new PageImpl<>(vacations, PageRequest.of(0, 1), 1);
+		when(vacationDao.findPaginatedVacationsByTeacherId(PageRequest.of(0, 1), 1)).thenReturn(expected);
+		Page<Vacation> actual = vacationService.findByTeacherId(PageRequest.of(0, 1), 1);
+		
 		assertEquals(expected, actual);
 	}
 
