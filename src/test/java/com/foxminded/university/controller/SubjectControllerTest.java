@@ -61,7 +61,7 @@ public class SubjectControllerTest {
 		Page<Subject> page = new PageImpl<>(subjects, PageRequest.of(0, 1), 2);
 
 
-		when(this.subjectService.findAll(isA(Pageable.class))).thenReturn(page);
+		when(subjectService.findAll(isA(Pageable.class))).thenReturn(page);
 
 		mockMvc.perform(get("/subjects"))
 				.andExpect(status().isOk())

@@ -61,7 +61,7 @@ public class StudentControllerTest {
 		Page<Student> page = new PageImpl<>(students, PageRequest.of(0, 1), 2);
 
 
-		when(this.studentService.findAll(isA(Pageable.class))).thenReturn(page);
+		when(studentService.findAll(isA(Pageable.class))).thenReturn(page);
 
 		mockMvc.perform(get("/students"))
 				.andExpect(status().isOk())

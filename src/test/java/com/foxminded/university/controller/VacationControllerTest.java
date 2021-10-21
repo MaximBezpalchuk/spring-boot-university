@@ -65,7 +65,7 @@ public class VacationControllerTest {
 		Page<Vacation> page = new PageImpl<>(vacations, PageRequest.of(0, 1), 2);
 		
 		when(teacherService.findById(teacher.getId())).thenReturn(teacher);
-		when(this.vacationService.findByTeacherId(PageRequest.of(0, 1), teacher.getId())).thenReturn(page);
+		when(vacationService.findByTeacherId(PageRequest.of(0, 1), teacher.getId())).thenReturn(page);
 		
 
 		mockMvc.perform(get("/teachers/{id}/vacations", teacher.getId()))
