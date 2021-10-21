@@ -45,7 +45,7 @@ public class CathedraServiceTest {
 
 		assertEquals(expected.get(), actual);
 	}
-	
+
 	@Test
 	void givenExistingCathedra_whenFindById_thenEntityNotFoundException() {
 		when(cathedraDao.findById(10)).thenReturn(Optional.empty());
@@ -60,16 +60,16 @@ public class CathedraServiceTest {
 	void givenNewCathedra_whenSave_thenSaved() {
 		Cathedra cathedra = Cathedra.builder().build();
 		cathedraService.save(cathedra);
-		
+
 		verify(cathedraDao).save(cathedra);
 	}
-	
+
 	@Test
 	void givenExistingCathedra_whenSave_thenSaved() {
 		Cathedra cathedra = Cathedra.builder().name("TestName").build();
 		when(cathedraDao.findByName(cathedra.getName())).thenReturn(Optional.of(cathedra));
 		cathedraService.save(cathedra);
-		
+
 		verify(cathedraDao).save(cathedra);
 	}
 
@@ -79,15 +79,15 @@ public class CathedraServiceTest {
 
 		verify(cathedraDao).deleteById(1);
 	}
-	
+
 	@Test
 	void givenNotUniqueCathedra_whenSave_thenEntityNotUniqueException() {
 		Cathedra cathedra1 = Cathedra.builder().id(1).name("Test1").build();
 		Cathedra cathedra2 = Cathedra.builder().id(2).name("Test2").build();
 		when(cathedraDao.findByName(cathedra1.getName())).thenReturn(Optional.of(cathedra2));
 		Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
-				cathedraService.save(cathedra1);
-			});
+			cathedraService.save(cathedra1);
+		});
 
 		assertEquals("Cathedra with name Test1 is already exists!", exception.getMessage());
 	}

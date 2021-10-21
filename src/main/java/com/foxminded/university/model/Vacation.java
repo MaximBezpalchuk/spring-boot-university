@@ -20,8 +20,9 @@ public class Vacation {
 		this.end = end;
 		this.teacher = teacher;
 	}
-	
-	public Vacation() {}
+
+	public Vacation() {
+	}
 
 	public void setStart(LocalDate start) {
 		this.start = start;

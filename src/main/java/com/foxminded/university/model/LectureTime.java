@@ -18,8 +18,9 @@ public class LectureTime {
 		this.start = start;
 		this.end = end;
 	}
-	
-	public LectureTime() {}
+
+	public LectureTime() {
+	}
 
 	public void setStart(LocalTime start) {
 		this.start = start;

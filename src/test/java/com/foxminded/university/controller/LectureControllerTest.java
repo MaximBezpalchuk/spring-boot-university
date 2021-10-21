@@ -37,28 +37,34 @@ import com.foxminded.university.service.LectureService;
 public class LectureControllerTest {
 
 	private MockMvc mockMvc;
-	 
+
 	@Mock
 	private LectureService lectureService;
 	@InjectMocks
 	private LectureController lectureController;
-	
+
 	@BeforeEach
 	public void setUp() {
 		PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
 		resolver.setFallbackPageable(PageRequest.of(0, 1));
 		mockMvc = MockMvcBuilders.standaloneSetup(lectureController).setCustomArgumentResolvers(resolver).build();
-    }
-	
+	}
+
 	@Test
 	public void whenGetAllLectures_thenAllLecturesReturned() throws Exception {
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
 		Audience audience = Audience.builder().id(1).room(1).capacity(10).build();
 		Group group = Group.builder().id(1).name("Group Name").cathedra(cathedra).build();
-		Subject subject = Subject.builder().id(1).name("Subject name").description("Subject desc").cathedra(cathedra).build();
-		Teacher teacher = Teacher.builder().id(1).firstName("Test Name").lastName("Last Name").cathedra(cathedra).subjects(Arrays.asList(subject)).build();
+		Subject subject = Subject.builder()
+				.id(1)
+				.name("Subject name")
+				.description("Subject desc")
+				.cathedra(cathedra)
+				.build();
+		Teacher teacher = Teacher.builder().id(1).firstName("Test Name").lastName("Last Name").cathedra(cathedra)
+				.subjects(Arrays.asList(subject)).build();
 		LectureTime time = LectureTime.builder().id(1).start(LocalTime.of(8, 0)).end(LocalTime.of(9, 45)).build();
-		
+
 		Lecture lecture1 = Lecture.builder()
 				.id(1)
 				.audience(audience)
@@ -90,14 +96,20 @@ public class LectureControllerTest {
 				.andExpect(model().attribute("lectures", page));
 		verifyNoMoreInteractions(lectureService);
 	}
-	
+
 	@Test
-    public void whenGetOneLecture_thenOneLectureReturned() throws Exception {
+	public void whenGetOneLecture_thenOneLectureReturned() throws Exception {
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
 		Audience audience = Audience.builder().id(1).room(1).capacity(10).build();
 		Group group = Group.builder().id(1).name("Group Name").cathedra(cathedra).build();
-		Subject subject = Subject.builder().id(1).name("Subject name").description("Subject desc").cathedra(cathedra).build();
-		Teacher teacher = Teacher.builder().id(1).firstName("Test Name").lastName("Last Name").cathedra(cathedra).subjects(Arrays.asList(subject)).build();
+		Subject subject = Subject.builder()
+				.id(1)
+				.name("Subject name")
+				.description("Subject desc")
+				.cathedra(cathedra)
+				.build();
+		Teacher teacher = Teacher.builder().id(1).firstName("Test Name").lastName("Last Name").cathedra(cathedra)
+				.subjects(Arrays.asList(subject)).build();
 		LectureTime time = LectureTime.builder().id(1).start(LocalTime.of(8, 0)).end(LocalTime.of(9, 45)).build();
 		Lecture lecture = Lecture.builder()
 				.id(1)
@@ -112,9 +124,9 @@ public class LectureControllerTest {
 		when(lectureService.findById(lecture.getId())).thenReturn(lecture);
 
 		mockMvc.perform(get("/lectures/{id}", lecture.getId()))
-		 .andExpect(status().isOk())
-         .andExpect(view().name("lectures/show"))
-         .andExpect(forwardedUrl("lectures/show"))
-         .andExpect(model().attribute("lecture", lecture));
+				.andExpect(status().isOk())
+				.andExpect(view().name("lectures/show"))
+				.andExpect(forwardedUrl("lectures/show"))
+				.andExpect(model().attribute("lecture", lecture));
 	}
 }

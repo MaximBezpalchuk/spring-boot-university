@@ -19,8 +19,9 @@ public class Holiday {
 		this.date = date;
 		this.cathedra = cathedra;
 	}
-	
-	public Holiday() {}
+
+	public Holiday() {
+	}
 
 	public void setName(String name) {
 		this.name = name;

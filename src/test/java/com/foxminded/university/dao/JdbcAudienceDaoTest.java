@@ -21,7 +21,7 @@ import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TestConfig.class})
+@ContextConfiguration(classes = { TestConfig.class })
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class JdbcAudienceDaoTest {
 
@@ -48,7 +48,7 @@ public class JdbcAudienceDaoTest {
 				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
 				.build());
 		Optional<Audience> actual = audienceDao.findById(1);
-		
+
 		assertEquals(expected, actual);
 	}
 
@@ -79,7 +79,7 @@ public class JdbcAudienceDaoTest {
 				.capacity(100)
 				.build();
 		audienceDao.save(expected);
-		
+
 		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME, "id = 1 AND capacity = 100"));
 	}
 
@@ -90,9 +90,9 @@ public class JdbcAudienceDaoTest {
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
-	
+
 	@Test
-	void givenRoom_whenFindByRoom_thenAudienceFound() {	
+	void givenRoom_whenFindByRoom_thenAudienceFound() {
 		Optional<Audience> expected = Optional.of(Audience.builder()
 				.id(1)
 				.room(1)

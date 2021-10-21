@@ -15,8 +15,9 @@ public class Audience {
 		this.capacity = capacity;
 		this.cathedra = cathedra;
 	}
-	
-	public Audience() {}
+
+	public Audience() {
+	}
 
 	public void setRoom(int room) {
 		this.room = room;

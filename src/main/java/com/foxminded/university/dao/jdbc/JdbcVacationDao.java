@@ -52,13 +52,15 @@ public class JdbcVacationDao implements VacationDao {
 		logger.debug("Find all vacations");
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
-	
+
 	@Override
 	public Page<Vacation> findPaginatedVacationsByTeacherId(Pageable pageable, int id) {
-		logger.debug("Find all vacations with pageSize:{} and offset:{} by teacherId:{}", pageable.getPageSize(), pageable.getOffset(), id);
+		logger.debug("Find all vacations with pageSize:{} and offset:{} by teacherId:{}", pageable.getPageSize(),
+				pageable.getOffset(), id);
 		int total = jdbcTemplate.queryForObject(COUNT_ALL, Integer.class, id);
-		List<Vacation> vacations = jdbcTemplate.query(SELECT_BY_PAGE, rowMapper, id, pageable.getPageSize(), pageable.getOffset());
-		
+		List<Vacation> vacations = jdbcTemplate.query(SELECT_BY_PAGE, rowMapper, id, pageable.getPageSize(),
+				pageable.getOffset());
+
 		return new PageImpl<>(vacations, pageable, total);
 	}
 

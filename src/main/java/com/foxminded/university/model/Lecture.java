@@ -30,8 +30,9 @@ public class Lecture {
 		this.time = time;
 		this.groups = groups;
 	}
-	
-	public Lecture() {}
+
+	public Lecture() {
+	}
 
 	public int getId() {
 		return id;

@@ -74,10 +74,10 @@ public class JdbcLectureTimeDaoTest {
 				.end(LocalTime.of(21, 0, 0))
 				.build();
 		lectureTimeDao.save(expected);
-		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME, 
+		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME,
 				"id = 1 "
-				+ "AND start = '21:00:00' "
-				+ "AND finish = '21:00:00'"));
+						+ "AND start = '21:00:00' "
+						+ "AND finish = '21:00:00'"));
 	}
 
 	@Test
@@ -87,7 +87,7 @@ public class JdbcLectureTimeDaoTest {
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
-	
+
 	@Test
 	void givenPeriod_whenFindByPeriod_thenLectureTimeFound() {
 		Optional<LectureTime> expected = Optional.of(LectureTime.builder()

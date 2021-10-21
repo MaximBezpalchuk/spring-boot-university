@@ -29,19 +29,19 @@ import com.foxminded.university.service.StudentService;
 public class StudentControllerTest {
 
 	private MockMvc mockMvc;
-	 
+
 	@Mock
 	private StudentService studentService;
 	@InjectMocks
 	private StudentController studentController;
-	
+
 	@BeforeEach
-    public void setUp() {
+	public void setUp() {
 		PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
 		resolver.setFallbackPageable(PageRequest.of(0, 1));
 		mockMvc = MockMvcBuilders.standaloneSetup(studentController).setCustomArgumentResolvers(resolver).build();
-    }
-	
+	}
+
 	@Test
 	public void whenGetAllStudents_thenAllStudentsReturned() throws Exception {
 		Group group = Group.builder().id(1).name("Killers").build();
@@ -68,9 +68,9 @@ public class StudentControllerTest {
 				.andExpect(model().attribute("students", page));
 		verifyNoMoreInteractions(studentService);
 	}
-	
+
 	@Test
-    public void whenGetOneStudent_thenOneStudentReturned() throws Exception {
+	public void whenGetOneStudent_thenOneStudentReturned() throws Exception {
 		Group group = Group.builder().id(1).name("Killers").build();
 		Student student = Student.builder()
 				.id(1)
@@ -79,11 +79,11 @@ public class StudentControllerTest {
 				.group(group)
 				.build();
 		when(studentService.findById(student.getId())).thenReturn(student);
-		
+
 		mockMvc.perform(get("/students/{id}", student.getId()))
-		 .andExpect(status().isOk())
-         .andExpect(view().name("students/show"))
-         .andExpect(forwardedUrl("students/show"))
-         .andExpect(model().attribute("student", student));
+				.andExpect(status().isOk())
+				.andExpect(view().name("students/show"))
+				.andExpect(forwardedUrl("students/show"))
+				.andExpect(model().attribute("student", student));
 	}
 }

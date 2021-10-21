@@ -49,7 +49,7 @@ public class JdbcVacationDaoTest {
 
 		assertEquals(expected, actual);
 	}
-	
+
 	@Test
 	void givenPageable_whenFindPaginatedVacations_thenVacationsFound() {
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
@@ -81,8 +81,8 @@ public class JdbcVacationDaoTest {
 				.teacher(teacher)
 				.build());
 		Page<Vacation> expected = new PageImpl<>(vacations, PageRequest.of(0, 1), 2);
-		Page<Vacation> actual = vacationDao.findPaginatedVacationsByTeacherId(PageRequest.of(0,1), 1);
-		
+		Page<Vacation> actual = vacationDao.findPaginatedVacationsByTeacherId(PageRequest.of(0, 1), 1);
+
 		assertEquals(expected, actual);
 	}
 
@@ -147,12 +147,12 @@ public class JdbcVacationDaoTest {
 				.teacher(Teacher.builder().id(2).build())
 				.build();
 		vacationDao.save(expected);
-		
-		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME, 
+
+		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME,
 				"id = 1 "
-				+ "AND teacher_id = 2"
-				+ "AND start = '2021-01-01'"
-				+ "AND finish = '2021-01-01'"));
+						+ "AND teacher_id = 2"
+						+ "AND start = '2021-01-01'"
+						+ "AND finish = '2021-01-01'"));
 	}
 
 	@Test
@@ -204,7 +204,7 @@ public class JdbcVacationDaoTest {
 
 		assertEquals(expected, actual);
 	}
-	
+
 	@Test
 	void givenStartAndEndAndTeacher_whenFindByPeriodAndTeacher_thenVacationFound() {
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
@@ -238,7 +238,7 @@ public class JdbcVacationDaoTest {
 
 		assertEquals(expected, actual);
 	}
-	
+
 	@Test
 	void givenTeacherAndYear_whenFindByTeacherAndYear_thenVacationFound() {
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();

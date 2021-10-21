@@ -24,7 +24,7 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 @PropertySource("classpath:config.properties")
 @EnableWebMvc
 public class WebMvcConfig implements WebMvcConfigurer {
-	
+
 	@Value("${defaultPageSize}")
 	private int defaultPageSize;
 
@@ -51,13 +51,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
 		resolver.setTemplateEngine(templateEngine(templateResolver()));
 		registry.viewResolver(resolver);
 	}
-	
+
 	@Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
-        resolver.setFallbackPageable(PageRequest.of(0, defaultPageSize));
-        resolver.setOneIndexedParameters(true);
-        argumentResolvers.add(resolver);
+	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+		PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
+		resolver.setFallbackPageable(PageRequest.of(0, defaultPageSize));
+		resolver.setOneIndexedParameters(true);
+		argumentResolvers.add(resolver);
 		WebMvcConfigurer.super.addArgumentResolvers(argumentResolvers);
 	}
 }

@@ -12,8 +12,9 @@ public class Student extends Person {
 		super(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate);
 		this.group = group;
 	}
-	
-	public Student() {}
+
+	public Student() {
+	}
 
 	public Group getGroup() {
 		return group;
@@ -28,7 +29,7 @@ public class Student extends Person {
 	}
 
 	public static class Builder extends Person.Builder<Builder> {
-		
+
 		private Group group;
 
 		@Override
@@ -42,9 +43,9 @@ public class Student extends Person {
 		}
 
 		public Student build() {
-			return new Student(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate, group);
+			return new Student(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate,
+					group);
 		}
-
 	}
 
 	@Override

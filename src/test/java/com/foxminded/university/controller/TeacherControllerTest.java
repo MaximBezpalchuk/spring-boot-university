@@ -30,19 +30,19 @@ import com.foxminded.university.service.TeacherService;
 public class TeacherControllerTest {
 
 	private MockMvc mockMvc;
-	 
+
 	@Mock
 	private TeacherService teacherService;
 	@InjectMocks
 	private TeacherController teacherController;
-	
+
 	@BeforeEach
 	public void setUp() {
 		PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
 		resolver.setFallbackPageable(PageRequest.of(0, 2));
 		mockMvc = MockMvcBuilders.standaloneSetup(teacherController).setCustomArgumentResolvers(resolver).build();
 	}
-	
+
 	@Test
 	public void whenGetAllTeachers_thenAllTeachersReturned() throws Exception {
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
@@ -72,9 +72,9 @@ public class TeacherControllerTest {
 				.andExpect(model().attribute("teachers", page));
 		verifyNoMoreInteractions(teacherService);
 	}
-	
+
 	@Test
-    public void whenGetOneTeacher_thenOneTeacherReturned() throws Exception {
+	public void whenGetOneTeacher_thenOneTeacherReturned() throws Exception {
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
 		Subject subject = Subject.builder().id(1).name("Subject name").build();
 		Teacher teacher = Teacher.builder()
@@ -85,11 +85,11 @@ public class TeacherControllerTest {
 				.subjects(Arrays.asList(subject))
 				.build();
 		when(teacherService.findById(teacher.getId())).thenReturn(teacher);
-		
+
 		mockMvc.perform(get("/teachers/{id}", teacher.getId()))
-		 .andExpect(status().isOk())
-         .andExpect(view().name("teachers/show"))
-         .andExpect(forwardedUrl("teachers/show"))
-         .andExpect(model().attribute("teacher", teacher));
+				.andExpect(status().isOk())
+				.andExpect(view().name("teachers/show"))
+				.andExpect(forwardedUrl("teachers/show"))
+				.andExpect(model().attribute("teacher", teacher));
 	}
 }

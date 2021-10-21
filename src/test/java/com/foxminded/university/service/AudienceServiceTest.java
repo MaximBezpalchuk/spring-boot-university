@@ -47,7 +47,7 @@ public class AudienceServiceTest {
 
 		assertEquals(expected.get(), actual);
 	}
-	
+
 	@Test
 	void givenExistingAudience_whenFindById_thenEntityNotFoundException() {
 		when(audienceDao.findById(10)).thenReturn(Optional.empty());
@@ -62,16 +62,16 @@ public class AudienceServiceTest {
 	void givenNewAudience_whenSave_thenSaved() {
 		Audience audience = Audience.builder().build();
 		audienceService.save(audience);
-		
+
 		verify(audienceDao).save(audience);
 	}
-	
+
 	@Test
 	void givenExistingAudience_whenSave_thenSaved() {
 		Audience audience = Audience.builder().id(1).room(123).build();
 		when(audienceDao.findByRoom(audience.getRoom())).thenReturn(Optional.of(audience));
 		audienceService.save(audience);
-		
+
 		verify(audienceDao).save(audience);
 	}
 
@@ -81,7 +81,7 @@ public class AudienceServiceTest {
 
 		verify(audienceDao).deleteById(3);
 	}
-	
+
 	@Test
 	void givenNotUniqueAudience_whenSave_thenEntityNotUniqueException() {
 		Audience audience1 = Audience.builder()
@@ -94,8 +94,8 @@ public class AudienceServiceTest {
 				.build();
 		when(audienceDao.findByRoom(audience1.getRoom())).thenReturn(Optional.of(audience2));
 		Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
-				audienceService.save(audience1);
-			});
+			audienceService.save(audience1);
+		});
 
 		assertEquals("Audience with room number 10 is already exists!", exception.getMessage());
 	}

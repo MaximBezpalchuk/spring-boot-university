@@ -49,13 +49,14 @@ public class JdbcHolidayDao implements HolidayDao {
 		logger.debug("Find all holidays");
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
-	
+
 	@Override
 	public Page<Holiday> findPaginatedHolidays(Pageable pageable) {
 		logger.debug("Find all holidays with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
 		int total = jdbcTemplate.queryForObject(COUNT_ALL, Integer.class);
-		List<Holiday> holidays = jdbcTemplate.query(SELECT_BY_PAGE, rowMapper, pageable.getPageSize(), pageable.getOffset());
-		
+		List<Holiday> holidays = jdbcTemplate.query(SELECT_BY_PAGE, rowMapper, pageable.getPageSize(),
+				pageable.getOffset());
+
 		return new PageImpl<>(holidays, pageable, total);
 	}
 

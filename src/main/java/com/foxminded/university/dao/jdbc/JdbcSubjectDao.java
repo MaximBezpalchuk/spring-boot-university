@@ -22,7 +22,7 @@ import com.foxminded.university.model.Subject;
 
 @Component
 public class JdbcSubjectDao implements SubjectDao {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(JdbcSubjectDao.class);
 
 	private static final String SELECT_ALL = "SELECT * FROM subjects";
@@ -48,13 +48,14 @@ public class JdbcSubjectDao implements SubjectDao {
 		logger.debug("Find all subjects");
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
-	
+
 	@Override
 	public Page<Subject> findPaginatedSubjects(Pageable pageable) {
 		logger.debug("Find all subjects with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
 		int total = jdbcTemplate.queryForObject(COUNT_ALL, Integer.class);
-		List<Subject> subjects = jdbcTemplate.query(SELECT_BY_PAGE, rowMapper, pageable.getPageSize(), pageable.getOffset());
-		
+		List<Subject> subjects = jdbcTemplate.query(SELECT_BY_PAGE, rowMapper, pageable.getPageSize(),
+				pageable.getOffset());
+
 		return new PageImpl<>(subjects, pageable, total);
 	}
 

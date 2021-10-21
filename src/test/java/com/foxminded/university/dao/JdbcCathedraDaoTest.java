@@ -71,7 +71,7 @@ public class JdbcCathedraDaoTest {
 				.name("TestName")
 				.build();
 		cathedraDao.save(expected);
-		
+
 		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME, "id = 1 AND name = 'TestName'"));
 	}
 
@@ -82,7 +82,7 @@ public class JdbcCathedraDaoTest {
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
-	
+
 	@Test
 	void givenCathedraName_whenFindByName_thenCathedraFound() {
 		Optional<Cathedra> expected = Optional.of(Cathedra.builder()

@@ -44,7 +44,7 @@ import com.foxminded.university.model.Teacher;
 import com.foxminded.university.model.Vacation;
 
 public class MenuCreator {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(MenuCreator.class);
 
 	private final ApplicationContext context = new AnnotationConfigApplicationContext(WebMvcConfig.class);
@@ -403,10 +403,10 @@ public class MenuCreator {
 			try {
 				subjectService.save(
 						Subject.builder()
-						.cathedra(cathedraService.findById(1))
-						.name(subjectName3)
-						.description(subjectDescription3)
-						.build());
+								.cathedra(cathedraService.findById(1))
+								.name(subjectName3)
+								.description(subjectDescription3)
+								.build());
 			} catch (ServiceException e) {
 				System.out.println(e.getMessage());
 				logger.error(e.getMessage());
@@ -420,9 +420,9 @@ public class MenuCreator {
 			try {
 				groupService.save(
 						Group.builder()
-						.name(groupName4)
-						.cathedra(cathedraService.findById(1))
-						.build());
+								.name(groupName4)
+								.cathedra(cathedraService.findById(1))
+								.build());
 			} catch (ServiceException e) {
 				System.out.println(e.getMessage());
 				logger.error(e.getMessage());
@@ -459,13 +459,13 @@ public class MenuCreator {
 			try {
 				lectureService.save(
 						Lecture.builder()
-						.cathedra(cathedraService.findById(1))
-						.subject(subject5)
-						.date(lectureDate5)
-						.time(lectureTime5)
-						.audience(audience5)
-						.teacher(teacher5)
-						.build());
+								.cathedra(cathedraService.findById(1))
+								.subject(subject5)
+								.date(lectureDate5)
+								.time(lectureTime5)
+								.audience(audience5)
+								.teacher(teacher5)
+								.build());
 			} catch (ServiceException e) {
 				System.out.println(e.getMessage());
 				logger.error(e.getMessage());

@@ -50,13 +50,14 @@ public class JdbcStudentDao implements StudentDao {
 		logger.debug("Find all students");
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
-	
+
 	@Override
 	public Page<Student> findPaginatedStudents(Pageable pageable) {
 		logger.debug("Find all students with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
 		int total = jdbcTemplate.queryForObject(COUNT_ALL, Integer.class);
-		List<Student> students = jdbcTemplate.query(SELECT_BY_PAGE, rowMapper, pageable.getPageSize(), pageable.getOffset());
-		
+		List<Student> students = jdbcTemplate.query(SELECT_BY_PAGE, rowMapper, pageable.getPageSize(),
+				pageable.getOffset());
+
 		return new PageImpl<>(students, pageable, total);
 	}
 

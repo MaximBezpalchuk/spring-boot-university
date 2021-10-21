@@ -38,17 +38,18 @@ public class VacationControllerTest {
 	private TeacherService teacherService;
 	@InjectMocks
 	private VacationController vacationController;
-	
+
 	@BeforeEach
-    public void setUp() {
+	public void setUp() {
 		PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
 		resolver.setFallbackPageable(PageRequest.of(0, 1));
 		mockMvc = MockMvcBuilders.standaloneSetup(vacationController).setCustomArgumentResolvers(resolver).build();
-    }
-	
+	}
+
 	@Test
 	public void whenGetAllVacations_thenAllVacationsReturned() throws Exception {
-		Teacher teacher = Teacher.builder().id(1).firstName("Name").lastName("Last name").degree(Degree.ASSISTANT).build();
+		Teacher teacher = Teacher.builder().id(1).firstName("Name").lastName("Last name").degree(Degree.ASSISTANT)
+				.build();
 		Vacation vacation1 = Vacation.builder()
 				.id(1)
 				.teacher(teacher)
@@ -65,7 +66,7 @@ public class VacationControllerTest {
 		Page<Vacation> page = new PageImpl<>(vacations, PageRequest.of(0, 1), 2);
 		when(teacherService.findById(teacher.getId())).thenReturn(teacher);
 		when(vacationService.findByTeacherId(PageRequest.of(0, 1), teacher.getId())).thenReturn(page);
-		
+
 		mockMvc.perform(get("/teachers/{id}/vacations", teacher.getId()))
 				.andExpect(status().isOk())
 				.andExpect(view().name("teachers/vacations/index"))
@@ -73,10 +74,11 @@ public class VacationControllerTest {
 				.andExpect(model().attribute("vacations", page));
 		verifyNoMoreInteractions(vacationService);
 	}
-	
+
 	@Test
-    public void whenGetOneVacation_thenOneVacationReturned() throws Exception {
-		Teacher teacher = Teacher.builder().id(1).firstName("Name").lastName("Last name").degree(Degree.ASSISTANT).build();
+	public void whenGetOneVacation_thenOneVacationReturned() throws Exception {
+		Teacher teacher = Teacher.builder().id(1).firstName("Name").lastName("Last name").degree(Degree.ASSISTANT)
+				.build();
 		Vacation vacation = Vacation.builder()
 				.id(1)
 				.teacher(teacher)
@@ -84,11 +86,11 @@ public class VacationControllerTest {
 				.end(LocalDate.of(2021, 1, 2))
 				.build();
 		when(vacationService.findById(vacation.getId())).thenReturn(vacation);
-		
+
 		mockMvc.perform(get("/teachers/{teacherId}/vacations/{id}", teacher.getId(), vacation.getId()))
-		 .andExpect(status().isOk())
-         .andExpect(view().name("teachers/vacations/show"))
-         .andExpect(forwardedUrl("teachers/vacations/show"))
-         .andExpect(model().attribute("vacation", vacation));
+				.andExpect(status().isOk())
+				.andExpect(view().name("teachers/vacations/show"))
+				.andExpect(forwardedUrl("teachers/vacations/show"))
+				.andExpect(model().attribute("vacation", vacation));
 	}
 }

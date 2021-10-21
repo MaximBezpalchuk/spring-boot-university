@@ -19,7 +19,7 @@ import com.foxminded.university.model.Group;
 
 @Component
 public class JdbcGroupDao implements GroupDao {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(JdbcGroupDao.class);
 
 	private static final String SELECT_ALL = "SELECT * FROM groups";

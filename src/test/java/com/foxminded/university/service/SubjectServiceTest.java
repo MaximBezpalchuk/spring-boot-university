@@ -42,14 +42,14 @@ public class SubjectServiceTest {
 
 		assertEquals(expected, actual);
 	}
-	
+
 	@Test
 	void givenPageable_whenFindAll_thenAllPageableSubjectsFound() {
 		List<Subject> subjects = Arrays.asList(Subject.builder().id(1).build());
 		Page<Subject> expected = new PageImpl<>(subjects, PageRequest.of(0, 1), 1);
 		when(subjectDao.findPaginatedSubjects(isA(Pageable.class))).thenReturn(expected);
 		Page<Subject> actual = subjectService.findAll(PageRequest.of(0, 1));
-		
+
 		assertEquals(expected, actual);
 	}
 
@@ -61,7 +61,7 @@ public class SubjectServiceTest {
 
 		assertEquals(expected.get(), actual);
 	}
-	
+
 	@Test
 	void givenExistingSubject_whenFindById_thenEntityNotFoundException() {
 		when(subjectDao.findById(10)).thenReturn(Optional.empty());
@@ -95,7 +95,7 @@ public class SubjectServiceTest {
 
 		verify(subjectDao).deleteById(1);
 	}
-	
+
 	@Test
 	void givenNotUniqueSubject_whenSave_thenEntityNotUniqueException() {
 		Subject subject1 = Subject.builder().id(1).name("TestName").build();
@@ -103,7 +103,7 @@ public class SubjectServiceTest {
 		when(subjectDao.findByName(subject1.getName())).thenReturn(Optional.of(subject2));
 		Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
 			subjectService.save(subject1);
-			});
+		});
 
 		assertEquals("Subject with name TestName is already exists!", exception.getMessage());
 	}

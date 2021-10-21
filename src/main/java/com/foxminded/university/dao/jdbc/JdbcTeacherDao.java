@@ -53,13 +53,14 @@ public class JdbcTeacherDao implements TeacherDao {
 		logger.debug("Find all teachers");
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
-	
+
 	@Override
 	public Page<Teacher> findPaginatedTeachers(Pageable pageable) {
 		logger.debug("Find all teachers with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
 		int total = jdbcTemplate.queryForObject(COUNT_ALL, Integer.class);
-		List<Teacher> teachers = jdbcTemplate.query(SELECT_BY_PAGE, rowMapper, pageable.getPageSize(), pageable.getOffset());
-		
+		List<Teacher> teachers = jdbcTemplate.query(SELECT_BY_PAGE, rowMapper, pageable.getPageSize(),
+				pageable.getOffset());
+
 		return new PageImpl<>(teachers, pageable, total);
 	}
 

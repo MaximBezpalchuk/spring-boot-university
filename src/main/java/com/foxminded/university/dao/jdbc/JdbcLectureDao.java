@@ -58,13 +58,14 @@ public class JdbcLectureDao implements LectureDao {
 		logger.debug("Find all lectures");
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
 	}
-	
+
 	@Override
 	public Page<Lecture> findPaginatedLectures(Pageable pageable) {
 		logger.debug("Find all lectures with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
 		int total = jdbcTemplate.queryForObject(COUNT_ALL, Integer.class);
-		List<Lecture> lectures = jdbcTemplate.query(SELECT_BY_PAGE, rowMapper, pageable.getPageSize(), pageable.getOffset());
-		
+		List<Lecture> lectures = jdbcTemplate.query(SELECT_BY_PAGE, rowMapper, pageable.getPageSize(),
+				pageable.getOffset());
+
 		return new PageImpl<>(lectures, pageable, total);
 	}
 
@@ -136,23 +137,28 @@ public class JdbcLectureDao implements LectureDao {
 	}
 
 	@Override
-	public Optional<Lecture> findByAudienceDateAndLectureTime(Audience audience, LocalDate date, LectureTime lectureTime) {
+	public Optional<Lecture> findByAudienceDateAndLectureTime(Audience audience, LocalDate date,
+			LectureTime lectureTime) {
 		logger.debug("Find lecture by audience with id {}, date {} and lecture time id {}", audience.getId(), date,
 				lectureTime.getId());
 		try {
-			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_AUDIENCE_DATE_LECTURE_TIME, rowMapper, audience.getId(), date,
-					lectureTime.getId()));
+			return Optional.of(
+					jdbcTemplate.queryForObject(SELECT_BY_AUDIENCE_DATE_LECTURE_TIME, rowMapper, audience.getId(), date,
+							lectureTime.getId()));
 		} catch (EmptyResultDataAccessException e) {
 			return Optional.empty();
 		}
 	}
-	
+
 	@Override
-	public Optional<Lecture> findByTeacherAudienceDateAndLectureTime(Teacher teacher, Audience audience, LocalDate date, LectureTime lectureTime) {
-		logger.debug("Find lecture by teacher with id: {}, audience with id {}, date {} and lecture time id {}", teacher.getId(), audience.getId(), date,
+	public Optional<Lecture> findByTeacherAudienceDateAndLectureTime(Teacher teacher, Audience audience, LocalDate date,
+			LectureTime lectureTime) {
+		logger.debug("Find lecture by teacher with id: {}, audience with id {}, date {} and lecture time id {}",
+				teacher.getId(), audience.getId(), date,
 				lectureTime.getId());
 		try {
-			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_TEACHER_AUDIENCE_DATE_LECTURE_TIME, rowMapper, teacher.getId(), audience.getId(), date,
+			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_TEACHER_AUDIENCE_DATE_LECTURE_TIME, rowMapper,
+					teacher.getId(), audience.getId(), date,
 					lectureTime.getId()));
 		} catch (EmptyResultDataAccessException e) {
 			return Optional.empty();

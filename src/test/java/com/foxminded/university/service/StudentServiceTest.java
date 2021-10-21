@@ -38,7 +38,7 @@ public class StudentServiceTest {
 	private JdbcStudentDao studentDao;
 	@InjectMocks
 	private StudentService studentService;
-	
+
 	@BeforeEach
 	void setUp() {
 		ReflectionTestUtils.setField(studentService, "maxGroupSize", 1);
@@ -53,14 +53,14 @@ public class StudentServiceTest {
 
 		assertEquals(expected, actual);
 	}
-	
+
 	@Test
 	void givenPageable_whenFindAll_thenAllPageableStudentsFound() {
 		List<Student> students = Arrays.asList(Student.builder().id(1).build());
 		Page<Student> expected = new PageImpl<>(students, PageRequest.of(0, 1), 1);
 		when(studentDao.findPaginatedStudents(isA(Pageable.class))).thenReturn(expected);
 		Page<Student> actual = studentService.findAll(PageRequest.of(0, 1));
-		
+
 		assertEquals(expected, actual);
 	}
 
@@ -72,7 +72,7 @@ public class StudentServiceTest {
 
 		assertEquals(expected.get(), actual);
 	}
-	
+
 	@Test
 	void givenExistingStudent_whenFindById_thenEntityNotFoundException() {
 		when(studentDao.findById(10)).thenReturn(Optional.empty());
@@ -109,7 +109,7 @@ public class StudentServiceTest {
 
 		verify(studentDao).save(student);
 	}
-	
+
 	@Test
 	void givenNotUniqueStudent_whenSave_thenEntityNotUniqueException() {
 		Student student1 = Student.builder()
@@ -130,11 +130,12 @@ public class StudentServiceTest {
 				student1.getLastName(), student1.getBirthDate())).thenReturn(Optional.of(student2));
 		Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
 			studentService.save(student1);
-			});
+		});
 
-		assertEquals("Student with full name TestFirstName TestLastName and  birth date 2020-01-01 is already exists!", exception.getMessage());
+		assertEquals("Student with full name TestFirstName TestLastName and  birth date 2020-01-01 is already exists!",
+				exception.getMessage());
 	}
-	
+
 	@Test
 	void givenStudentWhenGroupIsFull_whenSave_thenStudentGroupIsFullException() {
 		Student student = Student.builder()
@@ -148,7 +149,7 @@ public class StudentServiceTest {
 		when(studentDao.findByGroupId(student.getGroup().getId())).thenReturn(Arrays.asList(student, student));
 		Exception exception = assertThrows(GroupOverflowException.class, () -> {
 			studentService.save(student);
-			});
+		});
 
 		assertEquals("This group is already full! Group size is: 2. Max group size is: 1", exception.getMessage());
 	}

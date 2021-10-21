@@ -24,19 +24,19 @@ import com.foxminded.university.service.AudienceService;
 public class AudienceControllerTest {
 
 	private MockMvc mockMvc;
-	 
+
 	@Mock
 	private AudienceService audienceService;
 	@InjectMocks
 	private AudienceController audienceController;
-	
+
 	@BeforeEach
 	public void setUp() {
 		mockMvc = MockMvcBuilders.standaloneSetup(audienceController).build();
 	}
-	
+
 	@Test
-    public void whenGetAllAudiences_thenAllAudiencesReturned() throws Exception {
+	public void whenGetAllAudiences_thenAllAudiencesReturned() throws Exception {
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
 		Audience audience1 = Audience.builder()
 				.id(1)
@@ -57,16 +57,16 @@ public class AudienceControllerTest {
 				.cathedra(cathedra)
 				.build();
 		List<Audience> audiences = Arrays.asList(audience1, audience2, audience3);
-        when(audienceService.findAll()).thenReturn(audiences);
-        
-        mockMvc.perform(get("/audiences"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("audiences/index"))
-                .andExpect(forwardedUrl("audiences/index"))
-                .andExpect(model().attribute("audiences", audiences));
-        verifyNoMoreInteractions(audienceService);
-    }
-	
+		when(audienceService.findAll()).thenReturn(audiences);
+
+		mockMvc.perform(get("/audiences"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("audiences/index"))
+				.andExpect(forwardedUrl("audiences/index"))
+				.andExpect(model().attribute("audiences", audiences));
+		verifyNoMoreInteractions(audienceService);
+	}
+
 	@Test
 	public void whenGetOneAudience_thenOneAudienceReturned() throws Exception {
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
@@ -77,11 +77,11 @@ public class AudienceControllerTest {
 				.cathedra(cathedra)
 				.build();
 		when(audienceService.findById(audience.getId())).thenReturn(audience);
-		
+
 		mockMvc.perform(get("/audiences/{id}", audience.getId()))
-		 .andExpect(status().isOk())
-         .andExpect(view().name("audiences/show"))
-         .andExpect(forwardedUrl("audiences/show"))
-         .andExpect(model().attribute("audience", audience));
+				.andExpect(status().isOk())
+				.andExpect(view().name("audiences/show"))
+				.andExpect(forwardedUrl("audiences/show"))
+				.andExpect(model().attribute("audience", audience));
 	}
 }

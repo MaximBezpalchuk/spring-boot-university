@@ -99,7 +99,7 @@ public class JdbcLectureDaoTest {
 
 		assertEquals(expected, actual);
 	}
-	
+
 	@Test
 	void givenPageable_whenFindPaginatedLectures_thenLecturesFound() {
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
@@ -142,8 +142,8 @@ public class JdbcLectureDaoTest {
 				.teacher(teacher)
 				.build());
 		Page<Lecture> expected = new PageImpl<>(lectures, PageRequest.of(0, 1), 11);
-		Page<Lecture> actual = lectureDao.findPaginatedLectures(PageRequest.of(0,1));
-		
+		Page<Lecture> actual = lectureDao.findPaginatedLectures(PageRequest.of(0, 1));
+
 		assertEquals(expected, actual);
 	}
 
@@ -158,7 +158,7 @@ public class JdbcLectureDaoTest {
 		lectureDao.save(
 				Lecture.builder().cathedra(Cathedra.builder()
 						.id(1).build())
-				.subject(Subject.builder().id(1).build())
+						.subject(Subject.builder().id(1).build())
 						.date(LocalDate.of(2021, 4, 4))
 						.time(LectureTime.builder().id(1).build())
 						.audience(Audience.builder().id(1).build())
@@ -181,14 +181,14 @@ public class JdbcLectureDaoTest {
 				.group(new ArrayList<>()).build();
 		lectureDao.save(expected);
 
-		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME, 
+		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME,
 				"id = 1 "
-				+ "AND cathedra_id = 1 "
-				+ "AND subject_id = 2 "
-				+ "AND date = '2021-04-05' "
-				+ "AND lecture_time_id = 2 "
-				+ "AND audience_id = 2 "
-				+ "AND teacher_id = 2"));
+						+ "AND cathedra_id = 1 "
+						+ "AND subject_id = 2 "
+						+ "AND date = '2021-04-05' "
+						+ "AND lecture_time_id = 2 "
+						+ "AND audience_id = 2 "
+						+ "AND teacher_id = 2"));
 
 		assertEquals(0, countRowsInTableWhere(template, "lectures_groups", "lecture_id = 1 "));
 	}
@@ -200,7 +200,7 @@ public class JdbcLectureDaoTest {
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
-	
+
 	@Test
 	void givenAudienceAndDate_whenFindByAudienceAndDate_thenLectureFound() {
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
@@ -242,13 +242,13 @@ public class JdbcLectureDaoTest {
 				.audience(audience)
 				.teacher(teacher)
 				.build());
-		Optional<Lecture> actual = lectureDao.findByAudienceDateAndLectureTime(Audience.builder().id(1).build(), 
-				LocalDate.of(2021, 4, 4), 
+		Optional<Lecture> actual = lectureDao.findByAudienceDateAndLectureTime(Audience.builder().id(1).build(),
+				LocalDate.of(2021, 4, 4),
 				LectureTime.builder().id(1).build());
 
 		assertEquals(expected, actual);
 	}
-	
+
 	@Test
 	void givenAudienceDateAndLectureTime_whenFindByAudienceDateAndLectureTime_thenLectureFound() {
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();

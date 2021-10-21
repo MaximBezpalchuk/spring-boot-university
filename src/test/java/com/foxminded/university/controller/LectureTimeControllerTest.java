@@ -24,19 +24,19 @@ import com.foxminded.university.service.LectureTimeService;
 public class LectureTimeControllerTest {
 
 	private MockMvc mockMvc;
-	 
+
 	@Mock
 	private LectureTimeService lectureTimeService;
 	@InjectMocks
 	private LectureTimeController lectureTimeController;
-	
+
 	@BeforeEach
 	public void setUp() {
 		mockMvc = MockMvcBuilders.standaloneSetup(lectureTimeController).build();
-    }
-	
+	}
+
 	@Test
-    public void whenGetAllLectureTimes_thenAllLectureTimesReturned() throws Exception {
+	public void whenGetAllLectureTimes_thenAllLectureTimesReturned() throws Exception {
 		LectureTime lectureTime1 = LectureTime.builder()
 				.id(1)
 				.start(LocalTime.of(8, 0))
@@ -48,18 +48,18 @@ public class LectureTimeControllerTest {
 				.end(LocalTime.of(12, 45))
 				.build();
 		List<LectureTime> lectureTimes = Arrays.asList(lectureTime1, lectureTime2);
-        when(lectureTimeService.findAll()).thenReturn(lectureTimes);
-        
-        mockMvc.perform(get("/lecturetimes"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("lecturetimes/index"))
-                .andExpect(forwardedUrl("lecturetimes/index"))
-                .andExpect(model().attribute("lectureTimes", lectureTimes));
-        verifyNoMoreInteractions(lectureTimeService);
-    }
-	
+		when(lectureTimeService.findAll()).thenReturn(lectureTimes);
+
+		mockMvc.perform(get("/lecturetimes"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("lecturetimes/index"))
+				.andExpect(forwardedUrl("lecturetimes/index"))
+				.andExpect(model().attribute("lectureTimes", lectureTimes));
+		verifyNoMoreInteractions(lectureTimeService);
+	}
+
 	@Test
-    public void whenGetOneLectureTime_thenOneLectureTimeReturned() throws Exception {
+	public void whenGetOneLectureTime_thenOneLectureTimeReturned() throws Exception {
 		LectureTime lectureTime = LectureTime.builder()
 				.id(1)
 				.start(LocalTime.of(8, 0))
@@ -68,9 +68,9 @@ public class LectureTimeControllerTest {
 		when(lectureTimeService.findById(lectureTime.getId())).thenReturn(lectureTime);
 
 		mockMvc.perform(get("/lecturetimes/{id}", lectureTime.getId()))
-		 .andExpect(status().isOk())
-         .andExpect(view().name("lecturetimes/show"))
-         .andExpect(forwardedUrl("lecturetimes/show"))
-         .andExpect(model().attribute("lectureTime", lectureTime));
+				.andExpect(status().isOk())
+				.andExpect(view().name("lecturetimes/show"))
+				.andExpect(forwardedUrl("lecturetimes/show"))
+				.andExpect(model().attribute("lectureTime", lectureTime));
 	}
 }

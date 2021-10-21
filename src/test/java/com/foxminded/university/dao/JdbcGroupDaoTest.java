@@ -66,16 +66,16 @@ public class JdbcGroupDaoTest {
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
-	
+
 	@Test
 	void givenExitstingGroup_whenSaveWithChanges_thenChangesApplied() {
 		Group expected = groupDao.findById(1).get();
 		expected.setName("Killers 2");
 		groupDao.save(expected);
-		
+
 		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME, "id = 1 AND name = 'Killers 2'"));
 	}
-	
+
 	@Test
 	void whenDeleteExistingGroup_thenAllExistingGroupsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) - 1;
@@ -83,10 +83,10 @@ public class JdbcGroupDaoTest {
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
-	
+
 	@Test
 	void givenGroupName_whenFindByName_thenGroupFound() {
-		Optional<Group> expected =Optional.of(Group.builder()
+		Optional<Group> expected = Optional.of(Group.builder()
 				.id(1)
 				.name("Killers")
 				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())

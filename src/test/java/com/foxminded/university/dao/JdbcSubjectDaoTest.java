@@ -43,7 +43,7 @@ public class JdbcSubjectDaoTest {
 
 		assertEquals(expected, actual);
 	}
-	
+
 	@Test
 	void givenPageable_whenFindPaginatedSubjects_thenSubjectsFound() {
 		List<Subject> subjects = List.of(Subject.builder()
@@ -53,8 +53,8 @@ public class JdbcSubjectDaoTest {
 				.id(1)
 				.build());
 		Page<Subject> expected = new PageImpl<>(subjects, PageRequest.of(0, 1), 3);
-		Page<Subject> actual = subjectDao.findPaginatedSubjects(PageRequest.of(0,1));
-		
+		Page<Subject> actual = subjectDao.findPaginatedSubjects(PageRequest.of(0, 1));
+
 		assertEquals(expected, actual);
 	}
 
@@ -97,8 +97,9 @@ public class JdbcSubjectDaoTest {
 				.cathedra(Cathedra.builder().id(1).build())
 				.build();
 		subjectDao.save(expected);
-		
-		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME, "id = 1 AND name = 'Test Name' AND description = 'Test Description'"));
+
+		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME,
+				"id = 1 AND name = 'Test Name' AND description = 'Test Description'"));
 	}
 
 	@Test
@@ -123,7 +124,7 @@ public class JdbcSubjectDaoTest {
 
 		assertEquals(expected, actual);
 	}
-	
+
 	@Test
 	void givenSubjectName_whenFindByName_thenSubjectFound() {
 		Optional<Subject> expected = Optional.of(Subject.builder()

@@ -15,8 +15,9 @@ import com.foxminded.university.model.Teacher;
 public interface LectureDao extends GenericDao<Lecture> {
 
 	Optional<Lecture> findByAudienceDateAndLectureTime(Audience audience, LocalDate date, LectureTime lectureTime);
-	
-	 Optional<Lecture> findByTeacherAudienceDateAndLectureTime(Teacher teacher, Audience audience, LocalDate date, LectureTime lectureTime);
+
+	Optional<Lecture> findByTeacherAudienceDateAndLectureTime(Teacher teacher, Audience audience, LocalDate date,
+			LectureTime lectureTime);
 
 	List<Lecture> findLecturesByTeacherDateAndTime(Teacher teacher, LocalDate date, LectureTime time);
 

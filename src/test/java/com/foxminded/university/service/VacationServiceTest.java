@@ -58,14 +58,14 @@ public class VacationServiceTest {
 
 		assertEquals(expected, actual);
 	}
-	
+
 	@Test
 	void givenPageable_whenFindAll_thenAllPageableVacationsFound() {
 		List<Vacation> vacations = Arrays.asList(Vacation.builder().id(1).build());
 		Page<Vacation> expected = new PageImpl<>(vacations, PageRequest.of(0, 1), 1);
 		when(vacationDao.findPaginatedVacationsByTeacherId(PageRequest.of(0, 1), 1)).thenReturn(expected);
 		Page<Vacation> actual = vacationService.findByTeacherId(PageRequest.of(0, 1), 1);
-		
+
 		assertEquals(expected, actual);
 	}
 
@@ -77,7 +77,7 @@ public class VacationServiceTest {
 
 		assertEquals(expected.get(), actual);
 	}
-	
+
 	@Test
 	void givenExistingVacation_whenFindById_thenEntityNotFoundException() {
 		when(vacationDao.findById(10)).thenReturn(Optional.empty());
@@ -117,7 +117,7 @@ public class VacationServiceTest {
 
 		verify(vacationDao).save(vacation);
 	}
-	
+
 	@Test
 	void givenNotUniqueVacation_whenSave_thenEntityNotUniqueException() {
 		LocalDate start = LocalDate.of(2021, 1, 1);
@@ -126,13 +126,15 @@ public class VacationServiceTest {
 				.id(1)
 				.start(start)
 				.end(end)
-				.teacher(Teacher.builder().id(1).firstName("TestFirstName").lastName("TestLastName").degree(Degree.ASSISTANT).build())
+				.teacher(Teacher.builder().id(1).firstName("TestFirstName").lastName("TestLastName")
+						.degree(Degree.ASSISTANT).build())
 				.build();
 		Vacation vacation2 = Vacation.builder()
 				.id(11)
 				.start(start)
 				.end(end)
-				.teacher(Teacher.builder().id(1).firstName("TestFirstName").lastName("TestLastName").degree(Degree.ASSISTANT).build())
+				.teacher(Teacher.builder().id(1).firstName("TestFirstName").lastName("TestLastName")
+						.degree(Degree.ASSISTANT).build())
 				.build();
 		when(vacationDao.findByPeriodAndTeacher(vacation1.getStart(), vacation1.getEnd(),
 				vacation1.getTeacher())).thenReturn(Optional.of(vacation2));
@@ -140,7 +142,9 @@ public class VacationServiceTest {
 			vacationService.save(vacation1);
 		});
 
-		assertEquals("Vacation with start(2021-01-01), end(2021-01-02) and teacher(TestFirstName TestLastName) id is already exists!", exception.getMessage());
+		assertEquals(
+				"Vacation with start(2021-01-01), end(2021-01-02) and teacher(TestFirstName TestLastName) id is already exists!",
+				exception.getMessage());
 	}
 
 	@Test
@@ -152,11 +156,12 @@ public class VacationServiceTest {
 			vacationService.save(vacation);
 		});
 
-		assertEquals("Vacation can`t be less than 1 day! Vacation start is: 2021-01-01. Vacation end is: 2021-01-01", exception.getMessage());
+		assertEquals("Vacation can`t be less than 1 day! Vacation start is: 2021-01-01. Vacation end is: 2021-01-01",
+				exception.getMessage());
 	}
 
 	@Test
-	void givenVacationWithWrongDates_whenSave_thenVacationNotCorrectDateException(){
+	void givenVacationWithWrongDates_whenSave_thenVacationNotCorrectDateException() {
 		LocalDate start = LocalDate.of(2021, 1, 1);
 		LocalDate end = LocalDate.of(2020, 1, 1);
 		Vacation vacation = Vacation.builder()
@@ -168,7 +173,9 @@ public class VacationServiceTest {
 			vacationService.save(vacation);
 		});
 
-		assertEquals("Vacation start date can`t be after vacation end date! Vacation start is: 2021-01-01. Vacation end is: 2020-01-01", exception.getMessage());
+		assertEquals(
+				"Vacation start date can`t be after vacation end date! Vacation start is: 2021-01-01. Vacation end is: 2020-01-01",
+				exception.getMessage());
 	}
 
 	@Test
@@ -187,7 +194,8 @@ public class VacationServiceTest {
 			vacationService.save(vacation);
 		});
 
-		assertEquals("Vacations duration(existing 9 plus appointed 9) can`t be more than max(16) for degree ASSISTANT!", exception.getMessage());
+		assertEquals("Vacations duration(existing 9 plus appointed 9) can`t be more than max(16) for degree ASSISTANT!",
+				exception.getMessage());
 	}
 
 	@Test

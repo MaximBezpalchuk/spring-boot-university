@@ -44,7 +44,7 @@ public class JdbcHolidayDaoTest {
 
 		assertEquals(expected, actual);
 	}
-	
+
 	@Test
 	void givenPageable_whenFindPaginatedHolidays_thenHolidaysFound() {
 		List<Holiday> holidays = List.of(Holiday.builder()
@@ -54,8 +54,8 @@ public class JdbcHolidayDaoTest {
 				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
 				.build());
 		Page<Holiday> expected = new PageImpl<>(holidays, PageRequest.of(0, 1), 6);
-		Page<Holiday> actual = holidayDao.findPaginatedHolidays(PageRequest.of(0,1));
-		
+		Page<Holiday> actual = holidayDao.findPaginatedHolidays(PageRequest.of(0, 1));
+
 		assertEquals(expected, actual);
 	}
 
@@ -86,7 +86,7 @@ public class JdbcHolidayDaoTest {
 				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
 				.build();
 		holidayDao.save(holiday);
-		
+
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
 
@@ -99,8 +99,9 @@ public class JdbcHolidayDaoTest {
 				.cathedra(Cathedra.builder().id(1).build())
 				.build();
 		holidayDao.save(expected);
-		
-		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME, "id = 1 AND name = 'Test Name' and date= '2021-12-26'"));
+
+		assertEquals(1,
+				countRowsInTableWhere(template, TABLE_NAME, "id = 1 AND name = 'Test Name' and date= '2021-12-26'"));
 	}
 
 	@Test
@@ -110,7 +111,7 @@ public class JdbcHolidayDaoTest {
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
-	
+
 	@Test
 	void givenHolidayName_whenFindByNameAndDate_thenHolidayFound() {
 		Optional<Holiday> expected = Optional.of(Holiday.builder()
@@ -123,7 +124,7 @@ public class JdbcHolidayDaoTest {
 
 		assertEquals(expected, actual);
 	}
-	
+
 	@Test
 	void givenHolidayName_whenFindByDate_thenHolidayFound() {
 		List<Holiday> expected = Arrays.asList(Holiday.builder()

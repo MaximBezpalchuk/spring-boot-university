@@ -31,19 +31,19 @@ import com.foxminded.university.service.HolidayService;
 public class HolidayControllerTest {
 
 	private MockMvc mockMvc;
-	 
+
 	@Mock
 	private HolidayService holidayService;
 	@InjectMocks
 	private HolidayController holidayController;
-	
+
 	@BeforeEach
 	public void setUp() {
 		PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
 		resolver.setFallbackPageable(PageRequest.of(0, 1));
 		mockMvc = MockMvcBuilders.standaloneSetup(holidayController).setCustomArgumentResolvers(resolver).build();
 	}
-	
+
 	@Test
 	public void whenGetAllHolidays_thenAllHolidaysReturned() throws Exception {
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
@@ -70,9 +70,9 @@ public class HolidayControllerTest {
 				.andExpect(model().attribute("holidays", page));
 		verifyNoMoreInteractions(holidayService);
 	}
-	
+
 	@Test
-    public void whenGetOneHoliday_thenOneHolidayReturned() throws Exception {
+	public void whenGetOneHoliday_thenOneHolidayReturned() throws Exception {
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
 		Holiday holiday = Holiday.builder()
 				.id(1)
@@ -81,11 +81,11 @@ public class HolidayControllerTest {
 				.cathedra(cathedra)
 				.build();
 		when(holidayService.findById(holiday.getId())).thenReturn(holiday);
-		
+
 		mockMvc.perform(get("/holidays/{id}", holiday.getId()))
-		 .andExpect(status().isOk())
-         .andExpect(view().name("holidays/show"))
-         .andExpect(forwardedUrl("holidays/show"))
-         .andExpect(model().attribute("holiday", holiday));
+				.andExpect(status().isOk())
+				.andExpect(view().name("holidays/show"))
+				.andExpect(forwardedUrl("holidays/show"))
+				.andExpect(model().attribute("holiday", holiday));
 	}
 }

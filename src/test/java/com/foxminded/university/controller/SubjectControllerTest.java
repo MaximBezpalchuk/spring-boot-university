@@ -29,19 +29,19 @@ import com.foxminded.university.service.SubjectService;
 public class SubjectControllerTest {
 
 	private MockMvc mockMvc;
-	 
+
 	@Mock
 	private SubjectService subjectService;
 	@InjectMocks
 	private SubjectController subjectController;
-	
+
 	@BeforeEach
 	public void setUp() {
 		PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
 		resolver.setFallbackPageable(PageRequest.of(0, 1));
 		mockMvc = MockMvcBuilders.standaloneSetup(subjectController).setCustomArgumentResolvers(resolver).build();
-    }
-	
+	}
+
 	@Test
 	public void whenGetAllSubjects_thenAllSubjectsReturned() throws Exception {
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
@@ -68,9 +68,9 @@ public class SubjectControllerTest {
 				.andExpect(model().attribute("subjects", page));
 		verifyNoMoreInteractions(subjectService);
 	}
-	
+
 	@Test
-    public void whenGetOneSubject_thenOneSubjectReturned() throws Exception {
+	public void whenGetOneSubject_thenOneSubjectReturned() throws Exception {
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
 		Subject subject = Subject.builder()
 				.id(1)
@@ -79,11 +79,11 @@ public class SubjectControllerTest {
 				.cathedra(cathedra)
 				.build();
 		when(subjectService.findById(subject.getId())).thenReturn(subject);
-		
+
 		mockMvc.perform(get("/subjects/{id}", subject.getId()))
-		 .andExpect(status().isOk())
-         .andExpect(view().name("subjects/show"))
-         .andExpect(forwardedUrl("subjects/show"))
-         .andExpect(model().attribute("subject", subject));
+				.andExpect(status().isOk())
+				.andExpect(view().name("subjects/show"))
+				.andExpect(forwardedUrl("subjects/show"))
+				.andExpect(model().attribute("subject", subject));
 	}
 }

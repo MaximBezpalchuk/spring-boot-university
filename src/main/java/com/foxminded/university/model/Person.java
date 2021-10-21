@@ -32,8 +32,9 @@ public class Person {
 		this.education = education;
 		this.birthDate = birthDate;
 	}
-	
-	protected Person() {}
+
+	protected Person() {
+	}
 
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;

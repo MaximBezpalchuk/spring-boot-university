@@ -26,21 +26,21 @@ import com.foxminded.university.service.GroupService;
 public class GroupControllerTest {
 
 	private MockMvc mockMvc;
-	 
+
 	@Mock
 	private GroupService groupService;
 	@Mock
 	private CathedraService cathedraService;
 	@InjectMocks
 	private GroupController groupController;
-	
+
 	@BeforeEach
-    public void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(groupController).build();
-    }
-	
+	public void setUp() {
+		mockMvc = MockMvcBuilders.standaloneSetup(groupController).build();
+	}
+
 	@Test
-    public void whenGetAllGroups_thenAllGroupsReturned() throws Exception {
+	public void whenGetAllGroups_thenAllGroupsReturned() throws Exception {
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
 		Group group1 = Group.builder().id(1).name("Killers").cathedra(cathedra).build();
 		Group group2 = Group.builder()
@@ -49,29 +49,29 @@ public class GroupControllerTest {
 				.cathedra(cathedra)
 				.build();
 		List<Group> groups = Arrays.asList(group1, group2);
-		
-        when(groupService.findAll()).thenReturn(groups);
- 
-        mockMvc.perform(get("/groups"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("groups/index"))
-                .andExpect(forwardedUrl("groups/index"))
-                .andExpect(model().attribute("groups", groups));
- 
-        verifyNoMoreInteractions(groupService);
-    }
-	
+
+		when(groupService.findAll()).thenReturn(groups);
+
+		mockMvc.perform(get("/groups"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("groups/index"))
+				.andExpect(forwardedUrl("groups/index"))
+				.andExpect(model().attribute("groups", groups));
+
+		verifyNoMoreInteractions(groupService);
+	}
+
 	@Test
-    public void whenGetOneGroup_thenOneGroupReturned() throws Exception {
+	public void whenGetOneGroup_thenOneGroupReturned() throws Exception {
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
 		Group group = Group.builder().id(1).name("Killers").cathedra(cathedra).build();
-		
+
 		when(groupService.findById(group.getId())).thenReturn(group);
-		
-		 mockMvc.perform(get("/groups/{id}", group.getId()))
-		 .andExpect(status().isOk())
-         .andExpect(view().name("groups/show"))
-         .andExpect(forwardedUrl("groups/show"))
-         .andExpect(model().attribute("group", group));
+
+		mockMvc.perform(get("/groups/{id}", group.getId()))
+				.andExpect(status().isOk())
+				.andExpect(view().name("groups/show"))
+				.andExpect(forwardedUrl("groups/show"))
+				.andExpect(model().attribute("group", group));
 	}
 }
