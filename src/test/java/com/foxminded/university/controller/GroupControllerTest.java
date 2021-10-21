@@ -35,7 +35,7 @@ public class GroupControllerTest {
 	private GroupController groupController;
 	
 	@BeforeEach
-    public void setMocks() {
+    public void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(groupController).build();
     }
 	

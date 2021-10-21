@@ -44,10 +44,10 @@ public class LectureControllerTest {
 	private LectureController lectureController;
 	
 	@BeforeEach
-    public void setMocks() {
+	public void setUp() {
 		PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
-        resolver.setFallbackPageable(PageRequest.of(0, 1));
-        mockMvc = MockMvcBuilders.standaloneSetup(lectureController).setCustomArgumentResolvers(resolver).build();
+		resolver.setFallbackPageable(PageRequest.of(0, 1));
+		mockMvc = MockMvcBuilders.standaloneSetup(lectureController).setCustomArgumentResolvers(resolver).build();
     }
 	
 	@Test
@@ -81,7 +81,6 @@ public class LectureControllerTest {
 				.build();
 		List<Lecture> lectures = Arrays.asList(lecture1, lecture2);
 		Page<Lecture> page = new PageImpl<>(lectures, PageRequest.of(0, 1), 2);
-
 		when(lectureService.findAll(isA(Pageable.class))).thenReturn(page);
 
 		mockMvc.perform(get("/lectures"))
@@ -89,7 +88,6 @@ public class LectureControllerTest {
 				.andExpect(view().name("lectures/index"))
 				.andExpect(forwardedUrl("lectures/index"))
 				.andExpect(model().attribute("lectures", page));
-
 		verifyNoMoreInteractions(lectureService);
 	}
 	
@@ -101,7 +99,6 @@ public class LectureControllerTest {
 		Subject subject = Subject.builder().id(1).name("Subject name").description("Subject desc").cathedra(cathedra).build();
 		Teacher teacher = Teacher.builder().id(1).firstName("Test Name").lastName("Last Name").cathedra(cathedra).subjects(Arrays.asList(subject)).build();
 		LectureTime time = LectureTime.builder().id(1).start(LocalTime.of(8, 0)).end(LocalTime.of(9, 45)).build();
-		
 		Lecture lecture = Lecture.builder()
 				.id(1)
 				.audience(audience)
@@ -112,10 +109,9 @@ public class LectureControllerTest {
 				.teacher(teacher)
 				.time(time)
 				.build();
-		
 		when(lectureService.findById(lecture.getId())).thenReturn(lecture);
-		
-		 mockMvc.perform(get("/lectures/{id}", lecture.getId()))
+
+		mockMvc.perform(get("/lectures/{id}", lecture.getId()))
 		 .andExpect(status().isOk())
          .andExpect(view().name("lectures/show"))
          .andExpect(forwardedUrl("lectures/show"))

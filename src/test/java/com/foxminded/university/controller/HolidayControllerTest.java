@@ -38,11 +38,11 @@ public class HolidayControllerTest {
 	private HolidayController holidayController;
 	
 	@BeforeEach
-    public void setMocks() {
+	public void setUp() {
 		PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
-        resolver.setFallbackPageable(PageRequest.of(0, 1));
-        mockMvc = MockMvcBuilders.standaloneSetup(holidayController).setCustomArgumentResolvers(resolver).build();
-    }
+		resolver.setFallbackPageable(PageRequest.of(0, 1));
+		mockMvc = MockMvcBuilders.standaloneSetup(holidayController).setCustomArgumentResolvers(resolver).build();
+	}
 	
 	@Test
 	public void whenGetAllHolidays_thenAllHolidaysReturned() throws Exception {
@@ -61,7 +61,6 @@ public class HolidayControllerTest {
 				.build();
 		List<Holiday> holidays = Arrays.asList(holiday1, holiday2);
 		Page<Holiday> page = new PageImpl<>(holidays, PageRequest.of(0, 1), 2);
-
 		when(holidayService.findAll(isA(Pageable.class))).thenReturn(page);
 
 		mockMvc.perform(get("/holidays"))
@@ -69,7 +68,6 @@ public class HolidayControllerTest {
 				.andExpect(view().name("holidays/index"))
 				.andExpect(forwardedUrl("holidays/index"))
 				.andExpect(model().attribute("holidays", page));
-		
 		verifyNoMoreInteractions(holidayService);
 	}
 	
@@ -82,10 +80,9 @@ public class HolidayControllerTest {
 				.date(LocalDate.of(2021, 1, 1))
 				.cathedra(cathedra)
 				.build();
-		
 		when(holidayService.findById(holiday.getId())).thenReturn(holiday);
 		
-		 mockMvc.perform(get("/holidays/{id}", holiday.getId()))
+		mockMvc.perform(get("/holidays/{id}", holiday.getId()))
 		 .andExpect(status().isOk())
          .andExpect(view().name("holidays/show"))
          .andExpect(forwardedUrl("holidays/show"))

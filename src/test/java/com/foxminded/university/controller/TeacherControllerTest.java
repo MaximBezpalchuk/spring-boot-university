@@ -37,11 +37,10 @@ public class TeacherControllerTest {
 	private TeacherController teacherController;
 	
 	@BeforeEach
-	public void setMocks() {
+	public void setUp() {
 		PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
-        resolver.setFallbackPageable(PageRequest.of(0, 2));
-		mockMvc = MockMvcBuilders.standaloneSetup(teacherController)
-				.setCustomArgumentResolvers(resolver).build();
+		resolver.setFallbackPageable(PageRequest.of(0, 2));
+		mockMvc = MockMvcBuilders.standaloneSetup(teacherController).setCustomArgumentResolvers(resolver).build();
 	}
 	
 	@Test
@@ -64,8 +63,6 @@ public class TeacherControllerTest {
 				.build();
 		List<Teacher> teachers = Arrays.asList(teacher1, teacher2);
 		Page<Teacher> page = new PageImpl<>(teachers, PageRequest.of(0, 2), 1);
-		
-
 		when(teacherService.findAll(isA(Pageable.class))).thenReturn(page);
 
 		mockMvc.perform(get("/teachers"))
@@ -73,7 +70,6 @@ public class TeacherControllerTest {
 				.andExpect(view().name("teachers/index"))
 				.andExpect(forwardedUrl("teachers/index"))
 				.andExpect(model().attribute("teachers", page));
-		
 		verifyNoMoreInteractions(teacherService);
 	}
 	
@@ -88,10 +84,9 @@ public class TeacherControllerTest {
 				.cathedra(cathedra)
 				.subjects(Arrays.asList(subject))
 				.build();
-		
 		when(teacherService.findById(teacher.getId())).thenReturn(teacher);
 		
-		 mockMvc.perform(get("/teachers/{id}", teacher.getId()))
+		mockMvc.perform(get("/teachers/{id}", teacher.getId()))
 		 .andExpect(status().isOk())
          .andExpect(view().name("teachers/show"))
          .andExpect(forwardedUrl("teachers/show"))

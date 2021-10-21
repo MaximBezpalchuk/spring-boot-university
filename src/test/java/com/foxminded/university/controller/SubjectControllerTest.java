@@ -36,10 +36,10 @@ public class SubjectControllerTest {
 	private SubjectController subjectController;
 	
 	@BeforeEach
-    public void setMocks() {
+	public void setUp() {
 		PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
-        resolver.setFallbackPageable(PageRequest.of(0, 1));
-        mockMvc = MockMvcBuilders.standaloneSetup(subjectController).setCustomArgumentResolvers(resolver).build();
+		resolver.setFallbackPageable(PageRequest.of(0, 1));
+		mockMvc = MockMvcBuilders.standaloneSetup(subjectController).setCustomArgumentResolvers(resolver).build();
     }
 	
 	@Test
@@ -59,8 +59,6 @@ public class SubjectControllerTest {
 				.build();
 		List<Subject> subjects = Arrays.asList(subject1, subject2);
 		Page<Subject> page = new PageImpl<>(subjects, PageRequest.of(0, 1), 2);
-
-
 		when(subjectService.findAll(isA(Pageable.class))).thenReturn(page);
 
 		mockMvc.perform(get("/subjects"))
@@ -68,7 +66,6 @@ public class SubjectControllerTest {
 				.andExpect(view().name("subjects/index"))
 				.andExpect(forwardedUrl("subjects/index"))
 				.andExpect(model().attribute("subjects", page));
-
 		verifyNoMoreInteractions(subjectService);
 	}
 	
@@ -81,10 +78,9 @@ public class SubjectControllerTest {
 				.description("Subject desc")
 				.cathedra(cathedra)
 				.build();
-		
 		when(subjectService.findById(subject.getId())).thenReturn(subject);
 		
-		 mockMvc.perform(get("/subjects/{id}", subject.getId()))
+		mockMvc.perform(get("/subjects/{id}", subject.getId()))
 		 .andExpect(status().isOk())
          .andExpect(view().name("subjects/show"))
          .andExpect(forwardedUrl("subjects/show"))

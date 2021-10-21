@@ -40,10 +40,10 @@ public class VacationControllerTest {
 	private VacationController vacationController;
 	
 	@BeforeEach
-    public void setMocks() {
+    public void setUp() {
 		PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
-        resolver.setFallbackPageable(PageRequest.of(0, 1));
-        mockMvc = MockMvcBuilders.standaloneSetup(vacationController).setCustomArgumentResolvers(resolver).build();
+		resolver.setFallbackPageable(PageRequest.of(0, 1));
+		mockMvc = MockMvcBuilders.standaloneSetup(vacationController).setCustomArgumentResolvers(resolver).build();
     }
 	
 	@Test
@@ -63,17 +63,14 @@ public class VacationControllerTest {
 				.build();
 		List<Vacation> vacations = Arrays.asList(vacation1, vacation2);
 		Page<Vacation> page = new PageImpl<>(vacations, PageRequest.of(0, 1), 2);
-		
 		when(teacherService.findById(teacher.getId())).thenReturn(teacher);
 		when(vacationService.findByTeacherId(PageRequest.of(0, 1), teacher.getId())).thenReturn(page);
 		
-
 		mockMvc.perform(get("/teachers/{id}/vacations", teacher.getId()))
 				.andExpect(status().isOk())
 				.andExpect(view().name("teachers/vacations/index"))
 				.andExpect(forwardedUrl("teachers/vacations/index"))
 				.andExpect(model().attribute("vacations", page));
-
 		verifyNoMoreInteractions(vacationService);
 	}
 	
@@ -86,10 +83,9 @@ public class VacationControllerTest {
 				.start(LocalDate.of(2021, 1, 1))
 				.end(LocalDate.of(2021, 1, 2))
 				.build();
-		
 		when(vacationService.findById(vacation.getId())).thenReturn(vacation);
 		
-		 mockMvc.perform(get("/teachers/{teacherId}/vacations/{id}", teacher.getId(), vacation.getId()))
+		mockMvc.perform(get("/teachers/{teacherId}/vacations/{id}", teacher.getId(), vacation.getId()))
 		 .andExpect(status().isOk())
          .andExpect(view().name("teachers/vacations/show"))
          .andExpect(forwardedUrl("teachers/vacations/show"))

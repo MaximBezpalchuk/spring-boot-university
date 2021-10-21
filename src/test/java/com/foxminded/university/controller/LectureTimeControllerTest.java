@@ -31,8 +31,8 @@ public class LectureTimeControllerTest {
 	private LectureTimeController lectureTimeController;
 	
 	@BeforeEach
-    public void setMocks() {
-        mockMvc = MockMvcBuilders.standaloneSetup(lectureTimeController).build();
+	public void setUp() {
+		mockMvc = MockMvcBuilders.standaloneSetup(lectureTimeController).build();
     }
 	
 	@Test
@@ -47,17 +47,14 @@ public class LectureTimeControllerTest {
 				.start(LocalTime.of(10, 0))
 				.end(LocalTime.of(12, 45))
 				.build();
-		
 		List<LectureTime> lectureTimes = Arrays.asList(lectureTime1, lectureTime2);
-		
         when(lectureTimeService.findAll()).thenReturn(lectureTimes);
- 
+        
         mockMvc.perform(get("/lecturetimes"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("lecturetimes/index"))
                 .andExpect(forwardedUrl("lecturetimes/index"))
                 .andExpect(model().attribute("lectureTimes", lectureTimes));
- 
         verifyNoMoreInteractions(lectureTimeService);
     }
 	
@@ -68,10 +65,9 @@ public class LectureTimeControllerTest {
 				.start(LocalTime.of(8, 0))
 				.end(LocalTime.of(9, 45))
 				.build();
-		
 		when(lectureTimeService.findById(lectureTime.getId())).thenReturn(lectureTime);
-		
-		 mockMvc.perform(get("/lecturetimes/{id}", lectureTime.getId()))
+
+		mockMvc.perform(get("/lecturetimes/{id}", lectureTime.getId()))
 		 .andExpect(status().isOk())
          .andExpect(view().name("lecturetimes/show"))
          .andExpect(forwardedUrl("lecturetimes/show"))
