@@ -52,27 +52,71 @@ public class JdbcVacationDaoTest {
 	
 	@Test
 	void givenPageable_whenFindPaginatedVacations_thenVacationsFound() {
-		Page<Vacation> actual = vacationDao.findPaginatedVacationsByTeacherId(PageRequest.of(0,1), 1);
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+		Subject subject = Subject.builder()
+				.id(1)
+				.cathedra(cathedra)
+				.name("Weapon Tactics")
+				.description("Learning how to use heavy weapon and guerrilla tactics")
+				.build();
+		Teacher teacher = Teacher.builder()
+				.firstName("Daniel")
+				.lastName("Morpheus")
+				.address("Virtual Reality Capsule no 1")
+				.gender(Gender.MALE)
+				.birthDate(LocalDate.of(1970, 1, 1))
+				.cathedra(cathedra)
+				.degree(Degree.PROFESSOR)
+				.phone("1")
+				.email("1@bigowl.com")
+				.postalCode("12345")
+				.education("Higher education")
+				.id(1)
+				.subjects(Arrays.asList(subject))
+				.build();
 		List<Vacation> vacations = List.of(Vacation.builder()
 				.id(1)
 				.start(LocalDate.of(2021, 1, 15))
 				.end(LocalDate.of(2021, 1, 29))
-				.teacher(actual.getContent().get(0).getTeacher())
+				.teacher(teacher)
 				.build());
 		Page<Vacation> expected = new PageImpl<>(vacations, PageRequest.of(0, 1), 2);
+		Page<Vacation> actual = vacationDao.findPaginatedVacationsByTeacherId(PageRequest.of(0,1), 1);
 		
 		assertEquals(expected, actual);
 	}
 
 	@Test
 	void givenExistingVacation_whenFindById_thenVacationFound() {
-		Optional<Vacation> actual = vacationDao.findById(1);
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+		Subject subject = Subject.builder()
+				.id(1)
+				.cathedra(cathedra)
+				.name("Weapon Tactics")
+				.description("Learning how to use heavy weapon and guerrilla tactics")
+				.build();
+		Teacher teacher = Teacher.builder()
+				.firstName("Daniel")
+				.lastName("Morpheus")
+				.address("Virtual Reality Capsule no 1")
+				.gender(Gender.MALE)
+				.birthDate(LocalDate.of(1970, 1, 1))
+				.cathedra(cathedra)
+				.degree(Degree.PROFESSOR)
+				.phone("1")
+				.email("1@bigowl.com")
+				.postalCode("12345")
+				.education("Higher education")
+				.id(1)
+				.subjects(Arrays.asList(subject))
+				.build();
 		Optional<Vacation> expected = Optional.of(Vacation.builder()
 				.id(1)
 				.start(LocalDate.of(2021, 1, 15))
 				.end(LocalDate.of(2021, 1, 29))
-				.teacher(actual.get().getTeacher())
+				.teacher(teacher)
 				.build());
+		Optional<Vacation> actual = vacationDao.findById(1);
 
 		assertEquals(expected, actual);
 	}
@@ -121,22 +165,42 @@ public class JdbcVacationDaoTest {
 
 	@Test
 	void givenExistingVacation_whenFindByTeacherId_thenVacationFound() {
-		List<Vacation> expected = new ArrayList<>();
-		List<Vacation> actual = vacationDao.findByTeacherId(1);
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+		Subject subject = Subject.builder()
+				.id(1)
+				.cathedra(cathedra)
+				.name("Weapon Tactics")
+				.description("Learning how to use heavy weapon and guerrilla tactics")
+				.build();
+		Teacher teacher = Teacher.builder()
+				.firstName("Daniel")
+				.lastName("Morpheus")
+				.address("Virtual Reality Capsule no 1")
+				.gender(Gender.MALE)
+				.birthDate(LocalDate.of(1970, 1, 1))
+				.cathedra(cathedra)
+				.degree(Degree.PROFESSOR)
+				.phone("1")
+				.email("1@bigowl.com")
+				.postalCode("12345")
+				.education("Higher education")
+				.id(1)
+				.subjects(Arrays.asList(subject))
+				.build();
 		Vacation vacation1 = Vacation.builder()
 				.id(1)
 				.start(LocalDate.of(2021, 1, 15))
 				.end(LocalDate.of(2021, 1, 29))
-				.teacher(actual.get(0).getTeacher())
+				.teacher(teacher)
 				.build();
 		Vacation vacation2 = Vacation.builder()
 				.id(2)
 				.start(LocalDate.of(2021, 6, 15))
 				.end(LocalDate.of(2021, 6, 29))
-				.teacher(actual.get(0).getTeacher())
+				.teacher(teacher)
 				.build();
-		expected.add(vacation1);
-		expected.add(vacation2);
+		List<Vacation> expected = Arrays.asList(vacation1, vacation2);
+		List<Vacation> actual = vacationDao.findByTeacherId(1);
 
 		assertEquals(expected, actual);
 	}
@@ -163,7 +227,6 @@ public class JdbcVacationDaoTest {
 				.description("Learning how to use heavy weapon and guerrilla tactics").id(1).build();
 		subjects.add(subject);
 		teacher.setSubjects(subjects);
-		
 		Optional<Vacation> expected = Optional.of(Vacation.builder()
 				.id(1)
 				.start(LocalDate.of(2021, 1, 15))
@@ -198,7 +261,6 @@ public class JdbcVacationDaoTest {
 				.description("Learning how to use heavy weapon and guerrilla tactics").id(1).build();
 		subjects.add(subject);
 		teacher.setSubjects(subjects);
-		
 		Vacation vacation1 = Vacation.builder()
 				.id(1)
 				.start(LocalDate.of(2021, 1, 15))

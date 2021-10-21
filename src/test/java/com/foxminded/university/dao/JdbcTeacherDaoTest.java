@@ -7,6 +7,7 @@ import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,30 +52,36 @@ public class JdbcTeacherDaoTest {
 	
 	@Test
 	void givenPageable_whenFindPaginatedTeachers_thenTeachersFound() {
-		Page<Teacher> actual = teacherDao.findPaginatedTeachers(PageRequest.of(0,1));
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+		Subject subject = Subject.builder()
+				.id(1)
+				.cathedra(cathedra)
+				.name("Weapon Tactics")
+				.description("Learning how to use heavy weapon and guerrilla tactics")
+				.build();
 		List<Teacher> teachers = List.of(Teacher.builder()
 				.firstName("Daniel")
 				.lastName("Morpheus")
 				.address("Virtual Reality Capsule no 1")
 				.gender(Gender.MALE)
 				.birthDate(LocalDate.of(1970, 1, 1))
-				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+				.cathedra(cathedra)
 				.degree(Degree.PROFESSOR)
 				.phone("1")
 				.email("1@bigowl.com")
 				.postalCode("12345")
 				.education("Higher education")
 				.id(1)
-				.subjects(actual.getContent().get(0).getSubjects())
+				.subjects(Arrays.asList(subject))
 				.build());
 		Page<Teacher> expected = new PageImpl<>(teachers, PageRequest.of(0, 1), 2);
+		Page<Teacher> actual = teacherDao.findPaginatedTeachers(PageRequest.of(0,1));
 		
 		assertEquals(expected, actual);
 	}
 
 	@Test
 	void givenExistingTeacher_whenFindById_thenTeacherFound() {
-		Optional<Teacher> actual = teacherDao.findById(1);
 		Optional<Teacher> expected = Optional.of(Teacher.builder()
 				.firstName("Daniel")
 				.lastName("Morpheus")
@@ -98,6 +105,7 @@ public class JdbcTeacherDaoTest {
 				.build();
 		subjects.add(subject);
 		expected.get().setSubjects(subjects);
+		Optional<Teacher> actual = teacherDao.findById(1);
 
 		assertEquals(expected, actual);
 	}

@@ -46,7 +46,6 @@ public class JdbcSubjectDaoTest {
 	
 	@Test
 	void givenPageable_whenFindPaginatedSubjects_thenSubjectsFound() {
-		Page<Subject> actual = subjectDao.findPaginatedSubjects(PageRequest.of(0,1));
 		List<Subject> subjects = List.of(Subject.builder()
 				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
 				.name("Weapon Tactics")
@@ -54,19 +53,20 @@ public class JdbcSubjectDaoTest {
 				.id(1)
 				.build());
 		Page<Subject> expected = new PageImpl<>(subjects, PageRequest.of(0, 1), 3);
+		Page<Subject> actual = subjectDao.findPaginatedSubjects(PageRequest.of(0,1));
 		
 		assertEquals(expected, actual);
 	}
 
 	@Test
 	void givenExistingSubject_whenFindById_thenSubjectFound() {
-		Optional<Subject> actual = subjectDao.findById(1);
 		Optional<Subject> expected = Optional.of(Subject.builder()
 				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
 				.name("Weapon Tactics")
 				.description("Learning how to use heavy weapon and guerrilla tactics")
 				.id(1)
 				.build());
+		Optional<Subject> actual = subjectDao.findById(1);
 
 		assertEquals(expected, actual);
 	}
@@ -112,27 +112,27 @@ public class JdbcSubjectDaoTest {
 	@Test
 	void givenExistingSubject_whenFindByTeacherId_thenSubjectFound() {
 		List<Subject> expected = new ArrayList<>();
-		List<Subject> actual = subjectDao.findByTeacherId(1);
-		Cathedra cathedra = actual.get(0).getCathedra();
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
 		Subject subject1 = Subject.builder()
 				.id(1).cathedra(cathedra)
 				.name("Weapon Tactics")
 				.description("Learning how to use heavy weapon and guerrilla tactics")
 				.build();
 		expected.add(subject1);
+		List<Subject> actual = subjectDao.findByTeacherId(1);
 
 		assertEquals(expected, actual);
 	}
 	
 	@Test
 	void givenSubjectName_whenFindByName_thenSubjectFound() {
-		Optional<Subject> actual = subjectDao.findByName("Weapon Tactics");
 		Optional<Subject> expected = Optional.of(Subject.builder()
 				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
 				.name("Weapon Tactics")
 				.description("Learning how to use heavy weapon and guerrilla tactics")
 				.id(1)
 				.build());
+		Optional<Subject> actual = subjectDao.findByName("Weapon Tactics");
 
 		assertEquals(expected, actual);
 	}

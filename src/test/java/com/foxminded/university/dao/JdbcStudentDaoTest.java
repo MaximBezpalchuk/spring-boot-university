@@ -49,7 +49,8 @@ public class JdbcStudentDaoTest {
 	
 	@Test
 	void givenPageable_whenFindPaginatedStudents_thenStudentsFound() {
-		Page<Student> actual = studentDao.findPaginatedStudents(PageRequest.of(0,1));
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+		Group group = Group.builder().id(1).cathedra(cathedra).name("Killers").build();
 		List<Student> students = List.of(Student.builder()
 				.firstName("Petr")
 				.lastName("Orlov")
@@ -60,9 +61,10 @@ public class JdbcStudentDaoTest {
 				.email("1@owl.com")
 				.postalCode("999")
 				.education("General secondary education")
-				.group(actual.getContent().get(0).getGroup())
+				.group(group)
 				.id(1)
 				.build());
+		Page<Student> actual = studentDao.findPaginatedStudents(PageRequest.of(0,1));
 		Page<Student> expected = new PageImpl<>(students, PageRequest.of(0, 1), 5);
 		
 		assertEquals(expected, actual);
@@ -70,7 +72,8 @@ public class JdbcStudentDaoTest {
 
 	@Test
 	void givenExistingStudent_whenFindById_thenStudentFound() {
-		Optional<Student> actual = studentDao.findById(1);
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+		Group group = Group.builder().id(1).cathedra(cathedra).name("Killers").build();
 		Optional<Student> expected = Optional.of(Student.builder()
 				.firstName("Petr")
 				.lastName("Orlov")
@@ -81,9 +84,10 @@ public class JdbcStudentDaoTest {
 				.email("1@owl.com")
 				.postalCode("999")
 				.education("General secondary education")
-				.group(actual.get().getGroup())
+				.group(group)
 				.id(1)
 				.build());
+		Optional<Student> actual = studentDao.findById(1);
 
 		assertEquals(expected, actual);
 	}
