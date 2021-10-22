@@ -9,6 +9,9 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -22,17 +25,19 @@ import com.foxminded.university.model.Vacation;
 @Component
 public class JdbcVacationDao implements VacationDao {
 
-	private final static Logger logger = LoggerFactory.getLogger(JdbcVacationDao.class);
+	private static final Logger logger = LoggerFactory.getLogger(JdbcVacationDao.class);
 
-	private final static String SELECT_ALL = "SELECT * FROM vacations";
-	private final static String SELECT_BY_ID = "SELECT * FROM vacations WHERE id = ?";
-	private final static String INSERT_VACATION = "INSERT INTO vacations(start, finish, teacher_id) VALUES(?, ?, ?)";
-	private final static String UPDATE_VACATION = "UPDATE vacations SET start=?, finish=?, teacher_id=? WHERE id=?";
-	private final static String DELETE_VACATION = "DELETE FROM vacations WHERE id = ?";
-	private final static String SELECT_BY_TEACHER_ID = "SELECT * FROM vacations WHERE teacher_id=?";
-	private final static String SELECT_BY_TEACHER_ID_AND_YEAR = "SELECT * FROM vacations WHERE teacher_id = ? AND EXTRACT(YEAR FROM start) = ?";
-	private final static String SELECT_BY_PERIOD_AND_TEACHER_ID = "SELECT * FROM vacations WHERE start = ? AND finish = ? AND teacher_id = ?";
-	private final static String SELECT_BY_DATE_IN_PERIOD_AND_TEACHER_ID = "SELECT * FROM vacations WHERE start >= ? AND finish <= ? AND teacher_id = ?";
+	private static final String SELECT_ALL = "SELECT * FROM vacations";
+	private static final String COUNT_ALL = "SELECT COUNT(*) FROM vacations WHERE teacher_id=?";
+	private static final String SELECT_BY_PAGE = "SELECT * FROM vacations WHERE teacher_id=? LIMIT ? OFFSET ?";
+	private static final String SELECT_BY_ID = "SELECT * FROM vacations WHERE id = ?";
+	private static final String INSERT_VACATION = "INSERT INTO vacations(start, finish, teacher_id) VALUES(?, ?, ?)";
+	private static final String UPDATE_VACATION = "UPDATE vacations SET start=?, finish=?, teacher_id=? WHERE id=?";
+	private static final String DELETE_VACATION = "DELETE FROM vacations WHERE id = ?";
+	private static final String SELECT_BY_TEACHER_ID = "SELECT * FROM vacations WHERE teacher_id=?";
+	private static final String SELECT_BY_TEACHER_ID_AND_YEAR = "SELECT * FROM vacations WHERE teacher_id = ? AND EXTRACT(YEAR FROM start) = ?";
+	private static final String SELECT_BY_PERIOD_AND_TEACHER_ID = "SELECT * FROM vacations WHERE start = ? AND finish = ? AND teacher_id = ?";
+	private static final String SELECT_BY_DATE_IN_PERIOD_AND_TEACHER_ID = "SELECT * FROM vacations WHERE start >= ? AND finish <= ? AND teacher_id = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private VacationRowMapper rowMapper;
@@ -46,6 +51,17 @@ public class JdbcVacationDao implements VacationDao {
 	public List<Vacation> findAll() {
 		logger.debug("Find all vacations");
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
+	}
+
+	@Override
+	public Page<Vacation> findPaginatedVacationsByTeacherId(Pageable pageable, int id) {
+		logger.debug("Find all vacations with pageSize:{} and offset:{} by teacherId:{}", pageable.getPageSize(),
+				pageable.getOffset(), id);
+		int total = jdbcTemplate.queryForObject(COUNT_ALL, Integer.class, id);
+		List<Vacation> vacations = jdbcTemplate.query(SELECT_BY_PAGE, rowMapper, id, pageable.getPageSize(),
+				pageable.getOffset());
+
+		return new PageImpl<>(vacations, pageable, total);
 	}
 
 	@Override

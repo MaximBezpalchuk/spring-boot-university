@@ -47,7 +47,7 @@ public class GroupServiceTest {
 
 		assertEquals(expected.get(), actual);
 	}
-	
+
 	@Test
 	void givenExistingGroup_whenFindById_thenEntityNotFoundException() {
 		when(groupDao.findById(10)).thenReturn(Optional.empty());
@@ -94,15 +94,15 @@ public class GroupServiceTest {
 
 		assertEquals(expected, actual);
 	}
-	
+
 	@Test
 	void givenNotUniqueGroup_whenSave_thenEntityNotUniqueException() {
 		Group group1 = Group.builder().id(1).name("Test1").build();
 		Group group2 = Group.builder().id(2).name("Test2").build();
 		when(groupDao.findByName(group1.getName())).thenReturn(Optional.of(group2));
 		Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
-				groupService.save(group1);
-			});
+			groupService.save(group1);
+		});
 
 		assertEquals("Group with name Test1 is already exists!", exception.getMessage());
 	}

@@ -20,6 +20,9 @@ public class Teacher extends Person {
 		this.degree = degree;
 	}
 
+	public Teacher() {
+	}
+
 	public static Builder builder() {
 		return new Builder();
 	}

@@ -20,14 +20,14 @@ import com.foxminded.university.model.Cathedra;
 @Component
 public class JdbcCathedraDao implements CathedraDao {
 
-	private final static Logger logger = LoggerFactory.getLogger(JdbcCathedraDao.class);
+	private static final Logger logger = LoggerFactory.getLogger(JdbcCathedraDao.class);
 
-	private final static String SELECT_ALL = "SELECT * FROM cathedras";
-	private final static String SELECT_BY_ID = "SELECT * FROM cathedras WHERE id = ?";
-	private final static String INSERT_CATHEDRA = "INSERT INTO cathedras(name) VALUES(?)";
-	private final static String UPDATE_CATHEDRA = "UPDATE cathedras SET name=? WHERE id=?";
-	private final static String DELETE_CATHEDRA = "DELETE FROM cathedras WHERE id = ?";
-	private final static String SELECT_BY_NAME = "SELECT * FROM cathedras WHERE name = ?";
+	private static final String SELECT_ALL = "SELECT * FROM cathedras";
+	private static final String SELECT_BY_ID = "SELECT * FROM cathedras WHERE id = ?";
+	private static final String INSERT_CATHEDRA = "INSERT INTO cathedras(name) VALUES(?)";
+	private static final String UPDATE_CATHEDRA = "UPDATE cathedras SET name=? WHERE id=?";
+	private static final String DELETE_CATHEDRA = "DELETE FROM cathedras WHERE id = ?";
+	private static final String SELECT_BY_NAME = "SELECT * FROM cathedras WHERE name = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private CathedraRowMapper rowMapper;

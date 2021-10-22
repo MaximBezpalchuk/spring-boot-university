@@ -21,14 +21,14 @@ import com.foxminded.university.model.LectureTime;
 @Component
 public class JdbcLectureTimeDao implements LectureTimeDao {
 
-	private final static Logger logger = LoggerFactory.getLogger(JdbcLectureTimeDao.class);
+	private static final Logger logger = LoggerFactory.getLogger(JdbcLectureTimeDao.class);
 
-	private final static String SELECT_ALL = "SELECT * FROM lecture_times";
-	private final static String SELECT_BY_ID = "SELECT * FROM lecture_times WHERE id = ?";
-	private final static String INSERT_LECTURE_TIME = "INSERT INTO lecture_times(start, finish) VALUES(?, ?)";
-	private final static String UPDATE_LECTURE_TIME = "UPDATE lecture_times SET start=?, finish=? WHERE id=?";
-	private final static String DELETE_LECTURE_TIME = "DELETE FROM lecture_times WHERE id = ?";
-	private final static String SELECT_BY_PERIOD = "SELECT * FROM lecture_times WHERE start = ? AND finish = ?";
+	private static final String SELECT_ALL = "SELECT * FROM lecture_times";
+	private static final String SELECT_BY_ID = "SELECT * FROM lecture_times WHERE id = ?";
+	private static final String INSERT_LECTURE_TIME = "INSERT INTO lecture_times(start, finish) VALUES(?, ?)";
+	private static final String UPDATE_LECTURE_TIME = "UPDATE lecture_times SET start=?, finish=? WHERE id=?";
+	private static final String DELETE_LECTURE_TIME = "DELETE FROM lecture_times WHERE id = ?";
+	private static final String SELECT_BY_PERIOD = "SELECT * FROM lecture_times WHERE start = ? AND finish = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private LectureTimeRowMapper rowMapper;

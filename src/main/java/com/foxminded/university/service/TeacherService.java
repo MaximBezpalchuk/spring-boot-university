@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.foxminded.university.dao.TeacherDao;
@@ -29,6 +31,11 @@ public class TeacherService {
 		return teacherDao.findAll();
 	}
 
+	public Page<Teacher> findAll(final Pageable pageable) {
+		logger.debug("Find all teachers paginated");
+		return teacherDao.findPaginatedTeachers(pageable);
+	}
+
 	public Teacher findById(int id) {
 		logger.debug("Find teacher by id {}", id);
 		return teacherDao.findById(id)
@@ -51,7 +58,7 @@ public class TeacherService {
 
 		Optional<Teacher> existingTeacher = teacherDao.findByFullNameAndBirthDate(teacher.getFirstName(),
 				teacher.getLastName(), teacher.getBirthDate());
-		if (!existingTeacher.isEmpty() && (existingTeacher.get().getId() != teacher.getId())) {
+		if (existingTeacher.isPresent() && (existingTeacher.get().getId() != teacher.getId())) {
 			throw new EntityNotUniqueException("Teacher with full name " + teacher.getFirstName() + " "
 					+ teacher.getLastName() + " and birth date " + teacher.getBirthDate() + " is already exists!");
 		}

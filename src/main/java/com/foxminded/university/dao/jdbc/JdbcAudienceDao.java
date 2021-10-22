@@ -20,14 +20,14 @@ import com.foxminded.university.model.Audience;
 @Component
 public class JdbcAudienceDao implements AudienceDao {
 
-	private final static Logger logger = LoggerFactory.getLogger(JdbcAudienceDao.class);
+	private static final Logger logger = LoggerFactory.getLogger(JdbcAudienceDao.class);
 
-	private final static String SELECT_ALL = "SELECT * FROM audiences";
-	private final static String SELECT_BY_ID = "SELECT * FROM audiences WHERE id = ?";
-	private final static String INSERT_AUDIENCE = "INSERT INTO audiences(room, capacity, cathedra_id) VALUES(?, ?, ?)";
-	private final static String UPDATE_AUDIENCE = "UPDATE audiences SET room=?, capacity=?, cathedra_id=? WHERE id=?";
-	private final static String DELETE_AUDIENCE = "DELETE FROM audiences WHERE id = ?";
-	private final static String SELECT_BY_ROOM = "SELECT * FROM audiences WHERE room = ?";
+	private static final String SELECT_ALL = "SELECT * FROM audiences";
+	private static final String SELECT_BY_ID = "SELECT * FROM audiences WHERE id = ?";
+	private static final String INSERT_AUDIENCE = "INSERT INTO audiences(room, capacity, cathedra_id) VALUES(?, ?, ?)";
+	private static final String UPDATE_AUDIENCE = "UPDATE audiences SET room=?, capacity=?, cathedra_id=? WHERE id=?";
+	private static final String DELETE_AUDIENCE = "DELETE FROM audiences WHERE id = ?";
+	private static final String SELECT_BY_ROOM = "SELECT * FROM audiences WHERE room = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private AudienceRowMapper rowMapper;

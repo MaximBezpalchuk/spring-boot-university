@@ -32,12 +32,11 @@ public class LectureTimeServiceTest {
 	private JdbcLectureTimeDao lectureTimeDao;
 	@InjectMocks
 	private LectureTimeService lectureTimeService;
-	
+
 	@BeforeEach
 	void setUp() {
 		ReflectionTestUtils.setField(lectureTimeService, "minLectureDurationInMinutes", 30);
 	}
-
 
 	@Test
 	void givenListOfLectureTimes_whenFindAll_thenAllExistingLectureTimesFound() {
@@ -57,7 +56,7 @@ public class LectureTimeServiceTest {
 
 		assertEquals(expected.get(), actual);
 	}
-	
+
 	@Test
 	void givenExistingLectureTime_whenFindById_thenEntityNotFoundException() {
 		when(lectureTimeDao.findById(100)).thenReturn(Optional.empty());
@@ -77,10 +76,10 @@ public class LectureTimeServiceTest {
 				.end(end)
 				.build();
 		lectureTimeService.save(lectureTime);
-		
+
 		verify(lectureTimeDao).save(lectureTime);
 	}
-	
+
 	@Test
 	void givenExistingLectureTime_whenSave_thenSaved() {
 		LocalTime start = LocalTime.of(9, 0);
@@ -91,10 +90,10 @@ public class LectureTimeServiceTest {
 				.build();
 		when(lectureTimeDao.findByPeriod(start, end)).thenReturn(Optional.of(lectureTime));
 		lectureTimeService.save(lectureTime);
-		
+
 		verify(lectureTimeDao).save(lectureTime);
 	}
-	
+
 	@Test
 	void givenNotUniqueLectureTime_whenSave_thenEntityNotUniqueException() {
 		LocalTime start = LocalTime.of(9, 0);
@@ -112,12 +111,13 @@ public class LectureTimeServiceTest {
 		when(lectureTimeDao.findByPeriod(lectureTime1.getStart(),
 				lectureTime1.getEnd())).thenReturn(Optional.of(lectureTime2));
 		Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
-				lectureTimeService.save(lectureTime1);
-			});
+			lectureTimeService.save(lectureTime1);
+		});
 
-		assertEquals("Lecture time with start time 09:00 and end time 10:00 is already exists!", exception.getMessage());
+		assertEquals("Lecture time with start time 09:00 and end time 10:00 is already exists!",
+				exception.getMessage());
 	}
-	
+
 	@Test
 	void givenLectureTimeLessThanMinLectureDuration_whenSave_thenLectureTimeDurationMoreThanChosenTimeException() {
 		LocalTime start = LocalTime.of(9, 0);
@@ -130,9 +130,9 @@ public class LectureTimeServiceTest {
 			lectureTimeService.save(lectureTime);
 		});
 
-	assertEquals("Duration 20 minutes is less than min lecture duration (30 minutes)!", exception.getMessage());
-}
-	
+		assertEquals("Duration 20 minutes is less than min lecture duration (30 minutes)!", exception.getMessage());
+	}
+
 	@Test
 	void givenLectureTimeWithWrongEnd_whenSave_thenLectureTimeNotCorrectException() {
 		LocalTime start = LocalTime.of(9, 0);
@@ -145,8 +145,8 @@ public class LectureTimeServiceTest {
 			lectureTimeService.save(lectureTime);
 		});
 
-	assertEquals("Lecture time`s start (09:00) can`t be after lecture time`s end (08:00)!", exception.getMessage());
-}
+		assertEquals("Lecture time`s start (09:00) can`t be after lecture time`s end (08:00)!", exception.getMessage());
+	}
 
 	@Test
 	void givenExistingLectureTimeId_whenDelete_thenDeleted() {

@@ -11,6 +11,9 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
@@ -18,12 +21,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.foxminded.university.model.Subject;
-import com.foxminded.university.config.SpringTestConfig;
+import com.foxminded.university.config.TestConfig;
 import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
 import com.foxminded.university.model.Cathedra;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = SpringTestConfig.class)
+@ContextConfiguration(classes = TestConfig.class)
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class JdbcSubjectDaoTest {
 
@@ -42,14 +45,28 @@ public class JdbcSubjectDaoTest {
 	}
 
 	@Test
+	void givenPageable_whenFindPaginatedSubjects_thenSubjectsFound() {
+		List<Subject> subjects = List.of(Subject.builder()
+				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+				.name("Weapon Tactics")
+				.description("Learning how to use heavy weapon and guerrilla tactics")
+				.id(1)
+				.build());
+		Page<Subject> expected = new PageImpl<>(subjects, PageRequest.of(0, 1), 3);
+		Page<Subject> actual = subjectDao.findPaginatedSubjects(PageRequest.of(0, 1));
+
+		assertEquals(expected, actual);
+	}
+
+	@Test
 	void givenExistingSubject_whenFindById_thenSubjectFound() {
-		Optional<Subject> actual = subjectDao.findById(1);
 		Optional<Subject> expected = Optional.of(Subject.builder()
 				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
 				.name("Weapon Tactics")
 				.description("Learning how to use heavy weapon and guerrilla tactics")
 				.id(1)
 				.build());
+		Optional<Subject> actual = subjectDao.findById(1);
 
 		assertEquals(expected, actual);
 	}
@@ -80,8 +97,9 @@ public class JdbcSubjectDaoTest {
 				.cathedra(Cathedra.builder().id(1).build())
 				.build();
 		subjectDao.save(expected);
-		
-		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME, "id = 1 AND name = 'Test Name' AND description = 'Test Description'"));
+
+		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME,
+				"id = 1 AND name = 'Test Name' AND description = 'Test Description'"));
 	}
 
 	@Test
@@ -95,27 +113,27 @@ public class JdbcSubjectDaoTest {
 	@Test
 	void givenExistingSubject_whenFindByTeacherId_thenSubjectFound() {
 		List<Subject> expected = new ArrayList<>();
-		List<Subject> actual = subjectDao.findByTeacherId(1);
-		Cathedra cathedra = actual.get(0).getCathedra();
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
 		Subject subject1 = Subject.builder()
 				.id(1).cathedra(cathedra)
 				.name("Weapon Tactics")
 				.description("Learning how to use heavy weapon and guerrilla tactics")
 				.build();
 		expected.add(subject1);
+		List<Subject> actual = subjectDao.findByTeacherId(1);
 
 		assertEquals(expected, actual);
 	}
-	
+
 	@Test
 	void givenSubjectName_whenFindByName_thenSubjectFound() {
-		Optional<Subject> actual = subjectDao.findByName("Weapon Tactics");
 		Optional<Subject> expected = Optional.of(Subject.builder()
 				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
 				.name("Weapon Tactics")
 				.description("Learning how to use heavy weapon and guerrilla tactics")
 				.id(1)
 				.build());
+		Optional<Subject> actual = subjectDao.findByName("Weapon Tactics");
 
 		assertEquals(expected, actual);
 	}

@@ -3,10 +3,13 @@ package com.foxminded.university.model;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 public class Holiday {
 
 	private int id;
 	private String name;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate date;
 	private Cathedra cathedra;
 
@@ -15,6 +18,9 @@ public class Holiday {
 		this.name = name;
 		this.date = date;
 		this.cathedra = cathedra;
+	}
+
+	public Holiday() {
 	}
 
 	public void setName(String name) {

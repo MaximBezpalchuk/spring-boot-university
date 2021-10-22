@@ -10,6 +10,9 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -27,18 +30,20 @@ import com.foxminded.university.model.Teacher;
 @Component
 public class JdbcLectureDao implements LectureDao {
 
-	private final static Logger logger = LoggerFactory.getLogger(JdbcLectureDao.class);
+	private static final Logger logger = LoggerFactory.getLogger(JdbcLectureDao.class);
 
-	private final static String SELECT_ALL = "SELECT * FROM lectures";
-	private final static String SELECT_BY_ID = "SELECT * FROM lectures WHERE id = ?";
-	private final static String INSERT_LECTURE = "INSERT INTO lectures(cathedra_id, subject_id, date, lecture_time_id, audience_id, teacher_id) VALUES(?, ?, ?, ?, ?, ?)";
-	private final static String UPDATE_LECTURE = "UPDATE lectures SET cathedra_id=?, subject_id=?, date=?, lecture_time_id=?, audience_id=?, teacher_id=? WHERE id=?";
-	private final static String DELETE_LECTURE = "DELETE FROM lectures WHERE id = ?";
-	private final static String INSERT_GROUP = "INSERT INTO lectures_groups(group_id, lecture_id) VALUES (?,?)";
-	private final static String DELETE_GROUP = "DELETE FROM lectures_groups WHERE group_id = ? AND lecture_id = ?";
-	private final static String SELECT_BY_AUDIENCE_DATE_LECTURE_TIME = "SELECT * FROM lectures WHERE audience_id = ? AND date = ? AND lecture_time_id = ?";
-	private final static String SELECT_BY_TEACHER_ID_DATE_AND_LECTURE_TIME_ID = "SELECT * FROM lectures WHERE teacher_id = ? AND date = ? AND lecture_time_id = ?";
-	private final static String SELECT_BY_TEACHER_AUDIENCE_DATE_LECTURE_TIME = "SELECT * FROM lectures WHERE teacher_id = ? AND audience_id = ? AND date = ? AND lecture_time_id = ?";
+	private static final String SELECT_ALL = "SELECT * FROM lectures";
+	private static final String COUNT_ALL = "SELECT COUNT(*) FROM lectures";
+	private static final String SELECT_BY_PAGE = "SELECT * FROM lectures LIMIT ? OFFSET ?";
+	private static final String SELECT_BY_ID = "SELECT * FROM lectures WHERE id = ?";
+	private static final String INSERT_LECTURE = "INSERT INTO lectures(cathedra_id, subject_id, date, lecture_time_id, audience_id, teacher_id) VALUES(?, ?, ?, ?, ?, ?)";
+	private static final String UPDATE_LECTURE = "UPDATE lectures SET cathedra_id=?, subject_id=?, date=?, lecture_time_id=?, audience_id=?, teacher_id=? WHERE id=?";
+	private static final String DELETE_LECTURE = "DELETE FROM lectures WHERE id = ?";
+	private static final String INSERT_GROUP = "INSERT INTO lectures_groups(group_id, lecture_id) VALUES (?,?)";
+	private static final String DELETE_GROUP = "DELETE FROM lectures_groups WHERE group_id = ? AND lecture_id = ?";
+	private static final String SELECT_BY_AUDIENCE_DATE_LECTURE_TIME = "SELECT * FROM lectures WHERE audience_id = ? AND date = ? AND lecture_time_id = ?";
+	private static final String SELECT_BY_TEACHER_ID_DATE_AND_LECTURE_TIME_ID = "SELECT * FROM lectures WHERE teacher_id = ? AND date = ? AND lecture_time_id = ?";
+	private static final String SELECT_BY_TEACHER_AUDIENCE_DATE_LECTURE_TIME = "SELECT * FROM lectures WHERE teacher_id = ? AND audience_id = ? AND date = ? AND lecture_time_id = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private LectureRowMapper rowMapper;
@@ -52,6 +57,16 @@ public class JdbcLectureDao implements LectureDao {
 	public List<Lecture> findAll() {
 		logger.debug("Find all lectures");
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
+	}
+
+	@Override
+	public Page<Lecture> findPaginatedLectures(Pageable pageable) {
+		logger.debug("Find all lectures with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
+		int total = jdbcTemplate.queryForObject(COUNT_ALL, Integer.class);
+		List<Lecture> lectures = jdbcTemplate.query(SELECT_BY_PAGE, rowMapper, pageable.getPageSize(),
+				pageable.getOffset());
+
+		return new PageImpl<>(lectures, pageable, total);
 	}
 
 	@Override
@@ -101,7 +116,7 @@ public class JdbcLectureDao implements LectureDao {
 
 	private void insertGroup(Lecture lecture) {
 		Optional<Lecture> lectureOpt = findById(lecture.getId());
-		if (!lectureOpt.isEmpty()) {
+		if (lectureOpt.isPresent()) {
 			for (Group group : lecture.getGroups().stream()
 					.filter(group -> !lectureOpt.get().getGroups().contains(group)).collect(Collectors.toList())) {
 				jdbcTemplate.update(INSERT_GROUP, group.getId(), lecture.getId());
@@ -112,7 +127,7 @@ public class JdbcLectureDao implements LectureDao {
 
 	private void deleteGroup(Lecture lecture) {
 		Optional<Lecture> lectureOpt = findById(lecture.getId());
-		if (!lectureOpt.isEmpty()) {
+		if (lectureOpt.isPresent()) {
 			for (Group group : lectureOpt.get().getGroups().stream()
 					.filter(group -> !lecture.getGroups().contains(group)).collect(Collectors.toList())) {
 				jdbcTemplate.update(DELETE_GROUP, group.getId(), lecture.getId());
@@ -122,23 +137,28 @@ public class JdbcLectureDao implements LectureDao {
 	}
 
 	@Override
-	public Optional<Lecture> findByAudienceDateAndLectureTime(Audience audience, LocalDate date, LectureTime lectureTime) {
+	public Optional<Lecture> findByAudienceDateAndLectureTime(Audience audience, LocalDate date,
+			LectureTime lectureTime) {
 		logger.debug("Find lecture by audience with id {}, date {} and lecture time id {}", audience.getId(), date,
 				lectureTime.getId());
 		try {
-			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_AUDIENCE_DATE_LECTURE_TIME, rowMapper, audience.getId(), date,
-					lectureTime.getId()));
+			return Optional.of(
+					jdbcTemplate.queryForObject(SELECT_BY_AUDIENCE_DATE_LECTURE_TIME, rowMapper, audience.getId(), date,
+							lectureTime.getId()));
 		} catch (EmptyResultDataAccessException e) {
 			return Optional.empty();
 		}
 	}
-	
+
 	@Override
-	public Optional<Lecture> findByTeacherAudienceDateAndLectureTime(Teacher teacher, Audience audience, LocalDate date, LectureTime lectureTime) {
-		logger.debug("Find lecture by teacher with id: {}, audience with id {}, date {} and lecture time id {}", teacher.getId(), audience.getId(), date,
+	public Optional<Lecture> findByTeacherAudienceDateAndLectureTime(Teacher teacher, Audience audience, LocalDate date,
+			LectureTime lectureTime) {
+		logger.debug("Find lecture by teacher with id: {}, audience with id {}, date {} and lecture time id {}",
+				teacher.getId(), audience.getId(), date,
 				lectureTime.getId());
 		try {
-			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_TEACHER_AUDIENCE_DATE_LECTURE_TIME, rowMapper, teacher.getId(), audience.getId(), date,
+			return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_TEACHER_AUDIENCE_DATE_LECTURE_TIME, rowMapper,
+					teacher.getId(), audience.getId(), date,
 					lectureTime.getId()));
 		} catch (EmptyResultDataAccessException e) {
 			return Optional.empty();

@@ -10,6 +10,9 @@ import java.util.function.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -18,21 +21,24 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.foxminded.university.dao.TeacherDao;
 import com.foxminded.university.dao.jdbc.mapper.TeacherRowMapper;
+import com.foxminded.university.model.Subject;
 import com.foxminded.university.model.Teacher;
 
 @Component
 public class JdbcTeacherDao implements TeacherDao {
 
-	private final static Logger logger = LoggerFactory.getLogger(JdbcTeacherDao.class);
+	private static final Logger logger = LoggerFactory.getLogger(JdbcTeacherDao.class);
 
-	private final static String SELECT_ALL = "SELECT * FROM teachers";
-	private final static String SELECT_BY_ID = "SELECT * FROM teachers WHERE id = ?";
-	private final static String INSERT_TEACHER = "INSERT INTO teachers(id, first_name, last_name, phone, address, email, gender, postal_code, education, birth_date, cathedra_id,  degree) VALUES(DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-	private final static String UPDATE_TEACHER = "UPDATE teachers SET first_name=?, last_name=?, phone=?, address=?, email=?, gender=?, postal_code=?, education=?, birth_date=?, cathedra_id=?, degree=? WHERE id=?";
-	private final static String DELETE_TEACHER = "DELETE FROM teachers WHERE id = ?";
-	private final static String INSERT_SUBJECT = "INSERT INTO subjects_teachers(subject_id, teacher_id) VALUES (?,?)";
-	private final static String DELETE_SUBJECT = "DELETE FROM subjects_teachers WHERE subject_id = ? AND teacher_id = ?";
-	private final static String SELECT_BY_FULL_NAME_AND_BIRTHDAY = "SELECT * FROM teachers WHERE first_name = ? AND last_name = ? AND birth_date = ?";
+	private static final String SELECT_ALL = "SELECT * FROM teachers";
+	private static final String COUNT_ALL = "SELECT COUNT(*) FROM teachers";
+	private static final String SELECT_BY_PAGE = "SELECT * FROM teachers LIMIT ? OFFSET ?";
+	private static final String SELECT_BY_ID = "SELECT * FROM teachers WHERE id = ?";
+	private static final String INSERT_TEACHER = "INSERT INTO teachers(id, first_name, last_name, phone, address, email, gender, postal_code, education, birth_date, cathedra_id,  degree) VALUES(DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+	private static final String UPDATE_TEACHER = "UPDATE teachers SET first_name=?, last_name=?, phone=?, address=?, email=?, gender=?, postal_code=?, education=?, birth_date=?, cathedra_id=?, degree=? WHERE id=?";
+	private static final String DELETE_TEACHER = "DELETE FROM teachers WHERE id = ?";
+	private static final String INSERT_SUBJECT = "INSERT INTO subjects_teachers(subject_id, teacher_id) VALUES (?,?)";
+	private static final String DELETE_SUBJECT = "DELETE FROM subjects_teachers WHERE subject_id = ? AND teacher_id = ?";
+	private static final String SELECT_BY_FULL_NAME_AND_BIRTHDAY = "SELECT * FROM teachers WHERE first_name = ? AND last_name = ? AND birth_date = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private TeacherRowMapper rowMapper;
@@ -46,6 +52,16 @@ public class JdbcTeacherDao implements TeacherDao {
 	public List<Teacher> findAll() {
 		logger.debug("Find all teachers");
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
+	}
+
+	@Override
+	public Page<Teacher> findPaginatedTeachers(Pageable pageable) {
+		logger.debug("Find all teachers with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
+		int total = jdbcTemplate.queryForObject(COUNT_ALL, Integer.class);
+		List<Teacher> teachers = jdbcTemplate.query(SELECT_BY_PAGE, rowMapper, pageable.getPageSize(),
+				pageable.getOffset());
+
+		return new PageImpl<>(teachers, pageable, total);
 	}
 
 	@Override
@@ -104,13 +120,15 @@ public class JdbcTeacherDao implements TeacherDao {
 	}
 
 	private void updateSubjects(Teacher teacherOld, Teacher teacherNew) {
-		teacherNew.getSubjects().stream().filter(Predicate.not(teacherOld.getSubjects()::contains))
+		Predicate<Subject> subjPredicate = teacherOld.getSubjects()::contains;
+		teacherNew.getSubjects().stream().filter(subjPredicate.negate()::test)
 				.forEach(subject -> jdbcTemplate.update(INSERT_SUBJECT, subject.getId(), teacherNew.getId()));
 		logger.debug("Update subjects in teacher with id {}", teacherNew.getId());
 	}
 
 	private void deleteSubjects(Teacher teacherOld, Teacher teacherNew) {
-		teacherOld.getSubjects().stream().filter(Predicate.not(teacherNew.getSubjects()::contains))
+		Predicate<Subject> subjPredicate = teacherNew.getSubjects()::contains;
+		teacherOld.getSubjects().stream().filter(subjPredicate.negate()::test)
 				.forEach(subject -> jdbcTemplate.update(DELETE_SUBJECT, subject.getId(), teacherNew.getId()));
 		logger.debug("Delete subjects in teacher with id {}", teacherNew.getId());
 	}

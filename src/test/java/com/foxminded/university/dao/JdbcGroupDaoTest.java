@@ -17,11 +17,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Group;
-import com.foxminded.university.config.SpringTestConfig;
+import com.foxminded.university.config.TestConfig;
 import com.foxminded.university.dao.jdbc.JdbcGroupDao;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = SpringTestConfig.class)
+@ContextConfiguration(classes = TestConfig.class)
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class JdbcGroupDaoTest {
 
@@ -41,12 +41,12 @@ public class JdbcGroupDaoTest {
 
 	@Test
 	void givenExistingGroup_whenFindById_thenGroupFound() {
-		Optional<Group> actual = groupDao.findById(1);
 		Optional<Group> expected = Optional.of(Group.builder()
 				.id(1)
 				.name("Killers")
 				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
 				.build());
+		Optional<Group> actual = groupDao.findById(1);
 
 		assertEquals(expected, actual);
 	}
@@ -61,23 +61,21 @@ public class JdbcGroupDaoTest {
 		int expected = countRowsInTable(template, TABLE_NAME) + 1;
 		groupDao.save(Group.builder()
 				.name("Test Name")
-				.cathedra(Cathedra.builder()
-						.id(1)
-						.build())
+				.cathedra(Cathedra.builder().id(1).build())
 				.build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
-	
+
 	@Test
 	void givenExitstingGroup_whenSaveWithChanges_thenChangesApplied() {
 		Group expected = groupDao.findById(1).get();
 		expected.setName("Killers 2");
 		groupDao.save(expected);
-		
+
 		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME, "id = 1 AND name = 'Killers 2'"));
 	}
-	
+
 	@Test
 	void whenDeleteExistingGroup_thenAllExistingGroupsFound() {
 		int expected = countRowsInTable(template, TABLE_NAME) - 1;
@@ -85,15 +83,15 @@ public class JdbcGroupDaoTest {
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
-	
+
 	@Test
 	void givenGroupName_whenFindByName_thenGroupFound() {
-		Optional<Group> actual = groupDao.findByName("Killers");
-		Optional<Group> expected =Optional.of(Group.builder()
+		Optional<Group> expected = Optional.of(Group.builder()
 				.id(1)
 				.name("Killers")
 				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
 				.build());
+		Optional<Group> actual = groupDao.findByName("Killers");
 
 		assertEquals(expected, actual);
 	}

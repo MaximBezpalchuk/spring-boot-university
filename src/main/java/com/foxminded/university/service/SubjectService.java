@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.foxminded.university.dao.SubjectDao;
@@ -27,6 +29,11 @@ public class SubjectService {
 	public List<Subject> findAll() {
 		logger.debug("Find all subjects");
 		return subjectDao.findAll();
+	}
+
+	public Page<Subject> findAll(final Pageable pageable) {
+		logger.debug("Find all holidays paginated");
+		return subjectDao.findPaginatedSubjects(pageable);
 	}
 
 	public Subject findById(int id) {
@@ -54,7 +61,7 @@ public class SubjectService {
 	private void uniqueCheck(Subject subject) {
 		logger.debug("Check subject is unique");
 		Optional<Subject> existingSubject = subjectDao.findByName(subject.getName());
-		if (!existingSubject.isEmpty() && (existingSubject.get().getId() != subject.getId())) {
+		if (existingSubject.isPresent() && (existingSubject.get().getId() != subject.getId())) {
 			throw new EntityNotUniqueException("Subject with name " + subject.getName() + " is already exists!");
 		}
 	}

@@ -12,6 +12,9 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
@@ -19,14 +22,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.foxminded.university.model.Student;
-import com.foxminded.university.config.SpringTestConfig;
+import com.foxminded.university.config.TestConfig;
 import com.foxminded.university.dao.jdbc.JdbcStudentDao;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Gender;
 import com.foxminded.university.model.Group;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = SpringTestConfig.class)
+@ContextConfiguration(classes = TestConfig.class)
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class JdbcStudentDaoTest {
 
@@ -45,8 +48,32 @@ public class JdbcStudentDaoTest {
 	}
 
 	@Test
+	void givenPageable_whenFindPaginatedStudents_thenStudentsFound() {
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+		Group group = Group.builder().id(1).cathedra(cathedra).name("Killers").build();
+		List<Student> students = List.of(Student.builder()
+				.firstName("Petr")
+				.lastName("Orlov")
+				.address("Empty Street 8")
+				.gender(Gender.MALE)
+				.birthDate(LocalDate.of(1994, 3, 3))
+				.phone("888005353535")
+				.email("1@owl.com")
+				.postalCode("999")
+				.education("General secondary education")
+				.group(group)
+				.id(1)
+				.build());
+		Page<Student> actual = studentDao.findPaginatedStudents(PageRequest.of(0, 1));
+		Page<Student> expected = new PageImpl<>(students, PageRequest.of(0, 1), 5);
+
+		assertEquals(expected, actual);
+	}
+
+	@Test
 	void givenExistingStudent_whenFindById_thenStudentFound() {
-		Optional<Student> actual = studentDao.findById(1);
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+		Group group = Group.builder().id(1).cathedra(cathedra).name("Killers").build();
 		Optional<Student> expected = Optional.of(Student.builder()
 				.firstName("Petr")
 				.lastName("Orlov")
@@ -57,9 +84,10 @@ public class JdbcStudentDaoTest {
 				.email("1@owl.com")
 				.postalCode("999")
 				.education("General secondary education")
-				.group(actual.get().getGroup())
+				.group(group)
 				.id(1)
 				.build());
+		Optional<Student> actual = studentDao.findById(1);
 
 		assertEquals(expected, actual);
 	}
@@ -92,32 +120,32 @@ public class JdbcStudentDaoTest {
 	@Test
 	void givenExitstingStudent_whenSaveWithChanges_thenChangesApplied() {
 		Student expected = Student.builder()
-		.id(1)
-		.firstName("Test Name")
-		.lastName("Orlov123")
-		.address("Empty Street 812312")
-		.gender(Gender.MALE)
-		.birthDate(LocalDate.of(1994, 3, 21))
-		.phone("888005353535321123")
-		.email("1123@owl.com")
-		.postalCode("999123123")
-		.education("General secondary education12321")
-		.group(Group.builder().id(1).build())
-		.build();
+				.id(1)
+				.firstName("Test Name")
+				.lastName("Orlov123")
+				.address("Empty Street 812312")
+				.gender(Gender.MALE)
+				.birthDate(LocalDate.of(1994, 3, 21))
+				.phone("888005353535321123")
+				.email("1123@owl.com")
+				.postalCode("999123123")
+				.education("General secondary education12321")
+				.group(Group.builder().id(1).build())
+				.build();
 		studentDao.save(expected);
-		
-		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME, 
+
+		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME,
 				"id = 1 "
-				+ "AND first_name = 'Test Name' "
-				+ "AND last_name = 'Orlov123' "
-				+ "AND address = 'Empty Street 812312' "
-				+ "AND gender = 'MALE' "
-				+ "AND birth_date = '1994-03-21' "
-				+ "AND phone = '888005353535321123' "
-				+ "AND email = '1123@owl.com' "
-				+ "AND postal_code = '999123123' "
-				+ "AND education = 'General secondary education12321'"
-				+ "AND group_id = 1"));
+						+ "AND first_name = 'Test Name' "
+						+ "AND last_name = 'Orlov123' "
+						+ "AND address = 'Empty Street 812312' "
+						+ "AND gender = 'MALE' "
+						+ "AND birth_date = '1994-03-21' "
+						+ "AND phone = '888005353535321123' "
+						+ "AND email = '1123@owl.com' "
+						+ "AND postal_code = '999123123' "
+						+ "AND education = 'General secondary education12321'"
+						+ "AND group_id = 1"));
 	}
 
 	@Test
@@ -127,7 +155,7 @@ public class JdbcStudentDaoTest {
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
-	
+
 	@Test
 	void givenFirstNameAndLastNameAndBirthDate_whenFindByFullNameAndBirthDate_thenStudentFound() {
 		Optional<Student> expected = Optional.of(Student.builder()
@@ -140,7 +168,8 @@ public class JdbcStudentDaoTest {
 				.email("1@owl.com")
 				.postalCode("999")
 				.education("General secondary education")
-				.group(Group.builder().id(1).name("Killers").cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build()).build())
+				.group(Group.builder().id(1).name("Killers")
+						.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build()).build())
 				.id(1)
 				.build());
 		Optional<Student> actual = studentDao.findByFullNameAndBirthDate(expected.get().getFirstName(),
@@ -148,7 +177,7 @@ public class JdbcStudentDaoTest {
 
 		assertEquals(expected, actual);
 	}
-	
+
 	@Test
 	void givenGroupName_whenFindByGroupId_thenStudentsFound() {
 		Student student1 = Student.builder()
@@ -161,7 +190,8 @@ public class JdbcStudentDaoTest {
 				.email("4@owl.com")
 				.postalCode("12345")
 				.education("College education")
-				.group(Group.builder().id(2).name("Mages").cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build()).build())
+				.group(Group.builder().id(2).name("Mages")
+						.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build()).build())
 				.id(4)
 				.build();
 		Student student2 = Student.builder()
@@ -174,12 +204,13 @@ public class JdbcStudentDaoTest {
 				.email("5@owl.com")
 				.postalCode("12345")
 				.education("College education")
-				.group(Group.builder().id(2).name("Mages").cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build()).build())
+				.group(Group.builder().id(2).name("Mages")
+						.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build()).build())
 				.id(5)
 				.build();
 		List<Student> expected = Arrays.asList(student1, student2);
 		List<Student> actual = studentDao.findByGroupId(2);
-		
+
 		assertEquals(expected, actual);
 	}
 }

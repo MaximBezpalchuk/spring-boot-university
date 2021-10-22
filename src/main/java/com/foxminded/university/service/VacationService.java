@@ -8,6 +8,8 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.foxminded.university.dao.VacationDao;
@@ -62,12 +64,17 @@ public class VacationService {
 		return vacationDao.findByTeacherId(id);
 	}
 
+	public Page<Vacation> findByTeacherId(final Pageable pageable, int id) {
+		logger.debug("Find all vacations paginated by teacher id");
+		return vacationDao.findPaginatedVacationsByTeacherId(pageable, id);
+	}
+
 	private void uniqueCheck(Vacation vacation) {
 		logger.debug("Check vacation is unique");
 		Optional<Vacation> existingVacation = vacationDao.findByPeriodAndTeacher(vacation.getStart(), vacation.getEnd(),
 				vacation.getTeacher());
 
-		if (!existingVacation.isEmpty() && (existingVacation.get().getId() != vacation.getId())) {
+		if (existingVacation.isPresent() && (existingVacation.get().getId() != vacation.getId())) {
 			throw new EntityNotUniqueException("Vacation with start(" + vacation.getStart() + "), end("
 					+ vacation.getEnd() + ") and teacher(" + vacation.getTeacher().getFirstName() + " "
 					+ vacation.getTeacher().getLastName() + ") id is already exists!");
@@ -77,17 +84,16 @@ public class VacationService {
 	private void dateCorrectCheck(Vacation vacation) {
 		logger.debug("Check vacation start is after end");
 		if (!vacation.getStart().isBefore(vacation.getEnd()) && !vacation.getStart().equals(vacation.getEnd())) {
-			throw new DurationException(
-					"Vacation start date can`t be after vacation end date! Vacation start is: " + vacation.getStart()
-							+ ". Vacation end is: " + vacation.getEnd());
+			throw new DurationException("Vacation start date can`t be after vacation end date! Vacation start is: "
+					+ vacation.getStart() + ". Vacation end is: " + vacation.getEnd());
 		}
 	}
 
 	private void dateMoreThenOneDayCheck(Vacation vacation) {
 		logger.debug("Check vacation duration more or equals 1 day");
 		if (getVacationDaysCount(vacation) < 1) {
-			throw new DurationException("Vacation can`t be less than 1 day! Vacation start is: "
-					+ vacation.getStart() + ". Vacation end is: " + vacation.getEnd());
+			throw new DurationException("Vacation can`t be less than 1 day! Vacation start is: " + vacation.getStart()
+					+ ". Vacation end is: " + vacation.getEnd());
 		}
 	}
 
@@ -103,8 +109,8 @@ public class VacationService {
 
 		if ((teacherVacationDays + getVacationDaysCount(vacation)) >= maxVacation
 				.get(vacation.getTeacher().getDegree())) {
-			throw new ChosenDurationException("Vacations duration(existing " + teacherVacationDays
-					+ " plus appointed " + getVacationDaysCount(vacation) + ") can`t be more than max("
+			throw new ChosenDurationException("Vacations duration(existing " + teacherVacationDays + " plus appointed "
+					+ getVacationDaysCount(vacation) + ") can`t be more than max("
 					+ maxVacation.get(vacation.getTeacher().getDegree()) + ") for degree "
 					+ vacation.getTeacher().getDegree() + "!");
 		}

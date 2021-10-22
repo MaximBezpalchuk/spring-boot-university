@@ -4,22 +4,25 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 
-
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.foxminded.university.config.SpringTestConfig;
+import com.foxminded.university.config.TestConfig;
 import com.foxminded.university.dao.jdbc.JdbcTeacherDao;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Degree;
@@ -28,7 +31,7 @@ import com.foxminded.university.model.Subject;
 import com.foxminded.university.model.Teacher;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = SpringTestConfig.class)
+@ContextConfiguration(classes = TestConfig.class)
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class JdbcTeacherDaoTest {
 
@@ -47,8 +50,37 @@ public class JdbcTeacherDaoTest {
 	}
 
 	@Test
+	void givenPageable_whenFindPaginatedTeachers_thenTeachersFound() {
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+		Subject subject = Subject.builder()
+				.id(1)
+				.cathedra(cathedra)
+				.name("Weapon Tactics")
+				.description("Learning how to use heavy weapon and guerrilla tactics")
+				.build();
+		List<Teacher> teachers = List.of(Teacher.builder()
+				.firstName("Daniel")
+				.lastName("Morpheus")
+				.address("Virtual Reality Capsule no 1")
+				.gender(Gender.MALE)
+				.birthDate(LocalDate.of(1970, 1, 1))
+				.cathedra(cathedra)
+				.degree(Degree.PROFESSOR)
+				.phone("1")
+				.email("1@bigowl.com")
+				.postalCode("12345")
+				.education("Higher education")
+				.id(1)
+				.subjects(Arrays.asList(subject))
+				.build());
+		Page<Teacher> expected = new PageImpl<>(teachers, PageRequest.of(0, 1), 2);
+		Page<Teacher> actual = teacherDao.findPaginatedTeachers(PageRequest.of(0, 1));
+
+		assertEquals(expected, actual);
+	}
+
+	@Test
 	void givenExistingTeacher_whenFindById_thenTeacherFound() {
-		Optional<Teacher> actual = teacherDao.findById(1);
 		Optional<Teacher> expected = Optional.of(Teacher.builder()
 				.firstName("Daniel")
 				.lastName("Morpheus")
@@ -72,6 +104,7 @@ public class JdbcTeacherDaoTest {
 				.build();
 		subjects.add(subject);
 		expected.get().setSubjects(subjects);
+		Optional<Teacher> actual = teacherDao.findById(1);
 
 		assertEquals(expected, actual);
 	}
@@ -143,17 +176,17 @@ public class JdbcTeacherDaoTest {
 
 		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME,
 				"id = 1 "
-				+ "AND first_name = 'TestName' "
-				+ "AND last_name = 'Test' "
-				+ "AND address = 'Virtual Reality Capsule no 2' "
-				+ "AND gender = 'MALE' "
-				+ "AND birth_date = '1970-01-01' "
-				+ "AND cathedra_id = 1 "
-				+ "AND degree = 'PROFESSOR' "
-				+ "AND phone = '1' "
-				+ "AND email = '123@bigowl.com' "
-				+ "AND postal_code = '1234567' AND education = 'Higher education123'"));
-		
+						+ "AND first_name = 'TestName' "
+						+ "AND last_name = 'Test' "
+						+ "AND address = 'Virtual Reality Capsule no 2' "
+						+ "AND gender = 'MALE' "
+						+ "AND birth_date = '1970-01-01' "
+						+ "AND cathedra_id = 1 "
+						+ "AND degree = 'PROFESSOR' "
+						+ "AND phone = '1' "
+						+ "AND email = '123@bigowl.com' "
+						+ "AND postal_code = '1234567' AND education = 'Higher education123'"));
+
 		assertEquals(1, countRowsInTableWhere(template, "subjects_teachers", "teacher_id = 1"));
 	}
 
@@ -180,7 +213,7 @@ public class JdbcTeacherDaoTest {
 
 		assertEquals(expected, actual);
 	}
-	
+
 	@Test
 	void givenFirstNameAndLastNameAndBirthDate_whenFindByFullNameAndBirthDate_thenTeacherFound() {
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();

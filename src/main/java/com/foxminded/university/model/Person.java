@@ -3,6 +3,8 @@ package com.foxminded.university.model;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 public class Person {
 
 	private int id;
@@ -14,6 +16,7 @@ public class Person {
 	private Gender gender;
 	private String postalCode;
 	private String education;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate birthDate;
 
 	protected Person(int id, String firstName, String lastName, String phone, String address, String email,
@@ -28,6 +31,9 @@ public class Person {
 		this.postalCode = postalCode;
 		this.education = education;
 		this.birthDate = birthDate;
+	}
+
+	protected Person() {
 	}
 
 	public void setFirstName(String firstName) {

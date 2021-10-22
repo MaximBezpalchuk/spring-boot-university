@@ -14,6 +14,9 @@ public class Group {
 		this.cathedra = cathedra;
 	}
 
+	public Group() {
+	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -33,7 +36,7 @@ public class Group {
 	public Cathedra getCathedra() {
 		return cathedra;
 	}
-	
+
 	public void setCathedra(Cathedra cathedra) {
 		this.cathedra = cathedra;
 	}

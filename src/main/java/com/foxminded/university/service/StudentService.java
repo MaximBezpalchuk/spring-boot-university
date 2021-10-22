@@ -6,6 +6,8 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.foxminded.university.dao.StudentDao;
@@ -33,6 +35,11 @@ public class StudentService {
 		return studentDao.findAll();
 	}
 
+	public Page<Student> findAll(final Pageable pageable) {
+		logger.debug("Find all holidays paginated");
+		return studentDao.findPaginatedStudents(pageable);
+	}
+
 	public Student findById(int id) {
 		logger.debug("Find student by id {}", id);
 		return studentDao.findById(id)
@@ -56,7 +63,7 @@ public class StudentService {
 		Optional<Student> existingStudent = studentDao.findByFullNameAndBirthDate(student.getFirstName(),
 				student.getLastName(), student.getBirthDate());
 
-		if (!existingStudent.isEmpty() && (existingStudent.get().getId() != student.getId())) {
+		if (existingStudent.isPresent() && (existingStudent.get().getId() != student.getId())) {
 			throw new EntityNotUniqueException("Student with full name " + student.getFirstName() + " "
 					+ student.getLastName() + " and  birth date " + student.getBirthDate() + " is already exists!");
 		}
@@ -67,8 +74,8 @@ public class StudentService {
 		if (student.getGroup() != null) {
 			int groupSize = studentDao.findByGroupId(student.getGroup().getId()).size();
 			if (groupSize >= maxGroupSize) {
-				throw new GroupOverflowException(
-						"This group is already full! Group size is: " + groupSize + ". Max group size is: " + maxGroupSize);
+				throw new GroupOverflowException("This group is already full! Group size is: " + groupSize
+						+ ". Max group size is: " + maxGroupSize);
 			}
 		}
 	}

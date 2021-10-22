@@ -1,4 +1,4 @@
-package com.foxminded.university;
+package com.foxminded.university.formatter;
 
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;

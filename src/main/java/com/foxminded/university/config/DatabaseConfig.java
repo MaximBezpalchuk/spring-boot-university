@@ -15,9 +15,9 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 @Configuration
-@ComponentScan("com.foxminded.university")
+@ComponentScan("com.foxminded.university.dao")
 @PropertySource("classpath:config.properties")
-public class SpringConfig {
+public class DatabaseConfig {
 
 	@Value("${url}")
 	public String url;
@@ -27,9 +27,9 @@ public class SpringConfig {
 	public String password;
 	@Value("${driverClass}")
 	public String driverClass;
-	@Value("schema.sql")
+	@Value("classpath:schema.sql")
 	Resource schema;
-	@Value("data.sql")
+	@Value("classpath:data.sql")
 	Resource data;
 
 	@Bean
@@ -70,5 +70,4 @@ public class SpringConfig {
 	public DataSourceTransactionManager txManager(DataSource dataSource) {
 		return new DataSourceTransactionManager(dataSource);
 	}
-
 }

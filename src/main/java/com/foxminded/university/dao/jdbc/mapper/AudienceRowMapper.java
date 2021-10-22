@@ -26,7 +26,7 @@ public class AudienceRowMapper implements RowMapper<Audience> {
 				.capacity(resultSet.getInt("capacity"))
 				.build();
 		cathedraDao.findById(resultSet.getInt("cathedra_id")).ifPresent(audience::setCathedra);
-		
+
 		return audience;
 	}
 }

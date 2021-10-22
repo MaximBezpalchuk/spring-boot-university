@@ -5,6 +5,8 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.foxminded.university.dao.HolidayDao;
@@ -29,6 +31,11 @@ public class HolidayService {
 		return holidayDao.findAll();
 	}
 
+	public Page<Holiday> findAll(final Pageable pageable) {
+		logger.debug("Find all holidays paginated");
+		return holidayDao.findPaginatedHolidays(pageable);
+	}
+
 	public Holiday findById(int id) {
 		logger.debug("Find holiday by id {}", id);
 		return holidayDao.findById(id)
@@ -50,7 +57,7 @@ public class HolidayService {
 		logger.debug("Check holiday is unique");
 		Optional<Holiday> existingHoliday = holidayDao.findByNameAndDate(holiday.getName(), holiday.getDate());
 
-		if (!existingHoliday.isEmpty() && (existingHoliday.get().getId() != holiday.getId())) {
+		if (existingHoliday.isPresent() && (existingHoliday.get().getId() != holiday.getId())) {
 			throw new EntityNotUniqueException("Holiday with name " + holiday.getName() + " and date "
 					+ holiday.getDate() + " is already exists!");
 		}

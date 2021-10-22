@@ -16,12 +16,12 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.foxminded.university.config.SpringTestConfig;
+import com.foxminded.university.config.TestConfig;
 import com.foxminded.university.dao.jdbc.JdbcLectureTimeDao;
 import com.foxminded.university.model.LectureTime;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = SpringTestConfig.class)
+@ContextConfiguration(classes = TestConfig.class)
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class JdbcLectureTimeDaoTest {
 
@@ -74,10 +74,10 @@ public class JdbcLectureTimeDaoTest {
 				.end(LocalTime.of(21, 0, 0))
 				.build();
 		lectureTimeDao.save(expected);
-		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME, 
+		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME,
 				"id = 1 "
-				+ "AND start = '21:00:00' "
-				+ "AND finish = '21:00:00'"));
+						+ "AND start = '21:00:00' "
+						+ "AND finish = '21:00:00'"));
 	}
 
 	@Test
@@ -87,7 +87,7 @@ public class JdbcLectureTimeDaoTest {
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
-	
+
 	@Test
 	void givenPeriod_whenFindByPeriod_thenLectureTimeFound() {
 		Optional<LectureTime> expected = Optional.of(LectureTime.builder()

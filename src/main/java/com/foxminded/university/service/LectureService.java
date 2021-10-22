@@ -7,6 +7,8 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.foxminded.university.dao.HolidayDao;
@@ -57,6 +59,11 @@ public class LectureService {
 		return lectureDao.findAll();
 	}
 
+	public Page<Lecture> findAll(final Pageable pageable) {
+		logger.debug("Find all lectures paginated");
+		return lectureDao.findPaginatedLectures(pageable);
+	}
+
 	public Lecture findById(int id) {
 		logger.debug("Find lecture by id {}", id);
 		return lectureDao.findById(id)
@@ -86,7 +93,7 @@ public class LectureService {
 		logger.debug("Check lecture is unique");
 		Optional<Lecture> existingLecture = lectureDao.findByTeacherAudienceDateAndLectureTime(lecture.getTeacher(),
 				lecture.getAudience(), lecture.getDate(), lecture.getTime());
-		if (!existingLecture.isEmpty() && (existingLecture.get().getId() != lecture.getId())) {
+		if (existingLecture.isPresent() && (existingLecture.get().getId() != lecture.getId())) {
 			throw new EntityNotUniqueException("Lecture with audience number " + lecture.getAudience().getRoom()
 					+ ", date " + lecture.getDate() + " and lecture time " + lecture.getTime().getStart() + " - "
 					+ lecture.getTime().getEnd() + " is already exists!");
@@ -121,8 +128,7 @@ public class LectureService {
 	private void teacherInVacationCheck(Lecture lecture) {
 		logger.debug("Check teacher for this lecture is in vacation");
 		if (!vacationDao.findByDateInPeriodAndTeacher(lecture.getDate(), lecture.getTeacher()).isEmpty()) {
-			throw new TeacherInVacationException(
-					"Teacher is in vacation this date! Date is: " + lecture.getDate());
+			throw new TeacherInVacationException("Teacher is in vacation this date! Date is: " + lecture.getDate());
 		}
 	}
 
@@ -155,7 +161,7 @@ public class LectureService {
 		logger.debug("Check audience is occupied");
 		Optional<Lecture> existingLecture = lectureDao.findByAudienceDateAndLectureTime(lecture.getAudience(),
 				lecture.getDate(), lecture.getTime());
-		if (!existingLecture.isEmpty() && existingLecture.get().getId() != lecture.getId()) {
+		if (existingLecture.isPresent() && existingLecture.get().getId() != lecture.getId()) {
 			throw new OccupiedAudienceException(
 					"Audience " + lecture.getAudience().getRoom() + " is already occupied!");
 		}

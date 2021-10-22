@@ -2,6 +2,7 @@ package com.foxminded.university.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -15,6 +16,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import com.foxminded.university.dao.jdbc.JdbcTeacherDao;
 import com.foxminded.university.exception.EntityNotFoundException;
@@ -40,6 +45,16 @@ public class TeacherServiceTest {
 	}
 
 	@Test
+	void givenPageable_whenFindAll_thenAllPageableTeachersFound() {
+		List<Teacher> teachers = Arrays.asList(Teacher.builder().id(1).build());
+		Page<Teacher> expected = new PageImpl<>(teachers, PageRequest.of(0, 1), 1);
+		when(teacherDao.findPaginatedTeachers(isA(Pageable.class))).thenReturn(expected);
+		Page<Teacher> actual = teacherService.findAll(PageRequest.of(0, 1));
+
+		assertEquals(expected, actual);
+	}
+
+	@Test
 	void givenExistingTeacher_whenFindById_thenTeacherFound() {
 		Optional<Teacher> expected = Optional.of(Teacher.builder().id(1).build());
 		when(teacherDao.findById(1)).thenReturn(expected);
@@ -47,7 +62,7 @@ public class TeacherServiceTest {
 
 		assertEquals(expected.get(), actual);
 	}
-	
+
 	@Test
 	void givenExistingTeacher_whenFindById_thenEntityNotFoundException() {
 		when(teacherDao.findById(10)).thenReturn(Optional.empty());
@@ -86,7 +101,7 @@ public class TeacherServiceTest {
 
 		verify(teacherDao).deleteById(1);
 	}
-	
+
 	@Test
 	void givenNotUniqueTeacher_whenSave_thenEntityNotUniqueException() {
 		Teacher teacher1 = Teacher.builder().id(1)
@@ -103,8 +118,9 @@ public class TeacherServiceTest {
 				teacher1.getBirthDate())).thenReturn(Optional.of(teacher2));
 		Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
 			teacherService.save(teacher1);
-			});
+		});
 
-		assertEquals("Teacher with full name TestFirstName TestLastName and birth date 1920-02-12 is already exists!", exception.getMessage());
+		assertEquals("Teacher with full name TestFirstName TestLastName and birth date 1920-02-12 is already exists!",
+				exception.getMessage());
 	}
 }

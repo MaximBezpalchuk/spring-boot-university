@@ -26,7 +26,7 @@ public class SubjectRowMapper implements RowMapper<Subject> {
 				.description(resultSet.getString("description"))
 				.build();
 		cathedraDao.findById(resultSet.getInt("cathedra_id")).ifPresent(subject::setCathedra);
-		
+
 		return subject;
 	}
 }

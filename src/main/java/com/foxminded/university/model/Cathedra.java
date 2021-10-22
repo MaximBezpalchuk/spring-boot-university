@@ -12,6 +12,9 @@ public class Cathedra {
 		this.name = name;
 	}
 
+	public Cathedra() {
+	}
+
 	public int getId() {
 		return id;
 	}

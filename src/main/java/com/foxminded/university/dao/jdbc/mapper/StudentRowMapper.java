@@ -36,7 +36,7 @@ public class StudentRowMapper implements RowMapper<Student> {
 				.build();
 		int groupId = resultSet.getInt("group_id");
 		groupDao.findById(groupId).ifPresent(student::setGroup);
-		
+
 		return student;
 	}
 }

@@ -12,19 +12,22 @@ import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.foxminded.university.config.SpringTestConfig;
+import com.foxminded.university.config.TestConfig;
 import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Holiday;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = SpringTestConfig.class)
+@ContextConfiguration(classes = TestConfig.class)
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class JdbcHolidayDaoTest {
 
@@ -43,14 +46,28 @@ public class JdbcHolidayDaoTest {
 	}
 
 	@Test
+	void givenPageable_whenFindPaginatedHolidays_thenHolidaysFound() {
+		List<Holiday> holidays = List.of(Holiday.builder()
+				.id(1)
+				.name("Christmas")
+				.date(LocalDate.of(2021, 12, 25))
+				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+				.build());
+		Page<Holiday> expected = new PageImpl<>(holidays, PageRequest.of(0, 1), 6);
+		Page<Holiday> actual = holidayDao.findPaginatedHolidays(PageRequest.of(0, 1));
+
+		assertEquals(expected, actual);
+	}
+
+	@Test
 	void givenExistingHoliday_whenFindById_thenHolidayFound() {
-		Optional<Holiday> actual = holidayDao.findById(1);
 		Optional<Holiday> expected = Optional.of(Holiday.builder()
 				.id(1)
 				.name("Christmas")
 				.date(LocalDate.of(2021, 12, 25))
 				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
 				.build());
+		Optional<Holiday> actual = holidayDao.findById(1);
 
 		assertEquals(expected, actual);
 	}
@@ -69,7 +86,7 @@ public class JdbcHolidayDaoTest {
 				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
 				.build();
 		holidayDao.save(holiday);
-		
+
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
 
@@ -79,13 +96,12 @@ public class JdbcHolidayDaoTest {
 				.id(1)
 				.name("Test Name")
 				.date(LocalDate.of(2021, 12, 26))
-				.cathedra(Cathedra.builder()
-						.id(1)
-						.build())
+				.cathedra(Cathedra.builder().id(1).build())
 				.build();
 		holidayDao.save(expected);
-		
-		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME, "id = 1 AND name = 'Test Name' and date= '2021-12-26'"));
+
+		assertEquals(1,
+				countRowsInTableWhere(template, TABLE_NAME, "id = 1 AND name = 'Test Name' and date= '2021-12-26'"));
 	}
 
 	@Test
@@ -95,29 +111,29 @@ public class JdbcHolidayDaoTest {
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
-	
+
 	@Test
 	void givenHolidayName_whenFindByNameAndDate_thenHolidayFound() {
-		Optional<Holiday> actual = holidayDao.findByNameAndDate("Christmas", LocalDate.of(2021, 12, 25));
 		Optional<Holiday> expected = Optional.of(Holiday.builder()
 				.id(1)
 				.name("Christmas")
 				.date(LocalDate.of(2021, 12, 25))
 				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
 				.build());
+		Optional<Holiday> actual = holidayDao.findByNameAndDate("Christmas", LocalDate.of(2021, 12, 25));
 
 		assertEquals(expected, actual);
 	}
-	
+
 	@Test
 	void givenHolidayName_whenFindByDate_thenHolidayFound() {
-		List<Holiday> actual = holidayDao.findByDate(LocalDate.of(2021, 12, 25));
 		List<Holiday> expected = Arrays.asList(Holiday.builder()
 				.id(1)
 				.name("Christmas")
 				.date(LocalDate.of(2021, 12, 25))
-				.cathedra(actual.get(0).getCathedra())
+				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
 				.build());
+		List<Holiday> actual = holidayDao.findByDate(LocalDate.of(2021, 12, 25));
 
 		assertEquals(expected, actual);
 	}

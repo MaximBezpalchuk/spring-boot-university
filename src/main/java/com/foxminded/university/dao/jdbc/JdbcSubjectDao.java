@@ -8,6 +8,9 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -19,16 +22,18 @@ import com.foxminded.university.model.Subject;
 
 @Component
 public class JdbcSubjectDao implements SubjectDao {
-	
-	private final static Logger logger = LoggerFactory.getLogger(JdbcSubjectDao.class);
 
-	private final static String SELECT_ALL = "SELECT * FROM subjects";
-	private final static String SELECT_BY_ID = "SELECT * FROM subjects WHERE id = ?";
-	private final static String INSERT_SUBJECT = "INSERT INTO subjects(name, description, cathedra_id) VALUES(?, ?, ?)";
-	private final static String UPDATE_SUBJECT = "UPDATE subjects SET name=?, description=?, cathedra_id=? WHERE id=?";
-	private final static String DELETE_SUBJECT = "DELETE FROM subjects WHERE id = ?";
-	private final static String SELECT_BY_TEACHER_ID = "SELECT * FROM subjects WHERE id IN (SELECT subject_id FROM subjects_teachers WHERE teacher_id =?)";
-	private final static String SELECT_BY_NAME = "SELECT * FROM subjects WHERE name = ?";
+	private static final Logger logger = LoggerFactory.getLogger(JdbcSubjectDao.class);
+
+	private static final String SELECT_ALL = "SELECT * FROM subjects";
+	private static final String COUNT_ALL = "SELECT COUNT(*) FROM subjects";
+	private static final String SELECT_BY_PAGE = "SELECT * FROM subjects LIMIT ? OFFSET ?";
+	private static final String SELECT_BY_ID = "SELECT * FROM subjects WHERE id = ?";
+	private static final String INSERT_SUBJECT = "INSERT INTO subjects(name, description, cathedra_id) VALUES(?, ?, ?)";
+	private static final String UPDATE_SUBJECT = "UPDATE subjects SET name=?, description=?, cathedra_id=? WHERE id=?";
+	private static final String DELETE_SUBJECT = "DELETE FROM subjects WHERE id = ?";
+	private static final String SELECT_BY_TEACHER_ID = "SELECT * FROM subjects WHERE id IN (SELECT subject_id FROM subjects_teachers WHERE teacher_id =?)";
+	private static final String SELECT_BY_NAME = "SELECT * FROM subjects WHERE name = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private SubjectRowMapper rowMapper;
@@ -42,6 +47,16 @@ public class JdbcSubjectDao implements SubjectDao {
 	public List<Subject> findAll() {
 		logger.debug("Find all subjects");
 		return jdbcTemplate.query(SELECT_ALL, rowMapper);
+	}
+
+	@Override
+	public Page<Subject> findPaginatedSubjects(Pageable pageable) {
+		logger.debug("Find all subjects with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
+		int total = jdbcTemplate.queryForObject(COUNT_ALL, Integer.class);
+		List<Subject> subjects = jdbcTemplate.query(SELECT_BY_PAGE, rowMapper, pageable.getPageSize(),
+				pageable.getOffset());
+
+		return new PageImpl<>(subjects, pageable, total);
 	}
 
 	@Override

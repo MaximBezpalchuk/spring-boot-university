@@ -2,6 +2,7 @@ package com.foxminded.university.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -14,6 +15,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
 import com.foxminded.university.exception.EntityNotFoundException;
@@ -39,6 +44,16 @@ public class SubjectServiceTest {
 	}
 
 	@Test
+	void givenPageable_whenFindAll_thenAllPageableSubjectsFound() {
+		List<Subject> subjects = Arrays.asList(Subject.builder().id(1).build());
+		Page<Subject> expected = new PageImpl<>(subjects, PageRequest.of(0, 1), 1);
+		when(subjectDao.findPaginatedSubjects(isA(Pageable.class))).thenReturn(expected);
+		Page<Subject> actual = subjectService.findAll(PageRequest.of(0, 1));
+
+		assertEquals(expected, actual);
+	}
+
+	@Test
 	void givenExistingSubject_whenFindById_thenSubjectFound() {
 		Optional<Subject> expected = Optional.of(Subject.builder().id(1).build());
 		when(subjectDao.findById(1)).thenReturn(expected);
@@ -46,7 +61,7 @@ public class SubjectServiceTest {
 
 		assertEquals(expected.get(), actual);
 	}
-	
+
 	@Test
 	void givenExistingSubject_whenFindById_thenEntityNotFoundException() {
 		when(subjectDao.findById(10)).thenReturn(Optional.empty());
@@ -80,7 +95,7 @@ public class SubjectServiceTest {
 
 		verify(subjectDao).deleteById(1);
 	}
-	
+
 	@Test
 	void givenNotUniqueSubject_whenSave_thenEntityNotUniqueException() {
 		Subject subject1 = Subject.builder().id(1).name("TestName").build();
@@ -88,7 +103,7 @@ public class SubjectServiceTest {
 		when(subjectDao.findByName(subject1.getName())).thenReturn(Optional.of(subject2));
 		Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
 			subjectService.save(subject1);
-			});
+		});
 
 		assertEquals("Subject with name TestName is already exists!", exception.getMessage());
 	}

@@ -9,7 +9,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 
-import com.foxminded.university.config.SpringTestConfig;
+import com.foxminded.university.config.TestConfig;
 import com.foxminded.university.dao.jdbc.JdbcAudienceDao;
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Cathedra;
@@ -21,7 +21,7 @@ import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 import java.util.Optional;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = SpringTestConfig.class)
+@ContextConfiguration(classes = { TestConfig.class })
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class JdbcAudienceDaoTest {
 
@@ -41,13 +41,13 @@ public class JdbcAudienceDaoTest {
 
 	@Test
 	void givenExistingAudience_whenFindById_thenAudienceFound() {
-		Optional<Audience> actual = audienceDao.findById(1);
 		Optional<Audience> expected = Optional.of(Audience.builder()
 				.id(1)
 				.room(1)
 				.capacity(10)
 				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
 				.build());
+		Optional<Audience> actual = audienceDao.findById(1);
 
 		assertEquals(expected, actual);
 	}
@@ -63,9 +63,7 @@ public class JdbcAudienceDaoTest {
 		audienceDao.save(Audience.builder()
 				.room(100)
 				.capacity(100)
-				.cathedra(Cathedra.builder()
-						.id(1)
-						.build())
+				.cathedra(Cathedra.builder().id(1).build())
 				.build());
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
@@ -73,14 +71,15 @@ public class JdbcAudienceDaoTest {
 
 	@Test
 	void givenExitstingAudience_whenSaveWithChanges_thenChangesApplied() {
-		Audience expected = Audience.builder().id(1).room(1).capacity(10)
-				.cathedra(Cathedra.builder()
-						.id(1)
-						.name("Fantastic Cathedra")
-						.build())
+		Audience expected = Audience.builder()
+				.id(1)
+				.room(1)
+				.capacity(10)
+				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+				.capacity(100)
 				.build();
-		expected.setCapacity(100);
 		audienceDao.save(expected);
+
 		assertEquals(1, countRowsInTableWhere(template, TABLE_NAME, "id = 1 AND capacity = 100"));
 	}
 
@@ -91,16 +90,16 @@ public class JdbcAudienceDaoTest {
 
 		assertEquals(expected, countRowsInTable(template, TABLE_NAME));
 	}
-	
+
 	@Test
 	void givenRoom_whenFindByRoom_thenAudienceFound() {
-		Optional<Audience> actual = audienceDao.findByRoom(1);
 		Optional<Audience> expected = Optional.of(Audience.builder()
 				.id(1)
 				.room(1)
 				.capacity(10)
 				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
 				.build());
+		Optional<Audience> actual = audienceDao.findByRoom(1);
 
 		assertEquals(expected, actual);
 	}
