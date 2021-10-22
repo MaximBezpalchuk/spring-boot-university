@@ -12,12 +12,21 @@
 
 <body>
 	<h1>Holidays</h1>
+	<a th:href="@{holidays/new}" th:text="New">New</a>
 	<table border="1">
 		<tr th:each="holiday : ${holidays.content}">
 			<td th:text="${holiday.name}">Name</td>
 			<td th:text="${holiday.date}">Date</td>
 			<td><a th:href="@{/holidays/{id}(id=${holiday.id})}"
 				th:text="Show">Full info about holiday</a></td>
+			<td><a th:href="@{/holidays/{id}/edit(id=${holiday.id})}"
+				th:text="Edit">Edit holiday</a></td>
+			<td>
+				<form th:method="DELETE"
+					th:action="@{/holidays/{id}(id=${holiday.id})}">
+					<input type="submit" value="Delete">
+				</form>
+			</td>
 		</tr>
 	</table>
 	<br>

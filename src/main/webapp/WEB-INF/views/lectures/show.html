@@ -11,9 +11,11 @@
 </head>
 
 <body>
-	<h1
-		th:text="'Lecture subject ' + ${lecture.subject.name} + ' on ' + ${lecture.date}">Lecture
-		desc</h1>
+	<h1 th:text="'Lecture subject ' + ${lecture.subject.name} + ' on ' + ${lecture.date}">Lecture desc</h1>
+	<a th:href="@{/lectures/{id}/edit(id=${lecture.id})}" th:text="Edit">Edit lecture</a> 
+	<form th:method="DELETE" th:action="@{/lectures/{id}(id=${lecture.id})}">
+		<input type="submit" value="Delete">
+	</form>
 	<table border="1">
 		<tr>
 			<td>Cathedra</td>

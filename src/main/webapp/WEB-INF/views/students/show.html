@@ -11,9 +11,11 @@
 </head>
 
 <body>
-	<h1
-		th:text="'Student ' + ${student.firstName} + ' ' + ${student.lastName}">Student
-		name</h1>
+	<h1 th:text="'Student ' + ${student.firstName} + ' ' + ${student.lastName}">Student name</h1>
+	<a th:href="@{/students/{id}/edit(id=${student.id})}" th:text="Edit">Edit student</a> 
+	<form th:method="DELETE" th:action="@{/students/{id}(id=${student.id})}">
+		<input type="submit" value="Delete">
+	</form>
 	<table border="1">
 		<tr>
 			<td>Name</td>

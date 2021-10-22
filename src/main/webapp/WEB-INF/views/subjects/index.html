@@ -12,12 +12,21 @@
 
 <body>
 	<h1>Subjects</h1>
+	<a th:href="@{subjects/new}" th:text="New">New</a>
 	<table border="1">
 		<tr th:each="subject : ${subjects.content}">
 			<td th:text="${subject.name}">Name</td>
 			<td th:text="${subject.description}">Description</td>
 			<td><a th:href="@{/subjects/{id}(id=${subject.id})}"
 				th:text="Show">Full info about subject</a></td>
+			<td><a th:href="@{/subjects/{id}/edit(id=${subject.id})}"
+				th:text="Edit">Edit subject</a></td>
+			<td>
+				<form th:method="DELETE"
+					th:action="@{/subjects/{id}(id=${subject.id})}">
+					<input type="submit" value="Delete">
+				</form>
+			</td>
 		</tr>
 	</table>
 	<br>

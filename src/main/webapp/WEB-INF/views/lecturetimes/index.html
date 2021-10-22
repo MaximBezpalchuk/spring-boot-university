@@ -12,12 +12,22 @@
 
 <body>
 	<h1>Lecture times</h1>
+	<a th:href="@{lecturetimes/new}" th:text="New">New</a>
 	<table border="1">
 		<tr th:each="lectureTime : ${lectureTimes}">
 			<td th:text="${lectureTime.start}">Start</td>
 			<td th:text="${lectureTime.end}">End</td>
 			<td><a th:href="@{/lecturetimes/{id}(id=${lectureTime.id})}"
 				th:text="Show">Full info about lecture time</a></td>
+			<td><a
+				th:href="@{/lecturetimes/{id}/edit(id=${lectureTime.id})}"
+				th:text="Edit">Edit lecture time</a></td>
+			<td>
+				<form th:method="DELETE"
+					th:action="@{/lecturetimes/{id}(id=${lectureTime.id})}">
+					<input type="submit" value="Delete">
+				</form>
+			</td>
 		</tr>
 	</table>
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"

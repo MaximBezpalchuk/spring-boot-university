@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Edit audience</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous"/>
+</head>
+<body>
+<h1 th:text="'Edit audience with room number ' + ${audience.room}">Edit audience</h1>
+
+	<form th:method="PATCH" th:action="@{/audiences/{id}(id=${audience.id})}" th:object="${audience}">
+	
+	<label for="cathedraSelector">Choose cathedra: </label> 
+		<select id="cathedraSelector" th:field="*{cathedra.id}" required>
+			<option th:each="anyCathedra : ${cathedrasAttribute}"
+	            th:field="*{cathedra.id}"
+	            th:value="${anyCathedra?.id}"
+	            th:text="${anyCathedra?.name}">Cathedra name
+	        </option>
+		</select> <br>
+		
+		<label for="room">Enter room number: </label> 
+		<input type="number" th:field="*{room}" id="room" required> <br>
+		
+		<label for="capacity">Enter capacity: </label> 
+		<input type="number" th:field="*{capacity}" id="capacity" required> <br>
+		
+		<br>
+		
+		<input type="submit" value="Update!">
+	</form>
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+</body>
+</html>

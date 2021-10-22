@@ -12,6 +12,7 @@
 
 <body>
 	<h1>Students</h1>
+	<a th:href="@{students/new}" th:text="New">New</a>
 	<div class="students_wrapper main_menu_wrapper">
 		<table border="1">
 			<tr th:each="student : ${students.content}">
@@ -26,6 +27,14 @@
 				<td th:text="${student?.group?.name}">Group</td>
 				<td><a th:href="@{/students/{id}(id=${student.id})}"
 					th:text="Show">Full info about student</a></td>
+				<td><a th:href="@{/students/{id}/edit(id=${student.id})}"
+					th:text="Edit">Edit student</a></td>
+				<td>
+					<form th:method="DELETE"
+						th:action="@{/students/{id}(id=${student.id})}">
+						<input type="submit" value="Delete">
+					</form>
+				</td>
 			</tr>
 		</table>
 	</div>

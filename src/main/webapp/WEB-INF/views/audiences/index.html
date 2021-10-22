@@ -12,12 +12,21 @@
 
 <body>
 	<h1>Audiences</h1>
+	<a th:href="@{/audiences/new}" th:text="New">New</a>
 	<table border="1">
 		<tr th:each="audience : ${audiences}">
 			<td th:text="${audience.room}">Room</td>
 			<td th:text="${audience.capacity}">Capacity</td>
 			<td><a th:href="@{/audiences/{id}(id=${audience.id})}"
 				th:text="Show">Full info about audience</a></td>
+			<td><a th:href="@{/audiences/{id}/edit(id=${audience.id})}"
+				th:text="Edit">Edit audience</a></td>
+			<td>
+				<form th:method="DELETE"
+					th:action="@{/audiences/{id}(id=${audience.id})}">
+					<input type="submit" value="Delete">
+				</form>
+			</td>
 		</tr>
 	</table>
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"

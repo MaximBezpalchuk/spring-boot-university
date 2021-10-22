@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
@@ -18,6 +19,9 @@ import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ITemplateResolver;
+
+import com.foxminded.university.formatter.GroupFormatter;
+import com.foxminded.university.formatter.SubjectFormatter;
 
 @Configuration
 @ComponentScan("com.foxminded.university")
@@ -59,5 +63,11 @@ public class WebMvcConfig implements WebMvcConfigurer {
 		resolver.setOneIndexedParameters(true);
 		argumentResolvers.add(resolver);
 		WebMvcConfigurer.super.addArgumentResolvers(argumentResolvers);
+	}
+
+	@Override
+	public void addFormatters(FormatterRegistry registry) {
+		registry.addFormatter(new GroupFormatter()); // add multiply group choice on lectures/new
+		registry.addFormatter(new SubjectFormatter()); // add multiply subject choice on teachers/new
 	}
 }

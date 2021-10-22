@@ -11,9 +11,11 @@
 </head>
 
 <body>
-	<h1
-		th:text="'Vacation for ' + ${vacation.teacher.firstName} + ' ' + ${vacation.teacher.lastName}">Hello
-		description</h1>
+	<h1 th:text="'Vacation for ' + ${vacation.teacher.firstName} + ' ' + ${vacation.teacher.lastName}">Hello description</h1>
+	<a th:href="@{/teachers/{id}/vacations/{vacationId}/edit(id=${vacation.teacher.id}, vacationId=${vacation.id})}" th:text="Edit">Edit vacation</a> 
+	<form th:method="DELETE" th:action="@{/teachers/{id}/vacations/{vacId}(id=${vacation.teacher.id},vacId=${vacation.id})}">
+		<input type="submit" value="Delete">
+	</form>
 	<table border="1">
 		<tr>
 			<td>Teacher</td>
