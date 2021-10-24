@@ -55,7 +55,7 @@ public class GroupController {
 	}
 
 	@PostMapping
-	public String create(@ModelAttribute("group") Group group, Model model) {
+	public String create(@ModelAttribute Group group, Model model) {
 		group.setCathedra(cathedraService.findById(group.getCathedra().getId()));
 		groupService.save(group);
 		logger.debug("Create new group. Id {}", group.getId());
@@ -64,7 +64,7 @@ public class GroupController {
 	}
 
 	@GetMapping("/{id}/edit")
-	public String editGroup(@PathVariable("id") int id, Model model) {
+	public String editGroup(@PathVariable int id, Model model) {
 		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
 		model.addAttribute("group", groupService.findById(id));
 		logger.debug("Show edit group page");
@@ -73,7 +73,7 @@ public class GroupController {
 	}
 
 	@PatchMapping("/{id}")
-	public String update(@ModelAttribute("group") Group group, @PathVariable("id") int id) {
+	public String update(@ModelAttribute Group group, @PathVariable("id") int id) {
 		logger.debug("Update group with id {}", id);
 		group.setCathedra(cathedraService.findById(group.getCathedra().getId()));
 		groupService.save(group);
@@ -82,7 +82,7 @@ public class GroupController {
 	}
 
 	@DeleteMapping("/{id}")
-	public String delete(@PathVariable("id") int id) {
+	public String delete(@PathVariable int id) {
 		logger.debug("Delete group with id {}", id);
 		groupService.deleteById(id);
 

@@ -82,7 +82,7 @@ public class LectureController {
 	}
 
 	@PostMapping
-	public String create(@ModelAttribute("lecture") Lecture lecture) {
+	public String create(@ModelAttribute Lecture lecture) {
 		lecture.setCathedra(cathedraService.findById(lecture.getCathedra().getId()));
 		lecture.setTeacher(teacherService.findById(lecture.getTeacher().getId()));
 		lecture.setAudience(audienceService.findById(lecture.getAudience().getId()));
@@ -97,7 +97,7 @@ public class LectureController {
 	}
 
 	@GetMapping("/{id}/edit")
-	public String editLecture(@PathVariable("id") int id, Model model) {
+	public String editLecture(@PathVariable int id, Model model) {
 		model.addAttribute("teachersAttribute", teacherService.findAll());
 		model.addAttribute("audiencesAttribute", audienceService.findAll());
 		model.addAttribute("timesAttribute", lectureTimeService.findAll());
@@ -111,7 +111,7 @@ public class LectureController {
 	}
 
 	@PatchMapping("/{id}")
-	public String update(@ModelAttribute("lecture") Lecture lecture, @PathVariable("id") int id) {
+	public String update(@ModelAttribute Lecture lecture, @PathVariable("id") int id) {
 		logger.debug("Update lecture with id {}", id);
 		lecture.setCathedra(cathedraService.findById(lecture.getCathedra().getId()));
 		lecture.setTeacher(teacherService.findById(lecture.getTeacher().getId()));
@@ -126,7 +126,7 @@ public class LectureController {
 	}
 
 	@DeleteMapping("/{id}")
-	public String delete(@PathVariable("id") int id) {
+	public String delete(@PathVariable int id) {
 		logger.debug("Delete lecture with id {}", id);
 		lectureService.deleteById(id);
 

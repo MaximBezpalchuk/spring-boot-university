@@ -50,7 +50,7 @@ public class LectureTimeController {
 	}
 
 	@PostMapping
-	public String create(@ModelAttribute("lectureTime") LectureTime lectureTime) {
+	public String create(@ModelAttribute LectureTime lectureTime) {
 		lectureTimeService.save(lectureTime);
 		logger.debug("Create new lecture time. Id {}", lectureTime.getId());
 
@@ -58,7 +58,7 @@ public class LectureTimeController {
 	}
 
 	@GetMapping("/{id}/edit")
-	public String editLectureTime(@PathVariable("id") int id, Model model) {
+	public String editLectureTime(@PathVariable int id, Model model) {
 		model.addAttribute("lectureTime", lectureTimeService.findById(id));
 		logger.debug("Show edit lecture time page");
 
@@ -66,7 +66,7 @@ public class LectureTimeController {
 	}
 
 	@PatchMapping("/{id}")
-	public String update(@ModelAttribute("lectureTime") LectureTime lectureTime, @PathVariable("id") int id) {
+	public String update(@ModelAttribute LectureTime lectureTime, @PathVariable("id") int id) {
 		logger.debug("Update lecture time with id {}", id);
 		lectureTimeService.save(lectureTime);
 
@@ -74,7 +74,7 @@ public class LectureTimeController {
 	}
 
 	@DeleteMapping("/{id}")
-	public String delete(@PathVariable("id") int id) {
+	public String delete(@PathVariable int id) {
 		logger.debug("Delete lecture time with id {}", id);
 		lectureTimeService.deleteById(id);
 

@@ -58,7 +58,7 @@ public class SubjectController {
 	}
 
 	@PostMapping
-	public String create(@ModelAttribute("subject") Subject subject, Model model) {
+	public String create(@ModelAttribute Subject subject, Model model) {
 		subject.setCathedra(cathedraService.findById(subject.getCathedra().getId()));
 		subjectService.save(subject);
 		logger.debug("Create new subject. Id {}", subject.getId());
@@ -67,7 +67,7 @@ public class SubjectController {
 	}
 
 	@GetMapping("/{id}/edit")
-	public String editSubject(@PathVariable("id") int id, Model model) {
+	public String editSubject(@PathVariable int id, Model model) {
 		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
 		model.addAttribute("subject", subjectService.findById(id));
 		logger.debug("Show edit subject page");
@@ -76,7 +76,7 @@ public class SubjectController {
 	}
 
 	@PatchMapping("/{id}")
-	public String update(@ModelAttribute("subject") Subject subject, @PathVariable("id") int id) {
+	public String update(@ModelAttribute Subject subject, @PathVariable("id") int id) {
 		logger.debug("Update subject with id {}", id);
 		subject.setCathedra(cathedraService.findById(subject.getCathedra().getId()));
 		subjectService.save(subject);
@@ -85,7 +85,7 @@ public class SubjectController {
 	}
 
 	@DeleteMapping("/{id}")
-	public String delete(@PathVariable("id") int id) {
+	public String delete(@PathVariable int id) {
 		logger.debug("Delete subject with id {}", id);
 		subjectService.deleteById(id);
 

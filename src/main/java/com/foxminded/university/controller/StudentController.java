@@ -58,7 +58,7 @@ public class StudentController {
 	}
 
 	@PostMapping
-	public String create(@ModelAttribute("student") Student student, Model model) {
+	public String create(@ModelAttribute Student student, Model model) {
 		if (student.getGroup().getId() != 0) {
 			student.setGroup(groupService.findById(student.getGroup().getId()));
 		}
@@ -69,7 +69,7 @@ public class StudentController {
 	}
 
 	@GetMapping("/{id}/edit")
-	public String editStudent(@PathVariable("id") int id, Model model) {
+	public String editStudent(@PathVariable int id, Model model) {
 		model.addAttribute("student", studentService.findById(id));
 		model.addAttribute("groupsAttribute", groupService.findAll());
 		logger.debug("Show edit student page");
@@ -78,7 +78,7 @@ public class StudentController {
 	}
 
 	@PatchMapping("/{id}")
-	public String update(@ModelAttribute("student") Student student, @PathVariable("id") int id) {
+	public String update(@ModelAttribute Student student, @PathVariable("id") int id) {
 		logger.debug("Update student with id {}", id);
 		if (student.getGroup().getId() != 0) {
 			student.setGroup(groupService.findById(student.getGroup().getId()));
@@ -89,7 +89,7 @@ public class StudentController {
 	}
 
 	@DeleteMapping("/{id}")
-	public String delete(@PathVariable("id") int id) {
+	public String delete(@PathVariable int id) {
 		logger.debug("Delete student with id {}", id);
 		studentService.deleteById(id);
 

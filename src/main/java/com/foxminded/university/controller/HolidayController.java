@@ -58,7 +58,7 @@ public class HolidayController {
 	}
 
 	@PostMapping
-	public String create(@ModelAttribute("holiday") Holiday holiday, Model model) {
+	public String create(@ModelAttribute Holiday holiday, Model model) {
 		holiday.setCathedra(cathedraService.findById(holiday.getCathedra().getId()));
 		holidayService.save(holiday);
 		logger.debug("Create new holiday. Id {}", holiday.getId());
@@ -67,7 +67,7 @@ public class HolidayController {
 	}
 
 	@GetMapping("/{id}/edit")
-	public String editHoliday(@PathVariable("id") int id, Model model) {
+	public String editHoliday(@PathVariable int id, Model model) {
 		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
 		model.addAttribute("holiday", holidayService.findById(id));
 		logger.debug("Show edit holiday page");
@@ -76,7 +76,7 @@ public class HolidayController {
 	}
 
 	@PatchMapping("/{id}")
-	public String update(@ModelAttribute("holiday") Holiday holiday, @PathVariable("id") int id) {
+	public String update(@ModelAttribute Holiday holiday, @PathVariable("id") int id) {
 		logger.debug("Update holiday with id {}", id);
 		holiday.setCathedra(cathedraService.findById(holiday.getCathedra().getId()));
 		holidayService.save(holiday);
@@ -85,7 +85,7 @@ public class HolidayController {
 	}
 
 	@DeleteMapping("/{id}")
-	public String delete(@PathVariable("id") int id) {
+	public String delete(@PathVariable int id) {
 		logger.debug("Delete holiday with id {}", id);
 		holidayService.deleteById(id);
 

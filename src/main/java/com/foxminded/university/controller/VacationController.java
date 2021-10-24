@@ -52,7 +52,7 @@ public class VacationController {
 	}
 
 	@GetMapping("/new")
-	public String newTeacherVacations(@PathVariable("id") int id, Vacation vacation, Model model) {
+	public String newTeacherVacations(@PathVariable int id, Vacation vacation, Model model) {
 		logger.debug("Show create page");
 		model.addAttribute("teacher", teacherService.findById(id));
 
@@ -60,7 +60,7 @@ public class VacationController {
 	}
 
 	@PostMapping
-	public String createVacation(@PathVariable("id") int id, @ModelAttribute("vacation") Vacation vacation,
+	public String createVacation(@PathVariable int id, @ModelAttribute Vacation vacation,
 			Model model) {
 		vacation.setTeacher(teacherService.findById(id));
 		vacationService.save(vacation);
@@ -70,7 +70,7 @@ public class VacationController {
 	}
 
 	@GetMapping("/{vacationId}/edit")
-	public String editVacation(@PathVariable("id") int id, @PathVariable("vacationId") int vacationId, Model model) {
+	public String editVacation(@PathVariable int id, @PathVariable int vacationId, Model model) {
 		model.addAttribute("teacher", teacherService.findById(id));
 		model.addAttribute("vacation", vacationService.findById(vacationId));
 		logger.debug("Show edit vacation page");
@@ -79,7 +79,7 @@ public class VacationController {
 	}
 
 	@PatchMapping("/{vacationId}")
-	public String update(@ModelAttribute("vacation") Vacation vacation, @PathVariable("id") int id) {
+	public String update(@ModelAttribute Vacation vacation, @PathVariable int id) {
 		logger.debug("Update vacation with id {}", id);
 		vacation.setTeacher(teacherService.findById(id));
 		vacationService.save(vacation);
@@ -88,7 +88,7 @@ public class VacationController {
 	}
 
 	@DeleteMapping("/{vacationId}")
-	public String delete(@PathVariable("id") int id, @PathVariable("vacationId") int vacationId) {
+	public String delete(@PathVariable int id, @PathVariable int vacationId) {
 		logger.debug("Delete vacation with id {}", vacationId);
 		vacationService.deleteById(vacationId);
 

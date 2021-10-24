@@ -55,7 +55,7 @@ public class AudienceController {
 	}
 
 	@PostMapping
-	public String create(@ModelAttribute("audience") Audience audience) {
+	public String create(@ModelAttribute Audience audience) {
 		audience.setCathedra(cathedraService.findById(audience.getCathedra().getId()));
 		audienceService.save(audience);
 		logger.debug("Create new audience. Id {}", audience.getId());
@@ -64,7 +64,7 @@ public class AudienceController {
 	}
 
 	@GetMapping("/{id}/edit")
-	public String editAudience(@PathVariable("id") int id, Model model) {
+	public String editAudience(@PathVariable int id, Model model) {
 		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
 		model.addAttribute("audience", audienceService.findById(id));
 		logger.debug("Show edit audience page");
@@ -73,7 +73,7 @@ public class AudienceController {
 	}
 
 	@PatchMapping("/{id}")
-	public String update(@ModelAttribute("audience") Audience audience, @PathVariable("id") int id) {
+	public String update(@ModelAttribute Audience audience, @PathVariable("id") int id) {
 		logger.debug("Update audience with id {}", id);
 		audience.setCathedra(cathedraService.findById(audience.getCathedra().getId()));
 		audienceService.save(audience);
@@ -82,7 +82,7 @@ public class AudienceController {
 	}
 
 	@DeleteMapping("/{id}")
-	public String delete(@PathVariable("id") int id) {
+	public String delete(@PathVariable int id) {
 		logger.debug("Delete audience with id {}", id);
 		audienceService.deleteById(id);
 

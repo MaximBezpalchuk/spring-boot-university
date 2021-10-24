@@ -65,7 +65,7 @@ public class TeacherController {
 	}
 
 	@PostMapping
-	public String create(@ModelAttribute("teacher") Teacher teacher, Model model) {
+	public String create(@ModelAttribute Teacher teacher, Model model) {
 		teacher.setCathedra(cathedraService.findById(teacher.getCathedra().getId()));
 		teacher.setSubjects(teacher.getSubjects().stream().map(subject -> subjectService.findById(subject.getId()))
 				.collect(Collectors.toList()));
@@ -76,7 +76,7 @@ public class TeacherController {
 	}
 
 	@GetMapping("/{id}/edit")
-	public String editTeacher(@PathVariable("id") int id, Model model) {
+	public String editTeacher(@PathVariable int id, Model model) {
 		model.addAttribute("teacher", teacherService.findById(id));
 		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
 		model.addAttribute("subjectsAttribute", subjectService.findAll());
@@ -86,7 +86,7 @@ public class TeacherController {
 	}
 
 	@PatchMapping("/{id}")
-	public String update(@ModelAttribute("teacher") Teacher teacher, @PathVariable("id") int id) {
+	public String update(@ModelAttribute Teacher teacher, @PathVariable("id") int id) {
 		logger.debug("Update teacher with id {}", id);
 		teacher.setCathedra(cathedraService.findById(teacher.getCathedra().getId()));
 		teacher.setSubjects(teacher.getSubjects().stream().map(subject -> subjectService.findById(subject.getId()))
@@ -97,7 +97,7 @@ public class TeacherController {
 	}
 
 	@DeleteMapping("/{id}")
-	public String delete(@PathVariable("id") int id) {
+	public String delete(@PathVariable int id) {
 		logger.debug("Delete teacher with id {}", id);
 		teacherService.deleteById(id);
 
