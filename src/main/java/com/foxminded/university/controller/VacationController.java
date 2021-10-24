@@ -52,7 +52,7 @@ public class VacationController {
 	}
 
 	@GetMapping("/new")
-	public String newTeacherVacations(@PathVariable int teacherId, Vacation vacation, Model model) {
+	public String newTeacherVacation(@PathVariable int teacherId, Vacation vacation, Model model) {
 		logger.debug("Show create page");
 		model.addAttribute("teacher", teacherService.findById(teacherId));
 
