@@ -2,6 +2,9 @@ package com.foxminded.university.config;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -11,6 +14,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -69,5 +74,19 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	public void addFormatters(FormatterRegistry registry) {
 		registry.addFormatter(new GroupFormatter()); // add multiply group choice on lectures/new
 		registry.addFormatter(new SubjectFormatter()); // add multiply subject choice on teachers/new
+	}
+
+	@Bean
+	HandlerExceptionResolver errorHandler() {
+		return new HandlerExceptionResolver() {
+			@Override
+			public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response,
+					Object handler, Exception ex) {
+				ModelAndView model = new ModelAndView("exception");
+				model.addObject("exceptionType", ex);
+				model.addObject("handlerMethod", handler);
+				return model;
+			}
+		};
 	}
 }
