@@ -4,32 +4,38 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Edit holiday</title>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous"/>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+	integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
+	crossorigin="anonymous" />
 </head>
 
 <body>
 	<h1 th:text="'Edit holiday ' + ${holiday.name}">Edit holiday</h1>
 
-	<form th:method="PATCH" th:action="@{/holidays/{id}(id=${holiday.id})}" th:object="${holiday}">
-		<label for="cathedraSelector">Choose cathedra: </label> 
-		<select id="cathedraSelector" th:field="*{cathedra.id}" required>
+	<form th:method="PATCH" th:action="@{/holidays/{id}(id=${holiday.id})}"
+		th:object="${holiday}">
+		<label for="cathedraSelector">Choose cathedra: </label> <select
+			id="cathedraSelector" th:field="*{cathedra.id}" required>
 			<option th:each="anyCathedra : ${cathedrasAttribute}"
-	            th:field="*{cathedra.id}"
-	            th:value="${anyCathedra?.id}"
-	            th:text="${anyCathedra?.name}">Cathedra name
-	        </option>
-		</select> <br>
-		
-		<label for="name">Enter name: </label> 
-		<input type="text" th:field="*{name}" id="name" required> <br>
-		
-		<label for="date">Enter date: </label> 
-		<input type="date" th:field="*{date}" id="date" required> <br>
-		
-		<input type="submit" value="Update!">
+				th:field="*{cathedra.id}" th:value="${anyCathedra?.id}"
+				th:text="${anyCathedra?.name}">Cathedra name</option>
+		</select> <br> <label for="name">Enter name: </label> <input type="text"
+			th:field="*{name}" id="name" required> <br> <label
+			for="date">Enter date: </label> <input type="date" th:field="*{date}"
+			id="date" required> <br> <input type="submit"
+			value="Update!">
 	</form>
-	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+		integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+		integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"
+		integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1"
+		crossorigin="anonymous"></script>
 </body>
 </html>

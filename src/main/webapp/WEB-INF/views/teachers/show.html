@@ -11,9 +11,13 @@
 </head>
 
 <body>
-	<h1 th:text="'Teacher ' + ${teacher.firstName} + ' ' + ${teacher.lastName}">Teacher name</h1>
-	<a th:href="@{/teachers/{id}/edit(id=${teacher.id})}" th:text="Edit">Edit teacher</a> 
-	<form th:method="DELETE" th:action="@{/teachers/{id}(id=${teacher.id})}">
+	<h1
+		th:text="'Teacher ' + ${teacher.firstName} + ' ' + ${teacher.lastName}">Teacher
+		name</h1>
+	<a th:href="@{/teachers/{id}/edit(id=${teacher.id})}" th:text="Edit">Edit
+		teacher</a>
+	<form th:method="DELETE"
+		th:action="@{/teachers/{id}(id=${teacher.id})}">
 		<input type="submit" value="Delete">
 	</form>
 	<table border="1">
