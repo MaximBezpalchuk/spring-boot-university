@@ -19,7 +19,7 @@ import com.foxminded.university.service.TeacherService;
 import com.foxminded.university.service.VacationService;
 
 @Controller
-@RequestMapping("/teachers/{id}/vacations")
+@RequestMapping("/teachers/{teacherId}/vacations")
 public class VacationController {
 
 	private static final Logger logger = LoggerFactory.getLogger(VacationController.class);
@@ -33,65 +33,65 @@ public class VacationController {
 	}
 
 	@GetMapping
-	public String all(@PathVariable int id, Model model, Pageable pageable) {
+	public String all(@PathVariable int teacherId, Model model, Pageable pageable) {
 		logger.debug("Show index page");
 		Page<Vacation> page = vacationService
-				.findByTeacherId(pageable, id);
+				.findByTeacherId(pageable, teacherId);
 		model.addAttribute("vacations", page);
-		model.addAttribute("teacher", teacherService.findById(id));
+		model.addAttribute("teacher", teacherService.findById(teacherId));
 
 		return "teachers/vacations/index";
 	}
 
-	@GetMapping("/{vacationId}")
-	public String showVacation(@PathVariable int vacationId, Model model) {
-		logger.debug("Show vacation page with id {}", vacationId);
-		model.addAttribute("vacation", vacationService.findById(vacationId));
+	@GetMapping("/{id}")
+	public String showVacation(@PathVariable int id, Model model) {
+		logger.debug("Show vacation page with id {}", id);
+		model.addAttribute("vacation", vacationService.findById(id));
 
 		return "teachers/vacations/show";
 	}
 
 	@GetMapping("/new")
-	public String newTeacherVacations(@PathVariable int id, Vacation vacation, Model model) {
+	public String newTeacherVacations(@PathVariable int teacherId, Vacation vacation, Model model) {
 		logger.debug("Show create page");
-		model.addAttribute("teacher", teacherService.findById(id));
+		model.addAttribute("teacher", teacherService.findById(teacherId));
 
 		return "teachers/vacations/new";
 	}
 
 	@PostMapping
-	public String createVacation(@PathVariable int id, @ModelAttribute Vacation vacation,
+	public String createVacation(@PathVariable int teacherId, @ModelAttribute Vacation vacation,
 			Model model) {
-		vacation.setTeacher(teacherService.findById(id));
+		vacation.setTeacher(teacherService.findById(teacherId));
 		vacationService.save(vacation);
 		logger.debug("Create new vacation. Id {}", vacation.getId());
 
-		return "redirect:/teachers/" + id + "/vacations";
+		return "redirect:/teachers/" + teacherId + "/vacations";
 	}
 
-	@GetMapping("/{vacationId}/edit")
-	public String editVacation(@PathVariable int id, @PathVariable int vacationId, Model model) {
-		model.addAttribute("teacher", teacherService.findById(id));
-		model.addAttribute("vacation", vacationService.findById(vacationId));
+	@GetMapping("/{id}/edit")
+	public String editVacation(@PathVariable int teacherId, @PathVariable int id, Model model) {
+		model.addAttribute("teacher", teacherService.findById(teacherId));
+		model.addAttribute("vacation", vacationService.findById(id));
 		logger.debug("Show edit vacation page");
 
 		return "teachers/vacations/edit";
 	}
 
-	@PatchMapping("/{vacationId}")
-	public String update(@ModelAttribute Vacation vacation, @PathVariable int id) {
+	@PatchMapping("/{id}")
+	public String update(@ModelAttribute Vacation vacation, @PathVariable int teacherId, @PathVariable int id) {
 		logger.debug("Update vacation with id {}", id);
-		vacation.setTeacher(teacherService.findById(id));
+		vacation.setTeacher(teacherService.findById(teacherId));
 		vacationService.save(vacation);
 
-		return "redirect:/teachers/" + id + "/vacations";
+		return "redirect:/teachers/" + teacherId + "/vacations";
 	}
 
-	@DeleteMapping("/{vacationId}")
-	public String delete(@PathVariable int id, @PathVariable int vacationId) {
-		logger.debug("Delete vacation with id {}", vacationId);
-		vacationService.deleteById(vacationId);
+	@DeleteMapping("/{id}")
+	public String delete(@PathVariable int teacherId, @PathVariable int id) {
+		logger.debug("Delete vacation with id {}", id);
+		vacationService.deleteById(id);
 
-		return "redirect:/teachers/" + id + "/vacations";
+		return "redirect:/teachers/" + teacherId + "/vacations";
 	}
 }
