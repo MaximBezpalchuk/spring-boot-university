@@ -14,6 +14,8 @@
 		name</h1>
 	<a th:href="@{/teachers/{id}/edit(id=${teacher.id})}" th:text="Edit">Edit
 		teacher</a>
+	<a th:href="@{/teachers/{id}/shedule(id=${teacher.id})}"
+		th:text="Shedule">Shedule for teacher</a>
 	<form th:method="DELETE"
 		th:action="@{/teachers/{id}(id=${teacher.id})}">
 		<input type="submit" value="Delete">
