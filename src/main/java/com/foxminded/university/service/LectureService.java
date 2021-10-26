@@ -19,15 +19,15 @@ import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
 import com.foxminded.university.dao.jdbc.JdbcLectureDao;
 import com.foxminded.university.dao.jdbc.JdbcStudentDao;
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
+import com.foxminded.university.exception.AfterHoursException;
+import com.foxminded.university.exception.AudienceOverflowException;
+import com.foxminded.university.exception.BusyTeacherException;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
-import com.foxminded.university.exception.AfterHoursException;
-import com.foxminded.university.exception.OccupiedAudienceException;
-import com.foxminded.university.exception.AudienceOverflowException;
 import com.foxminded.university.exception.HolidayException;
-import com.foxminded.university.exception.SundayException;
-import com.foxminded.university.exception.BusyTeacherException;
 import com.foxminded.university.exception.NotCompetentTeacherException;
+import com.foxminded.university.exception.OccupiedAudienceException;
+import com.foxminded.university.exception.SundayException;
 import com.foxminded.university.exception.TeacherInVacationException;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Lecture;
@@ -165,5 +165,15 @@ public class LectureService {
 			throw new OccupiedAudienceException(
 					"Audience " + lecture.getAudience().getRoom() + " is already occupied!");
 		}
+	}
+
+	public List<Lecture> findByStudentId(int id) {
+		logger.debug("Find all lectures by student id");
+		return lectureDao.findLecturesByStudentId(id);
+	}
+
+	public List<Lecture> findByTeacherId(int id) {
+		logger.debug("Find all lectures by teacher id");
+		return lectureDao.findLecturesByTeacherId(id);
 	}
 }

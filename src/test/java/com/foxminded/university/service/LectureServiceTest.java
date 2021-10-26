@@ -28,15 +28,15 @@ import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
 import com.foxminded.university.dao.jdbc.JdbcLectureDao;
 import com.foxminded.university.dao.jdbc.JdbcStudentDao;
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
+import com.foxminded.university.exception.AfterHoursException;
+import com.foxminded.university.exception.AudienceOverflowException;
+import com.foxminded.university.exception.BusyTeacherException;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
-import com.foxminded.university.exception.AfterHoursException;
-import com.foxminded.university.exception.OccupiedAudienceException;
-import com.foxminded.university.exception.AudienceOverflowException;
 import com.foxminded.university.exception.HolidayException;
-import com.foxminded.university.exception.SundayException;
-import com.foxminded.university.exception.BusyTeacherException;
 import com.foxminded.university.exception.NotCompetentTeacherException;
+import com.foxminded.university.exception.OccupiedAudienceException;
+import com.foxminded.university.exception.SundayException;
 import com.foxminded.university.exception.TeacherInVacationException;
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Cathedra;
@@ -335,5 +335,25 @@ public class LectureServiceTest {
 		lectureService.deleteById(1);
 
 		verify(lectureDao).deleteById(1);
+	}
+
+	@Test
+	void givenStudentId_whenFindLecturesByStudentId_thenAllExistingLecturesFound() {
+		Lecture lecture1 = Lecture.builder().id(1).build();
+		List<Lecture> expected = Arrays.asList(lecture1);
+		when(lectureDao.findLecturesByStudentId(1)).thenReturn(expected);
+		List<Lecture> actual = lectureService.findByStudentId(1);
+
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	void givenTeacherId_whenFindLecturesByTeacherId_thenAllExistingLecturesFound() {
+		Lecture lecture1 = Lecture.builder().id(1).build();
+		List<Lecture> expected = Arrays.asList(lecture1);
+		when(lectureDao.findLecturesByTeacherId(1)).thenReturn(expected);
+		List<Lecture> actual = lectureService.findByTeacherId(1);
+
+		assertEquals(expected, actual);
 	}
 }

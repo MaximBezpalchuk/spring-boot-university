@@ -3,13 +3,15 @@ package com.foxminded.university.model;
 import java.time.LocalDate;
 import java.util.Objects;
 
-import org.springframework.format.annotation.DateTimeFormat;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class Holiday {
 
 	private int id;
 	private String name;
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@JsonSerialize(as = LocalDate.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private LocalDate date;
 	private Cathedra cathedra;
 

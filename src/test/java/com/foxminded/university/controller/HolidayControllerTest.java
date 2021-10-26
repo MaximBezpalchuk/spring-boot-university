@@ -2,6 +2,7 @@ package com.foxminded.university.controller;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -9,6 +10,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -31,6 +33,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.foxminded.university.model.Cathedra;
@@ -159,5 +162,38 @@ public class HolidayControllerTest {
 				.andExpect(redirectedUrl("/holidays"));
 
 		verify(holidayService).deleteById(1);
+	}
+
+	@Test
+	void whenShowCalendar_thenModelAndViewReturned() throws Exception {
+		mockMvc.perform(get("/holidays/calendar"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("holidays/calendar"))
+				.andExpect(forwardedUrl("holidays/calendar"));
+	}
+
+	@Test
+	void whenGetAllHolidays_thenStringReturned() throws Exception {
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+		Holiday holiday = Holiday.builder()
+				.id(1)
+				.name("Test Name")
+				.date(LocalDate.of(2021, 1, 1))
+				.cathedra(cathedra)
+				.build();
+		String expected = "[ {\r\n"
+				+ "  \"allDay\" : true,\r\n"
+				+ "  \"start\" : [ 2021, 1, 1 ],\r\n"
+				+ "  \"title\" : \"Test Name\",\r\n"
+				+ "  \"url\" : 1\r\n"
+				+ "} ]";
+		when(holidayService.findAll()).thenReturn(Arrays.asList(holiday));
+		MvcResult rt = mockMvc.perform(get("/holidays/calendar/events"))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType("text/plain;charset=ISO-8859-1"))
+				.andReturn();
+		String actual = rt.getResponse().getContentAsString();
+
+		assertEquals(expected, actual);
 	}
 }

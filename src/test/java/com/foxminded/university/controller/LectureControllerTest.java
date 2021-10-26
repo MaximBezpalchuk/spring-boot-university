@@ -2,6 +2,7 @@ package com.foxminded.university.controller;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -9,6 +10,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -32,6 +34,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.foxminded.university.model.Audience;
@@ -253,5 +256,54 @@ public class LectureControllerTest {
 				.andExpect(redirectedUrl("/lectures"));
 
 		verify(lectureService).deleteById(1);
+	}
+
+	@Test
+	void whenShowShedule_thenModelAndViewReturned() throws Exception {
+		mockMvc.perform(get("/lectures/shedule"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("lectures/calendar"))
+				.andExpect(forwardedUrl("lectures/calendar"));
+	}
+
+	@Test
+	void whenGetAllLectures_thenStringReturned() throws Exception {
+		Subject subject = Subject.builder()
+				.id(1)
+				.name("Subject name")
+				.build();
+		LectureTime time = LectureTime.builder().id(1).start(LocalTime.of(8, 0)).end(LocalTime.of(9, 45)).build();
+		Lecture lecture1 = Lecture.builder()
+				.id(1)
+				.date(LocalDate.of(2021, 1, 1))
+				.subject(subject)
+				.time(time)
+				.build();
+		Lecture lecture2 = Lecture.builder()
+				.id(2)
+				.date(LocalDate.of(2021, 1, 2))
+				.subject(subject)
+				.time(time)
+				.build();
+		List<Lecture> lectures = Arrays.asList(lecture1, lecture2);
+		String expected = "[ {\r\n"
+				+ "  \"start\" : \"2021-01-01T08:00:00\",\r\n"
+				+ "  \"end\" : \"2021-01-01T09:45:00\",\r\n"
+				+ "  \"title\" : \"Subject name\",\r\n"
+				+ "  \"url\" : \"/university/lectures/1\"\r\n"
+				+ "}, {\r\n"
+				+ "  \"start\" : \"2021-01-02T08:00:00\",\r\n"
+				+ "  \"end\" : \"2021-01-02T09:45:00\",\r\n"
+				+ "  \"title\" : \"Subject name\",\r\n"
+				+ "  \"url\" : \"/university/lectures/2\"\r\n"
+				+ "} ]";
+		when(lectureService.findAll()).thenReturn(lectures);
+		MvcResult rt = mockMvc.perform(get("/lectures/shedule/events"))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType("text/plain;charset=ISO-8859-1"))
+				.andReturn();
+		String actual = rt.getResponse().getContentAsString();
+
+		assertEquals(expected, actual);
 	}
 }

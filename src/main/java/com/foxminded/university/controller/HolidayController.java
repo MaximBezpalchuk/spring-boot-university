@@ -1,5 +1,10 @@
 package com.foxminded.university.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -13,7 +18,11 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.foxminded.university.model.Holiday;
 import com.foxminded.university.service.CathedraService;
 import com.foxminded.university.service.HolidayService;
@@ -90,5 +99,34 @@ public class HolidayController {
 		holidayService.deleteById(id);
 
 		return "redirect:/holidays";
+	}
+
+	@GetMapping("/calendar")
+	public ModelAndView showCalendar() {
+		return new ModelAndView("holidays/calendar");
+	}
+
+	@GetMapping("/calendar/events")
+	public @ResponseBody String getAllHolidays() {
+		ObjectMapper mapper = JsonMapper.builder()
+				.findAndAddModules()
+				.build();
+		List<Holiday> holidays = holidayService.findAll();
+		List<Map<String, Object>> values = new ArrayList<>();
+		for (Holiday holiday : holidays) {
+			Map<String, Object> element = new HashMap<>();
+			element.put("title", holiday.getName());
+			element.put("start", holiday.getDate());
+			element.put("allDay", true);
+			element.put("url", holiday.getId());
+			values.add(element);
+		}
+		try {
+			return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(values);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return "";
 	}
 }

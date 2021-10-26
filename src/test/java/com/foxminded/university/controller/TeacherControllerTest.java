@@ -2,6 +2,7 @@ package com.foxminded.university.controller;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -9,12 +10,15 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,12 +34,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.foxminded.university.model.Cathedra;
+import com.foxminded.university.model.Lecture;
+import com.foxminded.university.model.LectureTime;
 import com.foxminded.university.model.Subject;
 import com.foxminded.university.model.Teacher;
 import com.foxminded.university.service.CathedraService;
+import com.foxminded.university.service.LectureService;
 import com.foxminded.university.service.SubjectService;
 import com.foxminded.university.service.TeacherService;
 
@@ -50,6 +58,8 @@ public class TeacherControllerTest {
 	private SubjectService subjectService;
 	@Mock
 	private CathedraService cathedraService;
+	@Mock
+	private LectureService lectureService;
 	@InjectMocks
 	private TeacherController teacherController;
 
@@ -171,5 +181,42 @@ public class TeacherControllerTest {
 				.andExpect(redirectedUrl("/teachers"));
 
 		verify(teacherService).deleteById(1);
+	}
+
+	@Test
+	void whenShowShedule_thenModelAndViewReturned() throws Exception {
+		mockMvc.perform(get("/teachers/1/shedule"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("teachers/calendar"))
+				.andExpect(forwardedUrl("teachers/calendar"));
+	}
+
+	@Test
+	void whenGetLecturesByTeacherId_thenStringReturned() throws Exception {
+		Subject subject = Subject.builder()
+				.id(1)
+				.name("Subject name")
+				.build();
+		LectureTime time = LectureTime.builder().id(1).start(LocalTime.of(8, 0)).end(LocalTime.of(9, 45)).build();
+		Lecture lecture = Lecture.builder()
+				.id(1)
+				.date(LocalDate.of(2021, 1, 1))
+				.subject(subject)
+				.time(time)
+				.build();
+		when(lectureService.findByTeacherId(1)).thenReturn(Arrays.asList(lecture));
+		String expected = "[ {\r\n"
+				+ "  \"start\" : \"2021-01-01T08:00:00\",\r\n"
+				+ "  \"end\" : \"2021-01-01T09:45:00\",\r\n"
+				+ "  \"title\" : \"Subject name\",\r\n"
+				+ "  \"url\" : \"/university/lectures/1\"\r\n"
+				+ "} ]";
+		MvcResult rt = mockMvc.perform(get("/teachers/1/shedule/events"))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType("text/plain;charset=ISO-8859-1"))
+				.andReturn();
+		String actual = rt.getResponse().getContentAsString();
+
+		assertEquals(expected, actual);
 	}
 }

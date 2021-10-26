@@ -23,6 +23,8 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.foxminded.university.config.TestConfig;
+import com.foxminded.university.dao.jdbc.JdbcLectureDao;
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Degree;
@@ -32,8 +34,6 @@ import com.foxminded.university.model.Lecture;
 import com.foxminded.university.model.LectureTime;
 import com.foxminded.university.model.Subject;
 import com.foxminded.university.model.Teacher;
-import com.foxminded.university.config.TestConfig;
-import com.foxminded.university.dao.jdbc.JdbcLectureDao;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -294,5 +294,19 @@ public class JdbcLectureDaoTest {
 				LocalDate.of(2021, 4, 4), LectureTime.builder().id(1).build());
 
 		assertEquals(expected, actual);
+	}
+
+	@Test
+	void givenStudentId_whenFindByStudentId_thenLecturesFound() {
+		List<Lecture> actual = lectureDao.findLecturesByStudentId(1);
+
+		assertEquals(8, actual.size());
+	}
+
+	@Test
+	void givenTeacherId_whenFindByTeacherId_thenLecturesFound() {
+		List<Lecture> actual = lectureDao.findLecturesByTeacherId(2);
+
+		assertEquals(7, actual.size());
 	}
 }

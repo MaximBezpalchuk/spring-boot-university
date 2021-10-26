@@ -22,4 +22,8 @@ public interface LectureDao extends GenericDao<Lecture> {
 	List<Lecture> findLecturesByTeacherDateAndTime(Teacher teacher, LocalDate date, LectureTime time);
 
 	Page<Lecture> findPaginatedLectures(Pageable pageable);
+
+	List<Lecture> findLecturesByStudentId(int id);
+
+	List<Lecture> findLecturesByTeacherId(int id);
 }

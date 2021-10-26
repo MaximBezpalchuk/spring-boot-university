@@ -1,5 +1,9 @@
 package com.foxminded.university.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -15,7 +19,12 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.foxminded.university.model.Lecture;
 import com.foxminded.university.service.AudienceService;
 import com.foxminded.university.service.CathedraService;
@@ -131,5 +140,35 @@ public class LectureController {
 		lectureService.deleteById(id);
 
 		return "redirect:/lectures";
+	}
+
+	@GetMapping("/shedule")
+	public ModelAndView showCalendar() {
+		return new ModelAndView("lectures/calendar");
+	}
+
+	@GetMapping("/shedule/events")
+	public @ResponseBody String getAllLectures() {
+		ObjectMapper mapper = JsonMapper.builder()
+				.findAndAddModules()
+				.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+				.build();
+		List<Lecture> lectures = lectureService.findAll();
+		List<Map<String, Object>> values = new ArrayList<>();
+		for (Lecture lecture : lectures) {
+			Map<String, Object> element = new HashMap<>();
+			element.put("title", lecture.getSubject().getName());
+			element.put("start", lecture.getDate().atTime(lecture.getTime().getStart()));
+			element.put("end", lecture.getDate().atTime(lecture.getTime().getEnd()));
+			element.put("url", "/university/lectures/" + lecture.getId());
+			values.add(element);
+		}
+		try {
+			return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(values);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return "";
 	}
 }

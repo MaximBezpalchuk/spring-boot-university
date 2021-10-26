@@ -44,6 +44,8 @@ public class JdbcLectureDao implements LectureDao {
 	private static final String SELECT_BY_AUDIENCE_DATE_LECTURE_TIME = "SELECT * FROM lectures WHERE audience_id = ? AND date = ? AND lecture_time_id = ?";
 	private static final String SELECT_BY_TEACHER_ID_DATE_AND_LECTURE_TIME_ID = "SELECT * FROM lectures WHERE teacher_id = ? AND date = ? AND lecture_time_id = ?";
 	private static final String SELECT_BY_TEACHER_AUDIENCE_DATE_LECTURE_TIME = "SELECT * FROM lectures WHERE teacher_id = ? AND audience_id = ? AND date = ? AND lecture_time_id = ?";
+	private static final String SELECT_BY_STUDENT_ID = "SELECT lec.*, lg.group_id FROM lectures AS lec LEFT JOIN lectures_groups AS lg ON lg.lecture_id = lec.id WHERE group_id = (SELECT group_id FROM students WHERE id = ?)";
+	private static final String SELECT_BY_TEACHER_ID = "SELECT * FROM lectures WHERE teacher_id = ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private LectureRowMapper rowMapper;
@@ -139,7 +141,7 @@ public class JdbcLectureDao implements LectureDao {
 	@Override
 	public Optional<Lecture> findByAudienceDateAndLectureTime(Audience audience, LocalDate date,
 			LectureTime lectureTime) {
-		logger.debug("Find lecture by audience with id {}, date {} and lecture time id {}", audience.getId(), date,
+		logger.debug("Find lectures by audience with id {}, date {} and lecture time id {}", audience.getId(), date,
 				lectureTime.getId());
 		try {
 			return Optional.of(
@@ -153,7 +155,7 @@ public class JdbcLectureDao implements LectureDao {
 	@Override
 	public Optional<Lecture> findByTeacherAudienceDateAndLectureTime(Teacher teacher, Audience audience, LocalDate date,
 			LectureTime lectureTime) {
-		logger.debug("Find lecture by teacher with id: {}, audience with id {}, date {} and lecture time id {}",
+		logger.debug("Find lectures by teacher with id: {}, audience with id {}, date {} and lecture time id {}",
 				teacher.getId(), audience.getId(), date,
 				lectureTime.getId());
 		try {
@@ -167,9 +169,21 @@ public class JdbcLectureDao implements LectureDao {
 
 	@Override
 	public List<Lecture> findLecturesByTeacherDateAndTime(Teacher teacher, LocalDate date, LectureTime time) {
-		logger.debug("Find lecture by teacher with id {}, date {} and lecture time id {}", teacher.getId(), date,
+		logger.debug("Find lectures by teacher with id {}, date {} and lecture time id {}", teacher.getId(), date,
 				time.getId());
 		return jdbcTemplate.query(SELECT_BY_TEACHER_ID_DATE_AND_LECTURE_TIME_ID, rowMapper, teacher.getId(), date,
 				time.getId());
+	}
+
+	@Override
+	public List<Lecture> findLecturesByStudentId(int id) {
+		logger.debug("Find lectures by student with id {}", id);
+		return jdbcTemplate.query(SELECT_BY_STUDENT_ID, rowMapper, id);
+	}
+
+	@Override
+	public List<Lecture> findLecturesByTeacherId(int id) {
+		logger.debug("Find lectures by teacher with id {}", id);
+		return jdbcTemplate.query(SELECT_BY_TEACHER_ID, rowMapper, id);
 	}
 }
