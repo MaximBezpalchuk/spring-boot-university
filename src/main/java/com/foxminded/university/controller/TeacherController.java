@@ -99,7 +99,7 @@ public class TeacherController {
 	}
 
 	@PatchMapping("/{id}")
-	public String update(@ModelAttribute Teacher teacher, @PathVariable("id") int id) {
+	public String update(@ModelAttribute Teacher teacher, @PathVariable int id) {
 		logger.debug("Update teacher with id {}", id);
 		teacher.setCathedra(cathedraService.findById(teacher.getCathedra().getId()));
 		teacher.setSubjects(teacher.getSubjects().stream().map(subject -> subjectService.findById(subject.getId()))

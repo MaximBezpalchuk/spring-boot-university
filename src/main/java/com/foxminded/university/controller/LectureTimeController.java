@@ -66,7 +66,7 @@ public class LectureTimeController {
 	}
 
 	@PatchMapping("/{id}")
-	public String update(@ModelAttribute LectureTime lectureTime, @PathVariable("id") int id) {
+	public String update(@ModelAttribute LectureTime lectureTime, @PathVariable int id) {
 		logger.debug("Update lecture time with id {}", id);
 		lectureTimeService.save(lectureTime);
 

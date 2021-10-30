@@ -85,7 +85,7 @@ public class HolidayController {
 	}
 
 	@PatchMapping("/{id}")
-	public String update(@ModelAttribute Holiday holiday, @PathVariable("id") int id) {
+	public String update(@ModelAttribute Holiday holiday, @PathVariable int id) {
 		logger.debug("Update holiday with id {}", id);
 		holiday.setCathedra(cathedraService.findById(holiday.getCathedra().getId()));
 		holidayService.save(holiday);

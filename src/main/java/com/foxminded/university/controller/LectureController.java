@@ -120,7 +120,7 @@ public class LectureController {
 	}
 
 	@PatchMapping("/{id}")
-	public String update(@ModelAttribute Lecture lecture, @PathVariable("id") int id) {
+	public String update(@ModelAttribute Lecture lecture, @PathVariable int id) {
 		logger.debug("Update lecture with id {}", id);
 		lecture.setCathedra(cathedraService.findById(lecture.getCathedra().getId()));
 		lecture.setTeacher(teacherService.findById(lecture.getTeacher().getId()));

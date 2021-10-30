@@ -73,7 +73,7 @@ public class AudienceController {
 	}
 
 	@PatchMapping("/{id}")
-	public String update(@ModelAttribute Audience audience, @PathVariable("id") int id) {
+	public String update(@ModelAttribute Audience audience, @PathVariable int id) {
 		logger.debug("Update audience with id {}", id);
 		audience.setCathedra(cathedraService.findById(audience.getCathedra().getId()));
 		audienceService.save(audience);

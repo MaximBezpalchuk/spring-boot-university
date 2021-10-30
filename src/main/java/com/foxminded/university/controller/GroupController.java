@@ -73,7 +73,7 @@ public class GroupController {
 	}
 
 	@PatchMapping("/{id}")
-	public String update(@ModelAttribute Group group, @PathVariable("id") int id) {
+	public String update(@ModelAttribute Group group, @PathVariable int id) {
 		logger.debug("Update group with id {}", id);
 		group.setCathedra(cathedraService.findById(group.getCathedra().getId()));
 		groupService.save(group);

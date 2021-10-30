@@ -76,7 +76,7 @@ public class SubjectController {
 	}
 
 	@PatchMapping("/{id}")
-	public String update(@ModelAttribute Subject subject, @PathVariable("id") int id) {
+	public String update(@ModelAttribute Subject subject, @PathVariable int id) {
 		logger.debug("Update subject with id {}", id);
 		subject.setCathedra(cathedraService.findById(subject.getCathedra().getId()));
 		subjectService.save(subject);
