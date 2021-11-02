@@ -5,6 +5,7 @@ import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,7 +47,7 @@ public class JdbcSubjectDaoTest {
 
 	@Test
 	void givenPageable_whenFindPaginatedSubjects_thenSubjectsFound() {
-		List<Subject> subjects = List.of(Subject.builder()
+		List<Subject> subjects = Arrays.asList(Subject.builder()
 				.cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
 				.name("Weapon Tactics")
 				.description("Learning how to use heavy weapon and guerrilla tactics")

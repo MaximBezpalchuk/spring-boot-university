@@ -131,7 +131,7 @@ public class JdbcLectureDaoTest {
 				.start(LocalTime.of(8, 0))
 				.end(LocalTime.of(9, 30))
 				.build();
-		List<Lecture> lectures = List.of(Lecture.builder()
+		List<Lecture> lectures = Arrays.asList(Lecture.builder()
 				.id(1)
 				.group(Arrays.asList(group))
 				.cathedra(cathedra)

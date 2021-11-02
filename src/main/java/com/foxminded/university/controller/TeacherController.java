@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,6 +26,8 @@ import org.springframework.web.servlet.ModelAndView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.foxminded.university.dao.jdbc.mapper.LectureToEventMapper;
+import com.foxminded.university.model.Event;
 import com.foxminded.university.model.Lecture;
 import com.foxminded.university.model.Teacher;
 import com.foxminded.university.service.CathedraService;
@@ -124,8 +127,9 @@ public class TeacherController {
 		return new ModelAndView("teachers/calendar");
 	}
 
-	@GetMapping("/{id}/shedule/events")
-	public @ResponseBody String getLecturesByTeacherId(@PathVariable int id) {
+	@GetMapping(value = "/{id}/shedule/events", produces = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseBody
+	public String getLecturesByTeacherId(@PathVariable int id) {
 		ObjectMapper mapper = JsonMapper.builder()
 				.findAndAddModules()
 				.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
@@ -133,6 +137,7 @@ public class TeacherController {
 		List<Lecture> lectures = lectureService.findByTeacherId(id);
 		List<Map<String, Object>> values = new ArrayList<>();
 		for (Lecture lecture : lectures) {
+			Event event = LectureToEventMapper.INSTANCE.lectureToEvent(lecture);
 			Map<String, Object> element = new HashMap<>();
 			element.put("title", lecture.getSubject().getName());
 			element.put("start", lecture.getDate().atTime(lecture.getTime().getStart()));

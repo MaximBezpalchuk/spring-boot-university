@@ -58,7 +58,7 @@ public class JdbcTeacherDaoTest {
 				.name("Weapon Tactics")
 				.description("Learning how to use heavy weapon and guerrilla tactics")
 				.build();
-		List<Teacher> teachers = List.of(Teacher.builder()
+		List<Teacher> teachers = Arrays.asList(Teacher.builder()
 				.firstName("Daniel")
 				.lastName("Morpheus")
 				.address("Virtual Reality Capsule no 1")

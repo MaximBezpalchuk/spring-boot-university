@@ -74,7 +74,7 @@ public class JdbcVacationDaoTest {
 				.id(1)
 				.subjects(Arrays.asList(subject))
 				.build();
-		List<Vacation> vacations = List.of(Vacation.builder()
+		List<Vacation> vacations = Arrays.asList(Vacation.builder()
 				.id(1)
 				.start(LocalDate.of(2021, 1, 15))
 				.end(LocalDate.of(2021, 1, 29))
