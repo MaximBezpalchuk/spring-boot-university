@@ -12,22 +12,23 @@
 	<h1>Create new teacher</h1>
 
 	<form method="POST" th:action="@{/teachers}" th:object="${teacher}">
-		<label for="cathedraSelector">Choose cathedra: </label> <select
-			id="cathedraSelector" th:field="*{cathedra.id}" required>
-			<option th:each="anyCathedra : ${cathedrasAttribute}"
-				th:field="*{cathedra.id}" th:value="${anyCathedra?.id}"
-				th:text="${anyCathedra?.name}">Cathedra name</option>
-		</select> <br> <label for="firstName">Enter first name: </label> <input
-			type="text" th:field="*{firstName}" id="firstName" required>
-		<br> <label for="lastName">Enter last name: </label> <input
-			type="text" th:field="*{lastName}" id="lastName" required> <br>
+        <label for="cathedraSelector">Choose cathedra: </label> <select
+            id="cathedraSelector" th:field="*{cathedra.id}" required>
+        <option th:each="anyCathedra : ${cathedras}"
+                th:field="*{cathedra.id}" th:value="${anyCathedra?.id}"
+                th:text="${anyCathedra?.name}">Cathedra name
+        </option>
+    </select> <br> <label for="firstName">Enter first name: </label> <input
+            type="text" th:field="*{firstName}" id="firstName" required>
+        <br> <label for="lastName">Enter last name: </label> <input
+            type="text" th:field="*{lastName}" id="lastName" required> <br>
 
-		<label for="phone">Enter phone number: </label> <input type="text"
-			th:field="*{phone}" id="phone"> <br> <label
-			for="address">Enter address: </label> <input type="text"
-			th:field="*{address}" id="address" required> <br> <label
-			for="postalCode">Enter postal code: </label> <input type="number"
-			th:field="*{postalCode}" id="postalCode"> <br> <label
+        <label for="phone">Enter phone number: </label> <input type="text"
+                                                               th:field="*{phone}" id="phone"> <br> <label
+            for="address">Enter address: </label> <input type="text"
+                                                         th:field="*{address}" id="address" required> <br> <label
+            for="postalCode">Enter postal code: </label> <input type="number"
+                                                                th:field="*{postalCode}" id="postalCode"> <br> <label
 			for="email">Enter e-mail address: </label> <input type="text"
 			th:field="*{email}" id="email"> <br> <label for="gender">Chose
 			gender: </label> <select name="gender" required>
@@ -37,18 +38,20 @@
 		</select> <br> <label for="education">Enter education: </label> <input
 			type="text" th:field="*{education}" id="education"> <br>
 
-		<label for="birthdate">Enter birth date: </label> <input type="date"
-			th:field="*{birthDate}" id="birthdate" required> <br> <label
-			for="degree">Chose degree: </label> <select name="degree" required>
-			<option
-				th:each="degreeOpt : ${T(com.foxminded.university.model.Degree).values()}"
-				th:value="${degreeOpt}" th:text="${degreeOpt}">Degree</option>
-		</select> <br> <label for="subjectSelector">Choose subject(s): </label> <select
-			class="form-control" id="subjects" name="subjects" multiple required>
-			<option th:each="subject: ${subjectsAttribute}"
-				th:value="${subject.id}" th:text="${subject.name}"></option>
-		</select> <br> <input type="submit" value="Create!">
-	</form>
+        <label for="birthdate">Enter birth date: </label> <input type="date"
+                                                                 th:field="*{birthDate}" id="birthdate" required> <br>
+        <label
+                for="degree">Chose degree: </label> <select name="degree" required>
+        <option
+                th:each="degreeOpt : ${T(com.foxminded.university.model.Degree).values()}"
+                th:value="${degreeOpt}" th:text="${degreeOpt}">Degree
+        </option>
+    </select> <br> <label for="subjectSelector">Choose subject(s): </label> <select
+            class="form-control" id="subjectSelector" name="subjectSelector" multiple required>
+        <option th:each="subject: ${subjects}"
+                th:value="${subject.id}" th:text="${subject.name}"></option>
+    </select> <br> <input type="submit" value="Create!">
+    </form>
 	<script th:src="@{/webjars/jquery/3.4.1/jquery.min.js}"
 		type="text/javascript"></script>
 	<script th:src="@{/webjars/popper.js/2.9.3/umd/popper.min.js}"

@@ -4,18 +4,9 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -28,20 +19,20 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.foxminded.university.model.Cathedra;
-import com.foxminded.university.model.Lecture;
-import com.foxminded.university.model.LectureTime;
-import com.foxminded.university.model.Subject;
-import com.foxminded.university.model.Teacher;
+import com.foxminded.university.dao.jdbc.mapper.LectureToEventMapper;
+import com.foxminded.university.model.*;
 import com.foxminded.university.service.CathedraService;
 import com.foxminded.university.service.LectureService;
 import com.foxminded.university.service.SubjectService;
@@ -51,7 +42,7 @@ import com.foxminded.university.service.TeacherService;
 public class TeacherControllerTest {
 
 	private MockMvc mockMvc;
-
+	private LectureToEventMapper lectureToEventMapper = LectureToEventMapper.INSTANCE;
 	@Mock
 	private TeacherService teacherService;
 	@Mock
@@ -62,6 +53,7 @@ public class TeacherControllerTest {
 	private LectureService lectureService;
 	@InjectMocks
 	private TeacherController teacherController;
+
 
 	@BeforeEach
 	public void setUp() {
@@ -204,16 +196,17 @@ public class TeacherControllerTest {
 				.subject(subject)
 				.time(time)
 				.build();
+		ReflectionTestUtils.setField(teacherController, "lectureToEventMapper", lectureToEventMapper);
 		when(lectureService.findByTeacherId(1)).thenReturn(Arrays.asList(lecture));
 		String expected = "[ {\r\n"
+				+ "  \"title\" : \"Subject name\",\r\n"
 				+ "  \"start\" : \"2021-01-01T08:00:00\",\r\n"
 				+ "  \"end\" : \"2021-01-01T09:45:00\",\r\n"
-				+ "  \"title\" : \"Subject name\",\r\n"
 				+ "  \"url\" : \"/university/lectures/1\"\r\n"
 				+ "} ]";
 		MvcResult rt = mockMvc.perform(get("/teachers/1/shedule/events"))
 				.andExpect(status().isOk())
-				.andExpect(content().contentType("text/plain;charset=ISO-8859-1"))
+				.andExpect(content().contentType("application/json"))
 				.andReturn();
 		String actual = rt.getResponse().getContentAsString();
 

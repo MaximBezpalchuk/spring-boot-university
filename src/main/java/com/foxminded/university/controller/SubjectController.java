@@ -52,7 +52,7 @@ public class SubjectController {
 	@GetMapping("/new")
 	public String newSubject(Subject subject, Model model) {
 		logger.debug("Show create page");
-		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
+		model.addAttribute("cathedras", cathedraService.findAll());
 
 		return "subjects/new";
 	}
@@ -68,7 +68,7 @@ public class SubjectController {
 
 	@GetMapping("/{id}/edit")
 	public String editSubject(@PathVariable int id, Model model) {
-		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
+		model.addAttribute("cathedras", cathedraService.findAll());
 		model.addAttribute("subject", subjectService.findById(id));
 		logger.debug("Show edit subject page");
 

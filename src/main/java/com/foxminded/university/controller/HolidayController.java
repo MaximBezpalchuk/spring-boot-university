@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import com.foxminded.university.dao.jdbc.mapper.LectureToEventMapper;
+import com.foxminded.university.model.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
@@ -33,6 +37,8 @@ public class HolidayController {
 
 	private static final Logger logger = LoggerFactory.getLogger(HolidayController.class);
 
+	@Autowired
+	private LectureToEventMapper lectureToEventMapper;
 	private HolidayService holidayService;
 	private CathedraService cathedraService;
 
@@ -61,7 +67,7 @@ public class HolidayController {
 	@GetMapping("/new")
 	public String newHoliday(Holiday holiday, Model model) {
 		logger.debug("Show create page");
-		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
+		model.addAttribute("cathedras", cathedraService.findAll());
 
 		return "holidays/new";
 	}
@@ -77,7 +83,7 @@ public class HolidayController {
 
 	@GetMapping("/{id}/edit")
 	public String editHoliday(@PathVariable int id, Model model) {
-		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
+		model.addAttribute("cathedras", cathedraService.findAll());
 		model.addAttribute("holiday", holidayService.findById(id));
 		logger.debug("Show edit holiday page");
 
@@ -99,34 +105,5 @@ public class HolidayController {
 		holidayService.deleteById(id);
 
 		return "redirect:/holidays";
-	}
-
-	@GetMapping("/calendar")
-	public ModelAndView showCalendar() {
-		return new ModelAndView("holidays/calendar");
-	}
-
-	@GetMapping("/calendar/events")
-	public @ResponseBody String getAllHolidays() {
-		ObjectMapper mapper = JsonMapper.builder()
-				.findAndAddModules()
-				.build();
-		List<Holiday> holidays = holidayService.findAll();
-		List<Map<String, Object>> values = new ArrayList<>();
-		for (Holiday holiday : holidays) {
-			Map<String, Object> element = new HashMap<>();
-			element.put("title", holiday.getName());
-			element.put("start", holiday.getDate());
-			element.put("allDay", true);
-			element.put("url", holiday.getId());
-			values.add(element);
-		}
-		try {
-			return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(values);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return "";
 	}
 }

@@ -11,22 +11,23 @@
 		audience</h1>
 
 	<form th:method="PATCH"
-		th:action="@{/audiences/{id}(id=${audience.id})}"
-		th:object="${audience}">
+          th:action="@{/audiences/{id}(id=${audience.id})}"
+          th:object="${audience}">
 
-		<label for="cathedraSelector">Choose cathedra: </label> <select
-			id="cathedraSelector" th:field="*{cathedra.id}" required>
-			<option th:each="anyCathedra : ${cathedrasAttribute}"
-				th:field="*{cathedra.id}" th:value="${anyCathedra?.id}"
-				th:text="${anyCathedra?.name}">Cathedra name</option>
-		</select> <br> <label for="room">Enter room number: </label> <input
-			type="number" th:field="*{room}" id="room" required> <br>
+        <label for="cathedraSelector">Choose cathedra: </label> <select
+            id="cathedraSelector" th:field="*{cathedra.id}" required>
+        <option th:each="anyCathedra : ${cathedras}"
+                th:field="*{cathedra.id}" th:value="${anyCathedra?.id}"
+                th:text="${anyCathedra?.name}">Cathedra name
+        </option>
+    </select> <br> <label for="room">Enter room number: </label> <input
+            type="number" th:field="*{room}" id="room" required> <br>
 
-		<label for="capacity">Enter capacity: </label> <input type="number"
-			th:field="*{capacity}" id="capacity" required> <br> <br>
+        <label for="capacity">Enter capacity: </label> <input type="number"
+                                                              th:field="*{capacity}" id="capacity" required> <br> <br>
 
-		<input type="submit" value="Update!">
-	</form>
+        <input type="submit" value="Update!">
+    </form>
 	<script th:src="@{/webjars/jquery/3.4.1/jquery.min.js}"
 		type="text/javascript"></script>
 	<script th:src="@{/webjars/popper.js/2.9.3/umd/popper.min.js}"

@@ -28,19 +28,21 @@
 			<option
 				th:each="genderOpt : ${T(com.foxminded.university.model.Gender).values()}"
 				th:value="${genderOpt}" th:text="${genderOpt}">Gender</option>
-		</select> <br> <label for="education">Enter education: </label> <input
-			type="text" th:field="*{education}" id="education"> <br>
+    </select> <br> <label for="education">Enter education: </label> <input
+            type="text" th:field="*{education}" id="education"> <br>
 
-		<label for="birthdate">Enter birth date: </label> <input type="date"
-			th:field="*{birthDate}" id="birthdate" required> <br> <label
-			for="groupSelector">Choose group: </label> <select id="groupSelector"
-			th:field="*{group.id}">
-			<option value="0">No group</option>
-			<option th:each="anyGroup : ${groupsAttribute}"
-				th:field="*{group.id}" th:value="${anyGroup?.id}"
-				th:text="${anyGroup?.name}">Group name</option>
-		</select> <br> <input type="submit" value="Create!">
-	</form>
+        <label for="birthdate">Enter birth date: </label> <input type="date"
+                                                                 th:field="*{birthDate}" id="birthdate" required> <br>
+        <label
+                for="groupSelector">Choose group: </label> <select id="groupSelector"
+                                                                   th:field="*{group.id}">
+        <option value="0">No group</option>
+        <option th:each="anyGroup : ${groups}"
+                th:field="*{group.id}" th:value="${anyGroup?.id}"
+                th:text="${anyGroup?.name}">Group name
+        </option>
+    </select> <br> <input type="submit" value="Create!">
+    </form>
 	<script th:src="@{/webjars/jquery/3.4.1/jquery.min.js}"
 		type="text/javascript"></script>
 	<script th:src="@{/webjars/popper.js/2.9.3/umd/popper.min.js}"

@@ -9,7 +9,6 @@
 <body>
 	<h1>Lectures</h1>
 	<a th:href="@{new}" th:text="New">New</a>
-	<a th:href="@{shedule}" th:text="Calendar">Show all lectures in calendar</a>
 	<table border="1">
 		<tr th:each="lecture : ${lectures.content}">
 			<td th:text="${lecture.date}">Date</td>

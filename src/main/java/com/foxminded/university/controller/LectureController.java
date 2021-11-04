@@ -80,12 +80,12 @@ public class LectureController {
 	@GetMapping("/new")
 	public String newLecture(Lecture lecture, Model model) {
 		logger.debug("Show create page");
-		model.addAttribute("teachersAttribute", teacherService.findAll());
-		model.addAttribute("audiencesAttribute", audienceService.findAll());
-		model.addAttribute("timesAttribute", lectureTimeService.findAll());
-		model.addAttribute("groupsAttribute", groupService.findAll());
-		model.addAttribute("subjectsAttribute", subjectService.findAll());
-		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
+		model.addAttribute("teachers", teacherService.findAll());
+		model.addAttribute("audiences", audienceService.findAll());
+		model.addAttribute("times", lectureTimeService.findAll());
+		model.addAttribute("groups", groupService.findAll());
+		model.addAttribute("subjects", subjectService.findAll());
+		model.addAttribute("cathedras", cathedraService.findAll());
 
 		return "lectures/new";
 	}
@@ -107,12 +107,12 @@ public class LectureController {
 
 	@GetMapping("/{id}/edit")
 	public String editLecture(@PathVariable int id, Model model) {
-		model.addAttribute("teachersAttribute", teacherService.findAll());
-		model.addAttribute("audiencesAttribute", audienceService.findAll());
-		model.addAttribute("timesAttribute", lectureTimeService.findAll());
-		model.addAttribute("groupsAttribute", groupService.findAll());
-		model.addAttribute("subjectsAttribute", subjectService.findAll());
-		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
+		model.addAttribute("teachers", teacherService.findAll());
+		model.addAttribute("audiences", audienceService.findAll());
+		model.addAttribute("times", lectureTimeService.findAll());
+		model.addAttribute("groups", groupService.findAll());
+		model.addAttribute("subjects", subjectService.findAll());
+		model.addAttribute("cathedras", cathedraService.findAll());
 		model.addAttribute("lecture", lectureService.findById(id));
 		logger.debug("Show edit lecture page");
 
@@ -140,35 +140,5 @@ public class LectureController {
 		lectureService.deleteById(id);
 
 		return "redirect:/lectures";
-	}
-
-	@GetMapping("/shedule")
-	public ModelAndView showCalendar() {
-		return new ModelAndView("lectures/calendar");
-	}
-
-	@GetMapping("/shedule/events")
-	public @ResponseBody String getAllLectures() {
-		ObjectMapper mapper = JsonMapper.builder()
-				.findAndAddModules()
-				.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-				.build();
-		List<Lecture> lectures = lectureService.findAll();
-		List<Map<String, Object>> values = new ArrayList<>();
-		for (Lecture lecture : lectures) {
-			Map<String, Object> element = new HashMap<>();
-			element.put("title", lecture.getSubject().getName());
-			element.put("start", lecture.getDate().atTime(lecture.getTime().getStart()));
-			element.put("end", lecture.getDate().atTime(lecture.getTime().getEnd()));
-			element.put("url", "/university/lectures/" + lecture.getId());
-			values.add(element);
-		}
-		try {
-			return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(values);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return "";
 	}
 }

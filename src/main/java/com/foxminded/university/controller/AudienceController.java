@@ -49,7 +49,7 @@ public class AudienceController {
 	@GetMapping("/new")
 	public String newAudience(Audience audience, Model model) {
 		logger.debug("Show create page");
-		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
+		model.addAttribute("cathedras", cathedraService.findAll());
 
 		return "audiences/new";
 	}
@@ -65,7 +65,7 @@ public class AudienceController {
 
 	@GetMapping("/{id}/edit")
 	public String editAudience(@PathVariable int id, Model model) {
-		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
+		model.addAttribute("cathedras", cathedraService.findAll());
 		model.addAttribute("audience", audienceService.findById(id));
 		logger.debug("Show edit audience page");
 

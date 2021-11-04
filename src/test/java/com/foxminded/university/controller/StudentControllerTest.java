@@ -22,6 +22,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
+import com.foxminded.university.dao.jdbc.mapper.LectureToEventMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -33,6 +34,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -50,7 +52,7 @@ import com.foxminded.university.service.StudentService;
 public class StudentControllerTest {
 
 	private MockMvc mockMvc;
-
+	private LectureToEventMapper lectureToEventMapper = LectureToEventMapper.INSTANCE;
 	@Mock
 	private StudentService studentService;
 	@Mock
@@ -188,11 +190,12 @@ public class StudentControllerTest {
 				.subject(subject)
 				.time(time)
 				.build();
+		ReflectionTestUtils.setField(studentController, "lectureToEventMapper", lectureToEventMapper);
 		when(lectureService.findByStudentId(1)).thenReturn(Arrays.asList(lecture));
 		String expected = "[ {\r\n"
+				+ "  \"title\" : \"Subject name\",\r\n"
 				+ "  \"start\" : \"2021-01-01T08:00:00\",\r\n"
 				+ "  \"end\" : \"2021-01-01T09:45:00\",\r\n"
-				+ "  \"title\" : \"Subject name\",\r\n"
 				+ "  \"url\" : \"/university/lectures/1\"\r\n"
 				+ "} ]";
 		MvcResult rt = mockMvc.perform(get("/students/1/shedule/events"))

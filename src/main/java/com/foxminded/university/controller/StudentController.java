@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import com.foxminded.university.dao.jdbc.mapper.LectureToEventMapper;
+import com.foxminded.university.model.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
@@ -36,6 +40,8 @@ public class StudentController {
 
 	private static final Logger logger = LoggerFactory.getLogger(StudentController.class);
 
+	@Autowired
+	private LectureToEventMapper lectureToEventMapper;
 	private StudentService studentService;
 	private GroupService groupService;
 	private LectureService lectureService;
@@ -66,7 +72,7 @@ public class StudentController {
 	@GetMapping("/new")
 	public String newStudent(Student student, Model model) {
 		logger.debug("Show create page");
-		model.addAttribute("groupsAttribute", groupService.findAll());
+		model.addAttribute("groups", groupService.findAll());
 
 		return "students/new";
 	}
@@ -85,7 +91,7 @@ public class StudentController {
 	@GetMapping("/{id}/edit")
 	public String editStudent(@PathVariable int id, Model model) {
 		model.addAttribute("student", studentService.findById(id));
-		model.addAttribute("groupsAttribute", groupService.findAll());
+		model.addAttribute("groups", groupService.findAll());
 		logger.debug("Show edit student page");
 
 		return "students/edit";
@@ -123,18 +129,10 @@ public class StudentController {
 				.findAndAddModules()
 				.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 				.build();
-		List<Lecture> lectures = lectureService.findByStudentId(id);
-		List<Map<String, Object>> values = new ArrayList<>();
-		for (Lecture lecture : lectures) {
-			Map<String, Object> element = new HashMap<>();
-			element.put("title", lecture.getSubject().getName());
-			element.put("start", lecture.getDate().atTime(lecture.getTime().getStart()));
-			element.put("end", lecture.getDate().atTime(lecture.getTime().getEnd()));
-			element.put("url", "/university/lectures/" + lecture.getId());
-			values.add(element);
-		}
+		List<Event> events = lectureService.findByStudentId(id).stream().map(lectureToEventMapper::lectureToEvent)
+				.collect(Collectors.toList());
 		try {
-			return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(values);
+			return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(events);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

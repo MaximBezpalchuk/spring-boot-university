@@ -49,7 +49,7 @@ public class GroupController {
 	@GetMapping("/new")
 	public String newGroup(Group group, Model model) {
 		logger.debug("Show create page");
-		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
+		model.addAttribute("cathedras", cathedraService.findAll());
 
 		return "groups/new";
 	}
@@ -65,7 +65,7 @@ public class GroupController {
 
 	@GetMapping("/{id}/edit")
 	public String editGroup(@PathVariable int id, Model model) {
-		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
+		model.addAttribute("cathedras", cathedraService.findAll());
 		model.addAttribute("group", groupService.findById(id));
 		logger.debug("Show edit group page");
 

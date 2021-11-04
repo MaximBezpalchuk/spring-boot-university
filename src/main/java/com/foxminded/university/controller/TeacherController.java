@@ -1,26 +1,17 @@
 package com.foxminded.university.controller;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,7 +19,6 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.foxminded.university.dao.jdbc.mapper.LectureToEventMapper;
 import com.foxminded.university.model.Event;
-import com.foxminded.university.model.Lecture;
 import com.foxminded.university.model.Teacher;
 import com.foxminded.university.service.CathedraService;
 import com.foxminded.university.service.LectureService;
@@ -40,7 +30,8 @@ import com.foxminded.university.service.TeacherService;
 public class TeacherController {
 
 	private static final Logger logger = LoggerFactory.getLogger(TeacherController.class);
-
+	@Autowired
+	private LectureToEventMapper lectureToEventMapper;
 	private TeacherService teacherService;
 	private SubjectService subjectService;
 	private CathedraService cathedraService;
@@ -74,8 +65,8 @@ public class TeacherController {
 	@GetMapping("/new")
 	public String newStudent(Teacher teacher, Model model) {
 		logger.debug("Show create page");
-		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
-		model.addAttribute("subjectsAttribute", subjectService.findAll());
+		model.addAttribute("cathedras", cathedraService.findAll());
+		model.addAttribute("subjects", subjectService.findAll());
 
 		return "teachers/new";
 	}
@@ -94,8 +85,8 @@ public class TeacherController {
 	@GetMapping("/{id}/edit")
 	public String editTeacher(@PathVariable int id, Model model) {
 		model.addAttribute("teacher", teacherService.findById(id));
-		model.addAttribute("cathedrasAttribute", cathedraService.findAll());
-		model.addAttribute("subjectsAttribute", subjectService.findAll());
+		model.addAttribute("cathedras", cathedraService.findAll());
+		model.addAttribute("subjects", subjectService.findAll());
 		logger.debug("Show edit teacher page");
 
 		return "teachers/edit";
@@ -134,19 +125,10 @@ public class TeacherController {
 				.findAndAddModules()
 				.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
 				.build();
-		List<Lecture> lectures = lectureService.findByTeacherId(id);
-		List<Map<String, Object>> values = new ArrayList<>();
-		for (Lecture lecture : lectures) {
-			Event event = LectureToEventMapper.INSTANCE.lectureToEvent(lecture);
-			Map<String, Object> element = new HashMap<>();
-			element.put("title", lecture.getSubject().getName());
-			element.put("start", lecture.getDate().atTime(lecture.getTime().getStart()));
-			element.put("end", lecture.getDate().atTime(lecture.getTime().getEnd()));
-			element.put("url", "/university/lectures/" + lecture.getId());
-			values.add(element);
-		}
+		List<Event> events = lectureService.findByTeacherId(id).stream().map(lectureToEventMapper::lectureToEvent)
+				.collect(Collectors.toList());
 		try {
-			return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(values);
+			return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(events);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

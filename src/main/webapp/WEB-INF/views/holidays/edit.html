@@ -12,18 +12,19 @@
 	<h1 th:text="'Edit holiday ' + ${holiday.name}">Edit holiday</h1>
 
 	<form th:method="PATCH" th:action="@{/holidays/{id}(id=${holiday.id})}"
-		th:object="${holiday}">
-		<label for="cathedraSelector">Choose cathedra: </label> <select
-			id="cathedraSelector" th:field="*{cathedra.id}" required>
-			<option th:each="anyCathedra : ${cathedrasAttribute}"
-				th:field="*{cathedra.id}" th:value="${anyCathedra?.id}"
-				th:text="${anyCathedra?.name}">Cathedra name</option>
-		</select> <br> <label for="name">Enter name: </label> <input type="text"
-			th:field="*{name}" id="name" required> <br> <label
-			for="date">Enter date: </label> <input type="date" th:field="*{date}"
-			id="date" required> <br> <input type="submit"
-			value="Update!">
-	</form>
+          th:object="${holiday}">
+        <label for="cathedraSelector">Choose cathedra: </label> <select
+            id="cathedraSelector" th:field="*{cathedra.id}" required>
+        <option th:each="anyCathedra : ${cathedras}"
+                th:field="*{cathedra.id}" th:value="${anyCathedra?.id}"
+                th:text="${anyCathedra?.name}">Cathedra name
+        </option>
+    </select> <br> <label for="name">Enter name: </label> <input type="text"
+                                                                 th:field="*{name}" id="name" required> <br> <label
+            for="date">Enter date: </label> <input type="date" th:field="*{date}"
+                                                   id="date" required> <br> <input type="submit"
+                                                                                   value="Update!">
+    </form>
 	<script th:src="@{/webjars/jquery/3.4.1/jquery.min.js}"
 		type="text/javascript"></script>
 	<script th:src="@{/webjars/popper.js/2.9.3/umd/popper.min.js}"
