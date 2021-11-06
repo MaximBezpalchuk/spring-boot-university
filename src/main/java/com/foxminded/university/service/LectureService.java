@@ -1,6 +1,7 @@
 package com.foxminded.university.service;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,16 +20,7 @@ import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
 import com.foxminded.university.dao.jdbc.JdbcLectureDao;
 import com.foxminded.university.dao.jdbc.JdbcStudentDao;
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
-import com.foxminded.university.exception.AfterHoursException;
-import com.foxminded.university.exception.AudienceOverflowException;
-import com.foxminded.university.exception.BusyTeacherException;
-import com.foxminded.university.exception.EntityNotFoundException;
-import com.foxminded.university.exception.EntityNotUniqueException;
-import com.foxminded.university.exception.HolidayException;
-import com.foxminded.university.exception.NotCompetentTeacherException;
-import com.foxminded.university.exception.OccupiedAudienceException;
-import com.foxminded.university.exception.SundayException;
-import com.foxminded.university.exception.TeacherInVacationException;
+import com.foxminded.university.exception.*;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Lecture;
 
@@ -41,17 +33,21 @@ public class LectureService {
 	private VacationDao vacationDao;
 	private HolidayDao holidayDao;
 	private StudentDao studentDao;
+	private StudentService studentService;
+	private TeacherService teacherService;
 	@Value("${startWorkingDay}")
 	private int startWorkingDay;
 	@Value("${endWorkingDay}")
 	private int endWorkingDay;
 
 	public LectureService(JdbcLectureDao lectureDao, JdbcVacationDao vacationDao, JdbcHolidayDao holidayDao,
-			JdbcStudentDao studentDao) {
+			JdbcStudentDao studentDao, StudentService studentService, TeacherService teacherService) {
 		this.lectureDao = lectureDao;
 		this.vacationDao = vacationDao;
 		this.holidayDao = holidayDao;
 		this.studentDao = studentDao;
+		this.studentService = studentService;
+		this.teacherService = teacherService;
 	}
 
 	public List<Lecture> findAll() {
@@ -167,13 +163,13 @@ public class LectureService {
 		}
 	}
 
-	public List<Lecture> findByStudentId(int id) {
-		logger.debug("Find all lectures by student id");
-		return lectureDao.findLecturesByStudentId(id);
+	public List<Lecture> findByStudentIdAndPeriod(int id, LocalDate start, LocalDate end) {
+		logger.debug("Find all lectures by student id and period");
+		return lectureDao.findLecturesByStudentAndPeriod(studentService.findById(id), start, end);
 	}
 
-	public List<Lecture> findByTeacherId(int id) {
-		logger.debug("Find all lectures by teacher id");
-		return lectureDao.findLecturesByTeacherId(id);
+	public List<Lecture> findByTeacherIdAndPeriod(int id, LocalDate start, LocalDate end) {
+		logger.debug("Find all lectures by teacher and period");
+		return lectureDao.findLecturesByTeacherAndPeriod(teacherService.findById(id), start, end);
 	}
 }

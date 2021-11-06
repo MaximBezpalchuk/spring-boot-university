@@ -168,42 +168,4 @@ public class StudentControllerTest {
 
 		verify(studentService).deleteById(1);
 	}
-
-	@Test
-	void whenShowShedule_thenModelAndViewReturned() throws Exception {
-		mockMvc.perform(get("/students/1/shedule"))
-				.andExpect(status().isOk())
-				.andExpect(view().name("students/calendar"))
-				.andExpect(forwardedUrl("students/calendar"));
-	}
-
-	@Test
-	void whenGetLecturesByStudentId_thenStringReturned() throws Exception {
-		Subject subject = Subject.builder()
-				.id(1)
-				.name("Subject name")
-				.build();
-		LectureTime time = LectureTime.builder().id(1).start(LocalTime.of(8, 0)).end(LocalTime.of(9, 45)).build();
-		Lecture lecture = Lecture.builder()
-				.id(1)
-				.date(LocalDate.of(2021, 1, 1))
-				.subject(subject)
-				.time(time)
-				.build();
-		ReflectionTestUtils.setField(studentController, "lectureToEventMapper", lectureToEventMapper);
-		when(lectureService.findByStudentId(1)).thenReturn(Arrays.asList(lecture));
-		String expected = "[ {\r\n"
-				+ "  \"title\" : \"Subject name\",\r\n"
-				+ "  \"start\" : \"2021-01-01T08:00:00\",\r\n"
-				+ "  \"end\" : \"2021-01-01T09:45:00\",\r\n"
-				+ "  \"url\" : \"/university/lectures/1\"\r\n"
-				+ "} ]";
-		MvcResult rt = mockMvc.perform(get("/students/1/shedule/events"))
-				.andExpect(status().isOk())
-				.andExpect(content().contentType("text/plain;charset=ISO-8859-1"))
-				.andReturn();
-		String actual = rt.getResponse().getContentAsString();
-
-		assertEquals(expected, actual);
-	}
 }

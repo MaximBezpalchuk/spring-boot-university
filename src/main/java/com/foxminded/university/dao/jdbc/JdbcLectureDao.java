@@ -21,11 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.foxminded.university.dao.LectureDao;
 import com.foxminded.university.dao.jdbc.mapper.LectureRowMapper;
-import com.foxminded.university.model.Audience;
-import com.foxminded.university.model.Group;
-import com.foxminded.university.model.Lecture;
-import com.foxminded.university.model.LectureTime;
-import com.foxminded.university.model.Teacher;
+import com.foxminded.university.model.*;
 
 @Component
 public class JdbcLectureDao implements LectureDao {
@@ -44,8 +40,8 @@ public class JdbcLectureDao implements LectureDao {
 	private static final String SELECT_BY_AUDIENCE_DATE_LECTURE_TIME = "SELECT * FROM lectures WHERE audience_id = ? AND date = ? AND lecture_time_id = ?";
 	private static final String SELECT_BY_TEACHER_ID_DATE_AND_LECTURE_TIME_ID = "SELECT * FROM lectures WHERE teacher_id = ? AND date = ? AND lecture_time_id = ?";
 	private static final String SELECT_BY_TEACHER_AUDIENCE_DATE_LECTURE_TIME = "SELECT * FROM lectures WHERE teacher_id = ? AND audience_id = ? AND date = ? AND lecture_time_id = ?";
-	private static final String SELECT_BY_STUDENT_ID = "SELECT lec.*, lg.group_id FROM lectures AS lec LEFT JOIN lectures_groups AS lg ON lg.lecture_id = lec.id WHERE group_id = (SELECT group_id FROM students WHERE id = ?)";
-	private static final String SELECT_BY_TEACHER_ID = "SELECT * FROM lectures WHERE teacher_id = ?";
+	private static final String SELECT_BY_STUDENT_ID_AND_PERIOD = "SELECT lec.*, lg.group_id FROM lectures AS lec LEFT JOIN lectures_groups AS lg ON lg.lecture_id = lec.id WHERE group_id = (SELECT group_id FROM students WHERE id = ?) AND date >= ? AND date <= ?";
+	private static final String SELECT_BY_TEACHER_ID_AND_PERIOD = "SELECT * FROM lectures WHERE teacher_id = ? AND date >= ? AND date <= ?";
 
 	private final JdbcTemplate jdbcTemplate;
 	private LectureRowMapper rowMapper;
@@ -176,14 +172,14 @@ public class JdbcLectureDao implements LectureDao {
 	}
 
 	@Override
-	public List<Lecture> findLecturesByStudentId(int id) {
-		logger.debug("Find lectures by student with id {}", id);
-		return jdbcTemplate.query(SELECT_BY_STUDENT_ID, rowMapper, id);
+	public List<Lecture> findLecturesByStudentAndPeriod(Student student, LocalDate start, LocalDate end) {
+		logger.debug("Find lectures by student with id {} and period {} - {}", student.getId(), start, end);
+		return jdbcTemplate.query(SELECT_BY_STUDENT_ID_AND_PERIOD, rowMapper, student.getId(), start, end);
 	}
 
 	@Override
-	public List<Lecture> findLecturesByTeacherId(int id) {
-		logger.debug("Find lectures by teacher with id {}", id);
-		return jdbcTemplate.query(SELECT_BY_TEACHER_ID, rowMapper, id);
+	public List<Lecture> findLecturesByTeacherAndPeriod(Teacher teacher, LocalDate start, LocalDate end) {
+		logger.debug("Find lectures by teacher with id {} and period {} - {}", teacher.getId(), start, end);
+		return jdbcTemplate.query(SELECT_BY_TEACHER_ID_AND_PERIOD, rowMapper, teacher.getId(), start, end);
 	}
 }

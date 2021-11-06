@@ -163,37 +163,4 @@ public class HolidayControllerTest {
 
 		verify(holidayService).deleteById(1);
 	}
-
-	@Test
-	void whenShowCalendar_thenModelAndViewReturned() throws Exception {
-		mockMvc.perform(get("/holidays/calendar"))
-				.andExpect(status().isOk())
-				.andExpect(view().name("holidays/calendar"))
-				.andExpect(forwardedUrl("holidays/calendar"));
-	}
-
-	@Test
-	void whenGetAllHolidays_thenStringReturned() throws Exception {
-		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
-		Holiday holiday = Holiday.builder()
-				.id(1)
-				.name("Test Name")
-				.date(LocalDate.of(2021, 1, 1))
-				.cathedra(cathedra)
-				.build();
-		String expected = "[ {\r\n"
-				+ "  \"allDay\" : true,\r\n"
-				+ "  \"start\" : [ 2021, 1, 1 ],\r\n"
-				+ "  \"title\" : \"Test Name\",\r\n"
-				+ "  \"url\" : 1\r\n"
-				+ "} ]";
-		when(holidayService.findAll()).thenReturn(Arrays.asList(holiday));
-		MvcResult rt = mockMvc.perform(get("/holidays/calendar/events"))
-				.andExpect(status().isOk())
-				.andExpect(content().contentType("text/plain;charset=ISO-8859-1"))
-				.andReturn();
-		String actual = rt.getResponse().getContentAsString();
-
-		assertEquals(expected, actual);
-	}
 }

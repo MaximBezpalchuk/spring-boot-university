@@ -7,10 +7,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.foxminded.university.model.Audience;
-import com.foxminded.university.model.Lecture;
-import com.foxminded.university.model.LectureTime;
-import com.foxminded.university.model.Teacher;
+import com.foxminded.university.model.*;
 
 public interface LectureDao extends GenericDao<Lecture> {
 
@@ -23,7 +20,7 @@ public interface LectureDao extends GenericDao<Lecture> {
 
 	Page<Lecture> findPaginatedLectures(Pageable pageable);
 
-	List<Lecture> findLecturesByStudentId(int id);
+	List<Lecture> findLecturesByStudentAndPeriod(Student student, LocalDate start, LocalDate end);
 
-	List<Lecture> findLecturesByTeacherId(int id);
+	List<Lecture> findLecturesByTeacherAndPeriod(Teacher teacher, LocalDate start, LocalDate end);
 }

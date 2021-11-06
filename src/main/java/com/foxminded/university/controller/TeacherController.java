@@ -1,6 +1,5 @@
 package com.foxminded.university.controller;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -8,17 +7,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.foxminded.university.dao.jdbc.mapper.LectureToEventMapper;
-import com.foxminded.university.model.Event;
 import com.foxminded.university.model.Teacher;
 import com.foxminded.university.service.CathedraService;
 import com.foxminded.university.service.LectureService;
@@ -109,30 +102,5 @@ public class TeacherController {
 		teacherService.deleteById(id);
 
 		return "redirect:/teachers";
-	}
-
-	@GetMapping("/{id}/shedule")
-	public ModelAndView showShedule(@PathVariable int id, Model model) {
-		model.addAttribute("teacher", teacherService.findById(id));
-
-		return new ModelAndView("teachers/calendar");
-	}
-
-	@GetMapping(value = "/{id}/shedule/events", produces = MediaType.APPLICATION_JSON_VALUE)
-	@ResponseBody
-	public String getLecturesByTeacherId(@PathVariable int id) {
-		ObjectMapper mapper = JsonMapper.builder()
-				.findAndAddModules()
-				.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-				.build();
-		List<Event> events = lectureService.findByTeacherId(id).stream().map(lectureToEventMapper::lectureToEvent)
-				.collect(Collectors.toList());
-		try {
-			return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(events);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return "";
 	}
 }

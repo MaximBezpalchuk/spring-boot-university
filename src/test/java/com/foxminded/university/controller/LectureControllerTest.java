@@ -4,18 +4,9 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -33,29 +24,20 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.foxminded.university.model.Audience;
-import com.foxminded.university.model.Cathedra;
-import com.foxminded.university.model.Group;
-import com.foxminded.university.model.Lecture;
-import com.foxminded.university.model.LectureTime;
-import com.foxminded.university.model.Subject;
-import com.foxminded.university.model.Teacher;
-import com.foxminded.university.service.AudienceService;
-import com.foxminded.university.service.CathedraService;
-import com.foxminded.university.service.GroupService;
-import com.foxminded.university.service.LectureService;
-import com.foxminded.university.service.LectureTimeService;
-import com.foxminded.university.service.SubjectService;
-import com.foxminded.university.service.TeacherService;
+import com.foxminded.university.dao.jdbc.mapper.LectureToEventMapper;
+import com.foxminded.university.model.*;
+import com.foxminded.university.service.*;
 
 @ExtendWith(MockitoExtension.class)
 public class LectureControllerTest {
 
 	private MockMvc mockMvc;
+	private LectureToEventMapper lectureToEventMapper = LectureToEventMapper.INSTANCE;
 
 	@Mock
 	private LectureService lectureService;
@@ -69,6 +51,8 @@ public class LectureControllerTest {
 	private SubjectService subjectService;
 	@Mock
 	private CathedraService cathedraService;
+	@Mock
+	private StudentService studentService;
 	@Mock
 	private LectureTimeService lectureTimeService;
 	@InjectMocks
@@ -259,48 +243,79 @@ public class LectureControllerTest {
 	}
 
 	@Test
-	void whenShowShedule_thenModelAndViewReturned() throws Exception {
-		mockMvc.perform(get("/lectures/shedule"))
+	void whenShowStudentsShedule_thenModelAndViewReturned() throws Exception {
+		when(studentService.findById(1)).thenReturn(Student.builder().id(1).build());
+		mockMvc.perform(get("/students/1/shedule"))
 				.andExpect(status().isOk())
-				.andExpect(view().name("lectures/calendar"))
-				.andExpect(forwardedUrl("lectures/calendar"));
+				.andExpect(view().name("students/calendar"))
+				.andExpect(forwardedUrl("students/calendar"));
 	}
 
 	@Test
-	void whenGetAllLectures_thenStringReturned() throws Exception {
+	void whenGetLecturesByStudentId_thenStringReturned() throws Exception {
 		Subject subject = Subject.builder()
 				.id(1)
 				.name("Subject name")
 				.build();
 		LectureTime time = LectureTime.builder().id(1).start(LocalTime.of(8, 0)).end(LocalTime.of(9, 45)).build();
-		Lecture lecture1 = Lecture.builder()
+		Lecture lecture = Lecture.builder()
 				.id(1)
 				.date(LocalDate.of(2021, 1, 1))
 				.subject(subject)
 				.time(time)
 				.build();
-		Lecture lecture2 = Lecture.builder()
-				.id(2)
-				.date(LocalDate.of(2021, 1, 2))
+		ReflectionTestUtils.setField(lectureController, "lectureToEventMapper", lectureToEventMapper);
+		when(lectureService.findByStudentIdAndPeriod(1, LocalDate.of(2021, 4, 4), LocalDate.of(2021, 4, 8)))
+				.thenReturn(Arrays.asList(lecture));
+		String expected = "[ {\r\n"
+				+ "  \"title\" : \"Subject name\",\r\n"
+				+ "  \"start\" : \"2021-01-01T08:00:00\",\r\n"
+				+ "  \"end\" : \"2021-01-01T09:45:00\",\r\n"
+				+ "  \"url\" : \"/university/lectures/1\"\r\n"
+				+ "} ]";
+		MvcResult rt = mockMvc.perform(get("/students/1/shedule/events"))
+				.andExpect(status().isOk())
+				.andExpect(content().contentType("application/json"))
+				.andReturn();
+		String actual = rt.getResponse().getContentAsString();
+
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	void whenShowShedule_thenModelAndViewReturned() throws Exception {
+		when(teacherService.findById(1)).thenReturn(Teacher.builder().id(1).build());
+		mockMvc.perform(get("/teachers/1/shedule"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("teachers/calendar"))
+				.andExpect(forwardedUrl("teachers/calendar"));
+	}
+
+	@Test
+	void whenGetLecturesByTeacherId_thenStringReturned() throws Exception {
+		Subject subject = Subject.builder()
+				.id(1)
+				.name("Subject name")
+				.build();
+		LectureTime time = LectureTime.builder().id(1).start(LocalTime.of(8, 0)).end(LocalTime.of(9, 45)).build();
+		Lecture lecture = Lecture.builder()
+				.id(1)
+				.date(LocalDate.of(2021, 1, 1))
 				.subject(subject)
 				.time(time)
 				.build();
-		List<Lecture> lectures = Arrays.asList(lecture1, lecture2);
+		ReflectionTestUtils.setField(lectureController, "lectureToEventMapper", lectureToEventMapper);
+		when(lectureService.findByTeacherIdAndPeriod(1, LocalDate.of(2021, 4, 4), LocalDate.of(2021, 4, 8)))
+				.thenReturn(Arrays.asList(lecture));
 		String expected = "[ {\r\n"
+				+ "  \"title\" : \"Subject name\",\r\n"
 				+ "  \"start\" : \"2021-01-01T08:00:00\",\r\n"
 				+ "  \"end\" : \"2021-01-01T09:45:00\",\r\n"
-				+ "  \"title\" : \"Subject name\",\r\n"
 				+ "  \"url\" : \"/university/lectures/1\"\r\n"
-				+ "}, {\r\n"
-				+ "  \"start\" : \"2021-01-02T08:00:00\",\r\n"
-				+ "  \"end\" : \"2021-01-02T09:45:00\",\r\n"
-				+ "  \"title\" : \"Subject name\",\r\n"
-				+ "  \"url\" : \"/university/lectures/2\"\r\n"
 				+ "} ]";
-		when(lectureService.findAll()).thenReturn(lectures);
-		MvcResult rt = mockMvc.perform(get("/lectures/shedule/events"))
+		MvcResult rt = mockMvc.perform(get("/teachers/1/shedule/events"))
 				.andExpect(status().isOk())
-				.andExpect(content().contentType("text/plain;charset=ISO-8859-1"))
+				.andExpect(content().contentType("application/json"))
 				.andReturn();
 		String actual = rt.getResponse().getContentAsString();
 
