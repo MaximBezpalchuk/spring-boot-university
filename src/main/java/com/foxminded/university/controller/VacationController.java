@@ -1,20 +1,20 @@
 package com.foxminded.university.controller;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
+import com.foxminded.university.model.Lecture;
 import com.foxminded.university.model.Vacation;
+import com.foxminded.university.service.LectureService;
 import com.foxminded.university.service.TeacherService;
 import com.foxminded.university.service.VacationService;
 
@@ -26,10 +26,13 @@ public class VacationController {
 
 	private TeacherService teacherService;
 	private VacationService vacationService;
+	private LectureService lectureService;
 
-	public VacationController(TeacherService teacherService, VacationService vacationService) {
+	public VacationController(TeacherService teacherService, VacationService vacationService,
+			LectureService lectureService) {
 		this.teacherService = teacherService;
 		this.vacationService = vacationService;
+		this.lectureService = lectureService;
 	}
 
 	@GetMapping
@@ -60,13 +63,32 @@ public class VacationController {
 	}
 
 	@PostMapping
-	public String createVacation(@PathVariable int teacherId, @ModelAttribute Vacation vacation,
-			Model model) {
+	public String createVacation(@PathVariable int teacherId, @ModelAttribute Vacation vacation) {
 		vacation.setTeacher(teacherService.findById(teacherId));
-		vacationService.save(vacation);
-		logger.debug("Create new vacation. Id {}", vacation.getId());
+		List<Lecture> lectures = lectureService.findByTeacherIdAndPeriod(teacherId, vacation.getStart(),
+				vacation.getEnd());
+		if (lectures.isEmpty()) {
+			vacationService.save(vacation);
+			logger.debug("Create new vacation. Id {}", vacation.getId());
 
-		return "redirect:/teachers/" + teacherId + "/vacations";
+			return "redirect:/teachers/" + teacherId + "/vacations";
+		} else {
+			logger.debug("Vacation wasn`t created! Need to change teacher in some lectures");
+
+			return "redirect:/teachers/" + teacherId + "/vacations/lectures?start=" + vacation.getStart() + "&end="
+					+ vacation.getEnd();
+		}
+	}
+
+	@GetMapping("/lectures")
+	public String changeTeacherOnLectures(@PathVariable int teacherId, Model model,
+			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
+		List<Lecture> lectures = lectureService.findByTeacherIdAndPeriod(teacherId, start, end);
+		model.addAttribute("teacher", teacherService.findById(teacherId));
+		model.addAttribute("lectures", lectures);
+
+		return "teachers/vacations/lectures";
 	}
 
 	@GetMapping("/{id}/edit")
@@ -80,11 +102,20 @@ public class VacationController {
 
 	@PatchMapping("/{id}")
 	public String update(@ModelAttribute Vacation vacation, @PathVariable int teacherId, @PathVariable int id) {
-		logger.debug("Update vacation with id {}", id);
 		vacation.setTeacher(teacherService.findById(teacherId));
-		vacationService.save(vacation);
+		List<Lecture> lectures = lectureService.findByTeacherIdAndPeriod(teacherId, vacation.getStart(),
+				vacation.getEnd());
+		if (lectures.isEmpty()) {
+			logger.debug("Update vacation with id {}", id);
+			vacationService.save(vacation);
 
-		return "redirect:/teachers/" + teacherId + "/vacations";
+			return "redirect:/teachers/" + teacherId + "/vacations";
+		} else {
+			logger.debug("Vacation wasn`t created! Need to change teacher in some lectures");
+
+			return "redirect:/teachers/" + teacherId + "/vacations/lectures?start=" + vacation.getStart() + "&end="
+					+ vacation.getEnd();
+		}
 	}
 
 	@DeleteMapping("/{id}")

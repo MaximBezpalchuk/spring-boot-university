@@ -13,6 +13,7 @@ import com.foxminded.university.dao.TeacherDao;
 import com.foxminded.university.dao.jdbc.JdbcTeacherDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
+import com.foxminded.university.model.Lecture;
 import com.foxminded.university.model.Teacher;
 
 @Service
@@ -62,5 +63,11 @@ public class TeacherService {
 			throw new EntityNotUniqueException("Teacher with full name " + teacher.getFirstName() + " "
 					+ teacher.getLastName() + " and birth date " + teacher.getBirthDate() + " is already exists!");
 		}
+	}
+
+	public List<Teacher> findTeachersForChange(Lecture lecture) {
+		logger.debug("Find teachers who havent lectures and vacation this periodand who can teach this subject");
+		return teacherDao.findByFreeDateAndSubjectWithCurrentTeacher(lecture.getDate(), lecture.getTime(),
+				lecture.getSubject(), lecture.getTeacher());
 	}
 }

@@ -1,70 +1,68 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-<meta charset="ISO-8859-1">
-<title>Lecture list</title>
-<link rel="stylesheet"
-	th:href="@{/webjars/bootstrap/5.1.3/css/bootstrap.min.css}" />
+    <meta charset="ISO-8859-1">
+    <title>Lecture list</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.1.3/css/bootstrap.min.css}"/>
 </head>
 <body>
-	<h1>Lectures</h1>
-	<a th:href="@{new}" th:text="New">New</a>
-	<table border="1">
-		<tr th:each="lecture : ${lectures.content}">
-			<td th:text="${lecture.date}">Date</td>
-			<td th:text="${lecture.time.start} + ' - ' + ${lecture.time.end}">Time</td>
-			<td th:text="${lecture.audience.room}">Audience</td>
-			<td
-				th:text="${lecture.teacher.firstName} + ' ' + ${lecture.teacher.lastName}">Name</td>
-			<td th:text="${lecture.subject.name}">Subject</td>
-			<td>
-				<ul th:each="group : ${lecture.groups}">
-					<li th:text="${group?.name}">Group</li>
-				</ul>
-			</td>
-			<td><a th:href="@{/lectures/{id}(id=${lecture.id})}"
-				th:text="Show">Full info about lecture</a></td>
-			<td><a th:href="@{/lectures/{id}/edit(id=${lecture.id})}"
-				th:text="Edit">Edit lecture</a></td>
-			<td>
-				<form th:method="DELETE"
-					th:action="@{/lectures/{id}(id=${lecture.id})}">
-					<input type="submit" value="Delete">
-				</form>
-			</td>
-		</tr>
-	</table>
-	<br>
-	<nav aria-label="Pagination" th:if="${lectures.totalPages gt 0}">
-		<ul class="pagination justify-content-center font-weight-bold">
-			<li class="page-item"
-				th:classappend="${lectures.number eq 0} ? 'disabled'"><a
-				class="page-link"
-				th:href="@{/lectures?page={id}(id=${lectures.number lt 2 ? 1 : lectures.number})}"
-				aria-label="Previous" title="Previous Page" data-toggle="tooltip">
-					<span aria-hidden="true">&laquo;</span>
-			</a></li>
-			<li class="page-item"
-				th:classappend="${i eq lectures.number + 1} ? 'active'"
-				th:each="i : ${#numbers.sequence( 1, lectures.totalPages, 1)}">
-				<a class="page-link" th:href="@{/lectures?page={id}(id=${i})}"
-				th:text="${i}" th:title="${'Page '+ i}" data-toggle="tooltip"></a>
-			</li>
-			<li class="page-item"
-				th:classappend="${lectures.number + 1 eq lectures.totalPages} ? 'disabled'">
-				<a class="page-link"
-				th:href="@{/lectures?page={id}(id=${lectures.number + 2})}"
-				aria-label="Next" title="Next Page" data-toggle="tooltip"> <span
-					aria-hidden="true">&raquo;</span>
-			</a>
-			</li>
-		</ul>
-	</nav>
-	<script th:src="@{/webjars/jquery/3.4.1/jquery.min.js}"
-		type="text/javascript"></script>
-	<script th:src="@{/webjars/popper.js/2.9.3/umd/popper.min.js}"
-		type="text/javascript"></script>
-	<script th:src="@{/webjars/bootstrap/5.1.3/js/bootstrap.min.js}"
-		type="text/javascript"></script>
+<h1>Lectures</h1>
+<a th:href="@{new}" th:text="New">New</a>
+<table border="1">
+    <tr th:each="lecture : ${lectures.content}">
+        <td th:text="${lecture.date}">Date</td>
+        <td th:text="${lecture.time.start} + ' - ' + ${lecture.time.end}">Time</td>
+        <td th:text="${lecture.audience.room}">Audience</td>
+        <td
+                th:text="${lecture.teacher.firstName} + ' ' + ${lecture.teacher.lastName}">Name
+        </td>
+        <td th:text="${lecture.subject.name}">Subject</td>
+        <td>
+            <ul th:each="group : ${lecture.groups}">
+                <li th:text="${group?.name}">Group</li>
+            </ul>
+        </td>
+        <td><a th:href="@{/lectures/{id}(id=${lecture.id})}"
+               th:text="Show">Full info about lecture</a></td>
+        <td><a th:href="@{/lectures/{id}/edit(id=${lecture.id})}"
+               th:text="Edit">Edit lecture</a></td>
+        <td>
+            <form th:method="DELETE"
+                  th:action="@{/lectures/{id}(id=${lecture.id})}">
+                <input type="submit" value="Delete">
+            </form>
+        </td>
+    </tr>
+</table>
+<br>
+<nav aria-label="Pagination" th:if="${lectures.totalPages gt 0}">
+    <ul class="pagination justify-content-center font-weight-bold">
+        <li class="page-item"
+            th:classappend="${lectures.number eq 0} ? 'disabled'"><a
+                class="page-link"
+                th:href="@{/lectures?page={id}(id=${lectures.number lt 2 ? 1 : lectures.number})}"
+                aria-label="Previous" title="Previous Page" data-toggle="tooltip">
+            <span aria-hidden="true">&laquo;</span>
+        </a></li>
+        <li class="page-item"
+            th:classappend="${i eq lectures.number + 1} ? 'active'"
+            th:each="i : ${#numbers.sequence( 1, lectures.totalPages, 1)}">
+            <a class="page-link" th:href="@{/lectures?page={id}(id=${i})}"
+               th:text="${i}" th:title="${'Page '+ i}" data-toggle="tooltip">Page number
+            </a>
+        </li>
+        <li class="page-item"
+            th:classappend="${lectures.number + 1 eq lectures.totalPages} ? 'disabled'">
+            <a class="page-link"
+               th:href="@{/lectures?page={id}(id=${lectures.number + 2})}"
+               aria-label="Next" title="Next Page" data-toggle="tooltip">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
+</nav>
+<script th:src="@{/webjars/jquery/3.4.1/jquery.min.js}" type="text/javascript"></script>
+<script th:src="@{/webjars/popper.js/2.9.3/umd/popper.min.js}" type="text/javascript"></script>
+<script th:src="@{/webjars/bootstrap/5.1.3/js/bootstrap.min.js}" type="text/javascript"></script>
 </body>
 </html>

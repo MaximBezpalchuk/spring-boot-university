@@ -116,7 +116,7 @@ public class LectureController {
 	public String update(@ModelAttribute Lecture lecture, @PathVariable int id) {
 		logger.debug("Update lecture with id {}", id);
 		lecture.setCathedra(cathedraService.findById(lecture.getCathedra().getId()));
-		lecture.setTeacher(teacherService.findById(lecture.getTeacher().getId()));
+		lecture.setTeacher(lectureService.findById(id).getTeacher());
 		lecture.setAudience(audienceService.findById(lecture.getAudience().getId()));
 		lecture.setTime(lectureTimeService.findById(lecture.getTime().getId()));
 		lecture.setSubject(subjectService.findById(lecture.getSubject().getId()));
@@ -124,7 +124,7 @@ public class LectureController {
 				.collect(Collectors.toList()));
 		lectureService.save(lecture);
 
-		return "redirect:/lectures";
+		return "redirect:/lectures/" + id;
 	}
 
 	@DeleteMapping("/lectures/{id}")
@@ -203,5 +203,31 @@ public class LectureController {
 		}
 
 		return "";
+	}
+
+	@GetMapping("/lectures/{id}/edit/teacher")
+	public String editTeacher(@PathVariable int id, Model model) {
+		Lecture lecture = lectureService.findById(id);
+		model.addAttribute("teachers", teacherService.findTeachersForChange(lecture));
+		model.addAttribute("lecture", lecture);
+		logger.debug("Show edit teacher on lecture page");
+
+		return "lectures/edit_teacher";
+	}
+
+	@PatchMapping("/lectures/{id}/edit/teacher")
+	public String updateTeacher(@ModelAttribute Lecture lecture, @PathVariable int id) {
+		logger.debug("Update lecture with id {}", id);
+		Lecture actualLecture = lectureService.findById(id);
+		lecture.setCathedra(actualLecture.getCathedra());
+		lecture.setTeacher(teacherService.findById(lecture.getTeacher().getId()));
+		lecture.setAudience(actualLecture.getAudience());
+		lecture.setTime(actualLecture.getTime());
+		lecture.setSubject(actualLecture.getSubject());
+		lecture.setGroups(actualLecture.getGroups());
+		lecture.setDate(actualLecture.getDate());
+		lectureService.save(lecture);
+
+		return "redirect:/lectures/" + id;
 	}
 }
