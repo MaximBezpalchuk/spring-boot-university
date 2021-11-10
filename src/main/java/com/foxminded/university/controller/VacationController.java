@@ -2,7 +2,10 @@ package com.foxminded.university.controller;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Random;
+import java.util.stream.Collectors;
 
+import com.foxminded.university.model.Teacher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -87,8 +90,25 @@ public class VacationController {
 		List<Lecture> lectures = lectureService.findByTeacherIdAndPeriod(teacherId, start, end);
 		model.addAttribute("teacher", teacherService.findById(teacherId));
 		model.addAttribute("lectures", lectures);
+		model.addAttribute("start", start);
+		model.addAttribute("end", end);
 
 		return "teachers/vacations/lectures";
+	}
+
+	@PatchMapping("/lectures")
+	public String autofillTeachersOnLectures(@PathVariable int teacherId, Model model,
+			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
+		List<Lecture> lectures = lectureService.findByTeacherIdAndPeriod(teacherId, start, end);
+		for (Lecture lecture : lectures) {
+			List<Teacher> teachers = teacherService.findTeachersForChange(lecture);
+			Random rand = new Random();
+			lecture.setTeacher(teachers.get(rand.nextInt(teachers.size()))); // set random free teacher
+			lectureService.save(lecture);
+		}
+
+		return "redirect:/teachers/" + teacherId + "/vacations";
 	}
 
 	@GetMapping("/{id}/edit")

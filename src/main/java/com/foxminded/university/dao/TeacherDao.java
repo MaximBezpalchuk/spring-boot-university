@@ -17,6 +17,5 @@ public interface TeacherDao extends GenericDao<Teacher> {
 
 	Page<Teacher> findPaginatedTeachers(Pageable pageable);
 
-	List<Teacher> findByFreeDateAndSubjectWithCurrentTeacher(LocalDate date, LectureTime time, Subject subject,
-			Teacher teacher);
+	List<Teacher> findByFreeDateAndSubjectWithCurrentTeacher(LocalDate date, LectureTime time, Subject subject);
 }

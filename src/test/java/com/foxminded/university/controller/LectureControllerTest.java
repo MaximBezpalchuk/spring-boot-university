@@ -287,7 +287,7 @@ public class LectureControllerTest {
 		when(teacherService.findById(1)).thenReturn(Teacher.builder().id(1).build());
 		mockMvc.perform(get("/teachers/1/shedule"))
 				.andExpect(status().isOk())
-				.andExpect(view().name("teachers/calendar"))
+				.andExpect(view().name("teachers/calendar_chose_period"))
 				.andExpect(forwardedUrl("teachers/calendar"));
 	}
 

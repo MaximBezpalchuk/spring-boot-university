@@ -68,6 +68,6 @@ public class TeacherService {
 	public List<Teacher> findTeachersForChange(Lecture lecture) {
 		logger.debug("Find teachers who havent lectures and vacation this periodand who can teach this subject");
 		return teacherDao.findByFreeDateAndSubjectWithCurrentTeacher(lecture.getDate(), lecture.getTime(),
-				lecture.getSubject(), lecture.getTeacher());
+				lecture.getSubject());
 	}
 }
