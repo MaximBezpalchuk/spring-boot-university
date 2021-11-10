@@ -2,17 +2,9 @@ package com.foxminded.university.controller;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -32,8 +24,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.foxminded.university.model.Degree;
+import com.foxminded.university.model.Lecture;
 import com.foxminded.university.model.Teacher;
 import com.foxminded.university.model.Vacation;
+import com.foxminded.university.service.LectureService;
 import com.foxminded.university.service.TeacherService;
 import com.foxminded.university.service.VacationService;
 
@@ -45,6 +39,8 @@ public class VacationControllerTest {
 	private VacationService vacationService;
 	@Mock
 	private TeacherService teacherService;
+	@Mock
+	private LectureService lectureService;
 	@InjectMocks
 	private VacationController vacationController;
 
@@ -159,5 +155,24 @@ public class VacationControllerTest {
 				.andExpect(redirectedUrl("/teachers/1/vacations"));
 
 		verify(vacationService).deleteById(1);
+	}
+
+	@Test
+	void whenChangeTeacherOnLectures_thenTeachersFound() throws Exception {
+		Teacher teacher = Teacher.builder().id(1).firstName("Name").lastName("Last name").degree(Degree.ASSISTANT)
+				.build();
+		Lecture lecture = Lecture.builder().id(1).teacher(teacher).build();
+		when(lectureService.findByTeacherIdAndPeriod(teacher.getId(), LocalDate.of(2021, 04, 04),
+				LocalDate.of(2021, 04, 05))).thenReturn(Arrays.asList(lecture));
+		when(teacherService.findById(teacher.getId())).thenReturn(teacher);
+
+		mockMvc.perform(get("/teachers/{id}/vacations/lectures?start=2021-04-04&end=2021-04-05", teacher.getId()))
+				.andExpect(status().isOk())
+				.andExpect(view().name("teachers/vacations/lectures"))
+				.andExpect(forwardedUrl("teachers/vacations/lectures"))
+				.andExpect(model().attribute("teacher", is(teacher)))
+				.andExpect(model().attribute("lectures", is(Arrays.asList(lecture))))
+				.andExpect(model().attribute("start", is(LocalDate.of(2021, 4, 4))))
+				.andExpect(model().attribute("end", is(LocalDate.of(2021, 4, 5))));
 	}
 }

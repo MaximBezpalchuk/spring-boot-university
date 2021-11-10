@@ -13,6 +13,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -247,6 +248,19 @@ public class LectureControllerTest {
 		when(studentService.findById(1)).thenReturn(Student.builder().id(1).build());
 		mockMvc.perform(get("/students/1/shedule"))
 				.andExpect(status().isOk())
+				.andExpect(view().name("students/calendar_chose_period"))
+				.andExpect(forwardedUrl("students/calendar_chose_period"));
+	}
+
+	@Test
+	void whenPostShowStudentsShedule_thenModelAndViewReturned() throws Exception {
+		when(studentService.findById(1)).thenReturn(Student.builder().id(1).build());
+		String body = "[ {\r\n"
+				+ "  \"start\" : \"2021-04-04\",\r\n"
+				+ "  \"end\" : \"2021-04-04\",\r\n"
+				+ "} ]";
+		mockMvc.perform(post("/students/1/shedule").content(body))
+				.andExpect(status().isOk())
 				.andExpect(view().name("students/calendar"))
 				.andExpect(forwardedUrl("students/calendar"));
 	}
@@ -273,7 +287,7 @@ public class LectureControllerTest {
 				+ "  \"end\" : \"2021-01-01T09:45:00\",\r\n"
 				+ "  \"url\" : \"/university/lectures/1\"\r\n"
 				+ "} ]";
-		MvcResult rt = mockMvc.perform(get("/students/1/shedule/events"))
+		MvcResult rt = mockMvc.perform(get("/students/1/shedule/events?start=2021-04-04&end=2021-04-08"))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"))
 				.andReturn();
@@ -288,6 +302,19 @@ public class LectureControllerTest {
 		mockMvc.perform(get("/teachers/1/shedule"))
 				.andExpect(status().isOk())
 				.andExpect(view().name("teachers/calendar_chose_period"))
+				.andExpect(forwardedUrl("teachers/calendar_chose_period"));
+	}
+
+	@Test
+	void whenPostShowTeachersShedule_thenModelAndViewReturned() throws Exception {
+		when(teacherService.findById(1)).thenReturn(Teacher.builder().id(1).build());
+		String body = "[ {\r\n"
+				+ "  \"start\" : \"2021-04-04\",\r\n"
+				+ "  \"end\" : \"2021-04-04\",\r\n"
+				+ "} ]";
+		mockMvc.perform(post("/teachers/1/shedule").content(body))
+				.andExpect(status().isOk())
+				.andExpect(view().name("teachers/calendar"))
 				.andExpect(forwardedUrl("teachers/calendar"));
 	}
 
@@ -313,12 +340,45 @@ public class LectureControllerTest {
 				+ "  \"end\" : \"2021-01-01T09:45:00\",\r\n"
 				+ "  \"url\" : \"/university/lectures/1\"\r\n"
 				+ "} ]";
-		MvcResult rt = mockMvc.perform(get("/teachers/1/shedule/events"))
+		MvcResult rt = mockMvc.perform(get("/teachers/1/shedule/events?start=2021-04-04&end=2021-04-08"))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType("application/json"))
 				.andReturn();
 		String actual = rt.getResponse().getContentAsString();
 
 		assertEquals(expected, actual);
+	}
+
+	@Test
+	void whenEditTeacher_thenTeachersFound() throws Exception {
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+		Audience audience = Audience.builder().id(1).room(1).capacity(10).build();
+		Group group = Group.builder().id(1).name("Group Name").cathedra(cathedra).build();
+		Subject subject = Subject.builder().id(1).name("Subject name").description("Subject desc").cathedra(cathedra)
+				.build();
+		Teacher teacher = Teacher.builder().id(1).firstName("Test Name").lastName("Last Name").cathedra(cathedra)
+				.subjects(Arrays.asList(subject)).build();
+		LectureTime time = LectureTime.builder().id(1).start(LocalTime.of(8, 0)).end(LocalTime.of(9, 45)).build();
+
+		Lecture lecture = Lecture.builder()
+				.id(1)
+				.audience(audience)
+				.cathedra(cathedra)
+				.date(LocalDate.of(2021, 1, 1))
+				.group(Arrays.asList(group))
+				.subject(subject)
+				.teacher(teacher)
+				.time(time)
+				.build();
+
+		when(lectureService.findById(1)).thenReturn(lecture);
+		when(teacherService.findTeachersForChange(lecture)).thenReturn(Arrays.asList(teacher));
+
+		mockMvc.perform(get("/lectures/{id}/edit/teacher", 1))
+				.andExpect(status().isOk())
+				.andExpect(view().name("lectures/edit_teacher"))
+				.andExpect(forwardedUrl("lectures/edit_teacher"))
+				.andExpect(model().attribute("lecture", is(lecture)))
+				.andExpect(model().attribute("teachers", is(Arrays.asList(teacher))));
 	}
 }
