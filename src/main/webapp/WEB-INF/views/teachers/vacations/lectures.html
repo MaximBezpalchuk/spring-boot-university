@@ -23,7 +23,7 @@
 </table>
 <form th:method="PATCH"
       th:action="@{/teachers/{teacherId}/vacations/lectures?start={start}&end={end}(teacherId=${teacher.id}, start=${start}, end=${end})}">
-    <input type="submit" value="Autochange teachers on this lectures!">
+    <input type="submit" value="Autochange teachers on this lectures">
 </form>
 <script th:src="@{/webjars/jquery/3.4.1/jquery.min.js}" type="text/javascript"></script>
 <script th:src="@{/webjars/popper.js/2.9.3/umd/popper.min.js}" type="text/javascript"></script>
