@@ -1,84 +1,75 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-
 <head>
-<meta charset="ISO-8859-1">
-<title>Show teacher</title>
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
-	integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
-	crossorigin="anonymous" />
+    <meta charset="ISO-8859-1">
+    <title>Show teacher</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.1.3/css/bootstrap.min.css}"/>
 </head>
-
 <body>
-	<h1
-		th:text="'Teacher ' + ${teacher.firstName} + ' ' + ${teacher.lastName}">Teacher
-		name</h1>
-	<table border="1">
-		<tr>
-			<td>Cathedra</td>
-			<td th:text="${teacher.cathedra.name}">Cathedra name</td>
-		</tr>
-		<tr>
-			<td>Name</td>
-			<td th:text="${teacher.firstName} + ' ' + ${teacher.lastName}">Name</td>
-		</tr>
-		<tr>
-			<td>Phone number</td>
-			<td th:text="${teacher.phone}">Phone number</td>
-		</tr>
-		<tr>
-			<td>Address</td>
-			<td th:text="${teacher.address}">Address</td>
-		</tr>
-		<tr>
-			<td>Email</td>
-			<td th:text="${teacher.email}">Email</td>
-		</tr>
-		<tr>
-			<td>Gender</td>
-			<td th:text="${teacher.gender}">Gender</td>
-		</tr>
-		<tr>
-			<td>Postal code</td>
-			<td th:text="${teacher.postalCode}">Postal code</td>
-		</tr>
-		<tr>
-			<td>Education</td>
-			<td th:text="${teacher.education}">Education</td>
-		</tr>
-		<tr>
-			<td>Birth date</td>
-			<td th:text="${teacher.birthDate}">Birth date</td>
-		</tr>
-		<tr>
-			<td>Degree</td>
-			<td th:text="${teacher.degree}">Degree</td>
-		</tr>
-		<tr>
-			<td>Subjects</td>
-			<td>
-				<ul th:each="subject : ${teacher.subjects}">
-					<li th:text="${subject.name}">Subject</li>
-				</ul>
-			</td>
-		</tr>
-		<tr>
-			<td>Vacations</td>
-			<td><a th:href="@{/teachers/{id}/vacations(id=${teacher.id})}"
-				th:text="Vacations">Teachers vacations</a></td>
-		</tr>
-	</table>
-	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-		integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-		crossorigin="anonymous"></script>
-	<script
-		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
-		integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
-		crossorigin="anonymous"></script>
-	<script
-		src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"
-		integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1"
-		crossorigin="anonymous"></script>
+<h1 th:text="'Teacher ' + ${teacher.firstName} + ' ' + ${teacher.lastName}">Teacher name</h1>
+<a th:href="@{/teachers/{id}/edit(id=${teacher.id})}" th:text="Edit">Edit teacher</a>
+<a th:href="@{/teachers/{id}/shedule(id=${teacher.id})}" th:text="Shedule">Shedule for teacher</a>
+<form th:method="DELETE" th:action="@{/teachers/{id}(id=${teacher.id})}">
+    <input type="submit" value="Delete">
+</form>
+<table border="1">
+    <tr>
+        <td>Cathedra</td>
+        <td th:text="${teacher.cathedra.name}">Cathedra name</td>
+    </tr>
+    <tr>
+        <td>Name</td>
+        <td th:text="${teacher.firstName} + ' ' + ${teacher.lastName}">Name</td>
+    </tr>
+    <tr>
+        <td>Phone number</td>
+        <td th:text="${teacher.phone}">Phone number</td>
+    </tr>
+    <tr>
+        <td>Address</td>
+        <td th:text="${teacher.address}">Address</td>
+    </tr>
+    <tr>
+        <td>Email</td>
+        <td th:text="${teacher.email}">Email</td>
+    </tr>
+    <tr>
+        <td>Gender</td>
+        <td th:text="${teacher.gender}">Gender</td>
+    </tr>
+    <tr>
+        <td>Postal code</td>
+        <td th:text="${teacher.postalCode}">Postal code</td>
+    </tr>
+    <tr>
+        <td>Education</td>
+        <td th:text="${teacher.education}">Education</td>
+    </tr>
+    <tr>
+        <td>Birth date</td>
+        <td th:text="${teacher.birthDate}">Birth date</td>
+    </tr>
+    <tr>
+        <td>Degree</td>
+        <td th:text="${teacher.degree}">Degree</td>
+    </tr>
+    <tr>
+        <td>Subjects</td>
+        <td>
+            <ul th:each="subject : ${teacher.subjects}">
+                <li th:text="${subject.name}">Subject</li>
+            </ul>
+        </td>
+    </tr>
+    <tr>
+        <td>Vacations</td>
+        <td>
+            <a th:href="@{/teachers/{id}/vacations(id=${teacher.id})}">Vacations</a>
+        </td>
+    </tr>
+</table>
+<script th:src="@{/webjars/jquery/3.4.1/jquery.min.js}" type="text/javascript"></script>
+<script th:src="@{/webjars/popper.js/2.9.3/umd/popper.min.js}" type="text/javascript"></script>
+<script th:src="@{/webjars/bootstrap/5.1.3/js/bootstrap.min.js}" type="text/javascript"></script>
 </body>
 </html>

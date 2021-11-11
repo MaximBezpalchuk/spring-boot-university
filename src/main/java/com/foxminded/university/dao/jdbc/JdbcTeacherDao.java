@@ -21,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.foxminded.university.dao.TeacherDao;
 import com.foxminded.university.dao.jdbc.mapper.TeacherRowMapper;
+import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.model.LectureTime;
 import com.foxminded.university.model.Subject;
 import com.foxminded.university.model.Teacher;
 
@@ -39,6 +41,7 @@ public class JdbcTeacherDao implements TeacherDao {
 	private static final String INSERT_SUBJECT = "INSERT INTO subjects_teachers(subject_id, teacher_id) VALUES (?,?)";
 	private static final String DELETE_SUBJECT = "DELETE FROM subjects_teachers WHERE subject_id = ? AND teacher_id = ?";
 	private static final String SELECT_BY_FULL_NAME_AND_BIRTHDAY = "SELECT * FROM teachers WHERE first_name = ? AND last_name = ? AND birth_date = ?";
+	private static final String SELECT_BY_FREE_OF_VACATIONS_DATE_AND_SUBJECT_WITH_CURRENT_TEACHER = "SELECT DISTINCT teachers.* FROM teachers LEFT JOIN subjects_teachers AS st ON teachers.id = st.teacher_id LEFT JOIN vacations AS vac ON teachers.id = vac.teacher_id WHERE st.subject_id = ? AND ((?::DATE NOT BETWEEN vac.start AND vac.finish) OR (vac.start IS NULL AND vac.finish IS NULL))AND NOT EXISTS (select id from lectures where lectures.teacher_id = teachers.id AND lectures.date = ?::DATE AND lectures.lecture_time_id = ?)";
 
 	private final JdbcTemplate jdbcTemplate;
 	private TeacherRowMapper rowMapper;
@@ -143,5 +146,22 @@ public class JdbcTeacherDao implements TeacherDao {
 		} catch (EmptyResultDataAccessException e) {
 			return Optional.empty();
 		}
+	}
+
+	@Override
+	public List<Teacher> findByFreeDateAndSubjectWithCurrentTeacher(LocalDate date, LectureTime time, Subject subject) {
+		logger.debug(
+				"Find teachers who havent lectures and vacation this period: {} at {} - {} and who can teach this subject: {}",
+				date, time.getStart(), time.getEnd(), subject.getName());
+		List<Teacher> teachers = jdbcTemplate.query(SELECT_BY_FREE_OF_VACATIONS_DATE_AND_SUBJECT_WITH_CURRENT_TEACHER,
+				rowMapper, subject.getId(), date, date, time.getId());
+		if (teachers.isEmpty()) {
+			throw new EntityNotFoundException(
+					"Can`t find teachers who havent lectures and vacation this period:" + date + " at "
+							+ time.getStart() + " - " + time.getEnd() + " and who can teach this subject: "
+							+ subject.getName());
+		}
+
+		return teachers;
 	}
 }

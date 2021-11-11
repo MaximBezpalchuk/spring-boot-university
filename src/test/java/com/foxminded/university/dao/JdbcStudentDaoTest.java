@@ -51,7 +51,7 @@ public class JdbcStudentDaoTest {
 	void givenPageable_whenFindPaginatedStudents_thenStudentsFound() {
 		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
 		Group group = Group.builder().id(1).cathedra(cathedra).name("Killers").build();
-		List<Student> students = List.of(Student.builder()
+		List<Student> students = Arrays.asList(Student.builder()
 				.firstName("Petr")
 				.lastName("Orlov")
 				.address("Empty Street 8")

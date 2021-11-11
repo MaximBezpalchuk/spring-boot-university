@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Edit lecture</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.1.3/css/bootstrap.min.css}"/>
+</head>
+<body>
+<h1 th:text="'Edit teacher for lecture (subject ' + ${lecture.subject.name} + ' on ' + ${lecture.date} + ')'">
+    Lecture desc
+</h1>
+
+<form th:method="PATCH" th:action="@{/lectures/{id}/edit/teacher(id=${lecture.id})}" th:object="${lecture}">
+    <label for="teacherSelector">Choose teacher: </label>
+    <select id="teacherSelector" th:field="*{teacher.id}" required>
+        <option th:each="anyTeacher : ${teachers}"
+                th:field="*{teacher.id}"
+                th:value="${anyTeacher?.id}"
+                th:text="${anyTeacher?.firstName} + ' ' + ${anyTeacher?.lastName}">Teacher name
+        </option>
+    </select>
+    <br>
+    <input type="submit" value="Update!">
+</form>
+<script th:src="@{/webjars/jquery/3.4.1/jquery.min.js}" type="text/javascript"></script>
+<script th:src="@{/webjars/popper.js/2.9.3/umd/popper.min.js}" type="text/javascript"></script>
+<script th:src="@{/webjars/bootstrap/5.1.3/js/bootstrap.min.js}" type="text/javascript"></script>
+</body>
+</html>

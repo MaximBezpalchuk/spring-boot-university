@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>New lecture</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.1.3/css/bootstrap.min.css}"/>
+</head>
+<body>
+<h1>Create new lecture</h1>
+<form method="POST" th:action="@{/lectures}" th:object="${lecture}">
+    <label for="cathedraSelector">Choose cathedra: </label>
+    <select id="cathedraSelector" th:field="*{cathedra.id}" required>
+        <option th:each="anyCathedra : ${cathedras}"
+                th:field="*{cathedra.id}"
+                th:value="${anyCathedra?.id}"
+                th:text="${anyCathedra?.name}">Cathedra name
+        </option>
+    </select>
+    <br>
+    <label for="teacherSelector">Choose teacher: </label>
+    <select id="teacherSelector" th:field="*{teacher.id}" required>
+        <option th:each="anyTeacher : ${teachers}"
+                th:field="*{teacher.id}"
+                th:value="${anyTeacher?.id}"
+                th:text="${anyTeacher?.firstName} + ' ' + ${anyTeacher?.lastName}">Teacher name
+        </option>
+    </select>
+    <br>
+    <label for="audienceSelector">Choose audience: </label>
+    <select id="audienceSelector" th:field="*{audience.id}" required>
+        <option th:each="anyAudience : ${audiences}"
+                th:field="*{audience.id}"
+                th:value="${anyAudience?.id}"
+                th:text="${anyAudience?.room}">Room
+        </option>
+    </select>
+    <br>
+    <label for="subjectSelector">Choose subject: </label>
+    <select id="subjectSelector" th:field="*{subject.id}" required>
+        <option th:each="anySubject : ${subjects}"
+                th:field="*{subject.id}"
+                th:value="${anySubject?.id}"
+                th:text="${anySubject?.name}">Subject name
+        </option>
+    </select>
+    <br>
+    <label for="date">Enter date: </label>
+    <input type="date" th:field="*{date}" id="date" required>
+    <br>
+    <select id="timeSelector" th:field="*{time.id}" required>
+        <option th:each="anyTime : ${times}"
+                th:field="*{time.id}"
+                th:value="${anyTime?.id}"
+                th:text="${anyTime?.start} + ' - ' + ${anyTime?.end}">start
+        </option>
+    </select>
+    <br>
+    <label for="groupSelector">Choose group(s): </label>
+    <select class="form-control" id="groupSelector" name="groupSelector" multiple required>
+        <option th:each="group: ${groups}"
+                th:value="${group.id}"
+                th:text="${group.name}">
+        </option>
+    </select>
+    <br>
+    <input type="submit" value="Create!">
+</form>
+<script th:src="@{/webjars/jquery/3.4.1/jquery.min.js}" type="text/javascript"></script>
+<script th:src="@{/webjars/popper.js/2.9.3/umd/popper.min.js}" type="text/javascript"></script>
+<script th:src="@{/webjars/bootstrap/5.1.3/js/bootstrap.min.js}" type="text/javascript"></script>
+</body>
+</html>

@@ -47,7 +47,7 @@ public class JdbcHolidayDaoTest {
 
 	@Test
 	void givenPageable_whenFindPaginatedHolidays_thenHolidaysFound() {
-		List<Holiday> holidays = List.of(Holiday.builder()
+		List<Holiday> holidays = Arrays.asList(Holiday.builder()
 				.id(1)
 				.name("Christmas")
 				.date(LocalDate.of(2021, 12, 25))

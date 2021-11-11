@@ -1,9 +1,21 @@
 package com.foxminded.university.controller;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -11,20 +23,22 @@ import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Holiday;
+import com.foxminded.university.service.CathedraService;
 import com.foxminded.university.service.HolidayService;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,6 +48,8 @@ public class HolidayControllerTest {
 
 	@Mock
 	private HolidayService holidayService;
+	@Mock
+	private CathedraService cathedraService;
 	@InjectMocks
 	private HolidayController holidayController;
 
@@ -87,5 +103,64 @@ public class HolidayControllerTest {
 				.andExpect(view().name("holidays/show"))
 				.andExpect(forwardedUrl("holidays/show"))
 				.andExpect(model().attribute("holiday", holiday));
+	}
+
+	@Test
+	void whenCreateNewHoliday_thenNewHolidayCreated() throws Exception {
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+
+		when(cathedraService.findAll()).thenReturn(Arrays.asList(cathedra));
+
+		mockMvc.perform(get("/holidays/new"))
+				.andExpect(status().isOk())
+				.andExpect(view().name("holidays/new"))
+				.andExpect(forwardedUrl("holidays/new"))
+				.andExpect(model().attribute("holiday", instanceOf(Holiday.class)));
+	}
+
+	@Test
+	void whenSaveHoliday_thenHolidaySaved() throws Exception {
+		Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+		Holiday holiday = Holiday.builder()
+				.name("Test Name2")
+				.date(LocalDate.of(2021, 1, 1))
+				.cathedra(cathedra)
+				.build();
+
+		mockMvc.perform(post("/holidays").flashAttr("holiday", holiday))
+				.andExpect(redirectedUrl("/holidays"));
+
+		verify(holidayService).save(holiday);
+	}
+
+	@Test
+	void whenEditHoliday_thenHolidayFound() throws Exception {
+		Cathedra cathedra = Cathedra.builder()
+				.id(1)
+				.name("Fantastic Cathedra")
+				.build();
+		Holiday expected = Holiday.builder()
+				.id(1)
+				.name("Test Name")
+				.date(LocalDate.of(2021, 1, 1))
+				.cathedra(cathedra)
+				.build();
+
+		when(holidayService.findById(1)).thenReturn(expected);
+		when(cathedraService.findAll()).thenReturn(Arrays.asList(cathedra));
+
+		mockMvc.perform(get("/holidays/{id}/edit", 1))
+				.andExpect(status().isOk())
+				.andExpect(view().name("holidays/edit"))
+				.andExpect(forwardedUrl("holidays/edit"))
+				.andExpect(model().attribute("holiday", is(expected)));
+	}
+
+	@Test
+	void whenDeleteHoliday_thenHolidayDeleted() throws Exception {
+		mockMvc.perform(delete("/holidays/{id}", 1))
+				.andExpect(redirectedUrl("/holidays"));
+
+		verify(holidayService).deleteById(1);
 	}
 }

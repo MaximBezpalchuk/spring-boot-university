@@ -23,17 +23,9 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import com.foxminded.university.model.Audience;
-import com.foxminded.university.model.Cathedra;
-import com.foxminded.university.model.Degree;
-import com.foxminded.university.model.Gender;
-import com.foxminded.university.model.Group;
-import com.foxminded.university.model.Lecture;
-import com.foxminded.university.model.LectureTime;
-import com.foxminded.university.model.Subject;
-import com.foxminded.university.model.Teacher;
 import com.foxminded.university.config.TestConfig;
 import com.foxminded.university.dao.jdbc.JdbcLectureDao;
+import com.foxminded.university.model.*;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = TestConfig.class)
@@ -131,7 +123,7 @@ public class JdbcLectureDaoTest {
 				.start(LocalTime.of(8, 0))
 				.end(LocalTime.of(9, 30))
 				.build();
-		List<Lecture> lectures = List.of(Lecture.builder()
+		List<Lecture> lectures = Arrays.asList(Lecture.builder()
 				.id(1)
 				.group(Arrays.asList(group))
 				.cathedra(cathedra)
@@ -294,5 +286,21 @@ public class JdbcLectureDaoTest {
 				LocalDate.of(2021, 4, 4), LectureTime.builder().id(1).build());
 
 		assertEquals(expected, actual);
+	}
+
+	@Test
+	void givenStudentId_whenFindByStudentId_thenLecturesFound() {
+		List<Lecture> actual = lectureDao.findLecturesByStudentAndPeriod(Student.builder().id(1).build(),
+				LocalDate.of(2021, 4, 4), LocalDate.of(2021, 4, 8));
+
+		assertEquals(8, actual.size());
+	}
+
+	@Test
+	void givenTeacherId_whenFindByTeacherId_thenLecturesFound() {
+		List<Lecture> actual = lectureDao.findLecturesByTeacherAndPeriod(Teacher.builder().id(2).build(),
+				LocalDate.of(2021, 4, 4), LocalDate.of(2021, 4, 8));
+
+		assertEquals(7, actual.size());
 	}
 }

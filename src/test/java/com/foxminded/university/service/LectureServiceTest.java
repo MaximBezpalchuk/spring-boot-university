@@ -28,26 +28,8 @@ import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
 import com.foxminded.university.dao.jdbc.JdbcLectureDao;
 import com.foxminded.university.dao.jdbc.JdbcStudentDao;
 import com.foxminded.university.dao.jdbc.JdbcVacationDao;
-import com.foxminded.university.exception.EntityNotFoundException;
-import com.foxminded.university.exception.EntityNotUniqueException;
-import com.foxminded.university.exception.AfterHoursException;
-import com.foxminded.university.exception.OccupiedAudienceException;
-import com.foxminded.university.exception.AudienceOverflowException;
-import com.foxminded.university.exception.HolidayException;
-import com.foxminded.university.exception.SundayException;
-import com.foxminded.university.exception.BusyTeacherException;
-import com.foxminded.university.exception.NotCompetentTeacherException;
-import com.foxminded.university.exception.TeacherInVacationException;
-import com.foxminded.university.model.Audience;
-import com.foxminded.university.model.Cathedra;
-import com.foxminded.university.model.Group;
-import com.foxminded.university.model.Holiday;
-import com.foxminded.university.model.Lecture;
-import com.foxminded.university.model.LectureTime;
-import com.foxminded.university.model.Student;
-import com.foxminded.university.model.Subject;
-import com.foxminded.university.model.Teacher;
-import com.foxminded.university.model.Vacation;
+import com.foxminded.university.exception.*;
+import com.foxminded.university.model.*;
 
 @ExtendWith(MockitoExtension.class)
 public class LectureServiceTest {
@@ -60,6 +42,10 @@ public class LectureServiceTest {
 	private JdbcHolidayDao holidayDao;
 	@Mock
 	private JdbcStudentDao studentDao;
+	@Mock
+	private StudentService studentService;
+	@Mock
+	private TeacherService teacherService;
 	@InjectMocks
 	private LectureService lectureService;
 
@@ -335,5 +321,33 @@ public class LectureServiceTest {
 		lectureService.deleteById(1);
 
 		verify(lectureDao).deleteById(1);
+	}
+
+	@Test
+	void givenStudentId_whenFindLecturesByStudentId_thenAllExistingLecturesFound() {
+		Lecture lecture1 = Lecture.builder().id(1).build();
+		List<Lecture> expected = Arrays.asList(lecture1);
+		Student student = Student.builder().id(1).build();
+		when(studentService.findById(1)).thenReturn(student);
+		when(lectureDao.findLecturesByStudentAndPeriod(student, LocalDate.of(2021, 4, 4), LocalDate.of(2021, 4, 8)))
+				.thenReturn(expected);
+		List<Lecture> actual = lectureService.findByStudentIdAndPeriod(1, LocalDate.of(2021, 4, 4),
+				LocalDate.of(2021, 4, 8));
+
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	void givenTeacherId_whenFindLecturesByTeacherId_thenAllExistingLecturesFound() {
+		Lecture lecture1 = Lecture.builder().id(1).build();
+		List<Lecture> expected = Arrays.asList(lecture1);
+		Teacher teacher = Teacher.builder().id(1).build();
+		when(teacherService.findById(1)).thenReturn(teacher);
+		when(lectureDao.findLecturesByTeacherAndPeriod(teacher, LocalDate.of(2021, 4, 4), LocalDate.of(2021, 4, 8)))
+				.thenReturn(expected);
+		List<Lecture> actual = lectureService.findByTeacherIdAndPeriod(1, LocalDate.of(2021, 4, 4),
+				LocalDate.of(2021, 4, 8));
+
+		assertEquals(expected, actual);
 	}
 }
