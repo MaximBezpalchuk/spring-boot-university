@@ -11,8 +11,8 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
 
 @Configuration
 @ComponentScan("com.foxminded.university.dao")
@@ -21,16 +21,15 @@ public class DatabaseConfig {
 
 	@Value("${url}")
 	public String url;
-	@Value("${user}")
-	public String user;
-	@Value("${password}")
-	public String password;
-	@Value("${driverClass}")
-	public String driverClass;
 	@Value("classpath:schema.sql")
 	Resource schema;
 	@Value("classpath:data.sql")
 	Resource data;
+
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+		return new PropertySourcesPlaceholderConfigurer();
+	}
 
 	@Bean
 	public JdbcTemplate jdbcTemplate(DataSource dataSource) {
@@ -39,31 +38,23 @@ public class DatabaseConfig {
 
 	@Bean
 	public DataSource dataSource() {
-		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setDriverClassName(driverClass);
-		dataSource.setUsername(user);
-		dataSource.setUrl(url);
-		dataSource.setPassword(password);
-
+		JndiDataSourceLookup jndiDataSource = new JndiDataSourceLookup();
+		jndiDataSource.setResourceRef(true);
+		DataSource dataSource = jndiDataSource.getDataSource(url);
 		createSchema(dataSource);
 		createData(dataSource);
 
 		return dataSource;
 	}
 
-	private void createSchema(DriverManagerDataSource dataSource) {
+	private void createSchema(DataSource dataSource) {
 		ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator(schema);
 		databasePopulator.execute(dataSource);
 	}
 
-	private void createData(DriverManagerDataSource dataSource) {
+	private void createData(DataSource dataSource) {
 		ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator(data);
 		databasePopulator.execute(dataSource);
-	}
-
-	@Bean
-	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-		return new PropertySourcesPlaceholderConfigurer();
 	}
 
 	@Bean
