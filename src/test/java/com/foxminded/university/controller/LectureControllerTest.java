@@ -13,7 +13,6 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,7 +29,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.foxminded.university.dao.jdbc.mapper.LectureToEventMapper;
+import com.foxminded.university.dao.mapper.LectureToEventMapper;
 import com.foxminded.university.model.*;
 import com.foxminded.university.service.*;
 

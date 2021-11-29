@@ -1,12 +1,21 @@
 package com.foxminded.university.model;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
+@Table(name = "subjects")
 public class Subject {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "cathedra_id", referencedColumnName = "id")
 	private Cathedra cathedra;
+	@Column
 	private String name;
+	@Column
 	private String description;
 
 	private Subject(Builder builder) {
@@ -19,12 +28,8 @@ public class Subject {
 	public Subject() {
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
+	public static Builder builder() {
+		return new Builder();
 	}
 
 	public int getId() {
@@ -47,12 +52,34 @@ public class Subject {
 		return name;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public String getDescription() {
 		return description;
 	}
 
-	public static Builder builder() {
-		return new Builder();
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(cathedra, description, id, name);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Subject other = (Subject) obj;
+		return Objects.equals(cathedra, other.cathedra) && Objects.equals(description, other.description)
+				&& id == other.id && Objects.equals(name, other.name);
 	}
 
 	public static class Builder {
@@ -85,24 +112,6 @@ public class Subject {
 		public Subject build() {
 			return new Subject(this);
 		}
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(cathedra, description, id, name);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Subject other = (Subject) obj;
-		return Objects.equals(cathedra, other.cathedra) && Objects.equals(description, other.description)
-				&& id == other.id && Objects.equals(name, other.name);
 	}
 
 }

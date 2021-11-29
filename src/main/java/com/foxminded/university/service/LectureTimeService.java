@@ -1,23 +1,23 @@
 package com.foxminded.university.service;
 
-import java.time.Duration;
-import java.util.List;
-import java.util.Optional;
-
+import com.foxminded.university.dao.LectureTimeDao;
+import com.foxminded.university.exception.ChosenDurationException;
+import com.foxminded.university.exception.DurationException;
+import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
+import com.foxminded.university.model.LectureTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.foxminded.university.dao.LectureTimeDao;
-import com.foxminded.university.dao.jdbc.JdbcLectureTimeDao;
-import com.foxminded.university.exception.DurationException;
-import com.foxminded.university.exception.EntityNotFoundException;
-import com.foxminded.university.exception.EntityNotUniqueException;
-import com.foxminded.university.exception.ChosenDurationException;
-import com.foxminded.university.model.LectureTime;
+import java.time.Duration;
+import java.util.List;
+import java.util.Optional;
 
 @Service
+@Transactional
 public class LectureTimeService {
 
 	private static final Logger logger = LoggerFactory.getLogger(LectureTimeService.class);
@@ -26,7 +26,7 @@ public class LectureTimeService {
 	@Value("${minLectureDurationInMinutes}")
 	private int minLectureDurationInMinutes;
 
-	public LectureTimeService(JdbcLectureTimeDao lectureTimeDao) {
+	public LectureTimeService(LectureTimeDao lectureTimeDao) {
 		this.lectureTimeDao = lectureTimeDao;
 	}
 

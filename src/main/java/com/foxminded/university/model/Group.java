@@ -1,11 +1,19 @@
 package com.foxminded.university.model;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
+@Table(name = "groups")
 public class Group {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	@Column
 	private String name;
+	@ManyToOne(fetch = FetchType.EAGER)
+	//@JoinColumn(name = "cathedra_id", referencedColumnName = "id")
 	private Cathedra cathedra;
 
 	private Group(int id, String name, Cathedra cathedra) {
@@ -17,8 +25,8 @@ public class Group {
 	public Group() {
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public static Builder builder() {
+		return new Builder();
 	}
 
 	public int getId() {
@@ -33,6 +41,10 @@ public class Group {
 		return name;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public Cathedra getCathedra() {
 		return cathedra;
 	}
@@ -41,8 +53,21 @@ public class Group {
 		this.cathedra = cathedra;
 	}
 
-	public static Builder builder() {
-		return new Builder();
+	@Override
+	public int hashCode() {
+		return Objects.hash(cathedra, id, name);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Group other = (Group) obj;
+		return Objects.equals(cathedra, other.cathedra) && id == other.id && Objects.equals(name, other.name);
 	}
 
 	public static class Builder {
@@ -69,23 +94,6 @@ public class Group {
 		public Group build() {
 			return new Group(id, name, cathedra);
 		}
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(cathedra, id, name);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Group other = (Group) obj;
-		return Objects.equals(cathedra, other.cathedra) && id == other.id && Objects.equals(name, other.name);
 	}
 
 }

@@ -1,29 +1,29 @@
 package com.foxminded.university.service;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.foxminded.university.dao.TeacherDao;
+import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
+import com.foxminded.university.model.Lecture;
+import com.foxminded.university.model.Teacher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.foxminded.university.dao.TeacherDao;
-import com.foxminded.university.dao.jdbc.JdbcTeacherDao;
-import com.foxminded.university.exception.EntityNotFoundException;
-import com.foxminded.university.exception.EntityNotUniqueException;
-import com.foxminded.university.model.Lecture;
-import com.foxminded.university.model.Teacher;
+import java.util.List;
+import java.util.Optional;
 
 @Service
+@Transactional
 public class TeacherService {
 
 	private static final Logger logger = LoggerFactory.getLogger(TeacherService.class);
 
 	private TeacherDao teacherDao;
 
-	public TeacherService(JdbcTeacherDao teacherDao) {
+	public TeacherService(TeacherDao teacherDao) {
 		this.teacherDao = teacherDao;
 	}
 

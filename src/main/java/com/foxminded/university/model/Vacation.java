@@ -1,17 +1,26 @@
 package com.foxminded.university.model;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
+@Entity
+@Table(name = "vacations")
 public class Vacation {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	@Column
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate start;
+	@Column(name = "finish")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate end;
+	@ManyToOne(fetch = FetchType.EAGER)
+	//@JoinColumn(name = "teacher_id", referencedColumnName = "id")
 	private Teacher teacher;
 
 	private Vacation(int id, LocalDate start, LocalDate end, Teacher teacher) {

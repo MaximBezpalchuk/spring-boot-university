@@ -1,26 +1,26 @@
 package com.foxminded.university.service;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
 import com.foxminded.university.dao.GroupDao;
-import com.foxminded.university.dao.jdbc.JdbcGroupDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Group;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
+@Transactional
 public class GroupService {
 
 	private static final Logger logger = LoggerFactory.getLogger(GroupService.class);
 
 	private GroupDao groupDao;
 
-	public GroupService(JdbcGroupDao groupDao) {
+	public GroupService(GroupDao groupDao) {
 		this.groupDao = groupDao;
 	}
 

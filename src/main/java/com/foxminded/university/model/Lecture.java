@@ -1,26 +1,44 @@
 package com.foxminded.university.model;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
+@Entity
+@Table(name = "lectures")
 public class Lecture {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "cathedra_id", referencedColumnName = "id")
 	private Cathedra cathedra;
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "lectures_groups", joinColumns = @JoinColumn(name = "lecture_id"), inverseJoinColumns = @JoinColumn(name = "group_id"))
 	private List<Group> groups = new ArrayList<>();
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "teacher_id", referencedColumnName = "id")
 	private Teacher teacher;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "audience_id", referencedColumnName = "id")
 	private Audience audience;
+	@Column
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate date;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "subject_id", referencedColumnName = "id")
 	private Subject subject;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "lecture_time_id", referencedColumnName = "id")
 	private LectureTime time;
 
 	private Lecture(int id, Cathedra cathedra, List<Group> groups, Teacher teacher, Audience audience, LocalDate date,
-			Subject subject, LectureTime time) {
+                    Subject subject, LectureTime time) {
 		this.id = id;
 		this.cathedra = cathedra;
 		this.teacher = teacher;
@@ -32,6 +50,10 @@ public class Lecture {
 	}
 
 	public Lecture() {
+	}
+
+	public static Builder builder() {
+		return new Builder();
 	}
 
 	public int getId() {
@@ -62,24 +84,24 @@ public class Lecture {
 		return teacher;
 	}
 
-	public void setAudience(Audience audience) {
-		this.audience = audience;
+	public void setTeacher(Teacher teacher) {
+		this.teacher = teacher;
 	}
 
 	public Audience getAudience() {
 		return audience;
 	}
 
-	public void setDate(LocalDate date) {
-		this.date = date;
-	}
-
-	public void setTime(LectureTime time) {
-		this.time = time;
+	public void setAudience(Audience audience) {
+		this.audience = audience;
 	}
 
 	public LocalDate getDate() {
 		return date;
+	}
+
+	public void setDate(LocalDate date) {
+		this.date = date;
 	}
 
 	public Subject getSubject() {
@@ -90,16 +112,32 @@ public class Lecture {
 		this.subject = subject;
 	}
 
-	public void setTeacher(Teacher teacher) {
-		this.teacher = teacher;
-	}
-
 	public LectureTime getTime() {
 		return time;
 	}
 
-	public static Builder builder() {
-		return new Builder();
+	public void setTime(LectureTime time) {
+		this.time = time;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(audience, cathedra, date, groups, id, subject, teacher, time);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Lecture other = (Lecture) obj;
+		return Objects.equals(audience, other.audience) && Objects.equals(cathedra, other.cathedra)
+				&& Objects.equals(date, other.date) && Objects.equals(groups, other.groups) && id == other.id
+				&& Objects.equals(subject, other.subject) && Objects.equals(teacher, other.teacher)
+				&& Objects.equals(time, other.time);
 	}
 
 	public static class Builder {
@@ -156,26 +194,6 @@ public class Lecture {
 		public Lecture build() {
 			return new Lecture(id, cathedra, groups, teacher, audience, date, subject, time);
 		}
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(audience, cathedra, date, groups, id, subject, teacher, time);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Lecture other = (Lecture) obj;
-		return Objects.equals(audience, other.audience) && Objects.equals(cathedra, other.cathedra)
-				&& Objects.equals(date, other.date) && Objects.equals(groups, other.groups) && id == other.id
-				&& Objects.equals(subject, other.subject) && Objects.equals(teacher, other.teacher)
-				&& Objects.equals(time, other.time);
 	}
 
 }

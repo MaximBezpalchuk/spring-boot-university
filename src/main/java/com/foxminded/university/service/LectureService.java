@@ -1,31 +1,27 @@
 package com.foxminded.university.service;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-
-import com.foxminded.university.model.Vacation;
+import com.foxminded.university.dao.HolidayDao;
+import com.foxminded.university.dao.LectureDao;
+import com.foxminded.university.dao.StudentDao;
+import com.foxminded.university.dao.VacationDao;
+import com.foxminded.university.exception.*;
+import com.foxminded.university.model.Group;
+import com.foxminded.university.model.Lecture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.foxminded.university.dao.HolidayDao;
-import com.foxminded.university.dao.LectureDao;
-import com.foxminded.university.dao.StudentDao;
-import com.foxminded.university.dao.VacationDao;
-import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
-import com.foxminded.university.dao.jdbc.JdbcLectureDao;
-import com.foxminded.university.dao.jdbc.JdbcStudentDao;
-import com.foxminded.university.dao.jdbc.JdbcVacationDao;
-import com.foxminded.university.exception.*;
-import com.foxminded.university.model.Group;
-import com.foxminded.university.model.Lecture;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 @Service
+@Transactional
 public class LectureService {
 
 	private static final Logger logger = LoggerFactory.getLogger(LectureService.class);
@@ -41,8 +37,8 @@ public class LectureService {
 	@Value("${endWorkingDay}")
 	private int endWorkingDay;
 
-	public LectureService(JdbcLectureDao lectureDao, JdbcVacationDao vacationDao, JdbcHolidayDao holidayDao,
-			JdbcStudentDao studentDao, StudentService studentService, TeacherService teacherService) {
+	public LectureService(LectureDao lectureDao, VacationDao vacationDao, HolidayDao holidayDao,
+                          StudentDao studentDao, StudentService studentService, TeacherService teacherService) {
 		this.lectureDao = lectureDao;
 		this.vacationDao = vacationDao;
 		this.holidayDao = holidayDao;

@@ -18,6 +18,7 @@
         <maven.compiler.source>8</maven.compiler.source>
         <m2e.apt.activation>jdt_apt</m2e.apt.activation>
         <maven-war-plugin.version>3.3.2</maven-war-plugin.version>
+        <hibernate.version>5.6.1.Final</hibernate.version>
         <tomcat-maven-plugin.version>2.2</tomcat-maven-plugin.version>
         <junit.jupiter.version>5.7.2</junit.jupiter.version>
         <spring.version>5.3.10</spring.version>
@@ -41,6 +42,16 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>${hibernate.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-jasper</artifactId>

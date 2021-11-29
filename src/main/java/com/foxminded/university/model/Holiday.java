@@ -1,18 +1,27 @@
 package com.foxminded.university.model;
 
-import java.time.LocalDate;
-import java.util.Objects;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.Objects;
+
+@Entity
+@Table(name = "holidays")
 public class Holiday {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	@Column
 	private String name;
-	@JsonSerialize(as = LocalDate.class)
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	@Column
+	//@JsonSerialize(as = LocalDate.class)
+	//@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
 	private LocalDate date;
+	@ManyToOne(fetch = FetchType.EAGER)
+	//@JoinColumn(name = "cathedra_id", referencedColumnName = "id")
 	private Cathedra cathedra;
 
 	private Holiday(int id, String name, LocalDate date, Cathedra cathedra) {
@@ -25,12 +34,8 @@ public class Holiday {
 	public Holiday() {
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public void setDate(LocalDate date) {
-		this.date = date;
+	public static Builder builder() {
+		return new Builder();
 	}
 
 	public Cathedra getCathedra() {
@@ -53,12 +58,34 @@ public class Holiday {
 		return name;
 	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+
 	public LocalDate getDate() {
 		return date;
 	}
 
-	public static Builder builder() {
-		return new Builder();
+	public void setDate(LocalDate date) {
+		this.date = date;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(cathedra, date, id, name);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Holiday other = (Holiday) obj;
+		return Objects.equals(cathedra, other.cathedra) && Objects.equals(date, other.date) && id == other.id
+				&& Objects.equals(name, other.name);
 	}
 
 	public static class Builder {
@@ -91,24 +118,6 @@ public class Holiday {
 		public Holiday build() {
 			return new Holiday(id, name, date, cathedra);
 		}
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(cathedra, date, id, name);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Holiday other = (Holiday) obj;
-		return Objects.equals(cathedra, other.cathedra) && Objects.equals(date, other.date) && id == other.id
-				&& Objects.equals(name, other.name);
 	}
 
 }

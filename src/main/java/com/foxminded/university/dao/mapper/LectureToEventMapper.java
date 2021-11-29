@@ -1,4 +1,4 @@
-package com.foxminded.university.dao.jdbc.mapper;
+package com.foxminded.university.dao.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

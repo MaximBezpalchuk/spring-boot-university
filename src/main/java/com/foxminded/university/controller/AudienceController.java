@@ -3,6 +3,7 @@ package com.foxminded.university.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import com.foxminded.university.service.CathedraService;
 
 @Controller
 @RequestMapping("/audiences")
+@Transactional
 public class AudienceController {
 
 	private static final Logger logger = LoggerFactory.getLogger(AudienceController.class);

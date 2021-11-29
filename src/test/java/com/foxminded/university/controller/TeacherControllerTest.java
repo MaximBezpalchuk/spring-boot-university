@@ -24,7 +24,7 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.foxminded.university.dao.jdbc.mapper.LectureToEventMapper;
+import com.foxminded.university.dao.mapper.LectureToEventMapper;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Subject;
 import com.foxminded.university.model.Teacher;

@@ -1,28 +1,28 @@
 package com.foxminded.university.service;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.foxminded.university.dao.SubjectDao;
+import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
+import com.foxminded.university.model.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.foxminded.university.dao.SubjectDao;
-import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
-import com.foxminded.university.exception.EntityNotFoundException;
-import com.foxminded.university.exception.EntityNotUniqueException;
-import com.foxminded.university.model.Subject;
+import java.util.List;
+import java.util.Optional;
 
 @Service
+@Transactional
 public class SubjectService {
 
 	private static final Logger logger = LoggerFactory.getLogger(SubjectService.class);
 
 	private SubjectDao subjectDao;
 
-	public SubjectService(JdbcSubjectDao subjectDao) {
+	public SubjectService(SubjectDao subjectDao) {
 		this.subjectDao = subjectDao;
 	}
 

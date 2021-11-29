@@ -1,28 +1,28 @@
 package com.foxminded.university.service;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.foxminded.university.dao.HolidayDao;
+import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
+import com.foxminded.university.model.Holiday;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.foxminded.university.dao.HolidayDao;
-import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
-import com.foxminded.university.exception.EntityNotFoundException;
-import com.foxminded.university.exception.EntityNotUniqueException;
-import com.foxminded.university.model.Holiday;
+import java.util.List;
+import java.util.Optional;
 
 @Service
+@Transactional
 public class HolidayService {
 
 	private static final Logger logger = LoggerFactory.getLogger(HolidayService.class);
 
 	private HolidayDao holidayDao;
 
-	public HolidayService(JdbcHolidayDao holidayDao) {
+	public HolidayService(HolidayDao holidayDao) {
 		this.holidayDao = holidayDao;
 	}
 

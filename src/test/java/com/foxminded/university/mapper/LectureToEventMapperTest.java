@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.foxminded.university.dao.jdbc.mapper.LectureToEventMapper;
+import com.foxminded.university.dao.mapper.LectureToEventMapper;
 import com.foxminded.university.model.Event;
 import com.foxminded.university.model.Lecture;
 import com.foxminded.university.model.LectureTime;

@@ -1,19 +1,28 @@
 package com.foxminded.university.model;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@Entity
+@Table(name = "teachers")
 public class Teacher extends Person {
 
+	@ManyToOne(fetch = FetchType.EAGER)
+	//@JoinColumn(name = "cathedra_id", referencedColumnName = "id")
 	private Cathedra cathedra;
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "subjects_teachers", joinColumns = @JoinColumn(name = "teacher_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
 	private List<Subject> subjects = new ArrayList<>();
+	@Column
+	@Enumerated(EnumType.STRING)
 	private Degree degree;
 
 	public Teacher(int id, String firstName, String lastName, String phone, String address, String email, Gender gender,
-			String postalCode, String education, LocalDate birthDate, Cathedra cathedra, List<Subject> subjects,
-			Degree degree) {
+                   String postalCode, String education, LocalDate birthDate, Cathedra cathedra, List<Subject> subjects,
+                   Degree degree) {
 		super(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate);
 		this.cathedra = cathedra;
 		this.subjects = subjects;
@@ -25,39 +34,6 @@ public class Teacher extends Person {
 
 	public static Builder builder() {
 		return new Builder();
-	}
-
-	public static class Builder extends Person.Builder<Builder> {
-
-		private Cathedra cathedra;
-		private List<Subject> subjects = new ArrayList<>();
-		private Degree degree;
-
-		@Override
-		public Builder getThis() {
-			return this;
-		}
-
-		public Builder cathedra(Cathedra cathedra) {
-			this.cathedra = cathedra;
-			return this;
-		}
-
-		public Builder subjects(List<Subject> subjects) {
-			this.subjects = subjects;
-			return this;
-		}
-
-		public Builder degree(Degree degree) {
-			this.degree = degree;
-			return this;
-		}
-
-		public Teacher build() {
-			return new Teacher(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate,
-					cathedra, subjects, degree);
-		}
-
 	}
 
 	public Cathedra getCathedra() {
@@ -103,6 +79,39 @@ public class Teacher extends Person {
 		Teacher other = (Teacher) obj;
 		return Objects.equals(cathedra, other.cathedra) && degree == other.degree
 				&& Objects.equals(subjects, other.subjects);
+	}
+
+	public static class Builder extends Person.Builder<Builder> {
+
+		private Cathedra cathedra;
+		private List<Subject> subjects = new ArrayList<>();
+		private Degree degree;
+
+		@Override
+		public Builder getThis() {
+			return this;
+		}
+
+		public Builder cathedra(Cathedra cathedra) {
+			this.cathedra = cathedra;
+			return this;
+		}
+
+		public Builder subjects(List<Subject> subjects) {
+			this.subjects = subjects;
+			return this;
+		}
+
+		public Builder degree(Degree degree) {
+			this.degree = degree;
+			return this;
+		}
+
+		public Teacher build() {
+			return new Teacher(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate,
+					cathedra, subjects, degree);
+		}
+
 	}
 
 }

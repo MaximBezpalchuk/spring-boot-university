@@ -1,10 +1,16 @@
 package com.foxminded.university.model;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
+@Table(name = "cathedras")
 public class Cathedra {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	@Column
 	private String name;
 
 	private Cathedra(int id, String name) {
@@ -13,6 +19,10 @@ public class Cathedra {
 	}
 
 	public Cathedra() {
+	}
+
+	public static Builder builder() {
+		return new Builder();
 	}
 
 	public int getId() {
@@ -31,8 +41,21 @@ public class Cathedra {
 		this.name = name;
 	}
 
-	public static Builder builder() {
-		return new Builder();
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Cathedra other = (Cathedra) obj;
+		return id == other.id && Objects.equals(name, other.name);
 	}
 
 	public static class Builder {
@@ -52,23 +75,6 @@ public class Cathedra {
 		public Cathedra build() {
 			return new Cathedra(id, name);
 		}
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id, name);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Cathedra other = (Cathedra) obj;
-		return id == other.id && Objects.equals(name, other.name);
 	}
 
 }

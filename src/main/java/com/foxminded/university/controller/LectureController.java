@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -19,7 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.foxminded.university.dao.jdbc.mapper.LectureToEventMapper;
+import com.foxminded.university.dao.mapper.LectureToEventMapper;
 import com.foxminded.university.model.Event;
 import com.foxminded.university.model.Lecture;
 import com.foxminded.university.service.*;
@@ -29,8 +28,7 @@ public class LectureController {
 
 	private static final Logger logger = LoggerFactory.getLogger(LectureController.class);
 
-	@Autowired
-	private LectureToEventMapper lectureToEventMapper;
+	private final LectureToEventMapper lectureToEventMapper;
 	private LectureService lectureService;
 	private GroupService groupService;
 	private TeacherService teacherService;
@@ -41,8 +39,8 @@ public class LectureController {
 	private LectureTimeService lectureTimeService;
 
 	public LectureController(LectureService lectureService, GroupService groupService, TeacherService teacherService,
-			AudienceService audienceService, SubjectService subjectService, CathedraService cathedraService,
-			LectureTimeService lectureTimeService, StudentService studentService) {
+							 AudienceService audienceService, SubjectService subjectService, CathedraService cathedraService,
+							 LectureTimeService lectureTimeService, StudentService studentService, LectureToEventMapper lectureToEventMapper) {
 		this.lectureService = lectureService;
 		this.groupService = groupService;
 		this.teacherService = teacherService;
@@ -51,6 +49,7 @@ public class LectureController {
 		this.cathedraService = cathedraService;
 		this.lectureTimeService = lectureTimeService;
 		this.studentService = studentService;
+		this.lectureToEventMapper = lectureToEventMapper;
 	}
 
 	@GetMapping("/lectures")

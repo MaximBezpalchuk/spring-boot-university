@@ -1,23 +1,23 @@
 package com.foxminded.university.service;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.foxminded.university.dao.StudentDao;
+import com.foxminded.university.exception.EntityNotFoundException;
+import com.foxminded.university.exception.EntityNotUniqueException;
+import com.foxminded.university.exception.GroupOverflowException;
+import com.foxminded.university.model.Student;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.foxminded.university.dao.StudentDao;
-import com.foxminded.university.dao.jdbc.JdbcStudentDao;
-import com.foxminded.university.exception.EntityNotFoundException;
-import com.foxminded.university.exception.EntityNotUniqueException;
-import com.foxminded.university.exception.GroupOverflowException;
-import com.foxminded.university.model.Student;
+import java.util.List;
+import java.util.Optional;
 
 @Service
+@Transactional
 public class StudentService {
 
 	private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
@@ -26,7 +26,7 @@ public class StudentService {
 	@Value("${maxGroupSize}")
 	private int maxGroupSize;
 
-	public StudentService(JdbcStudentDao studentDao) {
+	public StudentService(StudentDao studentDao) {
 		this.studentDao = studentDao;
 	}
 

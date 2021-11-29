@@ -1,12 +1,21 @@
 package com.foxminded.university.model;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
+@Table(name = "audiences")
 public class Audience {
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
+	@Column
 	private int room;
+	@Column
 	private int capacity;
+	@ManyToOne(fetch = FetchType.EAGER)
+	//@JoinColumn(name = "cathedra_id", referencedColumnName = "id")
 	private Cathedra cathedra;
 
 	private Audience(int id, int room, int capacity, Cathedra cathedra) {
@@ -19,12 +28,8 @@ public class Audience {
 	public Audience() {
 	}
 
-	public void setRoom(int room) {
-		this.room = room;
-	}
-
-	public void setCapacity(int capacity) {
-		this.capacity = capacity;
+	public static Builder builder() {
+		return new Builder();
 	}
 
 	public Cathedra getCathedra() {
@@ -47,12 +52,34 @@ public class Audience {
 		return room;
 	}
 
+	public void setRoom(int room) {
+		this.room = room;
+	}
+
 	public int getCapacity() {
 		return capacity;
 	}
 
-	public static Builder builder() {
-		return new Builder();
+	public void setCapacity(int capacity) {
+		this.capacity = capacity;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(capacity, cathedra, id, room);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Audience other = (Audience) obj;
+		return capacity == other.capacity && Objects.equals(cathedra, other.cathedra) && id == other.id
+				&& room == other.room;
 	}
 
 	public static class Builder {
@@ -85,24 +112,6 @@ public class Audience {
 		public Audience build() {
 			return new Audience(id, room, capacity, cathedra);
 		}
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(capacity, cathedra, id, room);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Audience other = (Audience) obj;
-		return capacity == other.capacity && Objects.equals(cathedra, other.cathedra) && id == other.id
-				&& room == other.room;
 	}
 
 }

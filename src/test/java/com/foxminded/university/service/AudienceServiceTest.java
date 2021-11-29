@@ -9,13 +9,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import com.foxminded.university.dao.AudienceDao;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.foxminded.university.dao.jdbc.JdbcAudienceDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Audience;
@@ -24,7 +24,7 @@ import com.foxminded.university.model.Audience;
 public class AudienceServiceTest {
 
 	@Mock
-	private JdbcAudienceDao audienceDao;
+	private AudienceDao audienceDao;
 	@InjectMocks
 	private AudienceService audienceService;
 
