@@ -11,7 +11,6 @@ public class Subject {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "cathedra_id", referencedColumnName = "id")
 	private Cathedra cathedra;
 	@Column
 	private String name;

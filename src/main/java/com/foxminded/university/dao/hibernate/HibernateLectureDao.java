@@ -17,164 +17,143 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@Transactional
 public class HibernateLectureDao implements LectureDao {
 
-	private static final Logger logger = LoggerFactory.getLogger(HibernateAudienceDao.class);
+    private static final Logger logger = LoggerFactory.getLogger(HibernateAudienceDao.class);
 
-	private SessionFactory sessionFactory;
+    private SessionFactory sessionFactory;
 
-	public HibernateLectureDao(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
+    public HibernateLectureDao(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
-	@Override
-	public List<Lecture> findAll() {
-		logger.debug("Find all lectures");
+    @Override
+    public List<Lecture> findAll() {
+        logger.debug("Find all lectures");
 
-		return sessionFactory.getCurrentSession()
-				.createQuery("FROM Lecture", Lecture.class)
-				.list();
-	}
+        return sessionFactory.getCurrentSession()
+                .createQuery("FROM Lecture", Lecture.class)
+                .list();
+    }
 
-	@Override
-	public Page<Lecture> findPaginatedLectures(Pageable pageable) {
-		logger.debug("Find all lectures with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
-		int total = (int)(long) sessionFactory.getCurrentSession()
-				.createQuery("SELECT COUNT(l) FROM Lecture l")
-				.uniqueResult();
-		List<Lecture> lectures = sessionFactory.getCurrentSession()
-				.createQuery("FROM Lecture", Lecture.class)
-				.setFirstResult((int)pageable.getOffset())
-				.setMaxResults(pageable.getPageSize())
-				.list();
+    @Override
+    public Page<Lecture> findPaginatedLectures(Pageable pageable) {
+        logger.debug("Find all lectures with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
+        int total = (int) (long) sessionFactory.getCurrentSession()
+                .createQuery("SELECT COUNT(l) FROM Lecture l")
+                .uniqueResult();
+        List<Lecture> lectures = sessionFactory.getCurrentSession()
+                .createQuery("FROM Lecture", Lecture.class)
+                .setFirstResult((int) pageable.getOffset())
+                .setMaxResults(pageable.getPageSize())
+                .list();
 
-		return new PageImpl<>(lectures, pageable, total);
-	}
+        return new PageImpl<>(lectures, pageable, total);
+    }
 
-	@Override
-	public Optional<Lecture> findById(int id) {
-		logger.debug("Find lecture by id: {}", id);
+    @Override
+    public Optional<Lecture> findById(int id) {
+        logger.debug("Find lecture by id: {}", id);
 
-		return findOrEmpty(
-				() -> sessionFactory.getCurrentSession()
-						.createQuery("FROM Lecture WHERE id=:id", Lecture.class)
-						.setParameter("id", id)
-						.uniqueResult());
-	}
+        return findOrEmpty(
+                () -> sessionFactory.getCurrentSession()
+                        .createQuery("FROM Lecture WHERE id=:id", Lecture.class)
+                        .setParameter("id", id)
+                        .uniqueResult());
+    }
 
-	@Override
-	public void save(Lecture lecture) {
-		logger.debug("Save lecture {}", lecture);
-		Session session = sessionFactory.getCurrentSession();
+    @Override
+    public void save(Lecture lecture) {
+        logger.debug("Save lecture {}", lecture);
+        Session session = sessionFactory.getCurrentSession();
 
-		if (lecture.getId() == 0) {
-			session.save(lecture);
-			logger.debug("New lecture created with id: {}", lecture.getId());
-		} else {
-			session.merge(lecture);
-			logger.debug("Lecture with id {} was updated", lecture.getId());
-		}
-		// TODO: check that these two methods not needed
-		// insertGroup(lecture);
-		// deleteGroup(lecture);
-	}
+        if (lecture.getId() == 0) {
+            session.save(lecture);
+            logger.debug("New lecture created with id: {}", lecture.getId());
+        } else {
+            session.merge(lecture);
+            logger.debug("Lecture with id {} was updated", lecture.getId());
+        }
+    }
 
-	@Override
-	public void deleteById(int id) {
-		Session session = sessionFactory.getCurrentSession();
-		session.delete(session.get(Lecture.class, id));
-		logger.debug("Lecture with id {} was deleted", id);
-	}
+    @Override
+    public void deleteById(int id) {
+        Session session = sessionFactory.getCurrentSession();
+        session.delete(session.get(Lecture.class, id));
+        logger.debug("Lecture with id {} was deleted", id);
+    }
 
-	/*
-	 * private void insertGroup(Lecture lecture) { Optional<Lecture> lectureOpt =
-	 * findById(lecture.getId()); if (lectureOpt.isPresent()) { for (Group group :
-	 * lecture.getGroups().stream() .filter(group ->
-	 * !lectureOpt.get().getGroups().contains(group)).collect(Collectors.toList()))
-	 * { jdbcTemplate.update(INSERT_GROUP, group.getId(), lecture.getId());
-	 * logger.debug("Insert group with id {} into lecture with id {}",
-	 * group.getId(), lecture.getId()); } } }
-	 * 
-	 * private void deleteGroup(Lecture lecture) { Optional<Lecture> lectureOpt =
-	 * findById(lecture.getId()); if (lectureOpt.isPresent()) { for (Group group :
-	 * lectureOpt.get().getGroups().stream() .filter(group ->
-	 * !lecture.getGroups().contains(group)).collect(Collectors.toList())) {
-	 * jdbcTemplate.update(DELETE_GROUP, group.getId(), lecture.getId());
-	 * logger.debug("Delete group with id {} from lecture with id {}",
-	 * group.getId(), lecture.getId()); } } }
-	 */
-
-	@Override
-	public Optional<Lecture> findByAudienceDateAndLectureTime(Audience audience, LocalDate date,
+    @Override
+    public Optional<Lecture> findByAudienceDateAndLectureTime(Audience audience, LocalDate date,
                                                               LectureTime lectureTime) {
-		logger.debug("Find lectures by audience with id {}, date {} and lecture time id {}", audience.getId(), date,
-				lectureTime.getId());
+        logger.debug("Find lectures by audience with id {}, date {} and lecture time id {}", audience.getId(), date,
+                lectureTime.getId());
 
-		return findOrEmpty(
-				() -> sessionFactory.getCurrentSession()
-						.createQuery(
-								"FROM Lecture WHERE audience.id=:audience_id AND date=:date AND time.id=:time_id",
-								Lecture.class)
-						.setParameter("audience_id", audience.getId())
-						.setParameter("date", date)
-						.setParameter("time_id", lectureTime.getId())
-						.uniqueResult());
-	}
+        return findOrEmpty(
+                () -> sessionFactory.getCurrentSession()
+                        .createQuery(
+                                "FROM Lecture WHERE audience.id=:audience_id AND date=:date AND time.id=:time_id",
+                                Lecture.class)
+                        .setParameter("audience_id", audience.getId())
+                        .setParameter("date", date)
+                        .setParameter("time_id", lectureTime.getId())
+                        .uniqueResult());
+    }
 
-	@Override
-	public Optional<Lecture> findByTeacherAudienceDateAndLectureTime(Teacher teacher, Audience audience, LocalDate date,
+    @Override
+    public Optional<Lecture> findByTeacherAudienceDateAndLectureTime(Teacher teacher, Audience audience, LocalDate date,
                                                                      LectureTime lectureTime) {
-		logger.debug("Find lectures by teacher with id: {}, audience with id {}, date {} and lecture time id {}",
-				teacher.getId(), audience.getId(), date, lectureTime.getId());
-		return findOrEmpty(
-				() -> sessionFactory.getCurrentSession()
-						.createQuery(
-								"FROM Lecture WHERE teacher.id=:teacher_id AND audience.id=:audience_id AND date=:date AND time.id=:time_id",
-								Lecture.class)
-						.setParameter("teacher_id", teacher.getId())
-						.setParameter("audience_id", audience.getId())
-						.setParameter("date", date)
-						.setParameter("time_id", lectureTime.getId())
-						.uniqueResult());
-	}
+        logger.debug("Find lectures by teacher with id: {}, audience with id {}, date {} and lecture time id {}",
+                teacher.getId(), audience.getId(), date, lectureTime.getId());
+        return findOrEmpty(
+                () -> sessionFactory.getCurrentSession()
+                        .createQuery(
+                                "FROM Lecture WHERE teacher.id=:teacher_id AND audience.id=:audience_id AND date=:date AND time.id=:time_id",
+                                Lecture.class)
+                        .setParameter("teacher_id", teacher.getId())
+                        .setParameter("audience_id", audience.getId())
+                        .setParameter("date", date)
+                        .setParameter("time_id", lectureTime.getId())
+                        .uniqueResult());
+    }
 
-	@Override
-	public List<Lecture> findLecturesByTeacherDateAndTime(Teacher teacher, LocalDate date, LectureTime time) {
-		logger.debug("Find lectures by teacher with id {}, date {} and lecture time id {}", teacher.getId(), date,
-				time.getId());
+    @Override
+    public List<Lecture> findLecturesByTeacherDateAndTime(Teacher teacher, LocalDate date, LectureTime time) {
+        logger.debug("Find lectures by teacher with id {}, date {} and lecture time id {}", teacher.getId(), date,
+                time.getId());
 
-		return sessionFactory.getCurrentSession()
-				.createQuery("FROM Lecture WHERE teacher.id=:teacher_id AND date=:date AND time.id=:time_id",
-						Lecture.class)
-				.setParameter("teacher_id", teacher.getId())
-				.setParameter("date", date)
-				.setParameter("time_id", time.getId())
-				.list();
-	}
+        return sessionFactory.getCurrentSession()
+                .createQuery("FROM Lecture WHERE teacher.id=:teacher_id AND date=:date AND time.id=:time_id",
+                        Lecture.class)
+                .setParameter("teacher_id", teacher.getId())
+                .setParameter("date", date)
+                .setParameter("time_id", time.getId())
+                .list();
+    }
 
-	@Override
-	public List<Lecture> findLecturesByStudentAndPeriod(Student student, LocalDate start, LocalDate end) {
-		logger.debug("Find lectures by student with id {} and period {} - {}", student.getId(), start, end);
+    @Override
+    public List<Lecture> findLecturesByStudentAndPeriod(Student student, LocalDate start, LocalDate end) {
+        logger.debug("Find lectures by student with id {} and period {} - {}", student.getId(), start, end);
 
-		return sessionFactory.getCurrentSession()
-				.createQuery(
-						"FROM Lecture AS lecture, Student AS student WHERE student.group IN elements(lecture.groups) AND student.id=:student_id AND date>=:start AND date<=:end",
-						Lecture.class)
-				.setParameter("student_id", student.getId())
-				.setParameter("start", start)
-				.setParameter("end", end)
-				.list();
-	}
+        return sessionFactory.getCurrentSession()
+                .createSQLQuery("SELECT lec.*, lg.group_id FROM lectures AS lec LEFT JOIN lectures_groups AS lg ON lg.lecture_id = lec.id WHERE group_id = (SELECT group_id FROM students WHERE id =:student_id) AND date >=:start AND date <=:end")
+                .addEntity(Lecture.class)
+                .setParameter("student_id", student.getId())
+                .setParameter("start", start)
+                .setParameter("end", end)
+                .list();
+    }
 
-	@Override
-	public List<Lecture> findLecturesByTeacherAndPeriod(Teacher teacher, LocalDate start, LocalDate end) {
-		logger.debug("Find lectures by teacher with id {} and period {} - {}", teacher.getId(), start, end);
+    @Override
+    public List<Lecture> findLecturesByTeacherAndPeriod(Teacher teacher, LocalDate start, LocalDate end) {
+        logger.debug("Find lectures by teacher with id {} and period {} - {}", teacher.getId(), start, end);
 
-		return sessionFactory.getCurrentSession()
-				.createQuery("FROM Lecture WHERE teacher.id=:id AND date>=:start AND date<=:end", Lecture.class)
-				.setParameter("id", teacher.getId())
-				.setParameter("start", start)
-				.setParameter("end", end)
-				.list();
-	}
+        return sessionFactory.getCurrentSession()
+                .createQuery("FROM Lecture WHERE teacher=:teacher AND date>=:start AND date<=:end", Lecture.class)
+                .setParameter("teacher", teacher)
+                .setParameter("start", start)
+                .setParameter("end", end)
+                .list();
+    }
 }

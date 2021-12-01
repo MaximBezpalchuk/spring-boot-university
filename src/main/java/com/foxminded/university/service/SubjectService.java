@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
 public class SubjectService {
 
 	private static final Logger logger = LoggerFactory.getLogger(SubjectService.class);
@@ -53,10 +52,12 @@ public class SubjectService {
 		subjectDao.deleteById(id);
 	}
 
+	//TODO: DELETE IF NOT NEEDED
+	/*
 	public List<Subject> findByTeacherId(int id) {
 		logger.debug("Find subject by teacher id: {}", id);
 		return subjectDao.findByTeacherId(id);
-	}
+	}*/
 
 	private void uniqueCheck(Subject subject) {
 		logger.debug("Check subject is unique");

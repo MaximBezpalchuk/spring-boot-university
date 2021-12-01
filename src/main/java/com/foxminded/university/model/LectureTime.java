@@ -16,7 +16,7 @@ public class LectureTime {
 	@Column
 	@DateTimeFormat(pattern = "HH:mm")
 	private LocalTime start;
-	@Column
+	@Column(name = "finish")
 	@DateTimeFormat(pattern = "HH:mm")
 	private LocalTime end;
 

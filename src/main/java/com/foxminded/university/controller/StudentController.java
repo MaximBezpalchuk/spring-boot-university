@@ -62,7 +62,7 @@ public class StudentController {
 
 	@PostMapping
 	public String create(@ModelAttribute Student student, Model model) {
-		if (student.getGroup().getId() != 0) {
+		if (student.getGroup() != null) {
 			student.setGroup(groupService.findById(student.getGroup().getId()));
 		}
 		studentService.save(student);

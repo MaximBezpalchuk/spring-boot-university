@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@Transactional
 public class HibernateTeacherDao implements TeacherDao {
 
     private static final Logger logger = LoggerFactory.getLogger(HibernateAudienceDao.class);
@@ -47,7 +48,7 @@ public class HibernateTeacherDao implements TeacherDao {
                 .uniqueResult();
         List<Teacher> teachers = sessionFactory.getCurrentSession()
                 .createQuery("FROM Teacher", Teacher.class)
-                .setFirstResult((int)pageable.getOffset())
+                .setFirstResult((int) pageable.getOffset())
                 .setMaxResults(pageable.getPageSize())
                 .list();
 
@@ -77,9 +78,6 @@ public class HibernateTeacherDao implements TeacherDao {
             session.merge(teacher);
             logger.debug("Teacher with id {} was updated", teacher.getId());
         }
-        //TODO: check that these methods not needed
-        //updateSubjects(teacherOld, teacher);
-        //deleteSubjects(teacherOld, teacher);
     }
 
     @Override
@@ -88,22 +86,6 @@ public class HibernateTeacherDao implements TeacherDao {
         session.delete(session.get(Teacher.class, id));
         logger.debug("Teacher with id {} was deleted", id);
     }
-
-    /*
-    private void updateSubjects(Teacher teacherOld, Teacher teacherNew) {
-        Predicate<Subject> subjPredicate = teacherOld.getSubjects()::contains;
-        teacherNew.getSubjects().stream().filter(subjPredicate.negate()::test)
-                .forEach(subject -> jdbcTemplate.update(INSERT_SUBJECT, subject.getId(), teacherNew.getId()));
-        logger.debug("Update subjects in teacher with id {}", teacherNew.getId());
-    }
-
-    private void deleteSubjects(Teacher teacherOld, Teacher teacherNew) {
-        Predicate<Subject> subjPredicate = teacherNew.getSubjects()::contains;
-        teacherOld.getSubjects().stream().filter(subjPredicate.negate()::test)
-                .forEach(subject -> jdbcTemplate.update(DELETE_SUBJECT, subject.getId(), teacherNew.getId()));
-        logger.debug("Delete subjects in teacher with id {}", teacherNew.getId());
-    }
-    */
 
     @Override
     public Optional<Teacher> findByFullNameAndBirthDate(String firstName, String lastName, LocalDate birthDate) {
@@ -119,15 +101,17 @@ public class HibernateTeacherDao implements TeacherDao {
                         .uniqueResult());
     }
 
-
-    //TODO: need to correct hql query to made something like in jdbs
     @Override
     public List<Teacher> findByFreeDateAndSubjectWithCurrentTeacher(LocalDate date, LectureTime time, Subject subject) {
         logger.debug(
                 "Find teachers who havent lectures and vacation this period: {} at {} - {} and who can teach this subject: {}",
                 date, time.getStart(), time.getEnd(), subject.getName());
         List<Teacher> teachers = sessionFactory.getCurrentSession()
-                .createQuery("SELECT DISTINCT teacher FROM Teacher AS teacher, Subject AS subject, Vacation AS vacation", Teacher.class)
+                .createSQLQuery("SELECT DISTINCT teachers.* FROM teachers LEFT JOIN subjects_teachers AS st ON teachers.id = st.teacher_id LEFT JOIN vacations AS vac ON teachers.id = vac.teacher_id WHERE st.subject_id =:subject_id AND ((:date NOT BETWEEN vac.start AND vac.finish) OR (vac.start IS NULL AND vac.finish IS NULL))AND NOT EXISTS (select id from lectures where lectures.teacher_id = teachers.id AND lectures.date =:date AND lectures.lecture_time_id = :lecture_time_id)")
+                .addEntity(Teacher.class)
+                .setParameter("subject_id", subject.getId())
+                .setParameter("date", date)
+                .setParameter("lecture_time_id", time.getId())
                 .list();
         if (teachers.isEmpty()) {
             throw new EntityNotFoundException(

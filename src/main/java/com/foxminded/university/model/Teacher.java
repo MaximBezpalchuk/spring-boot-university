@@ -10,10 +10,9 @@ import java.util.Objects;
 @Table(name = "teachers")
 public class Teacher extends Person {
 
-	@ManyToOne(fetch = FetchType.EAGER)
-	//@JoinColumn(name = "cathedra_id", referencedColumnName = "id")
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Cathedra cathedra;
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "subjects_teachers", joinColumns = @JoinColumn(name = "teacher_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
 	private List<Subject> subjects = new ArrayList<>();
 	@Column

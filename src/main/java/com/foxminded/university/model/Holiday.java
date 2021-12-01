@@ -2,6 +2,7 @@ package com.foxminded.university.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -17,11 +18,11 @@ public class Holiday {
 	@Column
 	private String name;
 	@Column
-	//@JsonSerialize(as = LocalDate.class)
-	//@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	@JsonSerialize(as = LocalDate.class)
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate date;
-	@ManyToOne(fetch = FetchType.EAGER)
-	//@JoinColumn(name = "cathedra_id", referencedColumnName = "id")
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Cathedra cathedra;
 
 	private Holiday(int id, String name, LocalDate date, Cathedra cathedra) {

@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
 public class GroupService {
 
 	private static final Logger logger = LoggerFactory.getLogger(GroupService.class);
@@ -46,10 +45,13 @@ public class GroupService {
 		groupDao.deleteById(id);
 	}
 
+	//TODO: check if i can delete it
+	/*
 	public List<Group> findByLectureId(int id) {
 		logger.debug("Find groups by lecture id");
 		return groupDao.findByLectureId(id);
 	}
+	*/
 
 	private void uniqueCheck(Group group) {
 		logger.debug("Check group is unique");

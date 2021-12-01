@@ -19,8 +19,7 @@ public class Vacation {
 	@Column(name = "finish")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate end;
-	@ManyToOne(fetch = FetchType.EAGER)
-	//@JoinColumn(name = "teacher_id", referencedColumnName = "id")
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Teacher teacher;
 
 	private Vacation(int id, LocalDate start, LocalDate end, Teacher teacher) {

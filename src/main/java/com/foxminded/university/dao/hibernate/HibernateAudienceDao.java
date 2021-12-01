@@ -7,11 +7,13 @@ import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Component
+@Transactional
 public class HibernateAudienceDao implements AudienceDao {
 
     private static final Logger logger = LoggerFactory.getLogger(HibernateAudienceDao.class);

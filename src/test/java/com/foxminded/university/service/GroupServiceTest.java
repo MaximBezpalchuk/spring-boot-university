@@ -83,6 +83,8 @@ public class GroupServiceTest {
         verify(groupDao).deleteById(1);
     }
 
+    //TODO: delete if not needed
+    /*
     @Test
     void givenListOfGroups_whenFindByLectureId_thenAllExistingGroupsFound() {
         Group group1 = Group.builder().id(1).build();
@@ -92,7 +94,7 @@ public class GroupServiceTest {
         List<Group> actual = groupService.findByLectureId(2);
 
         assertEquals(expected, actual);
-    }
+    }*/
 
     @Test
     void givenNotUniqueGroup_whenSave_thenEntityNotUniqueException() {

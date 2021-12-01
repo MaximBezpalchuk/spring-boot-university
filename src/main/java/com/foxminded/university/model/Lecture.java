@@ -18,11 +18,10 @@ public class Lecture {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "cathedra_id", referencedColumnName = "id")
 	private Cathedra cathedra;
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "lectures_groups", joinColumns = @JoinColumn(name = "lecture_id"), inverseJoinColumns = @JoinColumn(name = "group_id"))
 	private List<Group> groups = new ArrayList<>();
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "teacher_id", referencedColumnName = "id")
 	private Teacher teacher;
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "audience_id", referencedColumnName = "id")

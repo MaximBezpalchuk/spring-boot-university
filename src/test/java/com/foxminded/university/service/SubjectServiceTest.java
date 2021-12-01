@@ -107,6 +107,8 @@ public class SubjectServiceTest {
         assertEquals("Subject with name TestName is already exists!", exception.getMessage());
     }
 
+    //TODO: DELETE IF NOT NEEDED
+    /*
     @Test
     void givenListOfSubjects_whenFindByTeacherId_thenAllExistingSubjectsFound() {
         Subject subject1 = Subject.builder().id(1).build();
@@ -116,5 +118,5 @@ public class SubjectServiceTest {
         List<Subject> actual = subjectService.findByTeacherId(2);
 
         assertEquals(expected, actual);
-    }
+    }*/
 }

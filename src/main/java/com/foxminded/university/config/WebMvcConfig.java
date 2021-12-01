@@ -2,6 +2,8 @@ package com.foxminded.university.config;
 
 import java.util.List;
 
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -10,11 +12,10 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.format.FormatterRegistry;
+import org.springframework.orm.hibernate5.support.OpenSessionInViewInterceptor;
+import org.springframework.orm.jpa.support.OpenEntityManagerInViewInterceptor;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.*;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
@@ -24,6 +25,8 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 import com.foxminded.university.formatter.GroupFormatter;
 import com.foxminded.university.formatter.SubjectFormatter;
 
+import javax.persistence.EntityManagerFactory;
+
 @Configuration
 @ComponentScan("com.foxminded.university")
 @PropertySource("classpath:config.properties")
@@ -32,6 +35,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
 	@Value("${defaultPageSize}")
 	private int defaultPageSize;
+	@Autowired
+	SessionFactory sessionFactory;
 
 	@Bean
 	public SpringResourceTemplateResolver templateResolver() {
@@ -75,5 +80,17 @@ public class WebMvcConfig implements WebMvcConfigurer {
 	public void addFormatters(FormatterRegistry registry) {
 		registry.addFormatter(new GroupFormatter()); // add multiply group choice on lectures/new
 		registry.addFormatter(new SubjectFormatter()); // add multiply subject choice on teachers/new
+	}
+
+	@Bean
+	public OpenSessionInViewInterceptor openSessionInViewInterceptor(){
+		OpenSessionInViewInterceptor openSessionInterceptor = new OpenSessionInViewInterceptor();
+		openSessionInterceptor.setSessionFactory(sessionFactory);
+		return openSessionInterceptor;
+	}
+
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addWebRequestInterceptor(openSessionInViewInterceptor());
 	}
 }

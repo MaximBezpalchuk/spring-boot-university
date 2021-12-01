@@ -12,8 +12,7 @@ public class Group {
 	private int id;
 	@Column
 	private String name;
-	@ManyToOne(fetch = FetchType.EAGER)
-	//@JoinColumn(name = "cathedra_id", referencedColumnName = "id")
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Cathedra cathedra;
 
 	private Group(int id, String name, Cathedra cathedra) {

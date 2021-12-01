@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@Transactional
 public class HibernateLectureTimeDao implements LectureTimeDao {
 
 	private static final Logger logger = LoggerFactory.getLogger(HibernateAudienceDao.class);
@@ -70,8 +71,9 @@ public class HibernateLectureTimeDao implements LectureTimeDao {
 		logger.debug("Find lecture time which starts at {} and end at {}", start, end);
 
 		return findOrEmpty(
-				() -> sessionFactory.getCurrentSession()
-						.createQuery("FROM LectureTime WHERE start=:start AND end=:end", LectureTime.class)
+				() -> (LectureTime) sessionFactory.getCurrentSession()
+						.createSQLQuery("SELECT * FROM lecture_times WHERE start=:start AND finish=:end")
+						.addEntity(LectureTime.class)
 						.setParameter("start", start)
 						.setParameter("end", end)
 						.uniqueResult());

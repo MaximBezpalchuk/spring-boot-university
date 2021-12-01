@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@Transactional
 public class HibernateSubjectDao implements SubjectDao {
 
 	private static final Logger logger = LoggerFactory.getLogger(HibernateAudienceDao.class);

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@Transactional
 public class HibernateStudentDao implements StudentDao {
 
 	private static final Logger logger = LoggerFactory.getLogger(HibernateAudienceDao.class);

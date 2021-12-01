@@ -14,8 +14,7 @@ public class Audience {
 	private int room;
 	@Column
 	private int capacity;
-	@ManyToOne(fetch = FetchType.EAGER)
-	//@JoinColumn(name = "cathedra_id", referencedColumnName = "id")
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Cathedra cathedra;
 
 	private Audience(int id, int room, int capacity, Cathedra cathedra) {

@@ -16,12 +16,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @Service
-@Transactional
 public class VacationService {
 
 	private static final Logger logger = LoggerFactory.getLogger(VacationService.class);
@@ -97,15 +97,15 @@ public class VacationService {
 		}
 	}
 
-	private int getVacationDaysCount(Vacation vacation) {
-		return Math.abs(Period.between(vacation.getStart(), vacation.getEnd()).getDays());
+	private long getVacationDaysCount(Vacation vacation) {
+		return Math.abs(ChronoUnit.DAYS.between(vacation.getStart(), vacation.getEnd()));
 	}
 
 	private void vacationDurationLessOrEqualsThanMaxCheck(Vacation vacation) {
 		logger.debug("Check vacation duration less or equals than max");
-		int teacherVacationDays = vacationDao
+		long teacherVacationDays = vacationDao
 				.findByTeacherIdAndYear(vacation.getTeacher().getId(), vacation.getStart().getYear()).stream()
-				.map(vac -> getVacationDaysCount(vac)).mapToInt(Integer::intValue).sum();
+				.map(vac -> getVacationDaysCount(vac)).mapToLong(Long::longValue).sum();
 
 		if ((teacherVacationDays + getVacationDaysCount(vacation)) >= maxVacation
 				.get(vacation.getTeacher().getDegree())) {

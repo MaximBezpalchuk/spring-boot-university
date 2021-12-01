@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
 public class StudentService {
 
 	private static final Logger logger = LoggerFactory.getLogger(StudentService.class);

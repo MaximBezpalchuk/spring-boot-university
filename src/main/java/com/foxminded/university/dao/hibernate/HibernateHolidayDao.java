@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@Transactional
 public class HibernateHolidayDao implements HolidayDao {
 
 	private static final Logger logger = LoggerFactory.getLogger(HibernateAudienceDao.class);

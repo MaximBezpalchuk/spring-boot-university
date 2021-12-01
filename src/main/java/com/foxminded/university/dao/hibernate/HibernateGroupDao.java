@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@Transactional
 public class HibernateGroupDao implements GroupDao {
 
 	private static final Logger logger = LoggerFactory.getLogger(HibernateAudienceDao.class);
@@ -52,7 +53,7 @@ public class HibernateGroupDao implements GroupDao {
 			session.save(group);
 			logger.debug("New group created with id: {}", group.getId());
 		} else {
-			session.update(group);
+			session.merge(group);
 			logger.debug("Group with id {} was updated", group.getId());
 		}
 	}
@@ -64,6 +65,7 @@ public class HibernateGroupDao implements GroupDao {
 		logger.debug("Group with id {} was deleted", id);
 	}
 
+	//TODO: check if i can delete it
 	@Override
 	public List<Group> findByLectureId(int id) {
 		logger.debug("Find groups with lecture id: {}", id);

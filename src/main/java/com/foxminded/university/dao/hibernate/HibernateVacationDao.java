@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@Transactional
 public class HibernateVacationDao implements VacationDao {
 
 	private static final Logger logger = LoggerFactory.getLogger(HibernateAudienceDao.class);
@@ -42,10 +43,12 @@ public class HibernateVacationDao implements VacationDao {
 		logger.debug("Find all vacations with pageSize:{} and offset:{} by teacherId:{}", pageable.getPageSize(),
 				pageable.getOffset(), id);
 		int total = (int)(long) sessionFactory.getCurrentSession()
-				.createQuery("SELECT COUNT(v) FROM Vacation v")
+				.createQuery("SELECT COUNT(v) FROM Vacation v WHERE teacher.id=:teacher_id")
+				.setParameter("teacher_id", id)
 				.uniqueResult();
 		List<Vacation> vacations = sessionFactory.getCurrentSession()
-				.createQuery("FROM Vacation", Vacation.class)
+				.createQuery("FROM Vacation WHERE teacher.id=:teacher_id", Vacation.class)
+				.setParameter("teacher_id", id)
 				.setFirstResult((int)pageable.getOffset())
 				.setMaxResults(pageable.getPageSize())
 				.list();
@@ -98,10 +101,11 @@ public class HibernateVacationDao implements VacationDao {
 	@Override
 	public Optional<Vacation> findByPeriodAndTeacher(LocalDate start, LocalDate end, Teacher teacher) {
 		logger.debug("Find vacation by vacation start: {}, end: {}, teacher id: {}", start, end, teacher.getId());
+
 		return findOrEmpty(
-				() -> sessionFactory.getCurrentSession()
-						.createQuery("FROM Vacation WHERE start=:start AND end=:end AND teacher.id=:teacher_id",
-								Vacation.class)
+				() -> (Vacation)sessionFactory.getCurrentSession()
+						.createSQLQuery("SELECT * FROM vacations WHERE start=:start AND finish=:end AND teacher_id=:teacher_id")
+						.addEntity(Vacation.class)
 						.setParameter("start", start)
 						.setParameter("end", end)
 						.setParameter("teacher_id", teacher.getId())
@@ -112,8 +116,8 @@ public class HibernateVacationDao implements VacationDao {
 	public List<Vacation> findByDateInPeriodAndTeacher(LocalDate date, Teacher teacher) {
 		logger.debug("Find vacations by vacation date: {} and teacher id: {}", date, teacher.getId());
 		return sessionFactory.getCurrentSession()
-				.createQuery("FROM Vacation WHERE start>=:date AND end<=:date AND teacher.id=:teacher_id",
-						Vacation.class)
+				.createSQLQuery("SELECT * FROM vacations WHERE start >=:date AND finish<=:date AND teacher_id=:teacher_id")
+				.addEntity(Vacation.class)
 				.setParameter("date", date)
 				.setParameter("teacher_id", teacher.getId())
 				.list();

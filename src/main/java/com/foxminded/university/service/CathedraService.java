@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
 public class CathedraService {
 
 	private static final Logger logger = LoggerFactory.getLogger(CathedraService.class);
