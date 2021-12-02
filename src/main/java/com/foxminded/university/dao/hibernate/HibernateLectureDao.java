@@ -42,7 +42,7 @@ public class HibernateLectureDao implements LectureDao {
         logger.debug("Find all lectures with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
         int total = (int) (long) sessionFactory.getCurrentSession()
                 .createQuery("SELECT COUNT(l) FROM Lecture l")
-                .uniqueResult();
+                .getSingleResult();
         List<Lecture> lectures = sessionFactory.getCurrentSession()
                 .createQuery("FROM Lecture", Lecture.class)
                 .setFirstResult((int) pageable.getOffset())

@@ -26,72 +26,72 @@ import java.util.Properties;
 @EnableTransactionManagement
 public class DatabaseConfig {
 
-	@Value("${url}")
-	public String url;
-	@Value("classpath:schema.sql")
-	Resource schema;
-	@Value("classpath:data.sql")
-	Resource data;
+    @Value("${url}")
+    public String url;
+    @Value("classpath:schema.sql")
+    Resource schema;
+    @Value("classpath:data.sql")
+    Resource data;
 
-	@Bean
-	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-		return new PropertySourcesPlaceholderConfigurer();
-	}
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
 
-	@Bean
-	public JdbcTemplate jdbcTemplate(DataSource dataSource) {
-		return new JdbcTemplate(dataSource);
-	}
+    @Bean
+    public JdbcTemplate jdbcTemplate(DataSource dataSource) {
+        return new JdbcTemplate(dataSource);
+    }
 
-	@Bean
-	public DataSource dataSource() {
-		JndiDataSourceLookup jndiDataSource = new JndiDataSourceLookup();
-		jndiDataSource.setResourceRef(true);
-		DataSource dataSource = jndiDataSource.getDataSource(url);
-		createSchema(dataSource);
-		createData(dataSource);
+    @Bean
+    public DataSource dataSource() {
+        JndiDataSourceLookup jndiDataSource = new JndiDataSourceLookup();
+        jndiDataSource.setResourceRef(true);
+        DataSource dataSource = jndiDataSource.getDataSource(url);
+        createSchema(dataSource);
+        createData(dataSource);
 
-		return dataSource;
-	}
+        return dataSource;
+    }
 
-	private void createSchema(DataSource dataSource) {
-		ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator(schema);
-		databasePopulator.execute(dataSource);
-	}
+    private void createSchema(DataSource dataSource) {
+        ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator(schema);
+        databasePopulator.execute(dataSource);
+    }
 
-	private void createData(DataSource dataSource) {
-		ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator(data);
-		databasePopulator.execute(dataSource);
-	}
+    private void createData(DataSource dataSource) {
+        ResourceDatabasePopulator databasePopulator = new ResourceDatabasePopulator(data);
+        databasePopulator.execute(dataSource);
+    }
 
-	@Bean
-	public PlatformTransactionManager txManager(SessionFactory sessionFactory) {
-		return new HibernateTransactionManager(sessionFactory);
-	}
+    @Bean
+    public PlatformTransactionManager txManager(SessionFactory sessionFactory) {
+        return new HibernateTransactionManager(sessionFactory);
+    }
 
-	@Bean
-	public SessionFactory sessionFactory(DataSource dataSource) {
-		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-		sessionFactory.setDataSource(dataSource);
-		sessionFactory.setPackagesToScan("com.foxminded.university.model");
-		sessionFactory.setHibernateProperties(hibernateProperties());
-		try {
-			sessionFactory.afterPropertiesSet();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+    @Bean
+    public SessionFactory sessionFactory(DataSource dataSource) {
+        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+        sessionFactory.setDataSource(dataSource);
+        sessionFactory.setPackagesToScan("com.foxminded.university.model");
+        sessionFactory.setHibernateProperties(hibernateProperties());
+        try {
+            sessionFactory.afterPropertiesSet();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-		return sessionFactory.getObject();
-	}
+        return sessionFactory.getObject();
+    }
 
-	private Properties hibernateProperties() {
-		Properties properties = new Properties();
-		properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQL9Dialect");
-		properties.put("hibernate.show_sql", "true");
-		properties.put("logging.level.org.hibernate.type", "trace");
-		properties.put("hibernate.current_session_context_class",
-				"org.springframework.orm.hibernate5.SpringSessionContext");
+    private Properties hibernateProperties() {
+        Properties properties = new Properties();
+        properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQL9Dialect");
+        properties.put("hibernate.show_sql", "true");
+        properties.put("logging.level.org.hibernate.type", "trace");
+        properties.put("hibernate.current_session_context_class",
+                "org.springframework.orm.hibernate5.SpringSessionContext");
 
-		return properties;
-	}
+        return properties;
+    }
 }

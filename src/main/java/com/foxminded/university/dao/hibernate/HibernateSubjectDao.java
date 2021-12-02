@@ -19,90 +19,78 @@ import java.util.Optional;
 @Transactional
 public class HibernateSubjectDao implements SubjectDao {
 
-	private static final Logger logger = LoggerFactory.getLogger(HibernateAudienceDao.class);
+    private static final Logger logger = LoggerFactory.getLogger(HibernateAudienceDao.class);
 
-	private SessionFactory sessionFactory;
+    private SessionFactory sessionFactory;
 
-	public HibernateSubjectDao(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
+    public HibernateSubjectDao(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
-	@Override
-	public List<Subject> findAll() {
-		logger.debug("Find all subjects");
+    @Override
+    public List<Subject> findAll() {
+        logger.debug("Find all subjects");
 
-		return sessionFactory.getCurrentSession()
-				.createQuery("FROM Subject", Subject.class)
-				.list();
-	}
+        return sessionFactory.getCurrentSession()
+                .createQuery("FROM Subject", Subject.class)
+                .list();
+    }
 
-	@Override
-	public Page<Subject> findPaginatedSubjects(Pageable pageable) {
-		logger.debug("Find all subjects with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
-		int total = (int)(long) sessionFactory.getCurrentSession()
-				.createQuery("SELECT COUNT(s) FROM Subject s")
-				.uniqueResult();
-		List<Subject> subjects = sessionFactory.getCurrentSession()
-				.createQuery("FROM Subject", Subject.class)
-				.setFirstResult((int)pageable.getOffset())
-				.setMaxResults(pageable.getPageSize())
-				.list();
+    @Override
+    public Page<Subject> findPaginatedSubjects(Pageable pageable) {
+        logger.debug("Find all subjects with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
+        int total = (int) (long) sessionFactory.getCurrentSession()
+                .createQuery("SELECT COUNT(s) FROM Subject s")
+                .uniqueResult();
+        List<Subject> subjects = sessionFactory.getCurrentSession()
+                .createQuery("FROM Subject", Subject.class)
+                .setFirstResult((int) pageable.getOffset())
+                .setMaxResults(pageable.getPageSize())
+                .list();
 
-		return new PageImpl<>(subjects, pageable, total);
-	}
+        return new PageImpl<>(subjects, pageable, total);
+    }
 
-	@Override
-	public Optional<Subject> findById(int id) {
-		logger.debug("Find subject by id: {}", id);
+    @Override
+    public Optional<Subject> findById(int id) {
+        logger.debug("Find subject by id: {}", id);
 
-		return findOrEmpty(
-				() -> sessionFactory.getCurrentSession()
-						.createQuery("FROM Subject WHERE id=:id", Subject.class)
-						.setParameter("id", id)
-						.uniqueResult());
-	}
+        return findOrEmpty(
+                () -> sessionFactory.getCurrentSession()
+                        .createQuery("FROM Subject WHERE id=:id", Subject.class)
+                        .setParameter("id", id)
+                        .uniqueResult());
+    }
 
-	@Override
-	public void save(Subject subject) {
-		logger.debug("Save subject {}", subject);
-		Session session = sessionFactory.getCurrentSession();
+    @Override
+    public void save(Subject subject) {
+        logger.debug("Save subject {}", subject);
+        Session session = sessionFactory.getCurrentSession();
 
-		if (subject.getId() == 0) {
-			session.save(subject);
-			logger.debug("New subject created with id: {}", subject.getId());
-		} else {
-			session.merge(subject);
-			logger.debug("Subject with id {} was updated", subject.getId());
-		}
-	}
+        if (subject.getId() == 0) {
+            session.save(subject);
+            logger.debug("New subject created with id: {}", subject.getId());
+        } else {
+            session.merge(subject);
+            logger.debug("Subject with id {} was updated", subject.getId());
+        }
+    }
 
-	@Override
-	public void deleteById(int id) {
-		Session session = sessionFactory.getCurrentSession();
-		session.delete(session.get(Subject.class, id));
-		logger.debug("Subject with id {} was deleted", id);
-	}
+    @Override
+    public void deleteById(int id) {
+        Session session = sessionFactory.getCurrentSession();
+        session.delete(session.get(Subject.class, id));
+        logger.debug("Subject with id {} was deleted", id);
+    }
 
-	@Override
-	public List<Subject> findByTeacherId(int id) {
-		logger.debug("Find subject by teacher id: {}", id);
+    @Override
+    public Optional<Subject> findByName(String name) {
+        logger.debug("Find subject by name: {}", name);
 
-		return sessionFactory.getCurrentSession()
-				.createQuery(
-						"FROM Subject AS subject, Teacher AS teacher WHERE subject.id IN elements(teacher.subjects) AND teacher.id=:teacher_id",
-						Subject.class)
-				.setParameter("teacher_id", id)
-				.list();
-	}
-
-	@Override
-	public Optional<Subject> findByName(String name) {
-		logger.debug("Find subject by name: {}", name);
-
-		return findOrEmpty(
-				() -> sessionFactory.getCurrentSession()
-						.createQuery("FROM Subject WHERE name=:name", Subject.class)
-						.setParameter("name", name)
-						.uniqueResult());
-	}
+        return findOrEmpty(
+                () -> sessionFactory.getCurrentSession()
+                        .createQuery("FROM Subject WHERE name=:name", Subject.class)
+                        .setParameter("name", name)
+                        .uniqueResult());
+    }
 }

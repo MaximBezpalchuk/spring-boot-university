@@ -45,7 +45,7 @@ public class HibernateTeacherDao implements TeacherDao {
         logger.debug("Find all teachers with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
         int total = (int) (long) sessionFactory.getCurrentSession()
                 .createQuery("SELECT COUNT(t) FROM Teacher t")
-                .uniqueResult();
+                .getSingleResult();
         List<Teacher> teachers = sessionFactory.getCurrentSession()
                 .createQuery("FROM Teacher", Teacher.class)
                 .setFirstResult((int) pageable.getOffset())

@@ -17,65 +17,65 @@ import java.util.Optional;
 @Transactional
 public class HibernateLectureTimeDao implements LectureTimeDao {
 
-	private static final Logger logger = LoggerFactory.getLogger(HibernateAudienceDao.class);
+    private static final Logger logger = LoggerFactory.getLogger(HibernateAudienceDao.class);
 
-	private SessionFactory sessionFactory;
+    private SessionFactory sessionFactory;
 
-	public HibernateLectureTimeDao(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
+    public HibernateLectureTimeDao(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
-	@Override
-	public List<LectureTime> findAll() {
-		logger.debug("Find all lecture times");
+    @Override
+    public List<LectureTime> findAll() {
+        logger.debug("Find all lecture times");
 
-		return sessionFactory.getCurrentSession()
-				.createQuery("FROM LectureTime", LectureTime.class)
-				.list();
-	}
+        return sessionFactory.getCurrentSession()
+                .createQuery("FROM LectureTime", LectureTime.class)
+                .list();
+    }
 
-	@Override
-	public Optional<LectureTime> findById(int id) {
-		logger.debug("Find lecture time by id: {}", id);
+    @Override
+    public Optional<LectureTime> findById(int id) {
+        logger.debug("Find lecture time by id: {}", id);
 
-		return findOrEmpty(
-				() -> sessionFactory.getCurrentSession()
-						.createQuery("FROM LectureTime WHERE id=:id", LectureTime.class)
-						.setParameter("id", id)
-						.uniqueResult());
-	}
+        return findOrEmpty(
+                () -> sessionFactory.getCurrentSession()
+                        .createQuery("FROM LectureTime WHERE id=:id", LectureTime.class)
+                        .setParameter("id", id)
+                        .uniqueResult());
+    }
 
-	@Override
-	public void save(LectureTime lectureTime) {
-		logger.debug("Save lecture time {}", lectureTime);
-		Session session = sessionFactory.getCurrentSession();
+    @Override
+    public void save(LectureTime lectureTime) {
+        logger.debug("Save lecture time {}", lectureTime);
+        Session session = sessionFactory.getCurrentSession();
 
-		if (lectureTime.getId() == 0) {
-			session.save(lectureTime);
-			logger.debug("New lecture time created with id: {}", lectureTime.getId());
-		} else {
-			session.merge(lectureTime);
-			logger.debug("Lecture time with id {} was updated", lectureTime.getId());
-		}
-	}
+        if (lectureTime.getId() == 0) {
+            session.save(lectureTime);
+            logger.debug("New lecture time created with id: {}", lectureTime.getId());
+        } else {
+            session.merge(lectureTime);
+            logger.debug("Lecture time with id {} was updated", lectureTime.getId());
+        }
+    }
 
-	@Override
-	public void deleteById(int id) {
-		Session session = sessionFactory.getCurrentSession();
-		session.delete(session.get(LectureTime.class, id));
-		logger.debug("Lecture time with id {} was deleted", id);
-	}
+    @Override
+    public void deleteById(int id) {
+        Session session = sessionFactory.getCurrentSession();
+        session.delete(session.get(LectureTime.class, id));
+        logger.debug("Lecture time with id {} was deleted", id);
+    }
 
-	@Override
-	public Optional<LectureTime> findByPeriod(LocalTime start, LocalTime end) {
-		logger.debug("Find lecture time which starts at {} and end at {}", start, end);
+    @Override
+    public Optional<LectureTime> findByPeriod(LocalTime start, LocalTime end) {
+        logger.debug("Find lecture time which starts at {} and end at {}", start, end);
 
-		return findOrEmpty(
-				() -> (LectureTime) sessionFactory.getCurrentSession()
-						.createSQLQuery("SELECT * FROM lecture_times WHERE start=:start AND finish=:end")
-						.addEntity(LectureTime.class)
-						.setParameter("start", start)
-						.setParameter("end", end)
-						.uniqueResult());
-	}
+        return findOrEmpty(
+                () -> (LectureTime) sessionFactory.getCurrentSession()
+                        .createSQLQuery("SELECT * FROM lecture_times WHERE start=:start AND finish=:end")
+                        .addEntity(LectureTime.class)
+                        .setParameter("start", start)
+                        .setParameter("end", end)
+                        .uniqueResult());
+    }
 }

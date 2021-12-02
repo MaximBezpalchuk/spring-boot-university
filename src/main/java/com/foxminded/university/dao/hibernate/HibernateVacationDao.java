@@ -21,116 +21,116 @@ import java.util.Optional;
 @Transactional
 public class HibernateVacationDao implements VacationDao {
 
-	private static final Logger logger = LoggerFactory.getLogger(HibernateAudienceDao.class);
+    private static final Logger logger = LoggerFactory.getLogger(HibernateAudienceDao.class);
 
-	private SessionFactory sessionFactory;
+    private SessionFactory sessionFactory;
 
-	public HibernateVacationDao(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
+    public HibernateVacationDao(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
-	@Override
-	public List<Vacation> findAll() {
-		logger.debug("Find all vacations");
+    @Override
+    public List<Vacation> findAll() {
+        logger.debug("Find all vacations");
 
-		return sessionFactory.getCurrentSession()
-				.createQuery("FROM Vacation", Vacation.class)
-				.list();
-	}
+        return sessionFactory.getCurrentSession()
+                .createQuery("FROM Vacation", Vacation.class)
+                .list();
+    }
 
-	@Override
-	public Page<Vacation> findPaginatedVacationsByTeacherId(Pageable pageable, int id) {
-		logger.debug("Find all vacations with pageSize:{} and offset:{} by teacherId:{}", pageable.getPageSize(),
-				pageable.getOffset(), id);
-		int total = (int)(long) sessionFactory.getCurrentSession()
-				.createQuery("SELECT COUNT(v) FROM Vacation v WHERE teacher.id=:teacher_id")
-				.setParameter("teacher_id", id)
-				.uniqueResult();
-		List<Vacation> vacations = sessionFactory.getCurrentSession()
-				.createQuery("FROM Vacation WHERE teacher.id=:teacher_id", Vacation.class)
-				.setParameter("teacher_id", id)
-				.setFirstResult((int)pageable.getOffset())
-				.setMaxResults(pageable.getPageSize())
-				.list();
+    @Override
+    public Page<Vacation> findPaginatedVacationsByTeacherId(Pageable pageable, int id) {
+        logger.debug("Find all vacations with pageSize:{} and offset:{} by teacherId:{}", pageable.getPageSize(),
+                pageable.getOffset(), id);
+        int total = (int) (long) sessionFactory.getCurrentSession()
+                .createQuery("SELECT COUNT(v) FROM Vacation v WHERE teacher.id=:teacher_id")
+                .setParameter("teacher_id", id)
+                .getSingleResult();
+        List<Vacation> vacations = sessionFactory.getCurrentSession()
+                .createQuery("FROM Vacation WHERE teacher.id=:teacher_id", Vacation.class)
+                .setParameter("teacher_id", id)
+                .setFirstResult((int) pageable.getOffset())
+                .setMaxResults(pageable.getPageSize())
+                .list();
 
-		return new PageImpl<>(vacations, pageable, total);
-	}
+        return new PageImpl<>(vacations, pageable, total);
+    }
 
-	@Override
-	public Optional<Vacation> findById(int id) {
-		logger.debug("Find vacation by id: {}", id);
+    @Override
+    public Optional<Vacation> findById(int id) {
+        logger.debug("Find vacation by id: {}", id);
 
-		return findOrEmpty(
-				() -> sessionFactory.getCurrentSession()
-						.createQuery("FROM Vacation WHERE id=:id", Vacation.class)
-						.setParameter("id", id)
-						.uniqueResult());
-	}
+        return findOrEmpty(
+                () -> sessionFactory.getCurrentSession()
+                        .createQuery("FROM Vacation WHERE id=:id", Vacation.class)
+                        .setParameter("id", id)
+                        .uniqueResult());
+    }
 
-	@Override
-	public void save(Vacation vacation) {
+    @Override
+    public void save(Vacation vacation) {
 
-		logger.debug("Save vacation {}", vacation);
-		Session session = sessionFactory.getCurrentSession();
+        logger.debug("Save vacation {}", vacation);
+        Session session = sessionFactory.getCurrentSession();
 
-		if (vacation.getId() == 0) {
-			session.save(vacation);
-			logger.debug("New vacation created with id: {}", vacation.getId());
-		} else {
-			session.merge(vacation);
-			logger.debug("Vacation with id {} was updated", vacation.getId());
-		}
-	}
+        if (vacation.getId() == 0) {
+            session.save(vacation);
+            logger.debug("New vacation created with id: {}", vacation.getId());
+        } else {
+            session.merge(vacation);
+            logger.debug("Vacation with id {} was updated", vacation.getId());
+        }
+    }
 
-	@Override
-	public void deleteById(int id) {
-		Session session = sessionFactory.getCurrentSession();
-		session.delete(session.get(Vacation.class, id));
-		logger.debug("Vacation with id {} was deleted", id);
-	}
+    @Override
+    public void deleteById(int id) {
+        Session session = sessionFactory.getCurrentSession();
+        session.delete(session.get(Vacation.class, id));
+        logger.debug("Vacation with id {} was deleted", id);
+    }
 
-	@Override
-	public List<Vacation> findByTeacherId(int id) {
-		logger.debug("Find vacations by teacher id: {}", id);
-		return sessionFactory.getCurrentSession()
-				.createQuery("FROM Vacation WHERE teacher.id=:teacher_id", Vacation.class)
-				.setParameter("teacher_id", id)
-				.list();
-	}
+    @Override
+    public List<Vacation> findByTeacherId(int id) {
+        logger.debug("Find vacations by teacher id: {}", id);
+        return sessionFactory.getCurrentSession()
+                .createQuery("FROM Vacation WHERE teacher.id=:teacher_id", Vacation.class)
+                .setParameter("teacher_id", id)
+                .list();
+    }
 
-	@Override
-	public Optional<Vacation> findByPeriodAndTeacher(LocalDate start, LocalDate end, Teacher teacher) {
-		logger.debug("Find vacation by vacation start: {}, end: {}, teacher id: {}", start, end, teacher.getId());
+    @Override
+    public Optional<Vacation> findByPeriodAndTeacher(LocalDate start, LocalDate end, Teacher teacher) {
+        logger.debug("Find vacation by vacation start: {}, end: {}, teacher id: {}", start, end, teacher.getId());
 
-		return findOrEmpty(
-				() -> (Vacation)sessionFactory.getCurrentSession()
-						.createSQLQuery("SELECT * FROM vacations WHERE start=:start AND finish=:end AND teacher_id=:teacher_id")
-						.addEntity(Vacation.class)
-						.setParameter("start", start)
-						.setParameter("end", end)
-						.setParameter("teacher_id", teacher.getId())
-						.uniqueResult());
-	}
+        return findOrEmpty(
+                () -> (Vacation) sessionFactory.getCurrentSession()
+                        .createSQLQuery("SELECT * FROM vacations WHERE start=:start AND finish=:end AND teacher_id=:teacher_id")
+                        .addEntity(Vacation.class)
+                        .setParameter("start", start)
+                        .setParameter("end", end)
+                        .setParameter("teacher_id", teacher.getId())
+                        .uniqueResult());
+    }
 
-	@Override
-	public List<Vacation> findByDateInPeriodAndTeacher(LocalDate date, Teacher teacher) {
-		logger.debug("Find vacations by vacation date: {} and teacher id: {}", date, teacher.getId());
-		return sessionFactory.getCurrentSession()
-				.createSQLQuery("SELECT * FROM vacations WHERE start >=:date AND finish<=:date AND teacher_id=:teacher_id")
-				.addEntity(Vacation.class)
-				.setParameter("date", date)
-				.setParameter("teacher_id", teacher.getId())
-				.list();
-	}
+    @Override
+    public List<Vacation> findByDateInPeriodAndTeacher(LocalDate date, Teacher teacher) {
+        logger.debug("Find vacations by vacation date: {} and teacher id: {}", date, teacher.getId());
+        return sessionFactory.getCurrentSession()
+                .createSQLQuery("SELECT * FROM vacations WHERE start >=:date AND finish<=:date AND teacher_id=:teacher_id")
+                .addEntity(Vacation.class)
+                .setParameter("date", date)
+                .setParameter("teacher_id", teacher.getId())
+                .list();
+    }
 
-	@Override
-	public List<Vacation> findByTeacherIdAndYear(int id, int year) {
-		logger.debug("Find vacations by teacher id: {} and year: {}", id, year);
-		return sessionFactory.getCurrentSession()
-				.createQuery("FROM Vacation WHERE teacher.id=:teacher_id AND EXTRACT(YEAR FROM start)=:year",
-						Vacation.class)
-				.setParameter("teacher_id", id)
-				.setParameter("year", year)
-				.list();
-	}
+    @Override
+    public List<Vacation> findByTeacherIdAndYear(int id, int year) {
+        logger.debug("Find vacations by teacher id: {} and year: {}", id, year);
+        return sessionFactory.getCurrentSession()
+                .createQuery("FROM Vacation WHERE teacher.id=:teacher_id AND EXTRACT(YEAR FROM start)=:year",
+                        Vacation.class)
+                .setParameter("teacher_id", id)
+                .setParameter("year", year)
+                .list();
+    }
 }

@@ -20,89 +20,89 @@ import java.util.Optional;
 @Transactional
 public class HibernateHolidayDao implements HolidayDao {
 
-	private static final Logger logger = LoggerFactory.getLogger(HibernateAudienceDao.class);
+    private static final Logger logger = LoggerFactory.getLogger(HibernateAudienceDao.class);
 
-	private SessionFactory sessionFactory;
+    private SessionFactory sessionFactory;
 
-	public HibernateHolidayDao(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
+    public HibernateHolidayDao(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
-	@Override
-	public List<Holiday> findAll() {
-		logger.debug("Find all holidays");
+    @Override
+    public List<Holiday> findAll() {
+        logger.debug("Find all holidays");
 
-		return sessionFactory.getCurrentSession()
-				.createQuery("FROM Holiday", Holiday.class)
-				.list();
-	}
+        return sessionFactory.getCurrentSession()
+                .createQuery("FROM Holiday", Holiday.class)
+                .list();
+    }
 
-	@Override
-	public Page<Holiday> findPaginatedHolidays(Pageable pageable) {
-		logger.debug("Find all holidays with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
-		int total = (int) (long)sessionFactory.getCurrentSession()
-				.createQuery("SELECT COUNT(h) FROM Holiday h")
-				.uniqueResult();
-		List<Holiday> holidays = sessionFactory.getCurrentSession()
-				.createQuery("FROM Holiday", Holiday.class)
-				.setFirstResult((int)pageable.getOffset())
-				.setMaxResults(pageable.getPageSize())
-				.list();
+    @Override
+    public Page<Holiday> findPaginatedHolidays(Pageable pageable) {
+        logger.debug("Find all holidays with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
+        int total = (int) (long) sessionFactory.getCurrentSession()
+                .createQuery("SELECT COUNT(h) FROM Holiday h")
+                .getSingleResult();
+        List<Holiday> holidays = sessionFactory.getCurrentSession()
+                .createQuery("FROM Holiday", Holiday.class)
+                .setFirstResult((int) pageable.getOffset())
+                .setMaxResults(pageable.getPageSize())
+                .list();
 
-		return new PageImpl<>(holidays, pageable, total);
-	}
+        return new PageImpl<>(holidays, pageable, total);
+    }
 
-	@Override
-	public Optional<Holiday> findById(int id) {
-		logger.debug("Find holiday by id: {}", id);
+    @Override
+    public Optional<Holiday> findById(int id) {
+        logger.debug("Find holiday by id: {}", id);
 
-		return findOrEmpty(
-				() -> sessionFactory.getCurrentSession()
-						.createQuery("FROM Holiday WHERE id=:id", Holiday.class)
-						.setParameter("id", id)
-						.uniqueResult());
-	}
+        return findOrEmpty(
+                () -> sessionFactory.getCurrentSession()
+                        .createQuery("FROM Holiday WHERE id=:id", Holiday.class)
+                        .setParameter("id", id)
+                        .uniqueResult());
+    }
 
-	@Override
-	public void save(Holiday holiday) {
-		logger.debug("Save holiday {}", holiday);
-		Session session = sessionFactory.getCurrentSession();
+    @Override
+    public void save(Holiday holiday) {
+        logger.debug("Save holiday {}", holiday);
+        Session session = sessionFactory.getCurrentSession();
 
-		if (holiday.getId() == 0) {
-			session.save(holiday);
-			logger.debug("New holiday created with id: {}", holiday.getId());
-		} else {
-			session.merge(holiday);
-			logger.debug("Holiday with id {} was updated", holiday.getId());
-		}
-	}
+        if (holiday.getId() == 0) {
+            session.save(holiday);
+            logger.debug("New holiday created with id: {}", holiday.getId());
+        } else {
+            session.merge(holiday);
+            logger.debug("Holiday with id {} was updated", holiday.getId());
+        }
+    }
 
-	@Override
-	public void deleteById(int id) {
-		Session session = sessionFactory.getCurrentSession();
-		session.delete(session.get(Holiday.class, id));
-		logger.debug("Holiday with id {} was deleted", id);
-	}
+    @Override
+    public void deleteById(int id) {
+        Session session = sessionFactory.getCurrentSession();
+        session.delete(session.get(Holiday.class, id));
+        logger.debug("Holiday with id {} was deleted", id);
+    }
 
-	@Override
-	public Optional<Holiday> findByNameAndDate(String name, LocalDate date) {
-		logger.debug("Find holiday with name: {} and date: {}", name, date);
+    @Override
+    public Optional<Holiday> findByNameAndDate(String name, LocalDate date) {
+        logger.debug("Find holiday with name: {} and date: {}", name, date);
 
-		return findOrEmpty(
-				() -> sessionFactory.getCurrentSession()
-						.createQuery("FROM Holiday WHERE name=:name AND date=:date", Holiday.class)
-						.setParameter("name", name)
-						.setParameter("date", date)
-						.uniqueResult());
-	}
+        return findOrEmpty(
+                () -> sessionFactory.getCurrentSession()
+                        .createQuery("FROM Holiday WHERE name=:name AND date=:date", Holiday.class)
+                        .setParameter("name", name)
+                        .setParameter("date", date)
+                        .uniqueResult());
+    }
 
-	@Override
-	public List<Holiday> findByDate(LocalDate date) {
-		logger.debug("Find holiday by date: {}", date);
+    @Override
+    public List<Holiday> findByDate(LocalDate date) {
+        logger.debug("Find holiday by date: {}", date);
 
-		return sessionFactory.getCurrentSession()
-				.createQuery("FROM Holiday WHERE date=:date", Holiday.class)
-				.setParameter("date", date)
-				.list();
-	}
+        return sessionFactory.getCurrentSession()
+                .createQuery("FROM Holiday WHERE date=:date", Holiday.class)
+                .setParameter("date", date)
+                .list();
+    }
 }
