@@ -83,19 +83,6 @@ public class GroupServiceTest {
         verify(groupDao).deleteById(1);
     }
 
-    //TODO: delete if not needed
-    /*
-    @Test
-    void givenListOfGroups_whenFindByLectureId_thenAllExistingGroupsFound() {
-        Group group1 = Group.builder().id(1).build();
-        Group group2 = Group.builder().id(2).build();
-        List<Group> expected = Arrays.asList(group1, group2);
-        when(groupDao.findByLectureId(2)).thenReturn(expected);
-        List<Group> actual = groupService.findByLectureId(2);
-
-        assertEquals(expected, actual);
-    }*/
-
     @Test
     void givenNotUniqueGroup_whenSave_thenEntityNotUniqueException() {
         Group group1 = Group.builder().id(1).name("Test1").build();
