@@ -56,11 +56,7 @@ public class HibernateHolidayDao implements HolidayDao {
     public Optional<Holiday> findById(int id) {
         logger.debug("Find holiday by id: {}", id);
 
-        return findOrEmpty(
-                () -> sessionFactory.getCurrentSession()
-                        .createQuery("FROM Holiday WHERE id=:id", Holiday.class)
-                        .setParameter("id", id)
-                        .uniqueResult());
+        return Optional.of(sessionFactory.getCurrentSession().get(Holiday.class, id));
     }
 
     @Override

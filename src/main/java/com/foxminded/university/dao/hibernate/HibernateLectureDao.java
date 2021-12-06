@@ -56,11 +56,7 @@ public class HibernateLectureDao implements LectureDao {
     public Optional<Lecture> findById(int id) {
         logger.debug("Find lecture by id: {}", id);
 
-        return findOrEmpty(
-                () -> sessionFactory.getCurrentSession()
-                        .createQuery("FROM Lecture WHERE id=:id", Lecture.class)
-                        .setParameter("id", id)
-                        .uniqueResult());
+        return Optional.of(sessionFactory.getCurrentSession().get(Lecture.class, id));
     }
 
     @Override

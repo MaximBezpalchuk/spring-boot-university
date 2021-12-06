@@ -55,11 +55,7 @@ public class HibernateSubjectDao implements SubjectDao {
     public Optional<Subject> findById(int id) {
         logger.debug("Find subject by id: {}", id);
 
-        return findOrEmpty(
-                () -> sessionFactory.getCurrentSession()
-                        .createQuery("FROM Subject WHERE id=:id", Subject.class)
-                        .setParameter("id", id)
-                        .uniqueResult());
+        return Optional.of(sessionFactory.getCurrentSession().get(Subject.class, id));
     }
 
     @Override

@@ -60,11 +60,7 @@ public class HibernateVacationDao implements VacationDao {
     public Optional<Vacation> findById(int id) {
         logger.debug("Find vacation by id: {}", id);
 
-        return findOrEmpty(
-                () -> sessionFactory.getCurrentSession()
-                        .createQuery("FROM Vacation WHERE id=:id", Vacation.class)
-                        .setParameter("id", id)
-                        .uniqueResult());
+        return Optional.of(sessionFactory.getCurrentSession().get(Vacation.class, id));
     }
 
     @Override

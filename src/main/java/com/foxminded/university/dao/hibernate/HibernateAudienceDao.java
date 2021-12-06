@@ -37,11 +37,7 @@ public class HibernateAudienceDao implements AudienceDao {
     public Optional<Audience> findById(int id) {
         logger.debug("Find audience by id: {}", id);
 
-        return findOrEmpty(
-                () -> sessionFactory.getCurrentSession()
-                        .createQuery("FROM Audience WHERE id=:id", Audience.class)
-                        .setParameter("id", id)
-                        .uniqueResult());
+        return Optional.of(sessionFactory.getCurrentSession().get(Audience.class, id));
     }
 
     @Override

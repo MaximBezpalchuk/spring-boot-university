@@ -35,13 +35,9 @@ public class HibernateCathedraDao implements CathedraDao {
 
     @Override
     public Optional<Cathedra> findById(int id) {
-
         logger.debug("Find cathedra by id: {}", id);
-        return findOrEmpty(
-                () -> sessionFactory.getCurrentSession()
-                        .createQuery("FROM Cathedra WHERE id=:id", Cathedra.class)
-                        .setParameter("id", id)
-                        .uniqueResult());
+
+        return Optional.of(sessionFactory.getCurrentSession().get(Cathedra.class, id));
     }
 
     @Override

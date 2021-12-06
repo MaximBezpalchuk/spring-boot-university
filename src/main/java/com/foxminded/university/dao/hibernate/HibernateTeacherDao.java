@@ -59,11 +59,7 @@ public class HibernateTeacherDao implements TeacherDao {
     public Optional<Teacher> findById(int id) {
         logger.debug("Find teacher by id: {}", id);
 
-        return findOrEmpty(
-                () -> sessionFactory.getCurrentSession()
-                        .createQuery("FROM Teacher WHERE id=:id", Teacher.class)
-                        .setParameter("id", id)
-                        .uniqueResult());
+        return Optional.of(sessionFactory.getCurrentSession().get(Teacher.class, id));
     }
 
     @Override
