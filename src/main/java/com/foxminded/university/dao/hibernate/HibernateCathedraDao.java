@@ -37,7 +37,7 @@ public class HibernateCathedraDao implements CathedraDao {
     public Optional<Cathedra> findById(int id) {
         logger.debug("Find cathedra by id: {}", id);
 
-        return Optional.of(sessionFactory.getCurrentSession().get(Cathedra.class, id));
+        return Optional.ofNullable(sessionFactory.getCurrentSession().get(Cathedra.class, id));
     }
 
     @Override

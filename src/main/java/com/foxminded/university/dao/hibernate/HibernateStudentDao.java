@@ -56,7 +56,7 @@ public class HibernateStudentDao implements StudentDao {
     public Optional<Student> findById(int id) {
         logger.debug("Find student by id: {}", id);
 
-        return Optional.of(sessionFactory.getCurrentSession().get(Student.class, id));
+        return Optional.ofNullable(sessionFactory.getCurrentSession().get(Student.class, id));
     }
 
     @Override

@@ -38,7 +38,7 @@ public class HibernateLectureTimeDao implements LectureTimeDao {
     public Optional<LectureTime> findById(int id) {
         logger.debug("Find lecture time by id: {}", id);
 
-        return Optional.of(sessionFactory.getCurrentSession().get(LectureTime.class, id));
+        return Optional.ofNullable(sessionFactory.getCurrentSession().get(LectureTime.class, id));
     }
 
     @Override

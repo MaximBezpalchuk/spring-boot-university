@@ -37,7 +37,7 @@ public class HibernateGroupDao implements GroupDao {
     public Optional<Group> findById(int id) {
         logger.debug("Find group by id: {}", id);
 
-        return Optional.of(sessionFactory.getCurrentSession().get(Group.class, id));
+        return Optional.ofNullable(sessionFactory.getCurrentSession().get(Group.class, id));
     }
 
     @Override

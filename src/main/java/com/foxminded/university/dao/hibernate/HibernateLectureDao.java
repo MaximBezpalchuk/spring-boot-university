@@ -56,7 +56,7 @@ public class HibernateLectureDao implements LectureDao {
     public Optional<Lecture> findById(int id) {
         logger.debug("Find lecture by id: {}", id);
 
-        return Optional.of(sessionFactory.getCurrentSession().get(Lecture.class, id));
+        return Optional.ofNullable(sessionFactory.getCurrentSession().get(Lecture.class, id));
     }
 
     @Override

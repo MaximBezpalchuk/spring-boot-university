@@ -37,7 +37,7 @@ public class HibernateAudienceDao implements AudienceDao {
     public Optional<Audience> findById(int id) {
         logger.debug("Find audience by id: {}", id);
 
-        return Optional.of(sessionFactory.getCurrentSession().get(Audience.class, id));
+        return Optional.ofNullable(sessionFactory.getCurrentSession().get(Audience.class, id));
     }
 
     @Override

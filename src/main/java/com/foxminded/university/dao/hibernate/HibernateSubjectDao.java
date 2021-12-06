@@ -55,7 +55,7 @@ public class HibernateSubjectDao implements SubjectDao {
     public Optional<Subject> findById(int id) {
         logger.debug("Find subject by id: {}", id);
 
-        return Optional.of(sessionFactory.getCurrentSession().get(Subject.class, id));
+        return Optional.ofNullable(sessionFactory.getCurrentSession().get(Subject.class, id));
     }
 
     @Override

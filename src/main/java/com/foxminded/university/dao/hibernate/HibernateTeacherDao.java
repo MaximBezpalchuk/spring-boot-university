@@ -59,7 +59,7 @@ public class HibernateTeacherDao implements TeacherDao {
     public Optional<Teacher> findById(int id) {
         logger.debug("Find teacher by id: {}", id);
 
-        return Optional.of(sessionFactory.getCurrentSession().get(Teacher.class, id));
+        return Optional.ofNullable(sessionFactory.getCurrentSession().get(Teacher.class, id));
     }
 
     @Override
