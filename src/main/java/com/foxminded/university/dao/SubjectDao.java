@@ -10,5 +10,5 @@ public interface SubjectDao extends GenericDao<Subject> {
 
     Optional<Subject> findByName(String name);
 
-    Page<Subject> findPaginatedSubjects(Pageable pageable);
+	Page<Subject> findPaginatedSubjects(Pageable pageable);
 }

@@ -34,43 +34,43 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Value("${defaultPageSize}")
     private int defaultPageSize;
 
-    @Bean
-    public SpringResourceTemplateResolver templateResolver() {
-        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
-        templateResolver.setPrefix("/WEB-INF/views/");
-        templateResolver.setSuffix(".html");
-        templateResolver.setTemplateMode(TemplateMode.HTML);
-        return templateResolver;
-    }
+	@Bean
+	public SpringResourceTemplateResolver templateResolver() {
+		SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
+		templateResolver.setPrefix("/WEB-INF/views/");
+		templateResolver.setSuffix(".html");
+		templateResolver.setTemplateMode(TemplateMode.HTML);
+		return templateResolver;
+	}
 
-    @Bean
-    public SpringTemplateEngine templateEngine(ITemplateResolver templateResolver) {
-        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-        templateEngine.setTemplateResolver(templateResolver);
-        templateEngine.setEnableSpringELCompiler(true);
-        return templateEngine;
-    }
+	@Bean
+	public SpringTemplateEngine templateEngine(ITemplateResolver templateResolver) {
+		SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+		templateEngine.setTemplateResolver(templateResolver);
+		templateEngine.setEnableSpringELCompiler(true);
+		return templateEngine;
+	}
 
-    @Override
-    public void configureViewResolvers(ViewResolverRegistry registry) {
-        ThymeleafViewResolver resolver = new ThymeleafViewResolver();
-        resolver.setTemplateEngine(templateEngine(templateResolver()));
-        registry.viewResolver(resolver);
-    }
+	@Override
+	public void configureViewResolvers(ViewResolverRegistry registry) {
+		ThymeleafViewResolver resolver = new ThymeleafViewResolver();
+		resolver.setTemplateEngine(templateEngine(templateResolver()));
+		registry.viewResolver(resolver);
+	}
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
-    }
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+	}
 
-    @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
-        resolver.setFallbackPageable(PageRequest.of(0, defaultPageSize));
-        resolver.setOneIndexedParameters(true);
-        argumentResolvers.add(resolver);
-        WebMvcConfigurer.super.addArgumentResolvers(argumentResolvers);
-    }
+	@Override
+	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+		PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
+		resolver.setFallbackPageable(PageRequest.of(0, defaultPageSize));
+		resolver.setOneIndexedParameters(true);
+		argumentResolvers.add(resolver);
+		WebMvcConfigurer.super.addArgumentResolvers(argumentResolvers);
+	}
 
     @Override
     public void addFormatters(FormatterRegistry registry) {
@@ -78,15 +78,15 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addFormatter(new SubjectFormatter()); // add multiply subject choice on teachers/new
     }
 
-    @Bean
-    public OpenSessionInViewInterceptor openSessionInViewInterceptor() {
-        OpenSessionInViewInterceptor openSessionInterceptor = new OpenSessionInViewInterceptor();
-        openSessionInterceptor.setSessionFactory(sessionFactory);
-        return openSessionInterceptor;
-    }
+	@Bean
+	public OpenSessionInViewInterceptor openSessionInViewInterceptor(){
+		OpenSessionInViewInterceptor openSessionInterceptor = new OpenSessionInViewInterceptor();
+		openSessionInterceptor.setSessionFactory(sessionFactory);
+		return openSessionInterceptor;
+	}
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addWebRequestInterceptor(openSessionInViewInterceptor());
-    }
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addWebRequestInterceptor(openSessionInViewInterceptor());
+	}
 }

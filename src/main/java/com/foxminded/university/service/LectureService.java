@@ -135,7 +135,7 @@ public class LectureService {
 
     private void teacherCompetentWithSubjectCheck(Lecture lecture) {
         logger.debug("Check teacher for subject");
-        if (!lecture.getTeacher().getSubjects().stream().map(Subject::getName).anyMatch(name -> lecture.getSubject().getName().equals(name))) {
+        if (! lecture.getTeacher().getSubjects().stream().map(Subject::getName).anyMatch(name -> lecture.getSubject().getName().equals(name))) {
             throw new NotCompetentTeacherException("Teacher " + lecture.getTeacher().getFirstName() + " "
                     + lecture.getTeacher().getLastName() + " can`t educate" + lecture.getSubject().getName() + "!");
         }
