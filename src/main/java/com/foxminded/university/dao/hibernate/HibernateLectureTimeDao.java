@@ -29,9 +29,7 @@ public class HibernateLectureTimeDao implements LectureTimeDao {
     public List<LectureTime> findAll() {
         logger.debug("Find all lecture times");
 
-        return sessionFactory.getCurrentSession()
-                .createQuery("FROM LectureTime", LectureTime.class)
-                .list();
+        return sessionFactory.getCurrentSession().getNamedQuery("findAllLectureTimes").getResultList();
     }
 
     @Override
@@ -67,10 +65,10 @@ public class HibernateLectureTimeDao implements LectureTimeDao {
 
         return findOrEmpty(
                 () -> (LectureTime) sessionFactory.getCurrentSession()
-                        .createSQLQuery("SELECT * FROM lecture_times WHERE start=:start AND finish=:end")
+                        .getNamedNativeQuery("findLectureTimeByPeriod")
                         .addEntity(LectureTime.class)
                         .setParameter("start", start)
                         .setParameter("end", end)
-                        .uniqueResult());
+                        .getSingleResult());
     }
 }

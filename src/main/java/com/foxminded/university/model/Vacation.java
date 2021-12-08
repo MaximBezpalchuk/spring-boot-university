@@ -6,6 +6,37 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
+@NamedQueries(
+		{
+				@NamedQuery(
+						name = "findAllVacations",
+						query = "FROM Vacation"
+				),
+				@NamedQuery(
+						name = "countAllVacationsByTeacherId",
+						query = "SELECT COUNT(v) FROM Vacation v WHERE teacher.id=:teacher_id"
+				),
+				@NamedQuery(
+						name = "findAllVacationsByTeacherId",
+						query = "FROM Vacation WHERE teacher.id=:teacher_id"
+				),
+				@NamedQuery(
+						name = "findVacationsByTeacherIdAndYear",
+						query = "FROM Vacation WHERE teacher.id=:teacher_id AND EXTRACT(YEAR FROM start)=:year"
+				)
+		})
+@NamedNativeQueries(
+		{
+				@NamedNativeQuery(
+						name = "findVacationByPeriodAndTeacher",
+						query = "SELECT * FROM vacations WHERE start=:start AND finish=:end AND teacher_id=:teacher_id"
+				),
+				@NamedNativeQuery(
+						name = "findVacationsByDateInPeriodAndTeacher",
+						query = "SELECT * FROM vacations WHERE start >=:date AND finish<=:date AND teacher_id=:teacher_id"
+				)
+})
+
 @Entity
 @Table(name = "vacations")
 public class Vacation {

@@ -32,22 +32,20 @@ public class HibernateStudentDao implements StudentDao {
     public List<Student> findAll() {
         logger.debug("Find all students");
 
-        return sessionFactory.getCurrentSession()
-                .createQuery("FROM Student", Student.class)
-                .list();
+        return sessionFactory.getCurrentSession().getNamedQuery("findAllStudents").getResultList();
     }
 
     @Override
     public Page<Student> findPaginatedStudents(Pageable pageable) {
         logger.debug("Find all students with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
         int total = (int) (long) sessionFactory.getCurrentSession()
-                .createQuery("SELECT COUNT(s) FROM Student s")
+                .getNamedQuery("countAllStudents")
                 .getSingleResult();
         List<Student> students = sessionFactory.getCurrentSession()
-                .createQuery("FROM Student", Student.class)
+                .getNamedQuery("findAllStudents")
                 .setFirstResult((int) pageable.getOffset())
                 .setMaxResults(pageable.getPageSize())
-                .list();
+                .getResultList();
 
         return new PageImpl<>(students, pageable, total);
     }
@@ -85,14 +83,12 @@ public class HibernateStudentDao implements StudentDao {
                 birthDate);
 
         return findOrEmpty(
-                () -> sessionFactory.getCurrentSession()
-                        .createQuery(
-                                "FROM Student WHERE firstName=:first_name AND lastName=:last_name AND birthDate=:birth_date",
-                                Student.class)
+                () -> (Student) sessionFactory.getCurrentSession()
+                        .getNamedQuery("findStudentByFullNameAndBirthDate")
                         .setParameter("first_name", firstName)
                         .setParameter("last_name", lastName)
                         .setParameter("birth_date", birthDate)
-                        .uniqueResult());
+                        .getSingleResult());
     }
 
     @Override
@@ -100,8 +96,8 @@ public class HibernateStudentDao implements StudentDao {
         logger.debug("Find students with group id {}", id);
 
         return sessionFactory.getCurrentSession()
-                .createQuery("FROM Student WHERE group.id=:group_id", Student.class)
+                .getNamedQuery("findStudentByGroupId")
                 .setParameter("group_id", id)
-                .list();
+                .getResultList();
     }
 }

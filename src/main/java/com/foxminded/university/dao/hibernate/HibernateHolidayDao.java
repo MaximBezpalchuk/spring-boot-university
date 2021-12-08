@@ -32,22 +32,21 @@ public class HibernateHolidayDao implements HolidayDao {
     public List<Holiday> findAll() {
         logger.debug("Find all holidays");
 
-        return sessionFactory.getCurrentSession()
-                .createQuery("FROM Holiday", Holiday.class)
-                .list();
+        return sessionFactory.getCurrentSession().getNamedQuery("findAllHolidays").getResultList();
+
     }
 
     @Override
     public Page<Holiday> findPaginatedHolidays(Pageable pageable) {
         logger.debug("Find all holidays with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
         int total = (int) (long) sessionFactory.getCurrentSession()
-                .createQuery("SELECT COUNT(h) FROM Holiday h")
+                .getNamedQuery("countAllHolidays")
                 .getSingleResult();
         List<Holiday> holidays = sessionFactory.getCurrentSession()
-                .createQuery("FROM Holiday", Holiday.class)
+                .getNamedQuery("findAllHolidays")
                 .setFirstResult((int) pageable.getOffset())
                 .setMaxResults(pageable.getPageSize())
-                .list();
+                .getResultList();
 
         return new PageImpl<>(holidays, pageable, total);
     }
@@ -84,11 +83,11 @@ public class HibernateHolidayDao implements HolidayDao {
         logger.debug("Find holiday with name: {} and date: {}", name, date);
 
         return findOrEmpty(
-                () -> sessionFactory.getCurrentSession()
-                        .createQuery("FROM Holiday WHERE name=:name AND date=:date", Holiday.class)
+                () -> (Holiday) sessionFactory.getCurrentSession()
+                        .getNamedQuery("findHolidayByNameAndDate")
                         .setParameter("name", name)
                         .setParameter("date", date)
-                        .uniqueResult());
+                        .getSingleResult());
     }
 
     @Override
@@ -96,8 +95,8 @@ public class HibernateHolidayDao implements HolidayDao {
         logger.debug("Find holiday by date: {}", date);
 
         return sessionFactory.getCurrentSession()
-                .createQuery("FROM Holiday WHERE date=:date", Holiday.class)
+                .getNamedQuery("findHolidayByDate")
                 .setParameter("date", date)
-                .list();
+                .getResultList();
     }
 }

@@ -28,9 +28,7 @@ public class HibernateCathedraDao implements CathedraDao {
     public List<Cathedra> findAll() {
         logger.debug("Find all cathedras");
 
-        return sessionFactory.getCurrentSession()
-                .createQuery("FROM Cathedra", Cathedra.class)
-                .list();
+        return sessionFactory.getCurrentSession().getNamedQuery("findAllCathedras").getResultList();
     }
 
     @Override
@@ -64,9 +62,9 @@ public class HibernateCathedraDao implements CathedraDao {
     public Optional<Cathedra> findByName(String name) {
         logger.debug("Find audience by name: {}", name);
         return findOrEmpty(
-                () -> sessionFactory.getCurrentSession()
-                        .createQuery("FROM Cathedra WHERE name=:name", Cathedra.class)
+                () -> (Cathedra) sessionFactory.getCurrentSession()
+                        .getNamedQuery("findCathedraByName")
                         .setParameter("name", name)
-                        .uniqueResult());
+                        .getSingleResult());
     }
 }

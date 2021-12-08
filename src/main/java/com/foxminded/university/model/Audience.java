@@ -3,6 +3,18 @@ package com.foxminded.university.model;
 import javax.persistence.*;
 import java.util.Objects;
 
+@NamedQueries(
+		{
+				@NamedQuery(
+						name = "findAllAudiences",
+						query = "FROM Audience"
+				),
+				@NamedQuery(
+						name = "findAudienceByRoomNumber",
+						query = "FROM Audience WHERE room=:room"
+				)
+		})
+
 @Entity
 @Table(name = "audiences")
 public class Audience {

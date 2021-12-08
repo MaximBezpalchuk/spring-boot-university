@@ -3,6 +3,22 @@ package com.foxminded.university.model;
 import javax.persistence.*;
 import java.util.Objects;
 
+@NamedQueries(
+		{
+				@NamedQuery(
+						name = "findAllSubjects",
+						query = "FROM Subject"
+				),
+				@NamedQuery(
+						name = "countAllSubjects",
+						query = "SELECT COUNT(s) FROM Subject s"
+				),
+				@NamedQuery(
+						name = "findSubjectByName",
+						query = "FROM Subject WHERE name=:name"
+				)
+		})
+
 @Entity
 @Table(name = "subjects")
 public class Subject {

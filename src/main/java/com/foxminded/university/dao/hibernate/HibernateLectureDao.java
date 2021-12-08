@@ -32,22 +32,20 @@ public class HibernateLectureDao implements LectureDao {
     public List<Lecture> findAll() {
         logger.debug("Find all lectures");
 
-        return sessionFactory.getCurrentSession()
-                .createQuery("FROM Lecture", Lecture.class)
-                .list();
+        return sessionFactory.getCurrentSession().getNamedQuery("findAllLectures").getResultList();
     }
 
     @Override
     public Page<Lecture> findPaginatedLectures(Pageable pageable) {
         logger.debug("Find all lectures with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
         int total = (int) (long) sessionFactory.getCurrentSession()
-                .createQuery("SELECT COUNT(l) FROM Lecture l")
+                .getNamedQuery("countAllLectures")
                 .getSingleResult();
         List<Lecture> lectures = sessionFactory.getCurrentSession()
-                .createQuery("FROM Lecture", Lecture.class)
+                .getNamedQuery("findAllLectures")
                 .setFirstResult((int) pageable.getOffset())
                 .setMaxResults(pageable.getPageSize())
-                .list();
+                .getResultList();
 
         return new PageImpl<>(lectures, pageable, total);
     }
@@ -86,14 +84,12 @@ public class HibernateLectureDao implements LectureDao {
                 lectureTime.getId());
 
         return findOrEmpty(
-                () -> sessionFactory.getCurrentSession()
-                        .createQuery(
-                                "FROM Lecture WHERE audience.id=:audience_id AND date=:date AND time.id=:time_id",
-                                Lecture.class)
+                () -> (Lecture) sessionFactory.getCurrentSession()
+                        .getNamedQuery("findLectureByAudienceDateAndLectureTime")
                         .setParameter("audience_id", audience.getId())
                         .setParameter("date", date)
                         .setParameter("time_id", lectureTime.getId())
-                        .uniqueResult());
+                        .getSingleResult());
     }
 
     @Override
@@ -102,15 +98,13 @@ public class HibernateLectureDao implements LectureDao {
         logger.debug("Find lectures by teacher with id: {}, audience with id {}, date {} and lecture time id {}",
                 teacher.getId(), audience.getId(), date, lectureTime.getId());
         return findOrEmpty(
-                () -> sessionFactory.getCurrentSession()
-                        .createQuery(
-                                "FROM Lecture WHERE teacher.id=:teacher_id AND audience.id=:audience_id AND date=:date AND time.id=:time_id",
-                                Lecture.class)
+                () -> (Lecture) sessionFactory.getCurrentSession()
+                        .getNamedQuery("findLectureByTeacherAudienceDateAndLectureTime")
                         .setParameter("teacher_id", teacher.getId())
                         .setParameter("audience_id", audience.getId())
                         .setParameter("date", date)
                         .setParameter("time_id", lectureTime.getId())
-                        .uniqueResult());
+                        .getSingleResult());
     }
 
     @Override
@@ -119,12 +113,11 @@ public class HibernateLectureDao implements LectureDao {
                 time.getId());
 
         return sessionFactory.getCurrentSession()
-                .createQuery("FROM Lecture WHERE teacher.id=:teacher_id AND date=:date AND time.id=:time_id",
-                        Lecture.class)
+                .getNamedQuery("findLecturesByTeacherDateAndTime")
                 .setParameter("teacher_id", teacher.getId())
                 .setParameter("date", date)
                 .setParameter("time_id", time.getId())
-                .list();
+                .getResultList();
     }
 
     @Override
@@ -132,12 +125,12 @@ public class HibernateLectureDao implements LectureDao {
         logger.debug("Find lectures by student with id {} and period {} - {}", student.getId(), start, end);
 
         return sessionFactory.getCurrentSession()
-                .createSQLQuery("SELECT lec.*, lg.group_id FROM lectures AS lec LEFT JOIN lectures_groups AS lg ON lg.lecture_id = lec.id WHERE group_id = (SELECT group_id FROM students WHERE id =:student_id) AND date >=:start AND date <=:end")
+                .getNamedNativeQuery("findLecturesByStudentAndPeriod")
                 .addEntity(Lecture.class)
                 .setParameter("student_id", student.getId())
                 .setParameter("start", start)
                 .setParameter("end", end)
-                .list();
+                .getResultList();
     }
 
     @Override
@@ -145,10 +138,10 @@ public class HibernateLectureDao implements LectureDao {
         logger.debug("Find lectures by teacher with id {} and period {} - {}", teacher.getId(), start, end);
 
         return sessionFactory.getCurrentSession()
-                .createQuery("FROM Lecture WHERE teacher=:teacher AND date>=:start AND date<=:end", Lecture.class)
+                .getNamedQuery("findLecturesByTeacherAndPeriod")
                 .setParameter("teacher", teacher)
                 .setParameter("start", start)
                 .setParameter("end", end)
-                .list();
+                .getResultList();
     }
 }

@@ -31,22 +31,20 @@ public class HibernateSubjectDao implements SubjectDao {
     public List<Subject> findAll() {
         logger.debug("Find all subjects");
 
-        return sessionFactory.getCurrentSession()
-                .createQuery("FROM Subject", Subject.class)
-                .list();
+        return sessionFactory.getCurrentSession().getNamedQuery("findAllSubjects").getResultList();
     }
 
     @Override
     public Page<Subject> findPaginatedSubjects(Pageable pageable) {
         logger.debug("Find all subjects with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
         int total = (int) (long) sessionFactory.getCurrentSession()
-                .createQuery("SELECT COUNT(s) FROM Subject s")
-                .uniqueResult();
+                .getNamedQuery("countAllSubjects")
+                .getSingleResult();
         List<Subject> subjects = sessionFactory.getCurrentSession()
-                .createQuery("FROM Subject", Subject.class)
+                .getNamedQuery("findAllSubjects")
                 .setFirstResult((int) pageable.getOffset())
                 .setMaxResults(pageable.getPageSize())
-                .list();
+                .getResultList();
 
         return new PageImpl<>(subjects, pageable, total);
     }
@@ -83,9 +81,9 @@ public class HibernateSubjectDao implements SubjectDao {
         logger.debug("Find subject by name: {}", name);
 
         return findOrEmpty(
-                () -> sessionFactory.getCurrentSession()
-                        .createQuery("FROM Subject WHERE name=:name", Subject.class)
+                () -> (Subject) sessionFactory.getCurrentSession()
+                        .getNamedQuery("findSubjectByName")
                         .setParameter("name", name)
-                        .uniqueResult());
+                        .getSingleResult());
     }
 }

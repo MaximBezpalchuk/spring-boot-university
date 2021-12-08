@@ -28,9 +28,7 @@ public class HibernateGroupDao implements GroupDao {
     public List<Group> findAll() {
         logger.debug("Find all groups");
 
-        return sessionFactory.getCurrentSession()
-                .createQuery("FROM Group", Group.class)
-                .list();
+        return sessionFactory.getCurrentSession().getNamedQuery("findAllGroups").getResultList();
     }
 
     @Override
@@ -65,9 +63,9 @@ public class HibernateGroupDao implements GroupDao {
         logger.debug("Find group with name {}", name);
 
         return findOrEmpty(
-                () -> sessionFactory.getCurrentSession()
-                        .createQuery("FROM Group WHERE name=:name", Group.class)
+                () -> (Group) sessionFactory.getCurrentSession()
+                        .getNamedQuery("findGroupByName")
                         .setParameter("name", name)
-                        .uniqueResult());
+                        .getSingleResult());
     }
 }

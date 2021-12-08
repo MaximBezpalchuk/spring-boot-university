@@ -28,9 +28,7 @@ public class HibernateAudienceDao implements AudienceDao {
     public List<Audience> findAll() {
         logger.debug("Find all audiences");
 
-        return sessionFactory.getCurrentSession()
-                .createQuery("FROM Audience", Audience.class)
-                .list();
+        return sessionFactory.getCurrentSession().getNamedQuery("findAllAudiences").getResultList();
     }
 
     @Override
@@ -64,9 +62,9 @@ public class HibernateAudienceDao implements AudienceDao {
     public Optional<Audience> findByRoom(int room) {
         logger.debug("Find audience by room number: {}", room);
         return findOrEmpty(
-                () -> sessionFactory.getCurrentSession()
-                        .createQuery("FROM Audience WHERE room=:room", Audience.class)
+                () -> (Audience) sessionFactory.getCurrentSession()
+                        .getNamedQuery("findAudienceByRoomNumber")
                         .setParameter("room", room)
-                        .uniqueResult());
+                        .getSingleResult());
     }
 }

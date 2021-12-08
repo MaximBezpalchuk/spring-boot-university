@@ -35,22 +35,20 @@ public class HibernateTeacherDao implements TeacherDao {
     public List<Teacher> findAll() {
         logger.debug("Find all teachers");
 
-        return sessionFactory.getCurrentSession()
-                .createQuery("FROM Teacher", Teacher.class)
-                .list();
+        return sessionFactory.getCurrentSession().getNamedQuery("findAllTeachers").getResultList();
     }
 
     @Override
     public Page<Teacher> findPaginatedTeachers(Pageable pageable) {
         logger.debug("Find all teachers with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
         int total = (int) (long) sessionFactory.getCurrentSession()
-                .createQuery("SELECT COUNT(t) FROM Teacher t")
+                .getNamedQuery("countAllTeachers")
                 .getSingleResult();
         List<Teacher> teachers = sessionFactory.getCurrentSession()
-                .createQuery("FROM Teacher", Teacher.class)
+                .getNamedQuery("findAllTeachers")
                 .setFirstResult((int) pageable.getOffset())
                 .setMaxResults(pageable.getPageSize())
-                .list();
+                .getResultList();
 
         return new PageImpl<>(teachers, pageable, total);
     }
@@ -88,12 +86,12 @@ public class HibernateTeacherDao implements TeacherDao {
                 birthDate);
 
         return findOrEmpty(
-                () -> sessionFactory.getCurrentSession()
-                        .createQuery("FROM Teacher WHERE firstName=:first_name AND lastName=:last_name AND birthDate=:birth_date", Teacher.class)
+                () -> (Teacher) sessionFactory.getCurrentSession()
+                        .getNamedQuery("findTeacherByFullNameAndBirthDate")
                         .setParameter("first_name", firstName)
                         .setParameter("last_name", lastName)
                         .setParameter("birth_date", birthDate)
-                        .uniqueResult());
+                        .getSingleResult());
     }
 
     @Override
@@ -102,12 +100,12 @@ public class HibernateTeacherDao implements TeacherDao {
                 "Find teachers who havent lectures and vacation this period: {} at {} - {} and who can teach this subject: {}",
                 date, time.getStart(), time.getEnd(), subject.getName());
         List<Teacher> teachers = sessionFactory.getCurrentSession()
-                .createSQLQuery("SELECT DISTINCT teachers.* FROM teachers LEFT JOIN subjects_teachers AS st ON teachers.id = st.teacher_id LEFT JOIN vacations AS vac ON teachers.id = vac.teacher_id WHERE st.subject_id =:subject_id AND ((:date NOT BETWEEN vac.start AND vac.finish) OR (vac.start IS NULL AND vac.finish IS NULL))AND NOT EXISTS (select id from lectures where lectures.teacher_id = teachers.id AND lectures.date =:date AND lectures.lecture_time_id = :lecture_time_id)")
+                .getNamedNativeQuery("findTeacherByFreeDateAndSubjectWithCurrentTeacher")
                 .addEntity(Teacher.class)
                 .setParameter("subject_id", subject.getId())
                 .setParameter("date", date)
                 .setParameter("lecture_time_id", time.getId())
-                .list();
+                .getResultList();
         if (teachers.isEmpty()) {
             throw new EntityNotFoundException(
                     "Can`t find teachers who havent lectures and vacation this period:" + date + " at "

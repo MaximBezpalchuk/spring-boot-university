@@ -33,9 +33,7 @@ public class HibernateVacationDao implements VacationDao {
     public List<Vacation> findAll() {
         logger.debug("Find all vacations");
 
-        return sessionFactory.getCurrentSession()
-                .createQuery("FROM Vacation", Vacation.class)
-                .list();
+        return sessionFactory.getCurrentSession().getNamedQuery("findAllVacations").getResultList();
     }
 
     @Override
@@ -43,15 +41,15 @@ public class HibernateVacationDao implements VacationDao {
         logger.debug("Find all vacations with pageSize:{} and offset:{} by teacherId:{}", pageable.getPageSize(),
                 pageable.getOffset(), id);
         int total = (int) (long) sessionFactory.getCurrentSession()
-                .createQuery("SELECT COUNT(v) FROM Vacation v WHERE teacher.id=:teacher_id")
+                .getNamedQuery("countAllVacationsByTeacherId")
                 .setParameter("teacher_id", id)
                 .getSingleResult();
         List<Vacation> vacations = sessionFactory.getCurrentSession()
-                .createQuery("FROM Vacation WHERE teacher.id=:teacher_id", Vacation.class)
+                .getNamedQuery("findAllVacationsByTeacherId")
                 .setParameter("teacher_id", id)
                 .setFirstResult((int) pageable.getOffset())
                 .setMaxResults(pageable.getPageSize())
-                .list();
+                .getResultList();
 
         return new PageImpl<>(vacations, pageable, total);
     }
@@ -88,9 +86,9 @@ public class HibernateVacationDao implements VacationDao {
     public List<Vacation> findByTeacherId(int id) {
         logger.debug("Find vacations by teacher id: {}", id);
         return sessionFactory.getCurrentSession()
-                .createQuery("FROM Vacation WHERE teacher.id=:teacher_id", Vacation.class)
+                .getNamedQuery("findAllVacationsByTeacherId")
                 .setParameter("teacher_id", id)
-                .list();
+                .getResultList();
     }
 
     @Override
@@ -99,33 +97,32 @@ public class HibernateVacationDao implements VacationDao {
 
         return findOrEmpty(
                 () -> (Vacation) sessionFactory.getCurrentSession()
-                        .createSQLQuery("SELECT * FROM vacations WHERE start=:start AND finish=:end AND teacher_id=:teacher_id")
+                        .getNamedNativeQuery("findVacationByPeriodAndTeacher")
                         .addEntity(Vacation.class)
                         .setParameter("start", start)
                         .setParameter("end", end)
                         .setParameter("teacher_id", teacher.getId())
-                        .uniqueResult());
+                        .getSingleResult());
     }
 
     @Override
     public List<Vacation> findByDateInPeriodAndTeacher(LocalDate date, Teacher teacher) {
         logger.debug("Find vacations by vacation date: {} and teacher id: {}", date, teacher.getId());
         return sessionFactory.getCurrentSession()
-                .createSQLQuery("SELECT * FROM vacations WHERE start >=:date AND finish<=:date AND teacher_id=:teacher_id")
+                .getNamedNativeQuery("findVacationsByDateInPeriodAndTeacher")
                 .addEntity(Vacation.class)
                 .setParameter("date", date)
                 .setParameter("teacher_id", teacher.getId())
-                .list();
+                .getResultList();
     }
 
     @Override
     public List<Vacation> findByTeacherIdAndYear(int id, int year) {
         logger.debug("Find vacations by teacher id: {} and year: {}", id, year);
         return sessionFactory.getCurrentSession()
-                .createQuery("FROM Vacation WHERE teacher.id=:teacher_id AND EXTRACT(YEAR FROM start)=:year",
-                        Vacation.class)
+                .getNamedQuery("findVacationsByTeacherIdAndYear")
                 .setParameter("teacher_id", id)
                 .setParameter("year", year)
-                .list();
+                .getResultList();
     }
 }

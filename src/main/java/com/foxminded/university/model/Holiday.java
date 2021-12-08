@@ -8,6 +8,26 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
+@NamedQueries(
+		{
+				@NamedQuery(
+						name = "findAllHolidays",
+						query = "FROM Holiday"
+				),
+				@NamedQuery(
+						name = "countAllHolidays",
+						query = "SELECT COUNT(h) FROM Holiday h"
+				),
+				@NamedQuery(
+						name = "findHolidayByNameAndDate",
+						query = "FROM Holiday WHERE name=:name AND date=:date"
+				),
+				@NamedQuery(
+						name = "findHolidayByDate",
+						query = "FROM Holiday WHERE date=:date"
+				)
+		})
+
 @Entity
 @Table(name = "holidays")
 public class Holiday {
