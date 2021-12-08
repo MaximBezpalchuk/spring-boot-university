@@ -89,9 +89,9 @@ public class TeacherController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable int id) {
-        logger.debug("Delete teacher with id {}", id);
-        teacherService.deleteById(id);
+    public String delete(@ModelAttribute Teacher teacher) {
+        logger.debug("Delete teacher with id {}", teacher.getId());
+        teacherService.delete(teacher);
 
         return "redirect:/teachers";
     }

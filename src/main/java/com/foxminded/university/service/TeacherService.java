@@ -47,9 +47,9 @@ public class TeacherService {
 		teacherDao.save(teacher);
 	}
 
-	public void deleteById(int id) {
-		logger.debug("Delete teacher by id: {}", id);
-		teacherDao.deleteById(id);
+	public void delete(Teacher teacher) {
+		logger.debug("Delete teacher with id: {}", teacher.getId());
+		teacherDao.delete(teacher);
 	}
 
 	private void uniqueCheck(Teacher teacher) {

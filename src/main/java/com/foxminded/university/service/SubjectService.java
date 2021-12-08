@@ -46,9 +46,9 @@ public class SubjectService {
 		subjectDao.save(subject);
 	}
 
-	public void deleteById(int id) {
-		logger.debug("Delete subject by id: {}", id);
-		subjectDao.deleteById(id);
+	public void delete(Subject subject) {
+		logger.debug("Delete subject with id: {}", subject.getId());
+		subjectDao.delete(subject);
 	}
 
     private void uniqueCheck(Subject subject) {

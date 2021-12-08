@@ -100,7 +100,7 @@ public class HibernateHolidayDaoTest {
 
     @Test
     void whenDeleteExistingHoliday_thenHolidayDeleted() {
-        holidayDao.deleteById(2);
+        holidayDao.delete(Holiday.builder().id(2).build());
         Holiday actual = sessionFactory.getCurrentSession().get(Holiday.class, 2);
 
         assertNull(actual);

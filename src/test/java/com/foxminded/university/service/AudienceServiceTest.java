@@ -76,9 +76,10 @@ public class AudienceServiceTest {
 
 	@Test
 	void givenExistingAudienceId_whenDelete_thenDeleted() {
-		audienceService.deleteById(3);
+		Audience audience = Audience.builder().id(3).build();
+		audienceService.delete(audience);
 
-		verify(audienceDao).deleteById(3);
+		verify(audienceDao).delete(audience);
 	}
 
 	@Test

@@ -55,10 +55,9 @@ public class HibernateCathedraDao implements CathedraDao {
     }
 
     @Override
-    public void deleteById(int id) {
-        Session session = sessionFactory.getCurrentSession();
-        session.delete(session.get(Cathedra.class, id));
-        logger.debug("Cathedra with id {} was deleted", id);
+    public void delete(Cathedra cathedra) {
+        sessionFactory.getCurrentSession().delete(cathedra);
+        logger.debug("Cathedra with id {} was deleted", cathedra.getId());
     }
 
     @Override

@@ -79,10 +79,9 @@ public class HibernateVacationDao implements VacationDao {
     }
 
     @Override
-    public void deleteById(int id) {
-        Session session = sessionFactory.getCurrentSession();
-        session.delete(session.get(Vacation.class, id));
-        logger.debug("Vacation with id {} was deleted", id);
+    public void delete(Vacation vacation) {
+        sessionFactory.getCurrentSession().delete(vacation);
+        logger.debug("Vacation with id {} was deleted", vacation.getId());
     }
 
     @Override

@@ -123,7 +123,7 @@ public class HibernateStudentDaoTest {
 
     @Test
     void whenDeleteExistingStudent_thenStudentDeleted() {
-        studentDao.deleteById(2);
+        studentDao.delete(Student.builder().id(2).build());
         Student actual = sessionFactory.getCurrentSession().get(Student.class, 2);
 
         assertNull(actual);

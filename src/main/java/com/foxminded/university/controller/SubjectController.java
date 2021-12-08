@@ -78,9 +78,9 @@ public class SubjectController {
 	}
 
 	@DeleteMapping("/{id}")
-	public String delete(@PathVariable int id) {
-		logger.debug("Delete subject with id {}", id);
-		subjectService.deleteById(id);
+	public String delete(@ModelAttribute Subject subject) {
+		logger.debug("Delete subject with id {}", subject.getId());
+		subjectService.delete(subject);
 
 		return "redirect:/subjects";
 	}

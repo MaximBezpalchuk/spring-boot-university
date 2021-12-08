@@ -51,9 +51,9 @@ public class StudentService {
 		studentDao.save(student);
 	}
 
-	public void deleteById(int id) {
-		logger.debug("Delete student by id: {}", id);
-		studentDao.deleteById(id);
+	public void delete(Student student) {
+		logger.debug("Delete student with id: {}", student.getId());
+		studentDao.delete(student);
 	}
 
 	private void uniqueCheck(Student student) {

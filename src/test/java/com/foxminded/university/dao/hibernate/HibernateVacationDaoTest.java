@@ -105,7 +105,7 @@ public class HibernateVacationDaoTest {
 
     @Test
     void whenDeleteExistingVacation_thenVacationDeleted() {
-        vacationDao.deleteById(2);
+        vacationDao.delete(Vacation.builder().id(2).build());
         Vacation actual = sessionFactory.getCurrentSession().get(Vacation.class, 2);
 
         assertNull(actual);

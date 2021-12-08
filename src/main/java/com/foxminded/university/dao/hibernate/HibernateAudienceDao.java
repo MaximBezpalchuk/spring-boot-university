@@ -55,10 +55,9 @@ public class HibernateAudienceDao implements AudienceDao {
     }
 
     @Override
-    public void deleteById(int id) {
-        Session session = sessionFactory.getCurrentSession();
-        session.delete(session.get(Audience.class, id));
-        logger.debug("Audience with id {} was deleted", id);
+    public void delete(Audience audience) {
+        sessionFactory.getCurrentSession().delete(audience);
+        logger.debug("Audience with id {} was deleted", audience.getId());
     }
 
     @Override

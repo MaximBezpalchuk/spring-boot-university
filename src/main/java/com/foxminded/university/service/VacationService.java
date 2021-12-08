@@ -52,9 +52,9 @@ public class VacationService {
 		vacationDao.save(vacation);
 	}
 
-	public void deleteById(int id) {
-		logger.debug("Delete vacation by id: {}", id);
-		vacationDao.deleteById(id);
+	public void delete(Vacation vacation) {
+		logger.debug("Delete vacation with id: {}", vacation.getId());
+		vacationDao.delete(vacation);
 	}
 
 	public List<Vacation> findByTeacherId(int id) {

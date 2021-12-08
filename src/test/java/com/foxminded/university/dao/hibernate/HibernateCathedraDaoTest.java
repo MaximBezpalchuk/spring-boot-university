@@ -75,7 +75,7 @@ public class HibernateCathedraDaoTest {
 
     @Test
     void whenDeleteExistingCathedra_thenCathedraDeleted() {
-        cathedraDao.deleteById(1);
+        cathedraDao.delete(Cathedra.builder().id(1).build());
         Cathedra actual = sessionFactory.getCurrentSession().get(Cathedra.class, 1);
 
         assertNull(actual);

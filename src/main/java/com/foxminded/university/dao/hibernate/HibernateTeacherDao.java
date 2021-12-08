@@ -77,10 +77,9 @@ public class HibernateTeacherDao implements TeacherDao {
     }
 
     @Override
-    public void deleteById(int id) {
-        Session session = sessionFactory.getCurrentSession();
-        session.delete(session.get(Teacher.class, id));
-        logger.debug("Teacher with id {} was deleted", id);
+    public void delete(Teacher teacher) {
+        sessionFactory.getCurrentSession().delete(teacher);
+        logger.debug("Teacher with id {} was deleted", teacher.getId());
     }
 
     @Override

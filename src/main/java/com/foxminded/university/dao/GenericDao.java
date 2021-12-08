@@ -11,7 +11,7 @@ public interface GenericDao<T> {
 
 	void save(T entity);
 
-	void deleteById(int id);
+	void delete(T entity);
 
 	default <T> Optional<T> findOrEmpty(final DaoRetriever<T> retriever) {
 		try {

@@ -149,6 +149,7 @@ public class AudienceControllerTest {
 		mockMvc.perform(delete("/audiences/{id}", 1))
 				.andExpect(redirectedUrl("/audiences"));
 
-		verify(audienceService).deleteById(1);
+
+		verify(audienceService).delete(Audience.builder().id(1).build());
 	}
 }

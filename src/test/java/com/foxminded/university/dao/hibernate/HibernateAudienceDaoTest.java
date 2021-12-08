@@ -83,7 +83,7 @@ public class HibernateAudienceDaoTest {
 
     @Test
     void whenDeleteExistingAudience_thenAudienceDeleted() {
-        audienceDao.deleteById(2);
+        audienceDao.delete(Audience.builder().id(2).build());
         Audience actual = sessionFactory.getCurrentSession().get(Audience.class, 2);
 
         assertNull(actual);

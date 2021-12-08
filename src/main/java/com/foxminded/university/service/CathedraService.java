@@ -39,9 +39,9 @@ public class CathedraService {
 		cathedraDao.save(cathedra);
 	}
 
-	public void deleteById(int id) {
-		logger.debug("Delete cathedra by id: {}", id);
-		cathedraDao.deleteById(id);
+	public void delete(Cathedra cathedra) {
+		logger.debug("Delete cathedra with id: {}", cathedra.getId());
+		cathedraDao.delete(cathedra);
 	}
 
 	private void uniqueCheck(Cathedra cathedra) {

@@ -78,9 +78,10 @@ public class GroupServiceTest {
 
     @Test
     void givenExistingGroupId_whenDelete_thenDeleted() {
-        groupService.deleteById(1);
+        Group group = Group.builder().id(1).build();
+        groupService.delete(group);
 
-        verify(groupDao).deleteById(1);
+        verify(groupDao).delete(group);
     }
 
     @Test

@@ -314,9 +314,10 @@ public class LectureServiceTest {
 
     @Test
     void givenExistingLectureId_whenDelete_thenDeleted() {
-        lectureService.deleteById(1);
+        Lecture lecture = Lecture.builder().id(1).build();
+        lectureService.delete(lecture);
 
-        verify(lectureDao).deleteById(1);
+        verify(lectureDao).delete(lecture);
     }
 
     @Test

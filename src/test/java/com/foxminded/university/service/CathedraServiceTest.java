@@ -74,9 +74,10 @@ public class CathedraServiceTest {
 
     @Test
     void givenExistingAudienceId_whenDelete_thenDeleted() {
-        cathedraService.deleteById(1);
+        Cathedra cathedra = Cathedra.builder().id(1).build();
+        cathedraService.delete(cathedra);
 
-        verify(cathedraDao).deleteById(1);
+        verify(cathedraDao).delete(cathedra);
     }
 
     @Test

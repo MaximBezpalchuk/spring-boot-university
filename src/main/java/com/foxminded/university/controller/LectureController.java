@@ -128,9 +128,9 @@ public class LectureController {
     }
 
     @DeleteMapping("/lectures/{id}")
-    public String delete(@PathVariable int id) {
-        logger.debug("Delete lecture with id {}", id);
-        lectureService.deleteById(id);
+    public String delete(@ModelAttribute Lecture lecture) {
+        logger.debug("Delete lecture with id {}", lecture.getId());
+        lectureService.delete(lecture);
 
         return "redirect:/lectures";
     }

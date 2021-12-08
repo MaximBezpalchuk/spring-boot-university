@@ -12,6 +12,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
+import com.foxminded.university.model.Lecture;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -121,6 +122,6 @@ public class LectureTimeControllerTest {
 		mockMvc.perform(delete("/lecturetimes/{id}", 1))
 				.andExpect(redirectedUrl("/lecturetimes"));
 		
-		verify(lectureTimeService).deleteById(1);
+		verify(lectureTimeService).delete(LectureTime.builder().id(1).build());
 	}
 }

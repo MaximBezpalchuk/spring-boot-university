@@ -48,9 +48,9 @@ public class LectureTimeService {
 
 	}
 
-	public void deleteById(int id) {
-		logger.debug("Delete lecture time by id: {}", id);
-		lectureTimeDao.deleteById(id);
+	public void delete(LectureTime lectureTime) {
+		logger.debug("Delete lecture time with id: {}", lectureTime.getId());
+		lectureTimeDao.delete(lectureTime);
 	}
 
 	private void uniqueCheck(LectureTime lectureTime) {

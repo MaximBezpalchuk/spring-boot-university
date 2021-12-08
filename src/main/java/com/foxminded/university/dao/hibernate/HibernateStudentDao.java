@@ -74,10 +74,9 @@ public class HibernateStudentDao implements StudentDao {
     }
 
     @Override
-    public void deleteById(int id) {
-        Session session = sessionFactory.getCurrentSession();
-        session.delete(session.get(Student.class, id));
-        logger.debug("Student with id {} was deleted", id);
+    public void delete(Student student) {
+        sessionFactory.getCurrentSession().delete(student);
+        logger.debug("Student with id {} was deleted", student.getId());
     }
 
     @Override

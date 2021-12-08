@@ -195,9 +195,10 @@ public class VacationServiceTest {
 
     @Test
     void givenExistingVacationId_whenDelete_thenDeleted() {
-        vacationService.deleteById(1);
+        Vacation vacation = Vacation.builder().id(1).build();
+        vacationService.delete(vacation);
 
-        verify(vacationDao).deleteById(1);
+        verify(vacationDao).delete(vacation);
     }
 
     @Test

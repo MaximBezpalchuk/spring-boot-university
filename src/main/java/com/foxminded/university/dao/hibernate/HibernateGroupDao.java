@@ -55,10 +55,9 @@ public class HibernateGroupDao implements GroupDao {
     }
 
     @Override
-    public void deleteById(int id) {
-        Session session = sessionFactory.getCurrentSession();
-        session.delete(session.get(Group.class, id));
-        logger.debug("Group with id {} was deleted", id);
+    public void delete(Group group) {
+        sessionFactory.getCurrentSession().delete(group);
+        logger.debug("Group with id {} was deleted", group.getId());
     }
 
     @Override

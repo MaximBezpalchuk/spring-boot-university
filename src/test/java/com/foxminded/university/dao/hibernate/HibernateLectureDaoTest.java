@@ -129,7 +129,7 @@ public class HibernateLectureDaoTest {
 
     @Test
     void whenDeleteExistingLecture_thenLectureDeleted() {
-        lectureDao.deleteById(2);
+        lectureDao.delete(Lecture.builder().id(2).build());
         Lecture actual = sessionFactory.getCurrentSession().get(Lecture.class, 2);
 
         assertNull(actual);

@@ -166,6 +166,6 @@ public class TeacherControllerTest {
 		mockMvc.perform(delete("/teachers/{id}", 1))
 				.andExpect(redirectedUrl("/teachers"));
 
-		verify(teacherService).deleteById(1);
+		verify(teacherService).delete(Teacher.builder().id(1).build());
 	}
 }

@@ -78,9 +78,9 @@ public class HolidayController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable int id) {
-        logger.debug("Delete holiday with id {}", id);
-        holidayService.deleteById(id);
+    public String delete(@ModelAttribute Holiday holiday) {
+        logger.debug("Delete holiday with id {}", holiday.getId());
+        holidayService.delete(holiday);
 
         return "redirect:/holidays";
     }

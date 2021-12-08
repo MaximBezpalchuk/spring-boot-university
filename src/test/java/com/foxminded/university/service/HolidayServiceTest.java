@@ -94,9 +94,10 @@ public class HolidayServiceTest {
 
     @Test
     void givenExistingHolidayId_whenDelete_thenDeleted() {
-        holidayService.deleteById(1);
+        Holiday holiday = Holiday.builder().id(1).build();
+        holidayService.delete(holiday);
 
-        verify(holidayDao).deleteById(1);
+        verify(holidayDao).delete(holiday);
     }
 
     @Test

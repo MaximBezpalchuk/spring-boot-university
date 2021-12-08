@@ -73,10 +73,9 @@ public class HibernateSubjectDao implements SubjectDao {
     }
 
     @Override
-    public void deleteById(int id) {
-        Session session = sessionFactory.getCurrentSession();
-        session.delete(session.get(Subject.class, id));
-        logger.debug("Subject with id {} was deleted", id);
+    public void delete(Subject subject) {
+        sessionFactory.getCurrentSession().delete(subject);
+        logger.debug("Subject with id {} was deleted", subject.getId());
     }
 
     @Override

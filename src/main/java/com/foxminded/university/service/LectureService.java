@@ -78,9 +78,9 @@ public class LectureService {
         lectureDao.save(lecture);
     }
 
-    public void deleteById(int id) {
-        logger.debug("Delete lecture by id: {}", id);
-        lectureDao.deleteById(id);
+    public void delete(Lecture lecture) {
+        logger.debug("Delete lecture with id: {}", lecture.getId());
+        lectureDao.delete(lecture);
     }
 
     private void uniqueCheck(Lecture lecture) {

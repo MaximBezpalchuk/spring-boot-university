@@ -56,10 +56,9 @@ public class HibernateLectureTimeDao implements LectureTimeDao {
     }
 
     @Override
-    public void deleteById(int id) {
-        Session session = sessionFactory.getCurrentSession();
-        session.delete(session.get(LectureTime.class, id));
-        logger.debug("Lecture time with id {} was deleted", id);
+    public void delete(LectureTime lectureTime) {
+        sessionFactory.getCurrentSession().delete(lectureTime);
+        logger.debug("Lecture time with id {} was deleted", lectureTime.getId());
     }
 
     @Override

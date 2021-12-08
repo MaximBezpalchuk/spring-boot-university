@@ -74,10 +74,9 @@ public class HibernateHolidayDao implements HolidayDao {
     }
 
     @Override
-    public void deleteById(int id) {
-        Session session = sessionFactory.getCurrentSession();
-        session.delete(session.get(Holiday.class, id));
-        logger.debug("Holiday with id {} was deleted", id);
+    public void delete(Holiday holiday) {
+        sessionFactory.getCurrentSession().delete(holiday);
+        logger.debug("Holiday with id {} was deleted", holiday.getId());
     }
 
     @Override

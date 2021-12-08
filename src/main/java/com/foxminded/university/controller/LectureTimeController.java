@@ -67,9 +67,9 @@ public class LectureTimeController {
 	}
 
 	@DeleteMapping("/{id}")
-	public String delete(@PathVariable int id) {
-		logger.debug("Delete lecture time with id {}", id);
-		lectureTimeService.deleteById(id);
+	public String delete(@ModelAttribute LectureTime lectureTime) {
+		logger.debug("Delete lecture time with id {}", lectureTime.getId());
+		lectureTimeService.delete(lectureTime);
 
 		return "redirect:/lecturetimes";
 	}

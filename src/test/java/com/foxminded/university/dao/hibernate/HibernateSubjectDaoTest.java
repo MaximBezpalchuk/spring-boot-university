@@ -102,7 +102,7 @@ public class HibernateSubjectDaoTest {
 
     @Test
     void whenDeleteExistingSubject_thenSubjectDeleted() {
-        subjectDao.deleteById(2);
+        subjectDao.delete(Subject.builder().id(2).build());
         Subject actual = sessionFactory.getCurrentSession().get(Subject.class, 2);
 
         assertNull(actual);

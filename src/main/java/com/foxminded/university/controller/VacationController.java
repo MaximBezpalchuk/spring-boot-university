@@ -137,9 +137,9 @@ public class VacationController {
 	}
 
 	@DeleteMapping("/{id}")
-	public String delete(@PathVariable int teacherId, @PathVariable int id) {
-		logger.debug("Delete vacation with id {}", id);
-		vacationService.deleteById(id);
+	public String delete(@ModelAttribute Vacation vacation, @PathVariable int teacherId) {
+		logger.debug("Delete vacation with id {}", vacation.getId());
+		vacationService.delete(vacation);
 
 		return "redirect:/teachers/" + teacherId + "/vacations";
 	}

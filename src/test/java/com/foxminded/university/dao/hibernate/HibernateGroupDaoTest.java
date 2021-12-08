@@ -81,7 +81,7 @@ public class HibernateGroupDaoTest {
 
     @Test
     void whenDeleteExistingGroup_thenGroupDeleted() {
-        groupDao.deleteById(2);
+        groupDao.delete(Group.builder().id(2).build());
         Group actual = sessionFactory.getCurrentSession().get(Group.class, 2);
 
         assertNull(actual);

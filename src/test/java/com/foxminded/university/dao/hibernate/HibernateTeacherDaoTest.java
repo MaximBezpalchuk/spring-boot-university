@@ -141,7 +141,7 @@ public class HibernateTeacherDaoTest {
 
     @Test
     void whenDeleteExistingTeacher_thenTeacherDeleted() {
-        teacherDao.deleteById(2);
+        teacherDao.delete(Teacher.builder().id(2).build());
         Teacher actual = sessionFactory.getCurrentSession().get(Teacher.class, 2);
 
         assertNull(actual);

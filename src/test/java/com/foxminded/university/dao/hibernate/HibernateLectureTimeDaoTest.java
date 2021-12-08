@@ -78,7 +78,7 @@ public class HibernateLectureTimeDaoTest {
 
     @Test
     void whenDeleteExistingLectureTime_thenLectureTimeDeleted() {
-        lectureTimeDao.deleteById(2);
+        lectureTimeDao.delete(LectureTime.builder().id(2).build());
         LectureTime actual = sessionFactory.getCurrentSession().get(LectureTime.class, 2);
 
         assertNull(actual);

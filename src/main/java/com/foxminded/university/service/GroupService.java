@@ -39,9 +39,9 @@ public class GroupService {
 		groupDao.save(group);
 	}
 
-	public void deleteById(int id) {
-		logger.debug("Delete group by id: {}", id);
-		groupDao.deleteById(id);
+	public void delete(Group group) {
+		logger.debug("Delete group with id: {}", group.getId());
+		groupDao.delete(group);
 	}
 
     private void uniqueCheck(Group group) {
