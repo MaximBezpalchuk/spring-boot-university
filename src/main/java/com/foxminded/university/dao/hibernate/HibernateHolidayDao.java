@@ -40,13 +40,13 @@ public class HibernateHolidayDao implements HolidayDao {
     public Page<Holiday> findPaginatedHolidays(Pageable pageable) {
         logger.debug("Find all holidays with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
         int total = (int) (long) sessionFactory.getCurrentSession()
-                .getNamedQuery("countAllHolidays")
-                .getSingleResult();
+            .getNamedQuery("countAllHolidays")
+            .getSingleResult();
         List<Holiday> holidays = sessionFactory.getCurrentSession()
-                .getNamedQuery("findAllHolidays")
-                .setFirstResult((int) pageable.getOffset())
-                .setMaxResults(pageable.getPageSize())
-                .getResultList();
+            .getNamedQuery("findAllHolidays")
+            .setFirstResult((int) pageable.getOffset())
+            .setMaxResults(pageable.getPageSize())
+            .getResultList();
 
         return new PageImpl<>(holidays, pageable, total);
     }
@@ -64,30 +64,29 @@ public class HibernateHolidayDao implements HolidayDao {
         Session session = sessionFactory.getCurrentSession();
 
         if (holiday.getId() == 0) {
-            session.save(holiday);
             logger.debug("New holiday created with id: {}", holiday.getId());
+            session.save(holiday);
         } else {
-            session.merge(holiday);
             logger.debug("Holiday with id {} was updated", holiday.getId());
+            session.merge(holiday);
         }
     }
 
     @Override
     public void delete(Holiday holiday) {
-        sessionFactory.getCurrentSession().delete(holiday);
         logger.debug("Holiday with id {} was deleted", holiday.getId());
+        sessionFactory.getCurrentSession().delete(holiday);
     }
 
     @Override
     public Optional<Holiday> findByNameAndDate(String name, LocalDate date) {
         logger.debug("Find holiday with name: {} and date: {}", name, date);
 
-        return findOrEmpty(
-                () -> (Holiday) sessionFactory.getCurrentSession()
-                        .getNamedQuery("findHolidayByNameAndDate")
-                        .setParameter("name", name)
-                        .setParameter("date", date)
-                        .getSingleResult());
+        return sessionFactory.getCurrentSession()
+            .getNamedQuery("findHolidayByNameAndDate")
+            .setParameter("name", name)
+            .setParameter("date", date)
+            .uniqueResultOptional();
     }
 
     @Override
@@ -95,8 +94,8 @@ public class HibernateHolidayDao implements HolidayDao {
         logger.debug("Find holiday by date: {}", date);
 
         return sessionFactory.getCurrentSession()
-                .getNamedQuery("findHolidayByDate")
-                .setParameter("date", date)
-                .getResultList();
+            .getNamedQuery("findHolidayByDate")
+            .setParameter("date", date)
+            .getResultList();
     }
 }

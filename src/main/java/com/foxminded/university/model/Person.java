@@ -145,10 +145,10 @@ public class Person {
             return false;
         Person other = (Person) obj;
         return Objects.equals(address, other.address) && Objects.equals(birthDate, other.birthDate)
-                && Objects.equals(education, other.education) && Objects.equals(email, other.email)
-                && Objects.equals(firstName, other.firstName) && gender == other.gender && id == other.id
-                && Objects.equals(lastName, other.lastName) && Objects.equals(phone, other.phone)
-                && Objects.equals(postalCode, other.postalCode);
+            && Objects.equals(education, other.education) && Objects.equals(email, other.email)
+            && Objects.equals(firstName, other.firstName) && gender == other.gender && id == other.id
+            && Objects.equals(lastName, other.lastName) && Objects.equals(phone, other.phone)
+            && Objects.equals(postalCode, other.postalCode);
     }
 
     public abstract static class Builder<T extends Builder<T>> {

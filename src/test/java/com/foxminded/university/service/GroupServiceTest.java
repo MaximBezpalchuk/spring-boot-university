@@ -68,8 +68,8 @@ public class GroupServiceTest {
     @Test
     void givenExistingGroup_whenSave_thenSaved() {
         Group group = Group.builder()
-                .name("TestName")
-                .build();
+            .name("TestName")
+            .build();
         when(groupDao.findByName(group.getName())).thenReturn(Optional.of(group));
         groupService.save(group);
 

@@ -45,30 +45,29 @@ public class HibernateLectureTimeDao implements LectureTimeDao {
         Session session = sessionFactory.getCurrentSession();
 
         if (lectureTime.getId() == 0) {
-            session.save(lectureTime);
             logger.debug("New lecture time created with id: {}", lectureTime.getId());
+            session.save(lectureTime);
         } else {
-            session.merge(lectureTime);
             logger.debug("Lecture time with id {} was updated", lectureTime.getId());
+            session.merge(lectureTime);
         }
     }
 
     @Override
     public void delete(LectureTime lectureTime) {
-        sessionFactory.getCurrentSession().delete(lectureTime);
         logger.debug("Lecture time with id {} was deleted", lectureTime.getId());
+        sessionFactory.getCurrentSession().delete(lectureTime);
     }
 
     @Override
     public Optional<LectureTime> findByPeriod(LocalTime start, LocalTime end) {
         logger.debug("Find lecture time which starts at {} and end at {}", start, end);
 
-        return findOrEmpty(
-                () -> (LectureTime) sessionFactory.getCurrentSession()
-                        .getNamedNativeQuery("findLectureTimeByPeriod")
-                        .addEntity(LectureTime.class)
-                        .setParameter("start", start)
-                        .setParameter("end", end)
-                        .getSingleResult());
+        return sessionFactory.getCurrentSession()
+            .getNamedNativeQuery("findLectureTimeByPeriod")
+            .addEntity(LectureTime.class)
+            .setParameter("start", start)
+            .setParameter("end", end)
+            .uniqueResultOptional();
     }
 }

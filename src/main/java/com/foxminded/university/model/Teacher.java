@@ -7,27 +7,27 @@ import java.util.List;
 import java.util.Objects;
 
 @NamedQueries(
-        {
-                @NamedQuery(
-                        name = "findAllTeachers",
-                        query = "FROM Teacher"
-                ),
-                @NamedQuery(
-                        name = "countAllTeachers",
-                        query = "SELECT COUNT(t) FROM Teacher t"
-                ),
-                @NamedQuery(
-                        name = "findTeacherByFullNameAndBirthDate",
-                        query = "FROM Teacher WHERE firstName=:first_name AND lastName=:last_name AND birthDate=:birth_date"
-                )
-        })
+    {
+        @NamedQuery(
+            name = "findAllTeachers",
+            query = "FROM Teacher"
+        ),
+        @NamedQuery(
+            name = "countAllTeachers",
+            query = "SELECT COUNT(t) FROM Teacher t"
+        ),
+        @NamedQuery(
+            name = "findTeacherByFullNameAndBirthDate",
+            query = "FROM Teacher WHERE firstName=:first_name AND lastName=:last_name AND birthDate=:birth_date"
+        )
+    })
 @NamedNativeQueries(
-        {
-                @NamedNativeQuery(
-                        name = "findTeacherByFreeDateAndSubjectWithCurrentTeacher",
-                        query = "SELECT DISTINCT teachers.* FROM teachers LEFT JOIN subjects_teachers AS st ON teachers.id = st.teacher_id LEFT JOIN vacations AS vac ON teachers.id = vac.teacher_id WHERE st.subject_id =:subject_id AND ((:date NOT BETWEEN vac.start AND vac.finish) OR (vac.start IS NULL AND vac.finish IS NULL))AND NOT EXISTS (select id from lectures where lectures.teacher_id = teachers.id AND lectures.date =:date AND lectures.lecture_time_id = :lecture_time_id)"
-                )
-        })
+    {
+        @NamedNativeQuery(
+            name = "findTeacherByFreeDateAndSubjectWithCurrentTeacher",
+            query = "SELECT DISTINCT teachers.* FROM teachers LEFT JOIN subjects_teachers AS st ON teachers.id = st.teacher_id LEFT JOIN vacations AS vac ON teachers.id = vac.teacher_id WHERE st.subject_id =:subject_id AND ((:date NOT BETWEEN vac.start AND vac.finish) OR (vac.start IS NULL AND vac.finish IS NULL))AND NOT EXISTS (select id from lectures where lectures.teacher_id = teachers.id AND lectures.date =:date AND lectures.lecture_time_id = :lecture_time_id)"
+        )
+    })
 
 @Entity
 @Table(name = "teachers")
@@ -100,7 +100,7 @@ public class Teacher extends Person {
             return false;
         Teacher other = (Teacher) obj;
         return Objects.equals(cathedra, other.cathedra) && degree == other.degree
-                && Objects.equals(subjects, other.subjects);
+            && Objects.equals(subjects, other.subjects);
     }
 
     public static class Builder extends Person.Builder<Builder> {
@@ -131,7 +131,7 @@ public class Teacher extends Person {
 
         public Teacher build() {
             return new Teacher(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate,
-                    cathedra, subjects, degree);
+                cathedra, subjects, degree);
         }
 
     }

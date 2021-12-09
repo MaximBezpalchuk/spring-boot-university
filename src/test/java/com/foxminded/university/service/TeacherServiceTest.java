@@ -83,12 +83,12 @@ public class TeacherServiceTest {
     @Test
     void givenExistingTeacher_whenSave_thenSaved() {
         Teacher teacher = Teacher.builder().id(1)
-                .firstName("TestFirstName")
-                .lastName("TestLastName")
-                .birthDate(LocalDate.of(1920, 2, 12))
-                .build();
+            .firstName("TestFirstName")
+            .lastName("TestLastName")
+            .birthDate(LocalDate.of(1920, 2, 12))
+            .build();
         when(teacherDao.findByFullNameAndBirthDate(teacher.getFirstName(), teacher.getLastName(),
-                teacher.getBirthDate())).thenReturn(Optional.of(teacher));
+            teacher.getBirthDate())).thenReturn(Optional.of(teacher));
         teacherService.save(teacher);
 
         verify(teacherDao).save(teacher);
@@ -105,22 +105,22 @@ public class TeacherServiceTest {
     @Test
     void givenNotUniqueTeacher_whenSave_thenEntityNotUniqueException() {
         Teacher teacher1 = Teacher.builder().id(1)
-                .firstName("TestFirstName")
-                .lastName("TestLastName")
-                .birthDate(LocalDate.of(1920, 2, 12))
-                .build();
+            .firstName("TestFirstName")
+            .lastName("TestLastName")
+            .birthDate(LocalDate.of(1920, 2, 12))
+            .build();
         Teacher teacher2 = Teacher.builder().id(10)
-                .firstName("TestFirstName")
-                .lastName("TestLastName")
-                .birthDate(LocalDate.of(1920, 2, 12))
-                .build();
+            .firstName("TestFirstName")
+            .lastName("TestLastName")
+            .birthDate(LocalDate.of(1920, 2, 12))
+            .build();
         when(teacherDao.findByFullNameAndBirthDate(teacher1.getFirstName(), teacher1.getLastName(),
-                teacher1.getBirthDate())).thenReturn(Optional.of(teacher2));
+            teacher1.getBirthDate())).thenReturn(Optional.of(teacher2));
         Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
             teacherService.save(teacher1);
         });
 
         assertEquals("Teacher with full name TestFirstName TestLastName and birth date 1920-02-12 is already exists!",
-                exception.getMessage());
+            exception.getMessage());
     }
 }

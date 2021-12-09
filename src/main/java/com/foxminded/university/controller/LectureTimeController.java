@@ -52,8 +52,8 @@ public class LectureTimeController {
 
     @GetMapping("/{id}/edit")
     public String editLectureTime(@PathVariable int id, Model model) {
-        model.addAttribute("lectureTime", lectureTimeService.findById(id));
         logger.debug("Show edit lecture time page");
+        model.addAttribute("lectureTime", lectureTimeService.findById(id));
 
         return "lecturetimes/edit";
     }

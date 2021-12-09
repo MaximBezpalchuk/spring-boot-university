@@ -44,27 +44,26 @@ public class HibernateAudienceDao implements AudienceDao {
         Session session = sessionFactory.getCurrentSession();
 
         if (audience.getId() == 0) {
-            session.save(audience);
             logger.debug("New audience created with id: {}", audience.getId());
+            session.save(audience);
         } else {
-            session.merge(audience);
             logger.debug("Audience with id {} was updated", audience.getId());
+            session.merge(audience);
         }
     }
 
     @Override
     public void delete(Audience audience) {
-        sessionFactory.getCurrentSession().delete(audience);
         logger.debug("Audience with id {} was deleted", audience.getId());
+        sessionFactory.getCurrentSession().delete(audience);
     }
 
     @Override
     public Optional<Audience> findByRoom(int room) {
         logger.debug("Find audience by room number: {}", room);
-        return findOrEmpty(
-                () -> (Audience) sessionFactory.getCurrentSession()
-                        .getNamedQuery("findAudienceByRoomNumber")
-                        .setParameter("room", room)
-                        .getSingleResult());
+        return sessionFactory.getCurrentSession()
+            .getNamedQuery("findAudienceByRoomNumber")
+            .setParameter("room", room)
+            .uniqueResultOptional();
     }
 }

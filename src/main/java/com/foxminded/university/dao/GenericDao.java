@@ -13,11 +13,4 @@ public interface GenericDao<T> {
 
     void delete(T entity);
 
-    default <T> Optional<T> findOrEmpty(final DaoRetriever<T> retriever) {
-        try {
-            return Optional.of(retriever.retrieve());
-        } catch (Exception ex) {
-            return Optional.empty();
-        }
-    }
 }

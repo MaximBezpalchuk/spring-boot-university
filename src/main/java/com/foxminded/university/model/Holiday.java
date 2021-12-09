@@ -9,24 +9,24 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 @NamedQueries(
-        {
-                @NamedQuery(
-                        name = "findAllHolidays",
-                        query = "FROM Holiday"
-                ),
-                @NamedQuery(
-                        name = "countAllHolidays",
-                        query = "SELECT COUNT(h) FROM Holiday h"
-                ),
-                @NamedQuery(
-                        name = "findHolidayByNameAndDate",
-                        query = "FROM Holiday WHERE name=:name AND date=:date"
-                ),
-                @NamedQuery(
-                        name = "findHolidayByDate",
-                        query = "FROM Holiday WHERE date=:date"
-                )
-        })
+    {
+        @NamedQuery(
+            name = "findAllHolidays",
+            query = "FROM Holiday"
+        ),
+        @NamedQuery(
+            name = "countAllHolidays",
+            query = "SELECT COUNT(h) FROM Holiday h"
+        ),
+        @NamedQuery(
+            name = "findHolidayByNameAndDate",
+            query = "FROM Holiday WHERE name=:name AND date=:date"
+        ),
+        @NamedQuery(
+            name = "findHolidayByDate",
+            query = "FROM Holiday WHERE date=:date"
+        )
+    })
 
 @Entity
 @Table(name = "holidays")
@@ -106,7 +106,7 @@ public class Holiday {
             return false;
         Holiday other = (Holiday) obj;
         return Objects.equals(cathedra, other.cathedra) && Objects.equals(date, other.date) && id == other.id
-                && Objects.equals(name, other.name);
+            && Objects.equals(name, other.name);
     }
 
     public static class Builder {

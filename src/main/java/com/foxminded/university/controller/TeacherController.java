@@ -58,21 +58,21 @@ public class TeacherController {
 
     @PostMapping
     public String create(@ModelAttribute Teacher teacher, Model model) {
+        logger.debug("Create new teacher. Id {}", teacher.getId());
         teacher.setCathedra(cathedraService.findById(teacher.getCathedra().getId()));
         teacher.setSubjects(teacher.getSubjects().stream().map(subject -> subjectService.findById(subject.getId()))
-                .collect(Collectors.toList()));
+            .collect(Collectors.toList()));
         teacherService.save(teacher);
-        logger.debug("Create new teacher. Id {}", teacher.getId());
 
         return "redirect:/teachers";
     }
 
     @GetMapping("/{id}/edit")
     public String editTeacher(@PathVariable int id, Model model) {
+        logger.debug("Show edit teacher page");
         model.addAttribute("teacher", teacherService.findById(id));
         model.addAttribute("cathedras", cathedraService.findAll());
         model.addAttribute("subjects", subjectService.findAll());
-        logger.debug("Show edit teacher page");
 
         return "teachers/edit";
     }
@@ -82,7 +82,7 @@ public class TeacherController {
         logger.debug("Update teacher with id {}", id);
         teacher.setCathedra(cathedraService.findById(teacher.getCathedra().getId()));
         teacher.setSubjects(teacher.getSubjects().stream().map(subject -> subjectService.findById(subject.getId()))
-                .collect(Collectors.toList()));
+            .collect(Collectors.toList()));
         teacherService.save(teacher);
 
         return "redirect:/teachers";

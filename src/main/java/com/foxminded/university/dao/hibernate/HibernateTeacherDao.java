@@ -42,13 +42,13 @@ public class HibernateTeacherDao implements TeacherDao {
     public Page<Teacher> findPaginatedTeachers(Pageable pageable) {
         logger.debug("Find all teachers with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
         int total = (int) (long) sessionFactory.getCurrentSession()
-                .getNamedQuery("countAllTeachers")
-                .getSingleResult();
+            .getNamedQuery("countAllTeachers")
+            .getSingleResult();
         List<Teacher> teachers = sessionFactory.getCurrentSession()
-                .getNamedQuery("findAllTeachers")
-                .setFirstResult((int) pageable.getOffset())
-                .setMaxResults(pageable.getPageSize())
-                .getResultList();
+            .getNamedQuery("findAllTeachers")
+            .setFirstResult((int) pageable.getOffset())
+            .setMaxResults(pageable.getPageSize())
+            .getResultList();
 
         return new PageImpl<>(teachers, pageable, total);
     }
@@ -66,51 +66,50 @@ public class HibernateTeacherDao implements TeacherDao {
         Session session = sessionFactory.getCurrentSession();
 
         if (teacher.getId() == 0) {
-            session.save(teacher);
             logger.debug("New teacher created with id: {}", teacher.getId());
+            session.save(teacher);
         } else {
-            session.merge(teacher);
             logger.debug("Teacher with id {} was updated", teacher.getId());
+            session.merge(teacher);
         }
     }
 
     @Override
     public void delete(Teacher teacher) {
-        sessionFactory.getCurrentSession().delete(teacher);
         logger.debug("Teacher with id {} was deleted", teacher.getId());
+        sessionFactory.getCurrentSession().delete(teacher);
     }
 
     @Override
     public Optional<Teacher> findByFullNameAndBirthDate(String firstName, String lastName, LocalDate birthDate) {
         logger.debug("Find teacher by first name: {}, last name: {} and birth date: {}", firstName, lastName,
-                birthDate);
+            birthDate);
 
-        return findOrEmpty(
-                () -> (Teacher) sessionFactory.getCurrentSession()
-                        .getNamedQuery("findTeacherByFullNameAndBirthDate")
-                        .setParameter("first_name", firstName)
-                        .setParameter("last_name", lastName)
-                        .setParameter("birth_date", birthDate)
-                        .getSingleResult());
+        return sessionFactory.getCurrentSession()
+            .getNamedQuery("findTeacherByFullNameAndBirthDate")
+            .setParameter("first_name", firstName)
+            .setParameter("last_name", lastName)
+            .setParameter("birth_date", birthDate)
+            .uniqueResultOptional();
     }
 
     @Override
     public List<Teacher> findByFreeDateAndSubjectWithCurrentTeacher(LocalDate date, LectureTime time, Subject subject) {
         logger.debug(
-                "Find teachers who havent lectures and vacation this period: {} at {} - {} and who can teach this subject: {}",
-                date, time.getStart(), time.getEnd(), subject.getName());
+            "Find teachers who havent lectures and vacation this period: {} at {} - {} and who can teach this subject: {}",
+            date, time.getStart(), time.getEnd(), subject.getName());
         List<Teacher> teachers = sessionFactory.getCurrentSession()
-                .getNamedNativeQuery("findTeacherByFreeDateAndSubjectWithCurrentTeacher")
-                .addEntity(Teacher.class)
-                .setParameter("subject_id", subject.getId())
-                .setParameter("date", date)
-                .setParameter("lecture_time_id", time.getId())
-                .getResultList();
+            .getNamedNativeQuery("findTeacherByFreeDateAndSubjectWithCurrentTeacher")
+            .addEntity(Teacher.class)
+            .setParameter("subject_id", subject.getId())
+            .setParameter("date", date)
+            .setParameter("lecture_time_id", time.getId())
+            .getResultList();
         if (teachers.isEmpty()) {
             throw new EntityNotFoundException(
-                    "Can`t find teachers who havent lectures and vacation this period:" + date + " at "
-                            + time.getStart() + " - " + time.getEnd() + " and who can teach this subject: "
-                            + subject.getName());
+                "Can`t find teachers who havent lectures and vacation this period:" + date + " at "
+                    + time.getStart() + " - " + time.getEnd() + " and who can teach this subject: "
+                    + subject.getName());
         }
 
         return teachers;

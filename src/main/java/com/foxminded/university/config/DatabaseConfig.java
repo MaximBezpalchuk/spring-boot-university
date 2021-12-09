@@ -70,16 +70,12 @@ public class DatabaseConfig {
     }
 
     @Bean
-    public SessionFactory sessionFactory(DataSource dataSource) {
+    public SessionFactory sessionFactory(DataSource dataSource) throws IOException {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
         sessionFactory.setPackagesToScan("com.foxminded.university.model");
         sessionFactory.setHibernateProperties(hibernateProperties());
-        try {
-            sessionFactory.afterPropertiesSet();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        sessionFactory.afterPropertiesSet();
 
         return sessionFactory.getObject();
     }
@@ -90,7 +86,7 @@ public class DatabaseConfig {
         properties.put("hibernate.show_sql", "true");
         properties.put("logging.level.org.hibernate.type", "trace");
         properties.put("hibernate.current_session_context_class",
-                "org.springframework.orm.hibernate5.SpringSessionContext");
+            "org.springframework.orm.hibernate5.SpringSessionContext");
 
         return properties;
     }

@@ -47,11 +47,11 @@ public class HibernateVacationDaoTest {
     void givenPageable_whenFindPaginatedVacations_thenVacationsFound() {
         Teacher teacher = sessionFactory.getCurrentSession().get(Teacher.class, 1);
         List<Vacation> vacations = Arrays.asList(Vacation.builder()
-                .id(1)
-                .start(LocalDate.of(2021, 1, 15))
-                .end(LocalDate.of(2021, 1, 29))
-                .teacher(teacher)
-                .build());
+            .id(1)
+            .start(LocalDate.of(2021, 1, 15))
+            .end(LocalDate.of(2021, 1, 29))
+            .teacher(teacher)
+            .build());
         Page<Vacation> expected = new PageImpl<>(vacations, PageRequest.of(0, 1), 2);
         Page<Vacation> actual = vacationDao.findPaginatedVacationsByTeacherId(PageRequest.of(0, 1), 1);
 
@@ -62,11 +62,11 @@ public class HibernateVacationDaoTest {
     void givenExistingVacation_whenFindById_thenVacationFound() {
         Teacher teacher = sessionFactory.getCurrentSession().get(Teacher.class, 1);
         Optional<Vacation> expected = Optional.of(Vacation.builder()
-                .id(1)
-                .start(LocalDate.of(2021, 1, 15))
-                .end(LocalDate.of(2021, 1, 29))
-                .teacher(teacher)
-                .build());
+            .id(1)
+            .start(LocalDate.of(2021, 1, 15))
+            .end(LocalDate.of(2021, 1, 29))
+            .teacher(teacher)
+            .build());
         Optional<Vacation> actual = vacationDao.findById(1);
 
         assertEquals(expected, actual);
@@ -80,10 +80,10 @@ public class HibernateVacationDaoTest {
     @Test
     void givenNewVacation_whenSaveVacation_thenAllExistingVacationsFound() {
         Vacation expected = Vacation.builder()
-                .start(LocalDate.of(2021, 1, 31))
-                .end(LocalDate.of(2021, 3, 29))
-                .teacher(sessionFactory.getCurrentSession().get(Teacher.class, 1))
-                .build();
+            .start(LocalDate.of(2021, 1, 31))
+            .end(LocalDate.of(2021, 3, 29))
+            .teacher(sessionFactory.getCurrentSession().get(Teacher.class, 1))
+            .build();
         vacationDao.save(expected);
         Vacation actual = sessionFactory.getCurrentSession().get(Vacation.class, 5);
 
@@ -93,11 +93,11 @@ public class HibernateVacationDaoTest {
     @Test
     void givenExistingVacation_whenChange_thenChangesApplied() {
         Vacation expected = Vacation.builder()
-                .id(1)
-                .start(LocalDate.of(2021, 1, 1))
-                .end(LocalDate.of(2021, 1, 1))
-                .teacher(sessionFactory.getCurrentSession().get(Teacher.class, 2))
-                .build();
+            .id(1)
+            .start(LocalDate.of(2021, 1, 1))
+            .end(LocalDate.of(2021, 1, 1))
+            .teacher(sessionFactory.getCurrentSession().get(Teacher.class, 2))
+            .build();
         vacationDao.save(expected);
         Vacation actual = sessionFactory.getCurrentSession().get(Vacation.class, 1);
 
@@ -115,17 +115,17 @@ public class HibernateVacationDaoTest {
     @Test
     void givenExistingVacation_whenFindByTeacherId_thenVacationFound() {
         Vacation vacation1 = Vacation.builder()
-                .id(1)
-                .start(LocalDate.of(2021, 1, 15))
-                .end(LocalDate.of(2021, 1, 29))
-                .teacher(sessionFactory.getCurrentSession().get(Teacher.class, 1))
-                .build();
+            .id(1)
+            .start(LocalDate.of(2021, 1, 15))
+            .end(LocalDate.of(2021, 1, 29))
+            .teacher(sessionFactory.getCurrentSession().get(Teacher.class, 1))
+            .build();
         Vacation vacation2 = Vacation.builder()
-                .id(2)
-                .start(LocalDate.of(2021, 6, 15))
-                .end(LocalDate.of(2021, 6, 29))
-                .teacher(sessionFactory.getCurrentSession().get(Teacher.class, 1))
-                .build();
+            .id(2)
+            .start(LocalDate.of(2021, 6, 15))
+            .end(LocalDate.of(2021, 6, 29))
+            .teacher(sessionFactory.getCurrentSession().get(Teacher.class, 1))
+            .build();
         List<Vacation> expected = Arrays.asList(vacation1, vacation2);
         List<Vacation> actual = vacationDao.findByTeacherId(1);
 
@@ -136,13 +136,13 @@ public class HibernateVacationDaoTest {
     void givenStartAndEndAndTeacher_whenFindByPeriodAndTeacher_thenVacationFound() {
         Teacher teacher = sessionFactory.getCurrentSession().get(Teacher.class, 1);
         Optional<Vacation> expected = Optional.of(Vacation.builder()
-                .id(1)
-                .start(LocalDate.of(2021, 1, 15))
-                .end(LocalDate.of(2021, 1, 29))
-                .teacher(teacher)
-                .build());
+            .id(1)
+            .start(LocalDate.of(2021, 1, 15))
+            .end(LocalDate.of(2021, 1, 29))
+            .teacher(teacher)
+            .build());
         Optional<Vacation> actual = vacationDao.findByPeriodAndTeacher(expected.get().getStart(),
-                expected.get().getEnd(), teacher);
+            expected.get().getEnd(), teacher);
 
         assertEquals(expected, actual);
     }
@@ -151,17 +151,17 @@ public class HibernateVacationDaoTest {
     void givenTeacherAndYear_whenFindByTeacherAndYear_thenVacationFound() {
         Teacher teacher = sessionFactory.getCurrentSession().get(Teacher.class, 1);
         Vacation vacation1 = Vacation.builder()
-                .id(1)
-                .start(LocalDate.of(2021, 1, 15))
-                .end(LocalDate.of(2021, 1, 29))
-                .teacher(teacher)
-                .build();
+            .id(1)
+            .start(LocalDate.of(2021, 1, 15))
+            .end(LocalDate.of(2021, 1, 29))
+            .teacher(teacher)
+            .build();
         Vacation vacation2 = Vacation.builder()
-                .id(2)
-                .start(LocalDate.of(2021, 6, 15))
-                .end(LocalDate.of(2021, 6, 29))
-                .teacher(teacher)
-                .build();
+            .id(2)
+            .start(LocalDate.of(2021, 6, 15))
+            .end(LocalDate.of(2021, 6, 29))
+            .teacher(teacher)
+            .build();
         List<Vacation> actual = vacationDao.findByTeacherIdAndYear(1, 2021);
 
         assertEquals(Arrays.asList(vacation1, vacation2), actual);

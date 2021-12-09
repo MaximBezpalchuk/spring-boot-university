@@ -41,11 +41,11 @@ public class HibernateAudienceDaoTest {
     @Test
     void whenFindById_thenAllExistingAudiencesFound() {
         Optional<Audience> expected = Optional.of(Audience.builder()
-                .id(1)
-                .room(1)
-                .capacity(10)
-                .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
-                .build());
+            .id(1)
+            .room(1)
+            .capacity(10)
+            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .build());
         Optional<Audience> actual = audienceDao.findById(1);
 
         assertEquals(expected, actual);
@@ -60,10 +60,10 @@ public class HibernateAudienceDaoTest {
     @Test
     void givenNewAudience_whenSaveAudience_thenAllExistingAudiencesFound() {
         Audience expected = Audience.builder()
-                .room(100)
-                .capacity(100)
-                .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
-                .build();
+            .room(100)
+            .capacity(100)
+            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .build();
         audienceDao.save(expected);
         Audience actual = sessionFactory.getCurrentSession().get(Audience.class, 4);
 
@@ -91,11 +91,11 @@ public class HibernateAudienceDaoTest {
     @Test
     void givenRoom_whenFindByRoom_thenAudienceFound() {
         Optional<Audience> expected = Optional.of(Audience.builder()
-                .id(1)
-                .room(1)
-                .capacity(10)
-                .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
-                .build());
+            .id(1)
+            .room(1)
+            .capacity(10)
+            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .build());
         Optional<Audience> actual = audienceDao.findByRoom(1);
 
         assertEquals(expected, actual);

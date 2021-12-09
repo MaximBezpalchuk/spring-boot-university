@@ -52,18 +52,18 @@ public class HolidayController {
 
     @PostMapping
     public String create(@ModelAttribute Holiday holiday, Model model) {
+        logger.debug("Create new holiday. Id {}", holiday.getId());
         holiday.setCathedra(cathedraService.findById(holiday.getCathedra().getId()));
         holidayService.save(holiday);
-        logger.debug("Create new holiday. Id {}", holiday.getId());
 
         return "redirect:/holidays";
     }
 
     @GetMapping("/{id}/edit")
     public String editHoliday(@PathVariable int id, Model model) {
+        logger.debug("Show edit holiday page");
         model.addAttribute("cathedras", cathedraService.findAll());
         model.addAttribute("holiday", holidayService.findById(id));
-        logger.debug("Show edit holiday page");
 
         return "holidays/edit";
     }

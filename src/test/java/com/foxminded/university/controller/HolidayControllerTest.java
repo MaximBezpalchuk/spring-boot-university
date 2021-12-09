@@ -52,26 +52,26 @@ public class HolidayControllerTest {
     public void whenGetAllHolidays_thenAllHolidaysReturned() throws Exception {
         Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Holiday holiday1 = Holiday.builder()
-                .id(1)
-                .name("Test Name")
-                .date(LocalDate.of(2021, 1, 1))
-                .cathedra(cathedra)
-                .build();
+            .id(1)
+            .name("Test Name")
+            .date(LocalDate.of(2021, 1, 1))
+            .cathedra(cathedra)
+            .build();
         Holiday holiday2 = Holiday.builder()
-                .id(2)
-                .name("Test Name2")
-                .date(LocalDate.of(2021, 1, 2))
-                .cathedra(cathedra)
-                .build();
+            .id(2)
+            .name("Test Name2")
+            .date(LocalDate.of(2021, 1, 2))
+            .cathedra(cathedra)
+            .build();
         List<Holiday> holidays = Arrays.asList(holiday1, holiday2);
         Page<Holiday> page = new PageImpl<>(holidays, PageRequest.of(0, 1), 2);
         when(holidayService.findAll(isA(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/holidays"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("holidays/index"))
-                .andExpect(forwardedUrl("holidays/index"))
-                .andExpect(model().attribute("holidays", page));
+            .andExpect(status().isOk())
+            .andExpect(view().name("holidays/index"))
+            .andExpect(forwardedUrl("holidays/index"))
+            .andExpect(model().attribute("holidays", page));
         verifyNoMoreInteractions(holidayService);
     }
 
@@ -79,18 +79,18 @@ public class HolidayControllerTest {
     public void whenGetOneHoliday_thenOneHolidayReturned() throws Exception {
         Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Holiday holiday = Holiday.builder()
-                .id(1)
-                .name("Test Name")
-                .date(LocalDate.of(2021, 1, 1))
-                .cathedra(cathedra)
-                .build();
+            .id(1)
+            .name("Test Name")
+            .date(LocalDate.of(2021, 1, 1))
+            .cathedra(cathedra)
+            .build();
         when(holidayService.findById(holiday.getId())).thenReturn(holiday);
 
         mockMvc.perform(get("/holidays/{id}", holiday.getId()))
-                .andExpect(status().isOk())
-                .andExpect(view().name("holidays/show"))
-                .andExpect(forwardedUrl("holidays/show"))
-                .andExpect(model().attribute("holiday", holiday));
+            .andExpect(status().isOk())
+            .andExpect(view().name("holidays/show"))
+            .andExpect(forwardedUrl("holidays/show"))
+            .andExpect(model().attribute("holiday", holiday));
     }
 
     @Test
@@ -100,23 +100,23 @@ public class HolidayControllerTest {
         when(cathedraService.findAll()).thenReturn(Arrays.asList(cathedra));
 
         mockMvc.perform(get("/holidays/new"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("holidays/new"))
-                .andExpect(forwardedUrl("holidays/new"))
-                .andExpect(model().attribute("holiday", instanceOf(Holiday.class)));
+            .andExpect(status().isOk())
+            .andExpect(view().name("holidays/new"))
+            .andExpect(forwardedUrl("holidays/new"))
+            .andExpect(model().attribute("holiday", instanceOf(Holiday.class)));
     }
 
     @Test
     void whenSaveHoliday_thenHolidaySaved() throws Exception {
         Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Holiday holiday = Holiday.builder()
-                .name("Test Name2")
-                .date(LocalDate.of(2021, 1, 1))
-                .cathedra(cathedra)
-                .build();
+            .name("Test Name2")
+            .date(LocalDate.of(2021, 1, 1))
+            .cathedra(cathedra)
+            .build();
 
         mockMvc.perform(post("/holidays").flashAttr("holiday", holiday))
-                .andExpect(redirectedUrl("/holidays"));
+            .andExpect(redirectedUrl("/holidays"));
 
         verify(holidayService).save(holiday);
     }
@@ -124,30 +124,30 @@ public class HolidayControllerTest {
     @Test
     void whenEditHoliday_thenHolidayFound() throws Exception {
         Cathedra cathedra = Cathedra.builder()
-                .id(1)
-                .name("Fantastic Cathedra")
-                .build();
+            .id(1)
+            .name("Fantastic Cathedra")
+            .build();
         Holiday expected = Holiday.builder()
-                .id(1)
-                .name("Test Name")
-                .date(LocalDate.of(2021, 1, 1))
-                .cathedra(cathedra)
-                .build();
+            .id(1)
+            .name("Test Name")
+            .date(LocalDate.of(2021, 1, 1))
+            .cathedra(cathedra)
+            .build();
 
         when(holidayService.findById(1)).thenReturn(expected);
         when(cathedraService.findAll()).thenReturn(Arrays.asList(cathedra));
 
         mockMvc.perform(get("/holidays/{id}/edit", 1))
-                .andExpect(status().isOk())
-                .andExpect(view().name("holidays/edit"))
-                .andExpect(forwardedUrl("holidays/edit"))
-                .andExpect(model().attribute("holiday", is(expected)));
+            .andExpect(status().isOk())
+            .andExpect(view().name("holidays/edit"))
+            .andExpect(forwardedUrl("holidays/edit"))
+            .andExpect(model().attribute("holiday", is(expected)));
     }
 
     @Test
     void whenDeleteHoliday_thenHolidayDeleted() throws Exception {
         mockMvc.perform(delete("/holidays/{id}", 1))
-                .andExpect(redirectedUrl("/holidays"));
+            .andExpect(redirectedUrl("/holidays"));
 
         verify(holidayService).delete(Holiday.builder().id(1).build());
     }

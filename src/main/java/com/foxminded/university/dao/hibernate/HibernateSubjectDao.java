@@ -38,13 +38,13 @@ public class HibernateSubjectDao implements SubjectDao {
     public Page<Subject> findPaginatedSubjects(Pageable pageable) {
         logger.debug("Find all subjects with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
         int total = (int) (long) sessionFactory.getCurrentSession()
-                .getNamedQuery("countAllSubjects")
-                .getSingleResult();
+            .getNamedQuery("countAllSubjects")
+            .getSingleResult();
         List<Subject> subjects = sessionFactory.getCurrentSession()
-                .getNamedQuery("findAllSubjects")
-                .setFirstResult((int) pageable.getOffset())
-                .setMaxResults(pageable.getPageSize())
-                .getResultList();
+            .getNamedQuery("findAllSubjects")
+            .setFirstResult((int) pageable.getOffset())
+            .setMaxResults(pageable.getPageSize())
+            .getResultList();
 
         return new PageImpl<>(subjects, pageable, total);
     }
@@ -62,28 +62,27 @@ public class HibernateSubjectDao implements SubjectDao {
         Session session = sessionFactory.getCurrentSession();
 
         if (subject.getId() == 0) {
-            session.save(subject);
             logger.debug("New subject created with id: {}", subject.getId());
+            session.save(subject);
         } else {
-            session.merge(subject);
             logger.debug("Subject with id {} was updated", subject.getId());
+            session.merge(subject);
         }
     }
 
     @Override
     public void delete(Subject subject) {
-        sessionFactory.getCurrentSession().delete(subject);
         logger.debug("Subject with id {} was deleted", subject.getId());
+        sessionFactory.getCurrentSession().delete(subject);
     }
 
     @Override
     public Optional<Subject> findByName(String name) {
         logger.debug("Find subject by name: {}", name);
 
-        return findOrEmpty(
-                () -> (Subject) sessionFactory.getCurrentSession()
-                        .getNamedQuery("findSubjectByName")
-                        .setParameter("name", name)
-                        .getSingleResult());
+        return sessionFactory.getCurrentSession()
+            .getNamedQuery("findSubjectByName")
+            .setParameter("name", name)
+            .uniqueResultOptional();
     }
 }

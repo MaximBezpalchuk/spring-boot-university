@@ -52,18 +52,18 @@ public class SubjectController {
 
     @PostMapping
     public String create(@ModelAttribute Subject subject, Model model) {
+        logger.debug("Create new subject. Id {}", subject.getId());
         subject.setCathedra(cathedraService.findById(subject.getCathedra().getId()));
         subjectService.save(subject);
-        logger.debug("Create new subject. Id {}", subject.getId());
 
         return "redirect:/subjects";
     }
 
     @GetMapping("/{id}/edit")
     public String editSubject(@PathVariable int id, Model model) {
+        logger.debug("Show edit subject page");
         model.addAttribute("cathedras", cathedraService.findAll());
         model.addAttribute("subject", subjectService.findById(id));
-        logger.debug("Show edit subject page");
 
         return "subjects/edit";
     }

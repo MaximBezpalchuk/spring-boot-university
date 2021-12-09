@@ -44,28 +44,27 @@ public class HibernateGroupDao implements GroupDao {
         Session session = sessionFactory.getCurrentSession();
 
         if (group.getId() == 0) {
-            session.save(group);
             logger.debug("New group created with id: {}", group.getId());
+            session.save(group);
         } else {
-            session.merge(group);
             logger.debug("Group with id {} was updated", group.getId());
+            session.merge(group);
         }
     }
 
     @Override
     public void delete(Group group) {
-        sessionFactory.getCurrentSession().delete(group);
         logger.debug("Group with id {} was deleted", group.getId());
+        sessionFactory.getCurrentSession().delete(group);
     }
 
     @Override
     public Optional<Group> findByName(String name) {
         logger.debug("Find group with name {}", name);
 
-        return findOrEmpty(
-                () -> (Group) sessionFactory.getCurrentSession()
-                        .getNamedQuery("findGroupByName")
-                        .setParameter("name", name)
-                        .getSingleResult());
+        return sessionFactory.getCurrentSession()
+            .getNamedQuery("findGroupByName")
+            .setParameter("name", name)
+            .uniqueResultOptional();
     }
 }

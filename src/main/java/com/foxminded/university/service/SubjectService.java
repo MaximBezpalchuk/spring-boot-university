@@ -37,7 +37,7 @@ public class SubjectService {
     public Subject findById(int id) {
         logger.debug("Find subject by id {}", id);
         return subjectDao.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Can`t find any subject with id: " + id));
+            .orElseThrow(() -> new EntityNotFoundException("Can`t find any subject with id: " + id));
     }
 
     public void save(Subject subject) {

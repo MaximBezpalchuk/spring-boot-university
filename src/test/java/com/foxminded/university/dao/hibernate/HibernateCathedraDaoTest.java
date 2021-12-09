@@ -40,9 +40,9 @@ public class HibernateCathedraDaoTest {
     @Test
     void givenExistingCathedra_whenFindById_thenCathedraFound() {
         Optional<Cathedra> expected = Optional.of(Cathedra.builder()
-                .id(1)
-                .name("Fantastic Cathedra")
-                .build());
+            .id(1)
+            .name("Fantastic Cathedra")
+            .build());
         Optional<Cathedra> actual = cathedraDao.findById(1);
 
         assertEquals(expected, actual);
@@ -83,9 +83,9 @@ public class HibernateCathedraDaoTest {
     @Test
     void givenCathedraName_whenFindByName_thenCathedraFound() {
         Optional<Cathedra> expected = Optional.of(Cathedra.builder()
-                .id(1)
-                .name("Fantastic Cathedra")
-                .build());
+            .id(1)
+            .name("Fantastic Cathedra")
+            .build());
         Optional<Cathedra> actual = cathedraDao.findByName("Fantastic Cathedra");
 
         assertEquals(expected, actual);

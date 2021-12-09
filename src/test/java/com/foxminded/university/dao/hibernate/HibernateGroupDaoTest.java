@@ -41,10 +41,10 @@ public class HibernateGroupDaoTest {
     @Test
     void givenExistingGroup_whenFindById_thenGroupFound() {
         Optional<Group> expected = Optional.of(Group.builder()
-                .id(1)
-                .name("Killers")
-                .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
-                .build());
+            .id(1)
+            .name("Killers")
+            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .build());
         Optional<Group> actual = groupDao.findById(1);
 
         assertEquals(expected, actual);
@@ -59,9 +59,9 @@ public class HibernateGroupDaoTest {
     @Test
     void givenNewGroup_whenSaveGroup_thenAllExistingGroupsFound() {
         Group expected = Group.builder()
-                .name("Test Name")
-                .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
-                .build();
+            .name("Test Name")
+            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .build();
         groupDao.save(expected);
         Group actual = sessionFactory.getCurrentSession().get(Group.class, 3);
 
@@ -89,10 +89,10 @@ public class HibernateGroupDaoTest {
     @Test
     void givenGroupName_whenFindByName_thenGroupFound() {
         Optional<Group> expected = Optional.of(Group.builder()
-                .id(1)
-                .name("Killers")
-                .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
-                .build());
+            .id(1)
+            .name("Killers")
+            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .build());
         Optional<Group> actual = groupDao.findByName("Killers");
 
         assertEquals(expected, actual);

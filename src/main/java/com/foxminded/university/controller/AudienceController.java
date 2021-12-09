@@ -6,13 +6,11 @@ import com.foxminded.university.service.CathedraService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/audiences")
-@Transactional
 public class AudienceController {
 
     private static final Logger logger = LoggerFactory.getLogger(AudienceController.class);
@@ -51,18 +49,18 @@ public class AudienceController {
 
     @PostMapping
     public String create(@ModelAttribute Audience audience) {
+        logger.debug("Create new audience. Id {}", audience.getId());
         audience.setCathedra(cathedraService.findById(audience.getCathedra().getId()));
         audienceService.save(audience);
-        logger.debug("Create new audience. Id {}", audience.getId());
 
         return "redirect:/audiences";
     }
 
     @GetMapping("/{id}/edit")
     public String editAudience(@PathVariable int id, Model model) {
+        logger.debug("Show edit audience page");
         model.addAttribute("cathedras", cathedraService.findAll());
         model.addAttribute("audience", audienceService.findById(id));
-        logger.debug("Show edit audience page");
 
         return "audiences/edit";
     }

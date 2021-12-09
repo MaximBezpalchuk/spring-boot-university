@@ -46,11 +46,11 @@ public class HibernateHolidayDaoTest {
     @Test
     void givenPageable_whenFindPaginatedHolidays_thenHolidaysFound() {
         List<Holiday> holidays = Arrays.asList(Holiday.builder()
-                .id(1)
-                .name("Christmas")
-                .date(LocalDate.of(2021, 12, 25))
-                .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
-                .build());
+            .id(1)
+            .name("Christmas")
+            .date(LocalDate.of(2021, 12, 25))
+            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .build());
         Page<Holiday> expected = new PageImpl<>(holidays, PageRequest.of(0, 1), 6);
         Page<Holiday> actual = holidayDao.findPaginatedHolidays(PageRequest.of(0, 1));
 
@@ -60,11 +60,11 @@ public class HibernateHolidayDaoTest {
     @Test
     void givenExistingHoliday_whenFindById_thenHolidayFound() {
         Optional<Holiday> expected = Optional.of(Holiday.builder()
-                .id(1)
-                .name("Christmas")
-                .date(LocalDate.of(2021, 12, 25))
-                .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
-                .build());
+            .id(1)
+            .name("Christmas")
+            .date(LocalDate.of(2021, 12, 25))
+            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .build());
         Optional<Holiday> actual = holidayDao.findById(1);
 
         assertEquals(expected, actual);
@@ -78,10 +78,10 @@ public class HibernateHolidayDaoTest {
     @Test
     void givenNewHoliday_whenSaveHoliday_thenAllExistingHolidaysFound() {
         Holiday expected = Holiday.builder()
-                .name("Christmas2")
-                .date(LocalDate.of(2021, 12, 25))
-                .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
-                .build();
+            .name("Christmas2")
+            .date(LocalDate.of(2021, 12, 25))
+            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .build();
         holidayDao.save(expected);
         Holiday actual = sessionFactory.getCurrentSession().get(Holiday.class, 7);
 
@@ -109,11 +109,11 @@ public class HibernateHolidayDaoTest {
     @Test
     void givenHolidayName_whenFindByNameAndDate_thenHolidayFound() {
         Optional<Holiday> expected = Optional.of(Holiday.builder()
-                .id(1)
-                .name("Christmas")
-                .date(LocalDate.of(2021, 12, 25))
-                .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
-                .build());
+            .id(1)
+            .name("Christmas")
+            .date(LocalDate.of(2021, 12, 25))
+            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .build());
         Optional<Holiday> actual = holidayDao.findByNameAndDate("Christmas", LocalDate.of(2021, 12, 25));
 
         assertEquals(expected, actual);
@@ -122,11 +122,11 @@ public class HibernateHolidayDaoTest {
     @Test
     void givenHolidayName_whenFindByDate_thenHolidayFound() {
         List<Holiday> expected = Arrays.asList(Holiday.builder()
-                .id(1)
-                .name("Christmas")
-                .date(LocalDate.of(2021, 12, 25))
-                .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
-                .build());
+            .id(1)
+            .name("Christmas")
+            .date(LocalDate.of(2021, 12, 25))
+            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .build());
         List<Holiday> actual = holidayDao.findByDate(LocalDate.of(2021, 12, 25));
 
         assertEquals(expected, actual);

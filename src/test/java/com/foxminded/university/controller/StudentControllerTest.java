@@ -55,26 +55,26 @@ public class StudentControllerTest {
     public void whenGetAllStudents_thenAllStudentsReturned() throws Exception {
         Group group = Group.builder().id(1).name("Killers").build();
         Student student1 = Student.builder()
-                .id(1)
-                .firstName("Name")
-                .lastName("Last name")
-                .group(group)
-                .build();
+            .id(1)
+            .firstName("Name")
+            .lastName("Last name")
+            .group(group)
+            .build();
         Student student2 = Student.builder()
-                .id(2)
-                .firstName("Name")
-                .lastName("Last name")
-                .group(group)
-                .build();
+            .id(2)
+            .firstName("Name")
+            .lastName("Last name")
+            .group(group)
+            .build();
         List<Student> students = Arrays.asList(student1, student2);
         Page<Student> page = new PageImpl<>(students, PageRequest.of(0, 1), 2);
         when(studentService.findAll(isA(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/students"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("students/index"))
-                .andExpect(forwardedUrl("students/index"))
-                .andExpect(model().attribute("students", page));
+            .andExpect(status().isOk())
+            .andExpect(view().name("students/index"))
+            .andExpect(forwardedUrl("students/index"))
+            .andExpect(model().attribute("students", page));
         verifyNoMoreInteractions(studentService);
     }
 
@@ -82,18 +82,18 @@ public class StudentControllerTest {
     public void whenGetOneStudent_thenOneStudentReturned() throws Exception {
         Group group = Group.builder().id(1).name("Killers").build();
         Student student = Student.builder()
-                .id(1)
-                .firstName("Name")
-                .lastName("Last name")
-                .group(group)
-                .build();
+            .id(1)
+            .firstName("Name")
+            .lastName("Last name")
+            .group(group)
+            .build();
         when(studentService.findById(student.getId())).thenReturn(student);
 
         mockMvc.perform(get("/students/{id}", student.getId()))
-                .andExpect(status().isOk())
-                .andExpect(view().name("students/show"))
-                .andExpect(forwardedUrl("students/show"))
-                .andExpect(model().attribute("student", student));
+            .andExpect(status().isOk())
+            .andExpect(view().name("students/show"))
+            .andExpect(forwardedUrl("students/show"))
+            .andExpect(model().attribute("student", student));
     }
 
     @Test
@@ -103,22 +103,22 @@ public class StudentControllerTest {
         when(groupService.findAll()).thenReturn(Arrays.asList(group));
 
         mockMvc.perform(get("/students/new"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("students/new"))
-                .andExpect(forwardedUrl("students/new"))
-                .andExpect(model().attribute("student", instanceOf(Student.class)));
+            .andExpect(status().isOk())
+            .andExpect(view().name("students/new"))
+            .andExpect(forwardedUrl("students/new"))
+            .andExpect(model().attribute("student", instanceOf(Student.class)));
     }
 
     @Test
     void whenSaveStudent_thenStudentSaved() throws Exception {
         Group group = Group.builder().id(1).name("Killers").build();
         Student student = Student.builder()
-                .firstName("Name")
-                .lastName("Last name")
-                .group(group)
-                .build();
+            .firstName("Name")
+            .lastName("Last name")
+            .group(group)
+            .build();
         mockMvc.perform(post("/students").flashAttr("student", student))
-                .andExpect(redirectedUrl("/students"));
+            .andExpect(redirectedUrl("/students"));
 
         verify(studentService).save(student);
     }
@@ -127,26 +127,26 @@ public class StudentControllerTest {
     void whenEditStudent_thenStudentFound() throws Exception {
         Group group = Group.builder().id(1).name("Killers").build();
         Student expected = Student.builder()
-                .id(1)
-                .firstName("Name")
-                .lastName("Last name")
-                .group(group)
-                .build();
+            .id(1)
+            .firstName("Name")
+            .lastName("Last name")
+            .group(group)
+            .build();
 
         when(studentService.findById(1)).thenReturn(expected);
         when(groupService.findAll()).thenReturn(Arrays.asList(group));
 
         mockMvc.perform(get("/students/{id}/edit", 1))
-                .andExpect(status().isOk())
-                .andExpect(view().name("students/edit"))
-                .andExpect(forwardedUrl("students/edit"))
-                .andExpect(model().attribute("student", is(expected)));
+            .andExpect(status().isOk())
+            .andExpect(view().name("students/edit"))
+            .andExpect(forwardedUrl("students/edit"))
+            .andExpect(model().attribute("student", is(expected)));
     }
 
     @Test
     void whenDeleteStudent_thenStudentDeleted() throws Exception {
         mockMvc.perform(delete("/students/{id}", 1))
-                .andExpect(redirectedUrl("/students"));
+            .andExpect(redirectedUrl("/students"));
 
         verify(studentService).delete(Student.builder().id(1).build());
     }

@@ -37,7 +37,7 @@ public class HolidayService {
     public Holiday findById(int id) {
         logger.debug("Find holiday by id {}", id);
         return holidayDao.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Can`t find any holiday with id: " + id));
+            .orElseThrow(() -> new EntityNotFoundException("Can`t find any holiday with id: " + id));
     }
 
     public void save(Holiday holiday) {
@@ -57,7 +57,7 @@ public class HolidayService {
 
         if (existingHoliday.isPresent() && (existingHoliday.get().getId() != holiday.getId())) {
             throw new EntityNotUniqueException("Holiday with name " + holiday.getName() + " and date "
-                    + holiday.getDate() + " is already exists!");
+                + holiday.getDate() + " is already exists!");
         }
     }
 }

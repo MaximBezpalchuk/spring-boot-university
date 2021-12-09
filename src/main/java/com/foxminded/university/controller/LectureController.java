@@ -14,7 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -84,21 +83,22 @@ public class LectureController {
 
     @PostMapping("/lectures")
     public String create(@ModelAttribute Lecture lecture) {
+        logger.debug("Create new lecture. Id {}", lecture.getId());
         lecture.setCathedra(cathedraService.findById(lecture.getCathedra().getId()));
         lecture.setTeacher(teacherService.findById(lecture.getTeacher().getId()));
         lecture.setAudience(audienceService.findById(lecture.getAudience().getId()));
         lecture.setTime(lectureTimeService.findById(lecture.getTime().getId()));
         lecture.setSubject(subjectService.findById(lecture.getSubject().getId()));
         lecture.setGroups(lecture.getGroups().stream().map(group -> groupService.findById(group.getId()))
-                .collect(Collectors.toList()));
+            .collect(Collectors.toList()));
         lectureService.save(lecture);
-        logger.debug("Create new lecture. Id {}", lecture.getId());
 
         return "redirect:/lectures";
     }
 
     @GetMapping("/lectures/{id}/edit")
     public String editLecture(@PathVariable int id, Model model) {
+        logger.debug("Show edit lecture page");
         model.addAttribute("teachers", teacherService.findAll());
         model.addAttribute("audiences", audienceService.findAll());
         model.addAttribute("times", lectureTimeService.findAll());
@@ -106,13 +106,11 @@ public class LectureController {
         model.addAttribute("subjects", subjectService.findAll());
         model.addAttribute("cathedras", cathedraService.findAll());
         model.addAttribute("lecture", lectureService.findById(id));
-        logger.debug("Show edit lecture page");
 
         return "lectures/edit";
     }
 
     @PatchMapping("/lectures/{id}")
-    @Transactional
     public String update(@ModelAttribute Lecture lecture, @PathVariable int id) {
         logger.debug("Update lecture with id {}", id);
         lecture.setCathedra(cathedraService.findById(lecture.getCathedra().getId()));
@@ -121,7 +119,7 @@ public class LectureController {
         lecture.setTime(lectureTimeService.findById(lecture.getTime().getId()));
         lecture.setSubject(subjectService.findById(lecture.getSubject().getId()));
         lecture.setGroups(lecture.getGroups().stream().map(group -> groupService.findById(group.getId()))
-                .collect(Collectors.toList()));
+            .collect(Collectors.toList()));
         lectureService.save(lecture);
 
         return "redirect:/lectures/" + id;
@@ -137,6 +135,7 @@ public class LectureController {
 
     @GetMapping("/teachers/{id}/shedule")
     public String choseTeachersPeriod(@ModelAttribute Event event, @PathVariable int id, Model model) {
+        logger.debug("Chose period for calendar - teacher");
         model.addAttribute("teacher", teacherService.findById(id));
 
         return "teachers/calendar_chose_period";
@@ -144,6 +143,7 @@ public class LectureController {
 
     @PostMapping("/teachers/{id}/shedule")
     public ModelAndView showTeachersShedule(@PathVariable int id, Model model, @RequestBody String body) {
+        logger.debug("Show schedule for teacher");
         model.addAttribute("teacher", teacherService.findById(id));
         model.addAttribute("params", body);
 
@@ -155,12 +155,13 @@ public class LectureController {
     public String getLecturesByTeacherIdAndPeriod(@PathVariable int id,
                                                   @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
                                                   @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
+        logger.debug("Show json lectures for teacher with id {} and period {} - {}", id, start, end);
         ObjectMapper mapper = JsonMapper.builder()
-                .findAndAddModules()
-                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-                .build();
+            .findAndAddModules()
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .build();
         List<Event> events = lectureService.findByTeacherIdAndPeriod(id, start, end).stream()
-                .map(lectureToEventMapper::lectureToEvent).collect(Collectors.toList());
+            .map(lectureToEventMapper::lectureToEvent).collect(Collectors.toList());
         try {
             return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(events);
         } catch (Exception e) {
@@ -172,6 +173,7 @@ public class LectureController {
 
     @GetMapping("/students/{id}/shedule")
     public String choseStudentsPeriod(@ModelAttribute Event event, @PathVariable int id, Model model) {
+        logger.debug("Chose period for calendar - student");
         model.addAttribute("student", studentService.findById(id));
 
         return "students/calendar_chose_period";
@@ -179,6 +181,7 @@ public class LectureController {
 
     @PostMapping("/students/{id}/shedule")
     public ModelAndView showStudentsShedule(@PathVariable int id, Model model, @RequestBody String body) {
+        logger.debug("Show schedule for student");
         model.addAttribute("student", studentService.findById(id));
         model.addAttribute("params", body);
 
@@ -190,12 +193,13 @@ public class LectureController {
     public String getLecturesByStudentIdAndPeriod(@PathVariable int id,
                                                   @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
                                                   @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
+        logger.debug("Show json lectures for student with id {} and period {} - {}", id, start, end);
         ObjectMapper mapper = JsonMapper.builder()
-                .findAndAddModules()
-                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-                .build();
+            .findAndAddModules()
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .build();
         List<Event> events = lectureService.findByStudentIdAndPeriod(id, start, end).stream()
-                .map(lectureToEventMapper::lectureToEvent).collect(Collectors.toList());
+            .map(lectureToEventMapper::lectureToEvent).collect(Collectors.toList());
         try {
             return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(events);
         } catch (Exception e) {
@@ -207,10 +211,10 @@ public class LectureController {
 
     @GetMapping("/lectures/{id}/edit/teacher")
     public String editTeacher(@PathVariable int id, Model model) {
+        logger.debug("Show edit teacher on lecture page");
         Lecture lecture = lectureService.findById(id);
         model.addAttribute("teachers", teacherService.findTeachersForChange(lecture));
         model.addAttribute("lecture", lecture);
-        logger.debug("Show edit teacher on lecture page");
 
         return "lectures/edit_teacher";
     }

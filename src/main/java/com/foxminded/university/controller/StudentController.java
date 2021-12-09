@@ -52,20 +52,20 @@ public class StudentController {
 
     @PostMapping
     public String create(@ModelAttribute Student student, Model model) {
+        logger.debug("Create new student. Id {}", student.getId());
         if (student.getGroup() != null) {
             student.setGroup(groupService.findById(student.getGroup().getId()));
         }
         studentService.save(student);
-        logger.debug("Create new student. Id {}", student.getId());
 
         return "redirect:/students";
     }
 
     @GetMapping("/{id}/edit")
     public String editStudent(@PathVariable int id, Model model) {
+        logger.debug("Show edit student page");
         model.addAttribute("student", studentService.findById(id));
         model.addAttribute("groups", groupService.findAll());
-        logger.debug("Show edit student page");
 
         return "students/edit";
     }

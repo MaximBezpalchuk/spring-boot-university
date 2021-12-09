@@ -51,15 +51,15 @@ public class HibernateLectureDaoTest {
         Teacher teacher = sessionFactory.getCurrentSession().get(Teacher.class, 1);
         LectureTime time = sessionFactory.getCurrentSession().get(LectureTime.class, 1);
         Optional<Lecture> expected = Optional.of(Lecture.builder()
-                .id(1)
-                .group(Arrays.asList(group))
-                .cathedra(cathedra)
-                .subject(subject)
-                .date(LocalDate.of(2021, 4, 4))
-                .time(time)
-                .audience(audience)
-                .teacher(teacher)
-                .build());
+            .id(1)
+            .group(Arrays.asList(group))
+            .cathedra(cathedra)
+            .subject(subject)
+            .date(LocalDate.of(2021, 4, 4))
+            .time(time)
+            .audience(audience)
+            .teacher(teacher)
+            .build());
         Optional<Lecture> actual = lectureDao.findById(1);
 
         assertEquals(expected, actual);
@@ -74,15 +74,15 @@ public class HibernateLectureDaoTest {
         Teacher teacher = sessionFactory.getCurrentSession().get(Teacher.class, 1);
         LectureTime time = sessionFactory.getCurrentSession().get(LectureTime.class, 1);
         List<Lecture> lectures = Arrays.asList(Lecture.builder()
-                .id(1)
-                .group(Arrays.asList(group))
-                .cathedra(cathedra)
-                .subject(subject)
-                .date(LocalDate.of(2021, 4, 4))
-                .time(time)
-                .audience(audience)
-                .teacher(teacher)
-                .build());
+            .id(1)
+            .group(Arrays.asList(group))
+            .cathedra(cathedra)
+            .subject(subject)
+            .date(LocalDate.of(2021, 4, 4))
+            .time(time)
+            .audience(audience)
+            .teacher(teacher)
+            .build());
         Page<Lecture> expected = new PageImpl<>(lectures, PageRequest.of(0, 1), 11);
         Page<Lecture> actual = lectureDao.findPaginatedLectures(PageRequest.of(0, 1));
 
@@ -103,14 +103,14 @@ public class HibernateLectureDaoTest {
         Teacher teacher = sessionFactory.getCurrentSession().get(Teacher.class, 2);
         LectureTime time = sessionFactory.getCurrentSession().get(LectureTime.class, 8);
         Lecture expected = Lecture.builder()
-                .group(Arrays.asList(group))
-                .cathedra(cathedra)
-                .subject(subject)
-                .date(LocalDate.of(2021, 4, 4))
-                .time(time)
-                .audience(audience)
-                .teacher(teacher)
-                .build();
+            .group(Arrays.asList(group))
+            .cathedra(cathedra)
+            .subject(subject)
+            .date(LocalDate.of(2021, 4, 4))
+            .time(time)
+            .audience(audience)
+            .teacher(teacher)
+            .build();
         lectureDao.save(expected);
         Lecture actual = sessionFactory.getCurrentSession().get(Lecture.class, 12);
 
@@ -144,18 +144,18 @@ public class HibernateLectureDaoTest {
         Teacher teacher = sessionFactory.getCurrentSession().get(Teacher.class, 1);
         LectureTime time = sessionFactory.getCurrentSession().get(LectureTime.class, 1);
         Optional<Lecture> expected = Optional.of(Lecture.builder()
-                .id(1)
-                .group(Arrays.asList(group))
-                .cathedra(cathedra)
-                .subject(subject)
-                .date(LocalDate.of(2021, 4, 4))
-                .time(time)
-                .audience(audience)
-                .teacher(teacher)
-                .build());
+            .id(1)
+            .group(Arrays.asList(group))
+            .cathedra(cathedra)
+            .subject(subject)
+            .date(LocalDate.of(2021, 4, 4))
+            .time(time)
+            .audience(audience)
+            .teacher(teacher)
+            .build());
         Optional<Lecture> actual = lectureDao.findByAudienceDateAndLectureTime(Audience.builder().id(1).build(),
-                LocalDate.of(2021, 4, 4),
-                LectureTime.builder().id(1).build());
+            LocalDate.of(2021, 4, 4),
+            LectureTime.builder().id(1).build());
 
         assertEquals(expected, actual);
     }
@@ -169,17 +169,17 @@ public class HibernateLectureDaoTest {
         Teacher teacher = sessionFactory.getCurrentSession().get(Teacher.class, 1);
         LectureTime time = sessionFactory.getCurrentSession().get(LectureTime.class, 1);
         Optional<Lecture> expected = Optional.of(Lecture.builder()
-                .id(1)
-                .group(Arrays.asList(group))
-                .cathedra(cathedra)
-                .subject(subject)
-                .date(LocalDate.of(2021, 4, 4))
-                .time(time)
-                .audience(audience)
-                .teacher(teacher)
-                .build());
+            .id(1)
+            .group(Arrays.asList(group))
+            .cathedra(cathedra)
+            .subject(subject)
+            .date(LocalDate.of(2021, 4, 4))
+            .time(time)
+            .audience(audience)
+            .teacher(teacher)
+            .build());
         Optional<Lecture> actual = lectureDao.findByAudienceDateAndLectureTime(Audience.builder().id(1).build(),
-                LocalDate.of(2021, 4, 4), LectureTime.builder().id(1).build());
+            LocalDate.of(2021, 4, 4), LectureTime.builder().id(1).build());
 
         assertEquals(expected, actual);
     }
@@ -187,7 +187,7 @@ public class HibernateLectureDaoTest {
     @Test
     void givenStudentId_whenFindByStudentId_thenLecturesFound() {
         List<Lecture> actual = lectureDao.findLecturesByStudentAndPeriod(Student.builder().id(1).build(),
-                LocalDate.of(2021, 4, 4), LocalDate.of(2021, 4, 8));
+            LocalDate.of(2021, 4, 4), LocalDate.of(2021, 4, 8));
 
         assertEquals(8, actual.size());
     }
@@ -195,7 +195,7 @@ public class HibernateLectureDaoTest {
     @Test
     void givenTeacherId_whenFindByTeacherId_thenLecturesFound() {
         List<Lecture> actual = lectureDao.findLecturesByTeacherAndPeriod(Teacher.builder().id(2).build(),
-                LocalDate.of(2021, 4, 4), LocalDate.of(2021, 4, 8));
+            LocalDate.of(2021, 4, 4), LocalDate.of(2021, 4, 8));
 
         assertEquals(7, actual.size());
     }

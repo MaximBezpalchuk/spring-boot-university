@@ -60,28 +60,28 @@ public class TeacherControllerTest {
         Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Subject subject = Subject.builder().id(1).name("Subject name").build();
         Teacher teacher1 = Teacher.builder()
-                .id(1)
-                .firstName("Name")
-                .lastName("Last name")
-                .cathedra(cathedra)
-                .subjects(Arrays.asList(subject))
-                .build();
+            .id(1)
+            .firstName("Name")
+            .lastName("Last name")
+            .cathedra(cathedra)
+            .subjects(Arrays.asList(subject))
+            .build();
         Teacher teacher2 = Teacher.builder()
-                .id(2)
-                .firstName("Name2")
-                .lastName("Last name")
-                .cathedra(cathedra)
-                .subjects(Arrays.asList(subject))
-                .build();
+            .id(2)
+            .firstName("Name2")
+            .lastName("Last name")
+            .cathedra(cathedra)
+            .subjects(Arrays.asList(subject))
+            .build();
         List<Teacher> teachers = Arrays.asList(teacher1, teacher2);
         Page<Teacher> page = new PageImpl<>(teachers, PageRequest.of(0, 2), 1);
         when(teacherService.findAll(isA(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/teachers"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("teachers/index"))
-                .andExpect(forwardedUrl("teachers/index"))
-                .andExpect(model().attribute("teachers", page));
+            .andExpect(status().isOk())
+            .andExpect(view().name("teachers/index"))
+            .andExpect(forwardedUrl("teachers/index"))
+            .andExpect(model().attribute("teachers", page));
         verifyNoMoreInteractions(teacherService);
     }
 
@@ -90,19 +90,19 @@ public class TeacherControllerTest {
         Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Subject subject = Subject.builder().id(1).name("Subject name").build();
         Teacher teacher = Teacher.builder()
-                .id(1)
-                .firstName("Name")
-                .lastName("Last name")
-                .cathedra(cathedra)
-                .subjects(Arrays.asList(subject))
-                .build();
+            .id(1)
+            .firstName("Name")
+            .lastName("Last name")
+            .cathedra(cathedra)
+            .subjects(Arrays.asList(subject))
+            .build();
         when(teacherService.findById(teacher.getId())).thenReturn(teacher);
 
         mockMvc.perform(get("/teachers/{id}", teacher.getId()))
-                .andExpect(status().isOk())
-                .andExpect(view().name("teachers/show"))
-                .andExpect(forwardedUrl("teachers/show"))
-                .andExpect(model().attribute("teacher", teacher));
+            .andExpect(status().isOk())
+            .andExpect(view().name("teachers/show"))
+            .andExpect(forwardedUrl("teachers/show"))
+            .andExpect(model().attribute("teacher", teacher));
     }
 
     @Test
@@ -114,10 +114,10 @@ public class TeacherControllerTest {
         when(subjectService.findAll()).thenReturn(Arrays.asList(subject));
 
         mockMvc.perform(get("/teachers/new"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("teachers/new"))
-                .andExpect(forwardedUrl("teachers/new"))
-                .andExpect(model().attribute("teacher", instanceOf(Teacher.class)));
+            .andExpect(status().isOk())
+            .andExpect(view().name("teachers/new"))
+            .andExpect(forwardedUrl("teachers/new"))
+            .andExpect(model().attribute("teacher", instanceOf(Teacher.class)));
     }
 
     @Test
@@ -125,14 +125,14 @@ public class TeacherControllerTest {
         Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Subject subject = Subject.builder().id(1).name("Subject name").build();
         Teacher teacher = Teacher.builder()
-                .firstName("Name")
-                .lastName("Last name")
-                .cathedra(cathedra)
-                .subjects(Arrays.asList(subject))
-                .build();
+            .firstName("Name")
+            .lastName("Last name")
+            .cathedra(cathedra)
+            .subjects(Arrays.asList(subject))
+            .build();
 
         mockMvc.perform(post("/teachers").flashAttr("teacher", teacher))
-                .andExpect(redirectedUrl("/teachers"));
+            .andExpect(redirectedUrl("/teachers"));
 
         verify(teacherService).save(teacher);
     }
@@ -142,28 +142,28 @@ public class TeacherControllerTest {
         Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Subject subject = Subject.builder().id(1).name("Subject name").build();
         Teacher expected = Teacher.builder()
-                .id(1)
-                .firstName("Name")
-                .lastName("Last name")
-                .cathedra(cathedra)
-                .subjects(Arrays.asList(subject))
-                .build();
+            .id(1)
+            .firstName("Name")
+            .lastName("Last name")
+            .cathedra(cathedra)
+            .subjects(Arrays.asList(subject))
+            .build();
 
         when(teacherService.findById(1)).thenReturn(expected);
         when(cathedraService.findAll()).thenReturn(Arrays.asList(cathedra));
         when(subjectService.findAll()).thenReturn(Arrays.asList(subject));
 
         mockMvc.perform(get("/teachers/{id}/edit", 1))
-                .andExpect(status().isOk())
-                .andExpect(view().name("teachers/edit"))
-                .andExpect(forwardedUrl("teachers/edit"))
-                .andExpect(model().attribute("teacher", is(expected)));
+            .andExpect(status().isOk())
+            .andExpect(view().name("teachers/edit"))
+            .andExpect(forwardedUrl("teachers/edit"))
+            .andExpect(model().attribute("teacher", is(expected)));
     }
 
     @Test
     void whenDeleteTeacher_thenTeacherDeleted() throws Exception {
         mockMvc.perform(delete("/teachers/{id}", 1))
-                .andExpect(redirectedUrl("/teachers"));
+            .andExpect(redirectedUrl("/teachers"));
 
         verify(teacherService).delete(Teacher.builder().id(1).build());
     }

@@ -45,11 +45,11 @@ public class HibernateSubjectDaoTest {
     @Test
     void givenPageable_whenFindPaginatedSubjects_thenSubjectsFound() {
         List<Subject> subjects = Arrays.asList(Subject.builder()
-                .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
-                .name("Weapon Tactics")
-                .description("Learning how to use heavy weapon and guerrilla tactics")
-                .id(1)
-                .build());
+            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .name("Weapon Tactics")
+            .description("Learning how to use heavy weapon and guerrilla tactics")
+            .id(1)
+            .build());
         Page<Subject> expected = new PageImpl<>(subjects, PageRequest.of(0, 1), 3);
         Page<Subject> actual = subjectDao.findPaginatedSubjects(PageRequest.of(0, 1));
 
@@ -59,11 +59,11 @@ public class HibernateSubjectDaoTest {
     @Test
     void givenExistingSubject_whenFindById_thenSubjectFound() {
         Optional<Subject> expected = Optional.of(Subject.builder()
-                .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
-                .name("Weapon Tactics")
-                .description("Learning how to use heavy weapon and guerrilla tactics")
-                .id(1)
-                .build());
+            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .name("Weapon Tactics")
+            .description("Learning how to use heavy weapon and guerrilla tactics")
+            .id(1)
+            .build());
         Optional<Subject> actual = subjectDao.findById(1);
 
         assertEquals(expected, actual);
@@ -77,10 +77,10 @@ public class HibernateSubjectDaoTest {
     @Test
     void givenNewSubject_whenSaveSubject_thenAllExistingSubjectsFound() {
         Subject expected = Subject.builder()
-                .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
-                .name("Weapon Tactics123")
-                .description("Learning how to use heavy weapon and guerrilla tactics123")
-                .build();
+            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .name("Weapon Tactics123")
+            .description("Learning how to use heavy weapon and guerrilla tactics123")
+            .build();
         subjectDao.save(expected);
         Subject actual = sessionFactory.getCurrentSession().get(Subject.class, 4);
 
@@ -108,11 +108,11 @@ public class HibernateSubjectDaoTest {
     @Test
     void givenSubjectName_whenFindByName_thenSubjectFound() {
         Optional<Subject> expected = Optional.of(Subject.builder()
-                .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
-                .name("Weapon Tactics")
-                .description("Learning how to use heavy weapon and guerrilla tactics")
-                .id(1)
-                .build());
+            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .name("Weapon Tactics")
+            .description("Learning how to use heavy weapon and guerrilla tactics")
+            .id(1)
+            .build());
         Optional<Subject> actual = subjectDao.findByName("Weapon Tactics");
 
         assertEquals(expected, actual);

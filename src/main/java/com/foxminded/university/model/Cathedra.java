@@ -4,16 +4,16 @@ import javax.persistence.*;
 import java.util.Objects;
 
 @NamedQueries(
-        {
-                @NamedQuery(
-                        name = "findAllCathedras",
-                        query = "FROM Cathedra"
-                ),
-                @NamedQuery(
-                        name = "findCathedraByName",
-                        query = "FROM Cathedra WHERE name=:name"
-                )
-        })
+    {
+        @NamedQuery(
+            name = "findAllCathedras",
+            query = "FROM Cathedra"
+        ),
+        @NamedQuery(
+            name = "findCathedraByName",
+            query = "FROM Cathedra WHERE name=:name"
+        )
+    })
 
 @Entity
 @Table(name = "cathedras")

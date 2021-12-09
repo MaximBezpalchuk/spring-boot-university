@@ -39,13 +39,13 @@ public class HibernateLectureDao implements LectureDao {
     public Page<Lecture> findPaginatedLectures(Pageable pageable) {
         logger.debug("Find all lectures with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
         int total = (int) (long) sessionFactory.getCurrentSession()
-                .getNamedQuery("countAllLectures")
-                .getSingleResult();
+            .getNamedQuery("countAllLectures")
+            .getSingleResult();
         List<Lecture> lectures = sessionFactory.getCurrentSession()
-                .getNamedQuery("findAllLectures")
-                .setFirstResult((int) pageable.getOffset())
-                .setMaxResults(pageable.getPageSize())
-                .getResultList();
+            .getNamedQuery("findAllLectures")
+            .setFirstResult((int) pageable.getOffset())
+            .setMaxResults(pageable.getPageSize())
+            .getResultList();
 
         return new PageImpl<>(lectures, pageable, total);
     }
@@ -63,61 +63,59 @@ public class HibernateLectureDao implements LectureDao {
         Session session = sessionFactory.getCurrentSession();
 
         if (lecture.getId() == 0) {
-            session.save(lecture);
             logger.debug("New lecture created with id: {}", lecture.getId());
+            session.save(lecture);
         } else {
-            session.merge(lecture);
             logger.debug("Lecture with id {} was updated", lecture.getId());
+            session.merge(lecture);
         }
     }
 
     @Override
     public void delete(Lecture lecture) {
-        sessionFactory.getCurrentSession().delete(lecture);
         logger.debug("Lecture with id {} was deleted", lecture.getId());
+        sessionFactory.getCurrentSession().delete(lecture);
     }
 
     @Override
     public Optional<Lecture> findByAudienceDateAndLectureTime(Audience audience, LocalDate date,
                                                               LectureTime lectureTime) {
         logger.debug("Find lectures by audience with id {}, date {} and lecture time id {}", audience.getId(), date,
-                lectureTime.getId());
+            lectureTime.getId());
 
-        return findOrEmpty(
-                () -> (Lecture) sessionFactory.getCurrentSession()
-                        .getNamedQuery("findLectureByAudienceDateAndLectureTime")
-                        .setParameter("audience_id", audience.getId())
-                        .setParameter("date", date)
-                        .setParameter("time_id", lectureTime.getId())
-                        .getSingleResult());
+        return sessionFactory.getCurrentSession()
+            .getNamedQuery("findLectureByAudienceDateAndLectureTime")
+            .setParameter("audience_id", audience.getId())
+            .setParameter("date", date)
+            .setParameter("time_id", lectureTime.getId())
+            .uniqueResultOptional();
     }
 
     @Override
     public Optional<Lecture> findByTeacherAudienceDateAndLectureTime(Teacher teacher, Audience audience, LocalDate date,
                                                                      LectureTime lectureTime) {
         logger.debug("Find lectures by teacher with id: {}, audience with id {}, date {} and lecture time id {}",
-                teacher.getId(), audience.getId(), date, lectureTime.getId());
-        return findOrEmpty(
-                () -> (Lecture) sessionFactory.getCurrentSession()
-                        .getNamedQuery("findLectureByTeacherAudienceDateAndLectureTime")
-                        .setParameter("teacher_id", teacher.getId())
-                        .setParameter("audience_id", audience.getId())
-                        .setParameter("date", date)
-                        .setParameter("time_id", lectureTime.getId())
-                        .getSingleResult());
+            teacher.getId(), audience.getId(), date, lectureTime.getId());
+        return sessionFactory.getCurrentSession()
+            .getNamedQuery("findLectureByTeacherAudienceDateAndLectureTime")
+            .setParameter("teacher_id", teacher.getId())
+            .setParameter("audience_id", audience.getId())
+            .setParameter("date", date)
+            .setParameter("time_id", lectureTime.getId())
+            .uniqueResultOptional();
     }
 
     @Override
     public List<Lecture> findLecturesByTeacherDateAndTime(Teacher teacher, LocalDate date, LectureTime time) {
         logger.debug("Find lectures by teacher with id {}, date {} and lecture time id {}", teacher.getId(), date,
-                time.getId());
+            time.getId());
 
         return sessionFactory.getCurrentSession()
-                .getNamedQuery("findLecturesByTeacherDateAndTime")
-                .setParameter("teacher_id", teacher.getId())
-                .setParameter("date", date)
-                .setParameter("time_id", time.getId())
-                .getResultList();
+            .getNamedQuery("findLecturesByTeacherDateAndTime")
+            .setParameter("teacher_id", teacher.getId())
+            .setParameter("date", date)
+            .setParameter("time_id", time.getId())
+            .getResultList();
     }
 
     @Override
@@ -125,12 +123,12 @@ public class HibernateLectureDao implements LectureDao {
         logger.debug("Find lectures by student with id {} and period {} - {}", student.getId(), start, end);
 
         return sessionFactory.getCurrentSession()
-                .getNamedNativeQuery("findLecturesByStudentAndPeriod")
-                .addEntity(Lecture.class)
-                .setParameter("student_id", student.getId())
-                .setParameter("start", start)
-                .setParameter("end", end)
-                .getResultList();
+            .getNamedNativeQuery("findLecturesByStudentAndPeriod")
+            .addEntity(Lecture.class)
+            .setParameter("student_id", student.getId())
+            .setParameter("start", start)
+            .setParameter("end", end)
+            .getResultList();
     }
 
     @Override
@@ -138,10 +136,10 @@ public class HibernateLectureDao implements LectureDao {
         logger.debug("Find lectures by teacher with id {} and period {} - {}", teacher.getId(), start, end);
 
         return sessionFactory.getCurrentSession()
-                .getNamedQuery("findLecturesByTeacherAndPeriod")
-                .setParameter("teacher", teacher)
-                .setParameter("start", start)
-                .setParameter("end", end)
-                .getResultList();
+            .getNamedQuery("findLecturesByTeacherAndPeriod")
+            .setParameter("teacher", teacher)
+            .setParameter("start", start)
+            .setParameter("end", end)
+            .getResultList();
     }
 }

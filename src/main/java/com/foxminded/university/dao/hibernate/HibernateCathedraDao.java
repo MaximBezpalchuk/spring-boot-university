@@ -44,27 +44,26 @@ public class HibernateCathedraDao implements CathedraDao {
         Session session = sessionFactory.getCurrentSession();
 
         if (cathedra.getId() == 0) {
-            session.save(cathedra);
             logger.debug("New cathedra created with id: {}", cathedra.getId());
+            session.save(cathedra);
         } else {
-            session.merge(cathedra);
             logger.debug("Cathedra with id {} was updated", cathedra.getId());
+            session.merge(cathedra);
         }
     }
 
     @Override
     public void delete(Cathedra cathedra) {
-        sessionFactory.getCurrentSession().delete(cathedra);
         logger.debug("Cathedra with id {} was deleted", cathedra.getId());
+        sessionFactory.getCurrentSession().delete(cathedra);
     }
 
     @Override
     public Optional<Cathedra> findByName(String name) {
         logger.debug("Find audience by name: {}", name);
-        return findOrEmpty(
-                () -> (Cathedra) sessionFactory.getCurrentSession()
-                        .getNamedQuery("findCathedraByName")
-                        .setParameter("name", name)
-                        .getSingleResult());
+        return sessionFactory.getCurrentSession()
+            .getNamedQuery("findCathedraByName")
+            .setParameter("name", name)
+            .uniqueResultOptional();
     }
 }

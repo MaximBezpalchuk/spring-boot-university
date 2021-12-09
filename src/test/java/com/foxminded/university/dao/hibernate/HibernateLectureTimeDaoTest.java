@@ -41,9 +41,9 @@ public class HibernateLectureTimeDaoTest {
     @Test
     void givenExistingLectureTime_whenFindById_thenLectureTimeFound() {
         Optional<LectureTime> expected = Optional.of(LectureTime.builder()
-                .id(1).start(LocalTime.of(8, 0, 0))
-                .end(LocalTime.of(9, 30, 0))
-                .build());
+            .id(1).start(LocalTime.of(8, 0, 0))
+            .end(LocalTime.of(9, 30, 0))
+            .build());
         Optional<LectureTime> actual = lectureTimeDao.findById(1);
 
         assertEquals(expected, actual);
@@ -57,9 +57,9 @@ public class HibernateLectureTimeDaoTest {
     @Test
     void givenNewLectureTime_whenSaveLectureTime_thenAllExistingLectureTimesFound() {
         LectureTime expected = LectureTime.builder()
-                .start(LocalTime.of(21, 0, 0))
-                .end(LocalTime.of(22, 30, 0))
-                .build();
+            .start(LocalTime.of(21, 0, 0))
+            .end(LocalTime.of(22, 30, 0))
+            .build();
         lectureTimeDao.save(expected);
         LectureTime actual = sessionFactory.getCurrentSession().get(LectureTime.class, 9);
 
@@ -87,10 +87,10 @@ public class HibernateLectureTimeDaoTest {
     @Test
     void givenPeriod_whenFindByPeriod_thenLectureTimeFound() {
         Optional<LectureTime> expected = Optional.of(LectureTime.builder()
-                .id(1)
-                .start(LocalTime.of(8, 0, 0))
-                .end(LocalTime.of(9, 30, 0))
-                .build());
+            .id(1)
+            .start(LocalTime.of(8, 0, 0))
+            .end(LocalTime.of(9, 30, 0))
+            .build());
         Optional<LectureTime> actual = lectureTimeDao.findByPeriod(expected.get().getStart(), expected.get().getEnd());
 
         assertEquals(expected, actual);

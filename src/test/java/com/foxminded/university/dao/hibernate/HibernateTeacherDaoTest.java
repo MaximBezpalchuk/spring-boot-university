@@ -47,20 +47,20 @@ public class HibernateTeacherDaoTest {
         Cathedra cathedra = sessionFactory.getCurrentSession().get(Cathedra.class, 1);
         Subject subject = sessionFactory.getCurrentSession().get(Subject.class, 1);
         List<Teacher> teachers = Arrays.asList(Teacher.builder()
-                .firstName("Daniel")
-                .lastName("Morpheus")
-                .address("Virtual Reality Capsule no 1")
-                .gender(Gender.MALE)
-                .birthDate(LocalDate.of(1970, 1, 1))
-                .cathedra(cathedra)
-                .degree(Degree.PROFESSOR)
-                .phone("1")
-                .email("1@bigowl.com")
-                .postalCode("12345")
-                .education("Higher education")
-                .id(1)
-                .subjects(Arrays.asList(subject))
-                .build());
+            .firstName("Daniel")
+            .lastName("Morpheus")
+            .address("Virtual Reality Capsule no 1")
+            .gender(Gender.MALE)
+            .birthDate(LocalDate.of(1970, 1, 1))
+            .cathedra(cathedra)
+            .degree(Degree.PROFESSOR)
+            .phone("1")
+            .email("1@bigowl.com")
+            .postalCode("12345")
+            .education("Higher education")
+            .id(1)
+            .subjects(Arrays.asList(subject))
+            .build());
         Page<Teacher> expected = new PageImpl<>(teachers, PageRequest.of(0, 1), 2);
         Page<Teacher> actual = teacherDao.findPaginatedTeachers(PageRequest.of(0, 1));
 
@@ -70,20 +70,20 @@ public class HibernateTeacherDaoTest {
     @Test
     void givenExistingTeacher_whenFindById_thenTeacherFound() {
         Optional<Teacher> expected = Optional.of(Teacher.builder()
-                .firstName("Daniel")
-                .lastName("Morpheus")
-                .address("Virtual Reality Capsule no 1")
-                .gender(Gender.MALE)
-                .birthDate(LocalDate.of(1970, 1, 1))
-                .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
-                .degree(Degree.PROFESSOR)
-                .phone("1")
-                .email("1@bigowl.com")
-                .postalCode("12345")
-                .education("Higher education")
-                .subjects(Arrays.asList(sessionFactory.getCurrentSession().get(Subject.class, 1)))
-                .id(1)
-                .build());
+            .firstName("Daniel")
+            .lastName("Morpheus")
+            .address("Virtual Reality Capsule no 1")
+            .gender(Gender.MALE)
+            .birthDate(LocalDate.of(1970, 1, 1))
+            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .degree(Degree.PROFESSOR)
+            .phone("1")
+            .email("1@bigowl.com")
+            .postalCode("12345")
+            .education("Higher education")
+            .subjects(Arrays.asList(sessionFactory.getCurrentSession().get(Subject.class, 1)))
+            .id(1)
+            .build());
         Optional<Teacher> actual = teacherDao.findById(1);
 
         assertEquals(expected, actual);
@@ -97,19 +97,19 @@ public class HibernateTeacherDaoTest {
     @Test
     void givenNewTeacher_whenSaveTeacher_thenAllExistingTeachersFound() {
         Teacher expected = Teacher.builder()
-                .firstName("Test")
-                .lastName("Test")
-                .address("Virtual Reality Capsule no 1")
-                .gender(Gender.MALE)
-                .birthDate(LocalDate.of(1970, 1, 1))
-                .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
-                .degree(Degree.PROFESSOR)
-                .phone("1")
-                .email("1@bigowl.com")
-                .postalCode("12345")
-                .education("Higher education")
-                .subjects(Arrays.asList(sessionFactory.getCurrentSession().get(Subject.class, 1)))
-                .build();
+            .firstName("Test")
+            .lastName("Test")
+            .address("Virtual Reality Capsule no 1")
+            .gender(Gender.MALE)
+            .birthDate(LocalDate.of(1970, 1, 1))
+            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .degree(Degree.PROFESSOR)
+            .phone("1")
+            .email("1@bigowl.com")
+            .postalCode("12345")
+            .education("Higher education")
+            .subjects(Arrays.asList(sessionFactory.getCurrentSession().get(Subject.class, 1)))
+            .build();
         teacherDao.save(expected);
         Teacher actual = sessionFactory.getCurrentSession().get(Teacher.class, 3);
 
@@ -119,20 +119,20 @@ public class HibernateTeacherDaoTest {
     @Test
     void givenExistingTeacher_whenSaveWithChanges_thenChangesApplied() {
         Teacher expected = Teacher.builder()
-                .id(1)
-                .firstName("TestName")
-                .lastName("Test")
-                .address("Virtual Reality Capsule no 2")
-                .gender(Gender.MALE)
-                .birthDate(LocalDate.of(1970, 1, 1))
-                .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
-                .degree(Degree.PROFESSOR)
-                .phone("1")
-                .email("123@bigowl.com")
-                .postalCode("1234567")
-                .education("Higher education123")
-                .subjects(Arrays.asList(sessionFactory.getCurrentSession().get(Subject.class, 1)))
-                .build();
+            .id(1)
+            .firstName("TestName")
+            .lastName("Test")
+            .address("Virtual Reality Capsule no 2")
+            .gender(Gender.MALE)
+            .birthDate(LocalDate.of(1970, 1, 1))
+            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .degree(Degree.PROFESSOR)
+            .phone("1")
+            .email("123@bigowl.com")
+            .postalCode("1234567")
+            .education("Higher education123")
+            .subjects(Arrays.asList(sessionFactory.getCurrentSession().get(Subject.class, 1)))
+            .build();
         teacherDao.save(expected);
         Teacher actual = sessionFactory.getCurrentSession().get(Teacher.class, 1);
 
@@ -150,22 +150,22 @@ public class HibernateTeacherDaoTest {
     @Test
     void givenFirstNameAndLastNameAndBirthDate_whenFindByFullNameAndBirthDate_thenTeacherFound() {
         Optional<Teacher> expected = Optional.of(Teacher.builder()
-                .firstName("Daniel")
-                .lastName("Morpheus")
-                .address("Virtual Reality Capsule no 1")
-                .gender(Gender.MALE)
-                .birthDate(LocalDate.of(1970, 1, 1))
-                .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
-                .degree(Degree.PROFESSOR)
-                .phone("1")
-                .email("1@bigowl.com")
-                .postalCode("12345")
-                .education("Higher education")
-                .id(1)
-                .subjects(Arrays.asList(sessionFactory.getCurrentSession().get(Subject.class, 1)))
-                .build());
+            .firstName("Daniel")
+            .lastName("Morpheus")
+            .address("Virtual Reality Capsule no 1")
+            .gender(Gender.MALE)
+            .birthDate(LocalDate.of(1970, 1, 1))
+            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .degree(Degree.PROFESSOR)
+            .phone("1")
+            .email("1@bigowl.com")
+            .postalCode("12345")
+            .education("Higher education")
+            .id(1)
+            .subjects(Arrays.asList(sessionFactory.getCurrentSession().get(Subject.class, 1)))
+            .build());
         Optional<Teacher> actual = teacherDao.findByFullNameAndBirthDate(expected.get().getFirstName(),
-                expected.get().getLastName(), expected.get().getBirthDate());
+            expected.get().getLastName(), expected.get().getBirthDate());
 
         assertEquals(expected, actual);
     }
