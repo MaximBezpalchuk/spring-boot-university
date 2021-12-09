@@ -1,210 +1,210 @@
 package com.foxminded.university.model;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
-import org.springframework.format.annotation.DateTimeFormat;
-
 public class Person {
 
-	private int id;
-	private String firstName;
-	private String lastName;
-	private String phone;
-	private String address;
-	private String email;
-	private Gender gender;
-	private String postalCode;
-	private String education;
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private LocalDate birthDate;
+    private int id;
+    private String firstName;
+    private String lastName;
+    private String phone;
+    private String address;
+    private String email;
+    private Gender gender;
+    private String postalCode;
+    private String education;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate birthDate;
 
-	protected Person(int id, String firstName, String lastName, String phone, String address, String email,
-			Gender gender, String postalCode, String education, LocalDate birthDate) {
-		this.id = id;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.phone = phone;
-		this.address = address;
-		this.email = email;
-		this.gender = gender;
-		this.postalCode = postalCode;
-		this.education = education;
-		this.birthDate = birthDate;
-	}
+    protected Person(int id, String firstName, String lastName, String phone, String address, String email,
+                     Gender gender, String postalCode, String education, LocalDate birthDate) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.phone = phone;
+        this.address = address;
+        this.email = email;
+        this.gender = gender;
+        this.postalCode = postalCode;
+        this.education = education;
+        this.birthDate = birthDate;
+    }
 
-	protected Person() {
-	}
+    protected Person() {
+    }
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
+    public String getFirstName() {
+        return firstName;
+    }
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public String getLastName() {
+        return lastName;
+    }
 
-	public void setGender(Gender gender) {
-		this.gender = gender;
-	}
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-	public void setPostalCode(String postalCode) {
-		this.postalCode = postalCode;
-	}
+    public String getPhone() {
+        return phone;
+    }
 
-	public void setEducation(String education) {
-		this.education = education;
-	}
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
-	public void setBirthDate(LocalDate birthDate) {
-		this.birthDate = birthDate;
-	}
+    public String getAddress() {
+        return address;
+    }
 
-	public int getId() {
-		return id;
-	}
+    public void setAddress(String address) {
+        this.address = address;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public String getFirstName() {
-		return firstName;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public String getLastName() {
-		return lastName;
-	}
+    public String getGender() {
+        return gender.name();
+    }
 
-	public String getPhone() {
-		return phone;
-	}
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
 
-	public String getAddress() {
-		return address;
-	}
+    public String getPostalCode() {
+        return postalCode;
+    }
 
-	public String getEmail() {
-		return email;
-	}
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
+    }
 
-	public String getGender() {
-		return gender.name();
-	}
+    public String getEducation() {
+        return education;
+    }
 
-	public String getPostalCode() {
-		return postalCode;
-	}
+    public void setEducation(String education) {
+        this.education = education;
+    }
 
-	public String getEducation() {
-		return education;
-	}
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
 
-	public LocalDate getBirthDate() {
-		return birthDate;
-	}
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
 
-	public abstract static class Builder<T extends Builder<T>> {
+    @Override
+    public int hashCode() {
+        return Objects.hash(address, birthDate, education, email, firstName, gender, id, lastName, phone, postalCode);
+    }
 
-		public abstract T getThis();
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Person other = (Person) obj;
+        return Objects.equals(address, other.address) && Objects.equals(birthDate, other.birthDate)
+                && Objects.equals(education, other.education) && Objects.equals(email, other.email)
+                && Objects.equals(firstName, other.firstName) && gender == other.gender && id == other.id
+                && Objects.equals(lastName, other.lastName) && Objects.equals(phone, other.phone)
+                && Objects.equals(postalCode, other.postalCode);
+    }
 
-		protected int id;
-		protected String firstName;
-		protected String lastName;
-		protected String phone;
-		protected String address;
-		protected String email;
-		protected Gender gender;
-		protected String postalCode;
-		protected String education;
-		protected LocalDate birthDate;
+    public abstract static class Builder<T extends Builder<T>> {
 
-		public T phone(String phone) {
-			this.phone = phone;
-			return this.getThis();
-		}
+        protected int id;
+        protected String firstName;
+        protected String lastName;
+        protected String phone;
+        protected String address;
+        protected String email;
+        protected Gender gender;
+        protected String postalCode;
+        protected String education;
+        protected LocalDate birthDate;
 
-		public T email(String email) {
-			this.email = email;
-			return this.getThis();
-		}
+        public abstract T getThis();
 
-		public T postalCode(String postalCode) {
-			this.postalCode = postalCode;
-			return this.getThis();
-		}
+        public T phone(String phone) {
+            this.phone = phone;
+            return this.getThis();
+        }
 
-		public T education(String education) {
-			this.education = education;
-			return this.getThis();
-		}
+        public T email(String email) {
+            this.email = email;
+            return this.getThis();
+        }
 
-		public T id(int id) {
-			this.id = id;
-			return this.getThis();
-		}
+        public T postalCode(String postalCode) {
+            this.postalCode = postalCode;
+            return this.getThis();
+        }
 
-		public T firstName(String firstName) {
-			this.firstName = firstName;
-			return this.getThis();
-		}
+        public T education(String education) {
+            this.education = education;
+            return this.getThis();
+        }
 
-		public T lastName(String lastName) {
-			this.lastName = lastName;
-			return this.getThis();
-		}
+        public T id(int id) {
+            this.id = id;
+            return this.getThis();
+        }
 
-		public T address(String address) {
-			this.address = address;
-			return this.getThis();
-		}
+        public T firstName(String firstName) {
+            this.firstName = firstName;
+            return this.getThis();
+        }
 
-		public T gender(Gender gender) {
-			this.gender = gender;
-			return this.getThis();
-		}
+        public T lastName(String lastName) {
+            this.lastName = lastName;
+            return this.getThis();
+        }
 
-		public T birthDate(LocalDate birthDate) {
-			this.birthDate = birthDate;
-			return this.getThis();
-		}
+        public T address(String address) {
+            this.address = address;
+            return this.getThis();
+        }
 
-		public Person build() {
-			return new Person(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate);
-		}
-	}
+        public T gender(Gender gender) {
+            this.gender = gender;
+            return this.getThis();
+        }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(address, birthDate, education, email, firstName, gender, id, lastName, phone, postalCode);
-	}
+        public T birthDate(LocalDate birthDate) {
+            this.birthDate = birthDate;
+            return this.getThis();
+        }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Person other = (Person) obj;
-		return Objects.equals(address, other.address) && Objects.equals(birthDate, other.birthDate)
-				&& Objects.equals(education, other.education) && Objects.equals(email, other.email)
-				&& Objects.equals(firstName, other.firstName) && gender == other.gender && id == other.id
-				&& Objects.equals(lastName, other.lastName) && Objects.equals(phone, other.phone)
-				&& Objects.equals(postalCode, other.postalCode);
-	}
+        public Person build() {
+            return new Person(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate);
+        }
+    }
 
 }

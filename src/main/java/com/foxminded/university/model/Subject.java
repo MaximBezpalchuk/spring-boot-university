@@ -4,105 +4,105 @@ import java.util.Objects;
 
 public class Subject {
 
-	private int id;
-	private Cathedra cathedra;
-	private String name;
-	private String description;
+    private int id;
+    private Cathedra cathedra;
+    private String name;
+    private String description;
 
-	private Subject(Builder builder) {
-		this.id = builder.id;
-		this.cathedra = builder.cathedra;
-		this.name = builder.name;
-		this.description = builder.description;
-	}
+    private Subject(Builder builder) {
+        this.id = builder.id;
+        this.cathedra = builder.cathedra;
+        this.name = builder.name;
+        this.description = builder.description;
+    }
 
-	public Subject() {
-	}
+    public Subject() {
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public static Builder builder() {
+        return new Builder();
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public int getId() {
-		return id;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public Cathedra getCathedra() {
+        return cathedra;
+    }
 
-	public Cathedra getCathedra() {
-		return cathedra;
-	}
+    public void setCathedra(Cathedra cathedra) {
+        this.cathedra = cathedra;
+    }
 
-	public void setCathedra(Cathedra cathedra) {
-		this.cathedra = cathedra;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public static Builder builder() {
-		return new Builder();
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public static class Builder {
+    @Override
+    public int hashCode() {
+        return Objects.hash(cathedra, description, id, name);
+    }
 
-		private int id;
-		private String name;
-		private String description;
-		private Cathedra cathedra;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Subject other = (Subject) obj;
+        return Objects.equals(cathedra, other.cathedra) && Objects.equals(description, other.description)
+                && id == other.id && Objects.equals(name, other.name);
+    }
 
-		public Builder id(int id) {
-			this.id = id;
-			return this;
-		}
+    public static class Builder {
 
-		public Builder name(String name) {
-			this.name = name;
-			return this;
-		}
+        private int id;
+        private String name;
+        private String description;
+        private Cathedra cathedra;
 
-		public Builder description(String description) {
-			this.description = description;
-			return this;
-		}
+        public Builder id(int id) {
+            this.id = id;
+            return this;
+        }
 
-		public Builder cathedra(Cathedra cathedra) {
-			this.cathedra = cathedra;
-			return this;
-		}
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
 
-		public Subject build() {
-			return new Subject(this);
-		}
-	}
+        public Builder description(String description) {
+            this.description = description;
+            return this;
+        }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(cathedra, description, id, name);
-	}
+        public Builder cathedra(Cathedra cathedra) {
+            this.cathedra = cathedra;
+            return this;
+        }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Subject other = (Subject) obj;
-		return Objects.equals(cathedra, other.cathedra) && Objects.equals(description, other.description)
-				&& id == other.id && Objects.equals(name, other.name);
-	}
+        public Subject build() {
+            return new Subject(this);
+        }
+    }
 
 }

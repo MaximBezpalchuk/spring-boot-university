@@ -1,14 +1,14 @@
 package com.foxminded.university.dao;
 
+import com.foxminded.university.model.Group;
+
 import java.util.List;
 import java.util.Optional;
 
-import com.foxminded.university.model.Group;
-
 public interface GroupDao extends GenericDao<Group> {
 
-	List<Group> findByLectureId(int id);
+    List<Group> findByLectureId(int id);
 
-	Optional<Group> findByName(String name);
+    Optional<Group> findByName(String name);
 
 }

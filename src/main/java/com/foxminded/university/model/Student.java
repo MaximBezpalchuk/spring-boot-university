@@ -5,67 +5,67 @@ import java.util.Objects;
 
 public class Student extends Person {
 
-	private Group group;
+    private Group group;
 
-	public Student(int id, String firstName, String lastName, String phone, String address, String email,
-			Gender gender, String postalCode, String education, LocalDate birthDate, Group group) {
-		super(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate);
-		this.group = group;
-	}
+    public Student(int id, String firstName, String lastName, String phone, String address, String email,
+                   Gender gender, String postalCode, String education, LocalDate birthDate, Group group) {
+        super(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate);
+        this.group = group;
+    }
 
-	public Student() {
-	}
+    public Student() {
+    }
 
-	public Group getGroup() {
-		return group;
-	}
+    public static Builder builder() {
+        return new Builder();
+    }
 
-	public void setGroup(Group group) {
-		this.group = group;
-	}
+    public Group getGroup() {
+        return group;
+    }
 
-	public static Builder builder() {
-		return new Builder();
-	}
+    public void setGroup(Group group) {
+        this.group = group;
+    }
 
-	public static class Builder extends Person.Builder<Builder> {
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + Objects.hash(group);
+        return result;
+    }
 
-		private Group group;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Student other = (Student) obj;
+        return Objects.equals(group, other.group);
+    }
 
-		@Override
-		public Builder getThis() {
-			return this;
-		}
+    public static class Builder extends Person.Builder<Builder> {
 
-		public Builder group(Group group) {
-			this.group = group;
-			return this;
-		}
+        private Group group;
 
-		public Student build() {
-			return new Student(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate,
-					group);
-		}
-	}
+        @Override
+        public Builder getThis() {
+            return this;
+        }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + Objects.hash(group);
-		return result;
-	}
+        public Builder group(Group group) {
+            this.group = group;
+            return this;
+        }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Student other = (Student) obj;
-		return Objects.equals(group, other.group);
-	}
+        public Student build() {
+            return new Student(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate,
+                    group);
+        }
+    }
 
 }

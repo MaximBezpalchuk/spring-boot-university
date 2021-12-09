@@ -7,102 +7,102 @@ import java.util.Objects;
 
 public class Teacher extends Person {
 
-	private Cathedra cathedra;
-	private List<Subject> subjects = new ArrayList<>();
-	private Degree degree;
+    private Cathedra cathedra;
+    private List<Subject> subjects = new ArrayList<>();
+    private Degree degree;
 
-	public Teacher(int id, String firstName, String lastName, String phone, String address, String email, Gender gender,
-			String postalCode, String education, LocalDate birthDate, Cathedra cathedra, List<Subject> subjects,
-			Degree degree) {
-		super(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate);
-		this.cathedra = cathedra;
-		this.subjects = subjects;
-		this.degree = degree;
-	}
+    public Teacher(int id, String firstName, String lastName, String phone, String address, String email, Gender gender,
+                   String postalCode, String education, LocalDate birthDate, Cathedra cathedra, List<Subject> subjects,
+                   Degree degree) {
+        super(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate);
+        this.cathedra = cathedra;
+        this.subjects = subjects;
+        this.degree = degree;
+    }
 
-	public Teacher() {
-	}
+    public Teacher() {
+    }
 
-	public static Builder builder() {
-		return new Builder();
-	}
+    public static Builder builder() {
+        return new Builder();
+    }
 
-	public static class Builder extends Person.Builder<Builder> {
+    public Cathedra getCathedra() {
+        return cathedra;
+    }
 
-		private Cathedra cathedra;
-		private List<Subject> subjects = new ArrayList<>();
-		private Degree degree;
+    public void setCathedra(Cathedra cathedra) {
+        this.cathedra = cathedra;
+    }
 
-		@Override
-		public Builder getThis() {
-			return this;
-		}
+    public List<Subject> getSubjects() {
+        return subjects;
+    }
 
-		public Builder cathedra(Cathedra cathedra) {
-			this.cathedra = cathedra;
-			return this;
-		}
+    public void setSubjects(List<Subject> subjects) {
+        this.subjects = subjects;
+    }
 
-		public Builder subjects(List<Subject> subjects) {
-			this.subjects = subjects;
-			return this;
-		}
+    public Degree getDegree() {
+        return degree;
+    }
 
-		public Builder degree(Degree degree) {
-			this.degree = degree;
-			return this;
-		}
+    public void setDegree(Degree degree) {
+        this.degree = degree;
+    }
 
-		public Teacher build() {
-			return new Teacher(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate,
-					cathedra, subjects, degree);
-		}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + Objects.hash(cathedra, degree, subjects);
+        return result;
+    }
 
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Teacher other = (Teacher) obj;
+        return Objects.equals(cathedra, other.cathedra) && degree == other.degree
+                && Objects.equals(subjects, other.subjects);
+    }
 
-	public Cathedra getCathedra() {
-		return cathedra;
-	}
+    public static class Builder extends Person.Builder<Builder> {
 
-	public void setCathedra(Cathedra cathedra) {
-		this.cathedra = cathedra;
-	}
+        private Cathedra cathedra;
+        private List<Subject> subjects = new ArrayList<>();
+        private Degree degree;
 
-	public List<Subject> getSubjects() {
-		return subjects;
-	}
+        @Override
+        public Builder getThis() {
+            return this;
+        }
 
-	public void setSubjects(List<Subject> subjects) {
-		this.subjects = subjects;
-	}
+        public Builder cathedra(Cathedra cathedra) {
+            this.cathedra = cathedra;
+            return this;
+        }
 
-	public Degree getDegree() {
-		return degree;
-	}
+        public Builder subjects(List<Subject> subjects) {
+            this.subjects = subjects;
+            return this;
+        }
 
-	public void setDegree(Degree degree) {
-		this.degree = degree;
-	}
+        public Builder degree(Degree degree) {
+            this.degree = degree;
+            return this;
+        }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + Objects.hash(cathedra, degree, subjects);
-		return result;
-	}
+        public Teacher build() {
+            return new Teacher(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate,
+                    cathedra, subjects, degree);
+        }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Teacher other = (Teacher) obj;
-		return Objects.equals(cathedra, other.cathedra) && degree == other.degree
-				&& Objects.equals(subjects, other.subjects);
-	}
+    }
 
 }

@@ -4,71 +4,71 @@ import java.util.Objects;
 
 public class Cathedra {
 
-	private int id;
-	private String name;
+    private int id;
+    private String name;
 
-	private Cathedra(int id, String name) {
-		this.id = id;
-		this.name = name;
-	}
+    private Cathedra(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
-	public Cathedra() {
-	}
+    public Cathedra() {
+    }
 
-	public int getId() {
-		return id;
-	}
+    public static Builder builder() {
+        return new Builder();
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public static Builder builder() {
-		return new Builder();
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public static class Builder {
-		private int id;
-		private String name;
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
+    }
 
-		public Builder id(int id) {
-			this.id = id;
-			return this;
-		}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Cathedra other = (Cathedra) obj;
+        return id == other.id && Objects.equals(name, other.name);
+    }
 
-		public Builder name(String name) {
-			this.name = name;
-			return this;
-		}
+    public static class Builder {
+        private int id;
+        private String name;
 
-		public Cathedra build() {
-			return new Cathedra(id, name);
-		}
-	}
+        public Builder id(int id) {
+            this.id = id;
+            return this;
+        }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(id, name);
-	}
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Cathedra other = (Cathedra) obj;
-		return id == other.id && Objects.equals(name, other.name);
-	}
+        public Cathedra build() {
+            return new Cathedra(id, name);
+        }
+    }
 
 }

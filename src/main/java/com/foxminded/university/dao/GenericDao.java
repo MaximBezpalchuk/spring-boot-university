@@ -5,11 +5,11 @@ import java.util.Optional;
 
 public interface GenericDao<T> {
 
-	List<T> findAll();
+    List<T> findAll();
 
-	Optional<T> findById(int id);
+    Optional<T> findById(int id);
 
-	void save(T entity);
+    void save(T entity);
 
-	void deleteById(int id);
+    void deleteById(int id);
 }

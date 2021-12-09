@@ -2,22 +2,22 @@
 
 <configuration>
 
-	<property name="HOME_ERROR_LOG" value="logs/errors.log"/>
-	<property name="HOME_DEBUG_LOG" value="logs/debug.log"/>
+    <property name="HOME_ERROR_LOG" value="logs/errors.log"/>
+    <property name="HOME_DEBUG_LOG" value="logs/debug.log"/>
 
-  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-  <Target>System.out</Target>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <Target>System.out</Target>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>INFO</level>
             <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
         </filter>
         <encoder>
-      <pattern>%d{dd.MM.yyyy HH:mm:ss.SSS} [%thread] %-5level - %m%n</pattern>
-    </encoder>
-  </appender>
-  
-  <appender name="ERRORS_INTO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+            <pattern>%d{dd.MM.yyyy HH:mm:ss.SSS} [%thread] %-5level - %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ERRORS_INTO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${HOME_ERROR_LOG}</file>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>ERROR</level>
@@ -37,7 +37,7 @@
             <pattern>%d{dd.MM.yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{20} - %m%n</pattern>
         </encoder>
     </appender>
-    
+
     <appender name="DEBUG_INTO_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${HOME_DEBUG_LOG}</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
@@ -53,10 +53,10 @@
             <pattern>%d{dd.MM.yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{2} - %m%n</pattern>
         </encoder>
     </appender>
- 
- <root level="info">
-	<appender-ref ref="STDOUT" />
-	<appender-ref ref="ERRORS_INTO_FILE" />
-	<appender-ref ref="DEBUG_INTO_FILE" />
-  </root>
+
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="ERRORS_INTO_FILE"/>
+        <appender-ref ref="DEBUG_INTO_FILE"/>
+    </root>
 </configuration>

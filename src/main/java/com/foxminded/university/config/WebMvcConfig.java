@@ -1,7 +1,7 @@
 package com.foxminded.university.config;
 
-import java.util.List;
-
+import com.foxminded.university.formatter.GroupFormatter;
+import com.foxminded.university.formatter.SubjectFormatter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -21,8 +21,7 @@ import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
-import com.foxminded.university.formatter.GroupFormatter;
-import com.foxminded.university.formatter.SubjectFormatter;
+import java.util.List;
 
 @Configuration
 @ComponentScan("com.foxminded.university")
@@ -30,50 +29,50 @@ import com.foxminded.university.formatter.SubjectFormatter;
 @EnableWebMvc
 public class WebMvcConfig implements WebMvcConfigurer {
 
-	@Value("${defaultPageSize}")
-	private int defaultPageSize;
+    @Value("${defaultPageSize}")
+    private int defaultPageSize;
 
-	@Bean
-	public SpringResourceTemplateResolver templateResolver() {
-		SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
-		templateResolver.setPrefix("/WEB-INF/views/");
-		templateResolver.setSuffix(".html");
-		templateResolver.setTemplateMode(TemplateMode.HTML);
-		return templateResolver;
-	}
+    @Bean
+    public SpringResourceTemplateResolver templateResolver() {
+        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
+        templateResolver.setPrefix("/WEB-INF/views/");
+        templateResolver.setSuffix(".html");
+        templateResolver.setTemplateMode(TemplateMode.HTML);
+        return templateResolver;
+    }
 
-	@Bean
-	public SpringTemplateEngine templateEngine(ITemplateResolver templateResolver) {
-		SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-		templateEngine.setTemplateResolver(templateResolver);
-		templateEngine.setEnableSpringELCompiler(true);
-		return templateEngine;
-	}
+    @Bean
+    public SpringTemplateEngine templateEngine(ITemplateResolver templateResolver) {
+        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
+        templateEngine.setTemplateResolver(templateResolver);
+        templateEngine.setEnableSpringELCompiler(true);
+        return templateEngine;
+    }
 
-	@Override
-	public void configureViewResolvers(ViewResolverRegistry registry) {
-		ThymeleafViewResolver resolver = new ThymeleafViewResolver();
-		resolver.setTemplateEngine(templateEngine(templateResolver()));
-		registry.viewResolver(resolver);
-	}
+    @Override
+    public void configureViewResolvers(ViewResolverRegistry registry) {
+        ThymeleafViewResolver resolver = new ThymeleafViewResolver();
+        resolver.setTemplateEngine(templateEngine(templateResolver()));
+        registry.viewResolver(resolver);
+    }
 
-	@Override
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
-	}
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+    }
 
-	@Override
-	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-		PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
-		resolver.setFallbackPageable(PageRequest.of(0, defaultPageSize));
-		resolver.setOneIndexedParameters(true);
-		argumentResolvers.add(resolver);
-		WebMvcConfigurer.super.addArgumentResolvers(argumentResolvers);
-	}
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+        PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
+        resolver.setFallbackPageable(PageRequest.of(0, defaultPageSize));
+        resolver.setOneIndexedParameters(true);
+        argumentResolvers.add(resolver);
+        WebMvcConfigurer.super.addArgumentResolvers(argumentResolvers);
+    }
 
-	@Override
-	public void addFormatters(FormatterRegistry registry) {
-		registry.addFormatter(new GroupFormatter()); // add multiply group choice on lectures/new
-		registry.addFormatter(new SubjectFormatter()); // add multiply subject choice on teachers/new
-	}
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addFormatter(new GroupFormatter()); // add multiply group choice on lectures/new
+        registry.addFormatter(new SubjectFormatter()); // add multiply subject choice on teachers/new
+    }
 }
