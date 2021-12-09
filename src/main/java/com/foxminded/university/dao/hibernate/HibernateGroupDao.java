@@ -18,7 +18,7 @@ public class HibernateGroupDao implements GroupDao {
 
     private static final Logger logger = LoggerFactory.getLogger(HibernateAudienceDao.class);
 
-    private SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
 
     public HibernateGroupDao(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;

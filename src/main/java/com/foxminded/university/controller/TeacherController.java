@@ -19,9 +19,9 @@ import java.util.stream.Collectors;
 public class TeacherController {
 
     private static final Logger logger = LoggerFactory.getLogger(TeacherController.class);
-    private TeacherService teacherService;
-    private SubjectService subjectService;
-    private CathedraService cathedraService;
+    private final TeacherService teacherService;
+    private final SubjectService subjectService;
+    private final CathedraService cathedraService;
 
     public TeacherController(TeacherService teacherService, SubjectService subjectService,
                              CathedraService cathedraService) {

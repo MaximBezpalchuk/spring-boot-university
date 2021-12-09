@@ -120,7 +120,7 @@ public class HibernateLectureDaoTest {
     @Test
     void givenExistingLecture_whenSaveWithChanges_thenChangesApplied() {
         Lecture expected = sessionFactory.getCurrentSession().get(Lecture.class, 1);
-        expected.setDate(LocalDate.of(2021,12,12));
+        expected.setDate(LocalDate.of(2021, 12, 12));
         lectureDao.save(expected);
         Lecture actual = sessionFactory.getCurrentSession().get(Lecture.class, 1);
 

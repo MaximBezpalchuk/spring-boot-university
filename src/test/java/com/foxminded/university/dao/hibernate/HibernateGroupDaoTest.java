@@ -4,7 +4,6 @@ import com.foxminded.university.config.TestConfig;
 import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Group;
-import com.foxminded.university.model.Holiday;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

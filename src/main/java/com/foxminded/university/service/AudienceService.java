@@ -16,7 +16,7 @@ public class AudienceService {
 
     private static final Logger logger = LoggerFactory.getLogger(AudienceService.class);
 
-    private AudienceDao audienceDao;
+    private final AudienceDao audienceDao;
 
     public AudienceService(AudienceDao audienceDao) {
         this.audienceDao = audienceDao;

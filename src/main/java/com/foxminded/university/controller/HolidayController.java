@@ -17,8 +17,8 @@ public class HolidayController {
 
     private static final Logger logger = LoggerFactory.getLogger(HolidayController.class);
 
-    private HolidayService holidayService;
-    private CathedraService cathedraService;
+    private final HolidayService holidayService;
+    private final CathedraService cathedraService;
 
     public HolidayController(HolidayService holidayService, CathedraService cathedraService) {
         this.holidayService = holidayService;

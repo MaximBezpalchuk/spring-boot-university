@@ -3,7 +3,6 @@ package com.foxminded.university.dao.hibernate;
 import com.foxminded.university.config.TestConfig;
 import com.foxminded.university.dao.CathedraDao;
 import com.foxminded.university.model.Cathedra;
-import com.foxminded.university.model.Holiday;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

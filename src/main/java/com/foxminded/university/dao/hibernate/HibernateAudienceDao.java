@@ -18,7 +18,7 @@ public class HibernateAudienceDao implements AudienceDao {
 
     private static final Logger logger = LoggerFactory.getLogger(HibernateAudienceDao.class);
 
-    private SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
 
     public HibernateAudienceDao(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;

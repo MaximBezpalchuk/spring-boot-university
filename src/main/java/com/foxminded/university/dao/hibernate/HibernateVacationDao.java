@@ -23,7 +23,7 @@ public class HibernateVacationDao implements VacationDao {
 
     private static final Logger logger = LoggerFactory.getLogger(HibernateAudienceDao.class);
 
-    private SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
 
     public HibernateVacationDao(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;

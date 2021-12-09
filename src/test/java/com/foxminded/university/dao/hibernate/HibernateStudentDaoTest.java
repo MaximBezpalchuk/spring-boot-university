@@ -2,7 +2,9 @@ package com.foxminded.university.dao.hibernate;
 
 import com.foxminded.university.config.TestConfig;
 import com.foxminded.university.dao.StudentDao;
-import com.foxminded.university.model.*;
+import com.foxminded.university.model.Gender;
+import com.foxminded.university.model.Group;
+import com.foxminded.university.model.Student;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

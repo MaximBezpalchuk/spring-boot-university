@@ -15,73 +15,73 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/subjects")
 public class SubjectController {
 
-	private static final Logger logger = LoggerFactory.getLogger(SubjectController.class);
+    private static final Logger logger = LoggerFactory.getLogger(SubjectController.class);
 
-	private SubjectService subjectService;
-	private CathedraService cathedraService;
+    private final SubjectService subjectService;
+    private final CathedraService cathedraService;
 
-	public SubjectController(SubjectService subjectService, CathedraService cathedraService) {
-		this.subjectService = subjectService;
-		this.cathedraService = cathedraService;
-	}
+    public SubjectController(SubjectService subjectService, CathedraService cathedraService) {
+        this.subjectService = subjectService;
+        this.cathedraService = cathedraService;
+    }
 
-	@GetMapping
-	public String all(Model model, Pageable pageable) {
-		logger.debug("Show index page");
-		Page<Subject> page = subjectService.findAll(pageable);
-		model.addAttribute("subjects", page);
+    @GetMapping
+    public String all(Model model, Pageable pageable) {
+        logger.debug("Show index page");
+        Page<Subject> page = subjectService.findAll(pageable);
+        model.addAttribute("subjects", page);
 
-		return "subjects/index";
-	}
+        return "subjects/index";
+    }
 
-	@GetMapping("/{id}")
-	public String showSubject(@PathVariable int id, Model model) {
-		logger.debug("Show subject page with id {}", id);
-		model.addAttribute("subject", subjectService.findById(id));
+    @GetMapping("/{id}")
+    public String showSubject(@PathVariable int id, Model model) {
+        logger.debug("Show subject page with id {}", id);
+        model.addAttribute("subject", subjectService.findById(id));
 
-		return "subjects/show";
-	}
+        return "subjects/show";
+    }
 
-	@GetMapping("/new")
-	public String newSubject(Subject subject, Model model) {
-		logger.debug("Show create page");
-		model.addAttribute("cathedras", cathedraService.findAll());
+    @GetMapping("/new")
+    public String newSubject(Subject subject, Model model) {
+        logger.debug("Show create page");
+        model.addAttribute("cathedras", cathedraService.findAll());
 
-		return "subjects/new";
-	}
+        return "subjects/new";
+    }
 
-	@PostMapping
-	public String create(@ModelAttribute Subject subject, Model model) {
-		subject.setCathedra(cathedraService.findById(subject.getCathedra().getId()));
-		subjectService.save(subject);
-		logger.debug("Create new subject. Id {}", subject.getId());
+    @PostMapping
+    public String create(@ModelAttribute Subject subject, Model model) {
+        subject.setCathedra(cathedraService.findById(subject.getCathedra().getId()));
+        subjectService.save(subject);
+        logger.debug("Create new subject. Id {}", subject.getId());
 
-		return "redirect:/subjects";
-	}
+        return "redirect:/subjects";
+    }
 
-	@GetMapping("/{id}/edit")
-	public String editSubject(@PathVariable int id, Model model) {
-		model.addAttribute("cathedras", cathedraService.findAll());
-		model.addAttribute("subject", subjectService.findById(id));
-		logger.debug("Show edit subject page");
+    @GetMapping("/{id}/edit")
+    public String editSubject(@PathVariable int id, Model model) {
+        model.addAttribute("cathedras", cathedraService.findAll());
+        model.addAttribute("subject", subjectService.findById(id));
+        logger.debug("Show edit subject page");
 
-		return "subjects/edit";
-	}
+        return "subjects/edit";
+    }
 
-	@PatchMapping("/{id}")
-	public String update(@ModelAttribute Subject subject, @PathVariable int id) {
-		logger.debug("Update subject with id {}", id);
-		subject.setCathedra(cathedraService.findById(subject.getCathedra().getId()));
-		subjectService.save(subject);
+    @PatchMapping("/{id}")
+    public String update(@ModelAttribute Subject subject, @PathVariable int id) {
+        logger.debug("Update subject with id {}", id);
+        subject.setCathedra(cathedraService.findById(subject.getCathedra().getId()));
+        subjectService.save(subject);
 
-		return "redirect:/subjects";
-	}
+        return "redirect:/subjects";
+    }
 
-	@DeleteMapping("/{id}")
-	public String delete(@ModelAttribute Subject subject) {
-		logger.debug("Delete subject with id {}", subject.getId());
-		subjectService.delete(subject);
+    @DeleteMapping("/{id}")
+    public String delete(@ModelAttribute Subject subject) {
+        logger.debug("Delete subject with id {}", subject.getId());
+        subjectService.delete(subject);
 
-		return "redirect:/subjects";
-	}
+        return "redirect:/subjects";
+    }
 }

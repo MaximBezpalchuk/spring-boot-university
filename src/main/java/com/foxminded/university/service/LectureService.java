@@ -27,12 +27,12 @@ public class LectureService {
 
     private static final Logger logger = LoggerFactory.getLogger(LectureService.class);
 
-    private LectureDao lectureDao;
-    private VacationDao vacationDao;
-    private HolidayDao holidayDao;
-    private StudentDao studentDao;
-    private StudentService studentService;
-    private TeacherService teacherService;
+    private final LectureDao lectureDao;
+    private final VacationDao vacationDao;
+    private final HolidayDao holidayDao;
+    private final StudentDao studentDao;
+    private final StudentService studentService;
+    private final TeacherService teacherService;
     @Value("${startWorkingDay}")
     private int startWorkingDay;
     @Value("${endWorkingDay}")
@@ -135,7 +135,7 @@ public class LectureService {
 
     private void teacherCompetentWithSubjectCheck(Lecture lecture) {
         logger.debug("Check teacher for subject");
-        if (! lecture.getTeacher().getSubjects().stream().map(Subject::getName).anyMatch(name -> lecture.getSubject().getName().equals(name))) {
+        if (!lecture.getTeacher().getSubjects().stream().map(Subject::getName).anyMatch(name -> lecture.getSubject().getName().equals(name))) {
             throw new NotCompetentTeacherException("Teacher " + lecture.getTeacher().getFirstName() + " "
                     + lecture.getTeacher().getLastName() + " can`t educate" + lecture.getSubject().getName() + "!");
         }

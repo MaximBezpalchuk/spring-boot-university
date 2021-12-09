@@ -14,35 +14,35 @@ import java.util.Optional;
 @Service
 public class GroupService {
 
-	private static final Logger logger = LoggerFactory.getLogger(GroupService.class);
+    private static final Logger logger = LoggerFactory.getLogger(GroupService.class);
 
-	private GroupDao groupDao;
+    private final GroupDao groupDao;
 
-	public GroupService(GroupDao groupDao) {
-		this.groupDao = groupDao;
-	}
+    public GroupService(GroupDao groupDao) {
+        this.groupDao = groupDao;
+    }
 
-	public List<Group> findAll() {
-		logger.debug("Find all groups");
-		return groupDao.findAll();
-	}
+    public List<Group> findAll() {
+        logger.debug("Find all groups");
+        return groupDao.findAll();
+    }
 
-	public Group findById(int id) {
-		logger.debug("Find group by id {}", id);
-		return groupDao.findById(id)
-				.orElseThrow(() -> new EntityNotFoundException("Can`t find any group with id: " + id));
-	}
+    public Group findById(int id) {
+        logger.debug("Find group by id {}", id);
+        return groupDao.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Can`t find any group with id: " + id));
+    }
 
-	public void save(Group group) {
-		logger.debug("Save group");
-		uniqueCheck(group);
-		groupDao.save(group);
-	}
+    public void save(Group group) {
+        logger.debug("Save group");
+        uniqueCheck(group);
+        groupDao.save(group);
+    }
 
-	public void delete(Group group) {
-		logger.debug("Delete group with id: {}", group.getId());
-		groupDao.delete(group);
-	}
+    public void delete(Group group) {
+        logger.debug("Delete group with id: {}", group.getId());
+        groupDao.delete(group);
+    }
 
     private void uniqueCheck(Group group) {
         logger.debug("Check group is unique");

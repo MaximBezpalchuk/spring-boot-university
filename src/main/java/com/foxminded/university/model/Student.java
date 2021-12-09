@@ -29,7 +29,7 @@ import java.util.Objects;
 public class Student extends Person {
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "group_id")
+    @JoinColumn(name = "group_id")
     private Group group;
 
     public Student(int id, String firstName, String lastName, String phone, String address, String email,

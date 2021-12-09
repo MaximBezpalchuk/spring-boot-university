@@ -29,14 +29,14 @@ public class LectureController {
     private static final Logger logger = LoggerFactory.getLogger(LectureController.class);
 
     private final LectureToEventMapper lectureToEventMapper;
-    private LectureService lectureService;
-    private GroupService groupService;
-    private TeacherService teacherService;
-    private AudienceService audienceService;
-    private SubjectService subjectService;
-    private StudentService studentService;
-    private CathedraService cathedraService;
-    private LectureTimeService lectureTimeService;
+    private final LectureService lectureService;
+    private final GroupService groupService;
+    private final TeacherService teacherService;
+    private final AudienceService audienceService;
+    private final SubjectService subjectService;
+    private final StudentService studentService;
+    private final CathedraService cathedraService;
+    private final LectureTimeService lectureTimeService;
 
     public LectureController(LectureService lectureService, GroupService groupService, TeacherService teacherService,
                              AudienceService audienceService, SubjectService subjectService, CathedraService cathedraService,

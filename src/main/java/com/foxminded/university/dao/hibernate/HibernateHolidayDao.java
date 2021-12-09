@@ -22,7 +22,7 @@ public class HibernateHolidayDao implements HolidayDao {
 
     private static final Logger logger = LoggerFactory.getLogger(HibernateAudienceDao.class);
 
-    private SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
 
     public HibernateHolidayDao(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;

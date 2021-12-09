@@ -18,7 +18,7 @@ public class HibernateCathedraDao implements CathedraDao {
 
     private static final Logger logger = LoggerFactory.getLogger(HibernateAudienceDao.class);
 
-    private SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
 
     public HibernateCathedraDao(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
