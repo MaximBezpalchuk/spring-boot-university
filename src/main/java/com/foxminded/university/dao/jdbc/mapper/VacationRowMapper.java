@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Component
 public class VacationRowMapper implements RowMapper<Vacation> {
 
-    private JdbcTeacherDao teacherDao;
+    private final JdbcTeacherDao teacherDao;
 
     public VacationRowMapper(JdbcTeacherDao teacherDao) {
         this.teacherDao = teacherDao;
@@ -21,10 +21,10 @@ public class VacationRowMapper implements RowMapper<Vacation> {
     @Override
     public Vacation mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         Vacation vacation = Vacation.builder()
-                .start(resultSet.getObject("start", LocalDate.class))
-                .end(resultSet.getObject("finish", LocalDate.class))
-                .id(resultSet.getInt("id"))
-                .build();
+            .start(resultSet.getObject("start", LocalDate.class))
+            .end(resultSet.getObject("finish", LocalDate.class))
+            .id(resultSet.getInt("id"))
+            .build();
         teacherDao.findById(resultSet.getInt("teacher_id")).ifPresent(vacation::setTeacher);
 
         return vacation;

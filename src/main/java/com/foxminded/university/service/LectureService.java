@@ -28,12 +28,12 @@ public class LectureService {
 
     private static final Logger logger = LoggerFactory.getLogger(LectureService.class);
 
-    private LectureDao lectureDao;
-    private VacationDao vacationDao;
-    private HolidayDao holidayDao;
-    private StudentDao studentDao;
-    private StudentService studentService;
-    private TeacherService teacherService;
+    private final LectureDao lectureDao;
+    private final VacationDao vacationDao;
+    private final HolidayDao holidayDao;
+    private final StudentDao studentDao;
+    private final StudentService studentService;
+    private final TeacherService teacherService;
     @Value("${startWorkingDay}")
     private int startWorkingDay;
     @Value("${endWorkingDay}")
@@ -62,7 +62,7 @@ public class LectureService {
     public Lecture findById(int id) {
         logger.debug("Find lecture by id {}", id);
         return lectureDao.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Can`t find any lecture with id: " + id));
+            .orElseThrow(() -> new EntityNotFoundException("Can`t find any lecture with id: " + id));
     }
 
     public void save(Lecture lecture) {
@@ -87,11 +87,11 @@ public class LectureService {
     private void uniqueCheck(Lecture lecture) {
         logger.debug("Check lecture is unique");
         Optional<Lecture> existingLecture = lectureDao.findByTeacherAudienceDateAndLectureTime(lecture.getTeacher(),
-                lecture.getAudience(), lecture.getDate(), lecture.getTime());
+            lecture.getAudience(), lecture.getDate(), lecture.getTime());
         if (existingLecture.isPresent() && (existingLecture.get().getId() != lecture.getId())) {
             throw new EntityNotUniqueException("Lecture with audience number " + lecture.getAudience().getRoom()
-                    + ", date " + lecture.getDate() + " and lecture time " + lecture.getTime().getStart() + " - "
-                    + lecture.getTime().getEnd() + " is already exists!");
+                + ", date " + lecture.getDate() + " and lecture time " + lecture.getTime().getStart() + " - "
+                + lecture.getTime().getEnd() + " is already exists!");
         }
     }
 
@@ -105,18 +105,18 @@ public class LectureService {
     private void afterHoursCheck(Lecture lecture) {
         logger.debug("Check lecture is after hours");
         if (lecture.getTime().getEnd().getHour() > endWorkingDay
-                || lecture.getTime().getStart().getHour() < startWorkingDay) {
+            || lecture.getTime().getStart().getHour() < startWorkingDay) {
             throw new AfterHoursException("Lecture can`t be in after hours! Specified period is: "
-                    + lecture.getTime().getStart() + " - " + lecture.getTime().getEnd());
+                + lecture.getTime().getStart() + " - " + lecture.getTime().getEnd());
         }
     }
 
     private void teacherBusyCheck(Lecture lecture) {
         logger.debug("Check teacher for this lecture is busy");
         if (lectureDao.findLecturesByTeacherDateAndTime(lecture.getTeacher(), lecture.getDate(), lecture.getTime())
-                .stream().filter(lec -> lec.getId() != lecture.getId()).findAny().isPresent()) {
+            .stream().filter(lec -> lec.getId() != lecture.getId()).findAny().isPresent()) {
             throw new BusyTeacherException("Teacher is on another lecture this time! Teacher is: "
-                    + lecture.getTeacher().getFirstName() + " " + lecture.getTeacher().getLastName());
+                + lecture.getTeacher().getFirstName() + " " + lecture.getTeacher().getLastName());
         }
     }
 
@@ -138,27 +138,27 @@ public class LectureService {
         logger.debug("Check teacher for subject");
         if (!lecture.getTeacher().getSubjects().contains(lecture.getSubject())) {
             throw new NotCompetentTeacherException("Teacher " + lecture.getTeacher().getFirstName() + " "
-                    + lecture.getTeacher().getLastName() + " can`t educate" + lecture.getSubject().getName() + "!");
+                + lecture.getTeacher().getLastName() + " can`t educate" + lecture.getSubject().getName() + "!");
         }
     }
 
     private void enoughAudienceCapacityCheck(Lecture lecture) {
         logger.debug("Check audience size");
         Integer studentsOnLectureCount = lecture.getGroups().stream().map(Group::getId).map(studentDao::findByGroupId)
-                .mapToInt(List::size).sum();
+            .mapToInt(List::size).sum();
         if (studentsOnLectureCount >= lecture.getAudience().getCapacity()) {
             throw new AudienceOverflowException("Student count (" + studentsOnLectureCount
-                    + ") more than audience capacity (" + lecture.getAudience().getCapacity() + ")!");
+                + ") more than audience capacity (" + lecture.getAudience().getCapacity() + ")!");
         }
     }
 
     private void audienceOccupiedCheck(Lecture lecture) {
         logger.debug("Check audience is occupied");
         Optional<Lecture> existingLecture = lectureDao.findByAudienceDateAndLectureTime(lecture.getAudience(),
-                lecture.getDate(), lecture.getTime());
+            lecture.getDate(), lecture.getTime());
         if (existingLecture.isPresent() && existingLecture.get().getId() != lecture.getId()) {
             throw new OccupiedAudienceException(
-                    "Audience " + lecture.getAudience().getRoom() + " is already occupied!");
+                "Audience " + lecture.getAudience().getRoom() + " is already occupied!");
         }
     }
 

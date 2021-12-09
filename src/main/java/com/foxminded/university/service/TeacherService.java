@@ -20,7 +20,7 @@ public class TeacherService {
 
     private static final Logger logger = LoggerFactory.getLogger(TeacherService.class);
 
-    private TeacherDao teacherDao;
+    private final TeacherDao teacherDao;
 
     public TeacherService(JdbcTeacherDao teacherDao) {
         this.teacherDao = teacherDao;
@@ -39,7 +39,7 @@ public class TeacherService {
     public Teacher findById(int id) {
         logger.debug("Find teacher by id {}", id);
         return teacherDao.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Can`t find any teacher with id: " + id));
+            .orElseThrow(() -> new EntityNotFoundException("Can`t find any teacher with id: " + id));
     }
 
     public void save(Teacher teacher) {
@@ -57,16 +57,16 @@ public class TeacherService {
         logger.debug("Check teacher is unique");
 
         Optional<Teacher> existingTeacher = teacherDao.findByFullNameAndBirthDate(teacher.getFirstName(),
-                teacher.getLastName(), teacher.getBirthDate());
+            teacher.getLastName(), teacher.getBirthDate());
         if (existingTeacher.isPresent() && (existingTeacher.get().getId() != teacher.getId())) {
             throw new EntityNotUniqueException("Teacher with full name " + teacher.getFirstName() + " "
-                    + teacher.getLastName() + " and birth date " + teacher.getBirthDate() + " is already exists!");
+                + teacher.getLastName() + " and birth date " + teacher.getBirthDate() + " is already exists!");
         }
     }
 
     public List<Teacher> findTeachersForChange(Lecture lecture) {
         logger.debug("Find teachers who havent lectures and vacation this periodand who can teach this subject");
         return teacherDao.findByFreeDateAndSubjectWithCurrentTeacher(lecture.getDate(), lecture.getTime(),
-                lecture.getSubject());
+            lecture.getSubject());
     }
 }

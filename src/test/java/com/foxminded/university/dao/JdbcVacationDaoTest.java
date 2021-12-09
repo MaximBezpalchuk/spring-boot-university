@@ -48,32 +48,32 @@ public class JdbcVacationDaoTest {
     void givenPageable_whenFindPaginatedVacations_thenVacationsFound() {
         Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Subject subject = Subject.builder()
-                .id(1)
-                .cathedra(cathedra)
-                .name("Weapon Tactics")
-                .description("Learning how to use heavy weapon and guerrilla tactics")
-                .build();
+            .id(1)
+            .cathedra(cathedra)
+            .name("Weapon Tactics")
+            .description("Learning how to use heavy weapon and guerrilla tactics")
+            .build();
         Teacher teacher = Teacher.builder()
-                .firstName("Daniel")
-                .lastName("Morpheus")
-                .address("Virtual Reality Capsule no 1")
-                .gender(Gender.MALE)
-                .birthDate(LocalDate.of(1970, 1, 1))
-                .cathedra(cathedra)
-                .degree(Degree.PROFESSOR)
-                .phone("1")
-                .email("1@bigowl.com")
-                .postalCode("12345")
-                .education("Higher education")
-                .id(1)
-                .subjects(Arrays.asList(subject))
-                .build();
+            .firstName("Daniel")
+            .lastName("Morpheus")
+            .address("Virtual Reality Capsule no 1")
+            .gender(Gender.MALE)
+            .birthDate(LocalDate.of(1970, 1, 1))
+            .cathedra(cathedra)
+            .degree(Degree.PROFESSOR)
+            .phone("1")
+            .email("1@bigowl.com")
+            .postalCode("12345")
+            .education("Higher education")
+            .id(1)
+            .subjects(Arrays.asList(subject))
+            .build();
         List<Vacation> vacations = Arrays.asList(Vacation.builder()
-                .id(1)
-                .start(LocalDate.of(2021, 1, 15))
-                .end(LocalDate.of(2021, 1, 29))
-                .teacher(teacher)
-                .build());
+            .id(1)
+            .start(LocalDate.of(2021, 1, 15))
+            .end(LocalDate.of(2021, 1, 29))
+            .teacher(teacher)
+            .build());
         Page<Vacation> expected = new PageImpl<>(vacations, PageRequest.of(0, 1), 2);
         Page<Vacation> actual = vacationDao.findPaginatedVacationsByTeacherId(PageRequest.of(0, 1), 1);
 
@@ -84,32 +84,32 @@ public class JdbcVacationDaoTest {
     void givenExistingVacation_whenFindById_thenVacationFound() {
         Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Subject subject = Subject.builder()
-                .id(1)
-                .cathedra(cathedra)
-                .name("Weapon Tactics")
-                .description("Learning how to use heavy weapon and guerrilla tactics")
-                .build();
+            .id(1)
+            .cathedra(cathedra)
+            .name("Weapon Tactics")
+            .description("Learning how to use heavy weapon and guerrilla tactics")
+            .build();
         Teacher teacher = Teacher.builder()
-                .firstName("Daniel")
-                .lastName("Morpheus")
-                .address("Virtual Reality Capsule no 1")
-                .gender(Gender.MALE)
-                .birthDate(LocalDate.of(1970, 1, 1))
-                .cathedra(cathedra)
-                .degree(Degree.PROFESSOR)
-                .phone("1")
-                .email("1@bigowl.com")
-                .postalCode("12345")
-                .education("Higher education")
-                .id(1)
-                .subjects(Arrays.asList(subject))
-                .build();
+            .firstName("Daniel")
+            .lastName("Morpheus")
+            .address("Virtual Reality Capsule no 1")
+            .gender(Gender.MALE)
+            .birthDate(LocalDate.of(1970, 1, 1))
+            .cathedra(cathedra)
+            .degree(Degree.PROFESSOR)
+            .phone("1")
+            .email("1@bigowl.com")
+            .postalCode("12345")
+            .education("Higher education")
+            .id(1)
+            .subjects(Arrays.asList(subject))
+            .build();
         Optional<Vacation> expected = Optional.of(Vacation.builder()
-                .id(1)
-                .start(LocalDate.of(2021, 1, 15))
-                .end(LocalDate.of(2021, 1, 29))
-                .teacher(teacher)
-                .build());
+            .id(1)
+            .start(LocalDate.of(2021, 1, 15))
+            .end(LocalDate.of(2021, 1, 29))
+            .teacher(teacher)
+            .build());
         Optional<Vacation> actual = vacationDao.findById(1);
 
         assertEquals(expected, actual);
@@ -124,10 +124,10 @@ public class JdbcVacationDaoTest {
     void givenNewVacation_whenSaveVacation_thenAllExistingVacationsFound() {
         int expected = countRowsInTable(template, TABLE_NAME) + 1;
         vacationDao.save(Vacation.builder()
-                .start(LocalDate.of(2021, 1, 31))
-                .end(LocalDate.of(2021, 3, 29))
-                .teacher(Teacher.builder().id(1).build())
-                .build());
+            .start(LocalDate.of(2021, 1, 31))
+            .end(LocalDate.of(2021, 3, 29))
+            .teacher(Teacher.builder().id(1).build())
+            .build());
 
         assertEquals(expected, countRowsInTable(template, TABLE_NAME));
     }
@@ -135,18 +135,18 @@ public class JdbcVacationDaoTest {
     @Test
     void givenExitstingVacation_whenChange_thenChangesApplied() {
         Vacation expected = Vacation.builder()
-                .id(1)
-                .start(LocalDate.of(2021, 1, 1))
-                .end(LocalDate.of(2021, 1, 1))
-                .teacher(Teacher.builder().id(2).build())
-                .build();
+            .id(1)
+            .start(LocalDate.of(2021, 1, 1))
+            .end(LocalDate.of(2021, 1, 1))
+            .teacher(Teacher.builder().id(2).build())
+            .build();
         vacationDao.save(expected);
 
         assertEquals(1, countRowsInTableWhere(template, TABLE_NAME,
-                "id = 1 "
-                        + "AND teacher_id = 2"
-                        + "AND start = '2021-01-01'"
-                        + "AND finish = '2021-01-01'"));
+            "id = 1 "
+                + "AND teacher_id = 2"
+                + "AND start = '2021-01-01'"
+                + "AND finish = '2021-01-01'"));
     }
 
     @Test
@@ -161,38 +161,38 @@ public class JdbcVacationDaoTest {
     void givenExistingVacation_whenFindByTeacherId_thenVacationFound() {
         Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Subject subject = Subject.builder()
-                .id(1)
-                .cathedra(cathedra)
-                .name("Weapon Tactics")
-                .description("Learning how to use heavy weapon and guerrilla tactics")
-                .build();
+            .id(1)
+            .cathedra(cathedra)
+            .name("Weapon Tactics")
+            .description("Learning how to use heavy weapon and guerrilla tactics")
+            .build();
         Teacher teacher = Teacher.builder()
-                .firstName("Daniel")
-                .lastName("Morpheus")
-                .address("Virtual Reality Capsule no 1")
-                .gender(Gender.MALE)
-                .birthDate(LocalDate.of(1970, 1, 1))
-                .cathedra(cathedra)
-                .degree(Degree.PROFESSOR)
-                .phone("1")
-                .email("1@bigowl.com")
-                .postalCode("12345")
-                .education("Higher education")
-                .id(1)
-                .subjects(Arrays.asList(subject))
-                .build();
+            .firstName("Daniel")
+            .lastName("Morpheus")
+            .address("Virtual Reality Capsule no 1")
+            .gender(Gender.MALE)
+            .birthDate(LocalDate.of(1970, 1, 1))
+            .cathedra(cathedra)
+            .degree(Degree.PROFESSOR)
+            .phone("1")
+            .email("1@bigowl.com")
+            .postalCode("12345")
+            .education("Higher education")
+            .id(1)
+            .subjects(Arrays.asList(subject))
+            .build();
         Vacation vacation1 = Vacation.builder()
-                .id(1)
-                .start(LocalDate.of(2021, 1, 15))
-                .end(LocalDate.of(2021, 1, 29))
-                .teacher(teacher)
-                .build();
+            .id(1)
+            .start(LocalDate.of(2021, 1, 15))
+            .end(LocalDate.of(2021, 1, 29))
+            .teacher(teacher)
+            .build();
         Vacation vacation2 = Vacation.builder()
-                .id(2)
-                .start(LocalDate.of(2021, 6, 15))
-                .end(LocalDate.of(2021, 6, 29))
-                .teacher(teacher)
-                .build();
+            .id(2)
+            .start(LocalDate.of(2021, 6, 15))
+            .end(LocalDate.of(2021, 6, 29))
+            .teacher(teacher)
+            .build();
         List<Vacation> expected = Arrays.asList(vacation1, vacation2);
         List<Vacation> actual = vacationDao.findByTeacherId(1);
 
@@ -203,32 +203,32 @@ public class JdbcVacationDaoTest {
     void givenStartAndEndAndTeacher_whenFindByPeriodAndTeacher_thenVacationFound() {
         Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Teacher teacher = Teacher.builder()
-                .firstName("Daniel")
-                .lastName("Morpheus")
-                .address("Virtual Reality Capsule no 1")
-                .gender(Gender.MALE)
-                .birthDate(LocalDate.of(1970, 1, 1))
-                .cathedra(cathedra)
-                .degree(Degree.PROFESSOR)
-                .phone("1")
-                .email("1@bigowl.com")
-                .postalCode("12345")
-                .education("Higher education")
-                .id(1)
-                .build();
+            .firstName("Daniel")
+            .lastName("Morpheus")
+            .address("Virtual Reality Capsule no 1")
+            .gender(Gender.MALE)
+            .birthDate(LocalDate.of(1970, 1, 1))
+            .cathedra(cathedra)
+            .degree(Degree.PROFESSOR)
+            .phone("1")
+            .email("1@bigowl.com")
+            .postalCode("12345")
+            .education("Higher education")
+            .id(1)
+            .build();
         List<Subject> subjects = new ArrayList<>();
         Subject subject = Subject.builder().cathedra(cathedra).name("Weapon Tactics")
-                .description("Learning how to use heavy weapon and guerrilla tactics").id(1).build();
+            .description("Learning how to use heavy weapon and guerrilla tactics").id(1).build();
         subjects.add(subject);
         teacher.setSubjects(subjects);
         Optional<Vacation> expected = Optional.of(Vacation.builder()
-                .id(1)
-                .start(LocalDate.of(2021, 1, 15))
-                .end(LocalDate.of(2021, 1, 29))
-                .teacher(teacher)
-                .build());
+            .id(1)
+            .start(LocalDate.of(2021, 1, 15))
+            .end(LocalDate.of(2021, 1, 29))
+            .teacher(teacher)
+            .build());
         Optional<Vacation> actual = vacationDao.findByPeriodAndTeacher(expected.get().getStart(),
-                expected.get().getEnd(), teacher);
+            expected.get().getEnd(), teacher);
 
         assertEquals(expected, actual);
     }
@@ -237,36 +237,36 @@ public class JdbcVacationDaoTest {
     void givenTeacherAndYear_whenFindByTeacherAndYear_thenVacationFound() {
         Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Teacher teacher = Teacher.builder()
-                .firstName("Daniel")
-                .lastName("Morpheus")
-                .address("Virtual Reality Capsule no 1")
-                .gender(Gender.MALE)
-                .birthDate(LocalDate.of(1970, 1, 1))
-                .cathedra(cathedra)
-                .degree(Degree.PROFESSOR)
-                .phone("1")
-                .email("1@bigowl.com")
-                .postalCode("12345")
-                .education("Higher education")
-                .id(1)
-                .build();
+            .firstName("Daniel")
+            .lastName("Morpheus")
+            .address("Virtual Reality Capsule no 1")
+            .gender(Gender.MALE)
+            .birthDate(LocalDate.of(1970, 1, 1))
+            .cathedra(cathedra)
+            .degree(Degree.PROFESSOR)
+            .phone("1")
+            .email("1@bigowl.com")
+            .postalCode("12345")
+            .education("Higher education")
+            .id(1)
+            .build();
         List<Subject> subjects = new ArrayList<>();
         Subject subject = Subject.builder().cathedra(cathedra).name("Weapon Tactics")
-                .description("Learning how to use heavy weapon and guerrilla tactics").id(1).build();
+            .description("Learning how to use heavy weapon and guerrilla tactics").id(1).build();
         subjects.add(subject);
         teacher.setSubjects(subjects);
         Vacation vacation1 = Vacation.builder()
-                .id(1)
-                .start(LocalDate.of(2021, 1, 15))
-                .end(LocalDate.of(2021, 1, 29))
-                .teacher(teacher)
-                .build();
+            .id(1)
+            .start(LocalDate.of(2021, 1, 15))
+            .end(LocalDate.of(2021, 1, 29))
+            .teacher(teacher)
+            .build();
         Vacation vacation2 = Vacation.builder()
-                .id(2)
-                .start(LocalDate.of(2021, 6, 15))
-                .end(LocalDate.of(2021, 6, 29))
-                .teacher(teacher)
-                .build();
+            .id(2)
+            .start(LocalDate.of(2021, 6, 15))
+            .end(LocalDate.of(2021, 6, 29))
+            .teacher(teacher)
+            .build();
         List<Vacation> actual = vacationDao.findByTeacherIdAndYear(1, 2021);
 
         assertEquals(Arrays.asList(vacation1, vacation2), actual);

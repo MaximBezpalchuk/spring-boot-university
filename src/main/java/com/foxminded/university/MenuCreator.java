@@ -29,17 +29,17 @@ public class MenuCreator {
     private final ApplicationContext context = new AnnotationConfigApplicationContext(WebMvcConfig.class);
     private boolean exit;
     private BufferedReader reader;
-    private Formatter formatter = new Formatter();
-    private AudienceService audienceService = context.getBean(AudienceService.class);
-    private CathedraService cathedraService = context.getBean(CathedraService.class);
-    private GroupService groupService = context.getBean(GroupService.class);
-    private StudentService studentService = context.getBean(StudentService.class);
-    private SubjectService subjectService = context.getBean(SubjectService.class);
-    private TeacherService teacherService = context.getBean(TeacherService.class);
-    private LectureService lectureService = context.getBean(LectureService.class);
-    private LectureTimeService lectureTimeService = context.getBean(LectureTimeService.class);
-    private HolidayService holidayService = context.getBean(HolidayService.class);
-    private VacationService vacationService = context.getBean(VacationService.class);
+    private final Formatter formatter = new Formatter();
+    private final AudienceService audienceService = context.getBean(AudienceService.class);
+    private final CathedraService cathedraService = context.getBean(CathedraService.class);
+    private final GroupService groupService = context.getBean(GroupService.class);
+    private final StudentService studentService = context.getBean(StudentService.class);
+    private final SubjectService subjectService = context.getBean(SubjectService.class);
+    private final TeacherService teacherService = context.getBean(TeacherService.class);
+    private final LectureService lectureService = context.getBean(LectureService.class);
+    private final LectureTimeService lectureTimeService = context.getBean(LectureTimeService.class);
+    private final HolidayService holidayService = context.getBean(HolidayService.class);
+    private final VacationService vacationService = context.getBean(VacationService.class);
 
     private String printMainMenu() {
         StringBuilder menu = new StringBuilder();
@@ -277,16 +277,16 @@ public class MenuCreator {
                 System.out.println("Enter the date of birth separated by commas without spaces (YEAR,MONTH,DAY):");
                 LocalDate birthDate1 = setupLocalDate();
                 Student student = Student.builder()
-                        .firstName(firstName1)
-                        .lastName(lastName1)
-                        .address(address1)
-                        .gender(gender1)
-                        .birthDate(birthDate1)
-                        .phone(phone1)
-                        .email(email1)
-                        .postalCode(postalCode1)
-                        .education(education1)
-                        .build();
+                    .firstName(firstName1)
+                    .lastName(lastName1)
+                    .address(address1)
+                    .gender(gender1)
+                    .birthDate(birthDate1)
+                    .phone(phone1)
+                    .email(email1)
+                    .postalCode(postalCode1)
+                    .education(education1)
+                    .build();
                 try {
                     studentService.save(student);
                 } catch (ServiceException e) {
@@ -347,18 +347,18 @@ public class MenuCreator {
                     }
                 }
                 Teacher teacher = Teacher.builder()
-                        .firstName(firstName2)
-                        .lastName(lastName2)
-                        .address(address2)
-                        .gender(gender2)
-                        .birthDate(birthDate2)
-                        .cathedra(cathedraService.findById(1))
-                        .degree(degree2)
-                        .phone(phone2)
-                        .email(email2)
-                        .postalCode(postalCode2)
-                        .education(education2)
-                        .build();
+                    .firstName(firstName2)
+                    .lastName(lastName2)
+                    .address(address2)
+                    .gender(gender2)
+                    .birthDate(birthDate2)
+                    .cathedra(cathedraService.findById(1))
+                    .degree(degree2)
+                    .phone(phone2)
+                    .email(email2)
+                    .postalCode(postalCode2)
+                    .education(education2)
+                    .build();
                 for (Subject subject : subjects2) {
                     if (!teacher.getSubjects().contains(subject)) {
                         teacher.getSubjects().add(subject);
@@ -381,11 +381,11 @@ public class MenuCreator {
                 exitCheck(subjectDescription3);
                 try {
                     subjectService.save(
-                            Subject.builder()
-                                    .cathedra(cathedraService.findById(1))
-                                    .name(subjectName3)
-                                    .description(subjectDescription3)
-                                    .build());
+                        Subject.builder()
+                            .cathedra(cathedraService.findById(1))
+                            .name(subjectName3)
+                            .description(subjectDescription3)
+                            .build());
                 } catch (ServiceException e) {
                     System.out.println(e.getMessage());
                     logger.error(e.getMessage());
@@ -398,10 +398,10 @@ public class MenuCreator {
                 exitCheck(groupName4);
                 try {
                     groupService.save(
-                            Group.builder()
-                                    .name(groupName4)
-                                    .cathedra(cathedraService.findById(1))
-                                    .build());
+                        Group.builder()
+                            .name(groupName4)
+                            .cathedra(cathedraService.findById(1))
+                            .build());
                 } catch (ServiceException e) {
                     System.out.println(e.getMessage());
                     logger.error(e.getMessage());
@@ -437,14 +437,14 @@ public class MenuCreator {
                 LectureTime lectureTime5 = sortedLectureTimes5.get(lectureTimeNumber5 - 1);
                 try {
                     lectureService.save(
-                            Lecture.builder()
-                                    .cathedra(cathedraService.findById(1))
-                                    .subject(subject5)
-                                    .date(lectureDate5)
-                                    .time(lectureTime5)
-                                    .audience(audience5)
-                                    .teacher(teacher5)
-                                    .build());
+                        Lecture.builder()
+                            .cathedra(cathedraService.findById(1))
+                            .subject(subject5)
+                            .date(lectureDate5)
+                            .time(lectureTime5)
+                            .audience(audience5)
+                            .teacher(teacher5)
+                            .build());
                 } catch (ServiceException e) {
                     System.out.println(e.getMessage());
                     logger.error(e.getMessage());
@@ -465,10 +465,10 @@ public class MenuCreator {
                 exitCheck(String.valueOf(cathedraNumber6));
                 Cathedra cathedra6 = sortedCathedras6.get(cathedraNumber6 - 1);
                 Holiday holiday6 = Holiday.builder()
-                        .name(holidayDescription6)
-                        .date(holidayDate5)
-                        .cathedra(cathedra6)
-                        .build();
+                    .name(holidayDescription6)
+                    .date(holidayDate5)
+                    .cathedra(cathedra6)
+                    .build();
                 try {
                     holidayService.save(holiday6);
                 } catch (ServiceException e) {
@@ -485,10 +485,10 @@ public class MenuCreator {
                 String audienceCapacity7 = reader.readLine();
                 exitCheck(audienceCapacity7);
                 Audience audience7 = Audience.builder()
-                        .room(Integer.parseInt(audienceRoom7))
-                        .capacity(Integer.parseInt(audienceCapacity7))
-                        .cathedra(cathedraService.findById(1))
-                        .build();
+                    .room(Integer.parseInt(audienceRoom7))
+                    .capacity(Integer.parseInt(audienceCapacity7))
+                    .cathedra(cathedraService.findById(1))
+                    .build();
                 try {
                     audienceService.save(audience7);
                 } catch (ServiceException e) {
@@ -664,10 +664,10 @@ public class MenuCreator {
                 System.out.println("Enter vacation end date separated by commas without spaces (YEAR,MONTH,DAY):");
                 LocalDate vacationEndDate2 = setupLocalDate();
                 Vacation vacation2 = Vacation.builder()
-                        .start(vacationStartDate2)
-                        .end(vacationEndDate2)
-                        .teacher(teacher2)
-                        .build();
+                    .start(vacationStartDate2)
+                    .end(vacationEndDate2)
+                    .teacher(teacher2)
+                    .build();
                 try {
                     vacationService.save(vacation2);
                 } catch (ServiceException e) {
@@ -959,12 +959,12 @@ public class MenuCreator {
 
     private List<Student> sortStudentsByLastName(List<Student> list) {
         return list.stream().sorted((d1, d2) -> d1.getLastName().compareTo(d2.getLastName()))
-                .collect(Collectors.toList());
+            .collect(Collectors.toList());
     }
 
     private List<Teacher> sortTeachersByLastName(List<Teacher> list) {
         return list.stream().sorted((d1, d2) -> d1.getLastName().compareTo(d2.getLastName()))
-                .collect(Collectors.toList());
+            .collect(Collectors.toList());
     }
 
     private List<Subject> sortSubjectsByName(List<Subject> list) {
@@ -973,9 +973,9 @@ public class MenuCreator {
 
     private List<Lecture> sortLecturesByDate(List<Lecture> list) {
         return list.stream()
-                .sorted(Comparator.comparing(Lecture::getDate)
-                        .thenComparing((d1, d2) -> d1.getTime().getStart().compareTo(d2.getTime().getStart())))
-                .collect(Collectors.toList());
+            .sorted(Comparator.comparing(Lecture::getDate)
+                .thenComparing((d1, d2) -> d1.getTime().getStart().compareTo(d2.getTime().getStart())))
+            .collect(Collectors.toList());
     }
 
     private List<Group> sortGroupsByName(List<Group> list) {
@@ -988,7 +988,7 @@ public class MenuCreator {
 
     private List<Audience> sortAudiencesByNumber(List<Audience> list) {
         return list.stream().sorted((d1, d2) -> Integer.compare(d1.getRoom(), d2.getRoom()))
-                .collect(Collectors.toList());
+            .collect(Collectors.toList());
     }
 
     private List<Holiday> sortHolidaysByDate(List<Holiday> list) {
@@ -1005,30 +1005,30 @@ public class MenuCreator {
 
     public List<Lecture> getTTForDay(Student student, MonthDay date) {
         return lectureService.findAll().stream()
-                .sorted((d1, d2) -> d1.getTime().getStart().compareTo(d2.getTime().getStart()))
-                .filter(lecture -> lecture.getDate().getMonthValue() == date.getMonthValue()
-                        && lecture.getDate().getDayOfMonth() == date.getDayOfMonth())
-                .filter(lecture -> lecture.getGroups().contains(student.getGroup())).collect(Collectors.toList());
+            .sorted((d1, d2) -> d1.getTime().getStart().compareTo(d2.getTime().getStart()))
+            .filter(lecture -> lecture.getDate().getMonthValue() == date.getMonthValue()
+                && lecture.getDate().getDayOfMonth() == date.getDayOfMonth())
+            .filter(lecture -> lecture.getGroups().contains(student.getGroup())).collect(Collectors.toList());
     }
 
     public List<Lecture> getTTForDay(Teacher teacher, MonthDay date) {
         return lectureService.findAll().stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
-                .filter(lecture -> lecture.getTeacher().equals(teacher)
-                        && (lecture.getDate().getMonthValue() == date.getMonthValue()
-                        && lecture.getDate().getDayOfMonth() == date.getDayOfMonth()))
-                .collect(Collectors.toList());
+            .filter(lecture -> lecture.getTeacher().equals(teacher)
+                && (lecture.getDate().getMonthValue() == date.getMonthValue()
+                && lecture.getDate().getDayOfMonth() == date.getDayOfMonth()))
+            .collect(Collectors.toList());
     }
 
     public List<Lecture> getTTForMonth(Student student, Month date) {
         return lectureService.findAll().stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
-                .filter(lecture -> lecture.getDate().getMonth().equals(date))
-                .filter(lecture -> lecture.getGroups().contains(student.getGroup())).collect(Collectors.toList());
+            .filter(lecture -> lecture.getDate().getMonth().equals(date))
+            .filter(lecture -> lecture.getGroups().contains(student.getGroup())).collect(Collectors.toList());
     }
 
     public List<Lecture> getTTForMonth(Teacher teacher, Month date) {
         return lectureService.findAll().stream().sorted((d1, d2) -> d1.getDate().compareTo(d2.getDate()))
-                .filter(lecture -> (lecture.getTeacher().equals(teacher) && lecture.getDate().getMonth().equals(date)))
-                .collect(Collectors.toList());
+            .filter(lecture -> (lecture.getTeacher().equals(teacher) && lecture.getDate().getMonth().equals(date)))
+            .collect(Collectors.toList());
     }
 
     public Gender genderMaker() {

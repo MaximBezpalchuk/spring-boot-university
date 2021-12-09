@@ -64,7 +64,7 @@ public class Student extends Person {
 
         public Student build() {
             return new Student(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate,
-                    group);
+                group);
         }
     }
 

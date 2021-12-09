@@ -23,15 +23,15 @@ class FormatterTest {
         LectureTime time = LectureTime.builder().start(LocalTime.of(10, 20)).end(LocalTime.of(10, 21)).build();
         Audience audience = Audience.builder().room(1).capacity(5).cathedra(cathedra).build();
         Teacher teacher = Teacher.builder().firstName("Amigo").lastName("Bueno").address("Puerto Rico")
-                .gender(Gender.FEMALE).birthDate(LocalDate.of(1999, 1, 1)).cathedra(cathedra).degree(Degree.PROFESSOR)
-                .phone("999").email("dot@dot.com").postalCode("123").education("none").build();
+            .gender(Gender.FEMALE).birthDate(LocalDate.of(1999, 1, 1)).cathedra(cathedra).degree(Degree.PROFESSOR)
+            .phone("999").email("dot@dot.com").postalCode("123").education("none").build();
 
         lectures.add(Lecture.builder().cathedra(cathedra).subject(subject).date(date).time(time).audience(audience)
-                .teacher(teacher).build());
+            .teacher(teacher).build());
 
         assertEquals(
-                "1.  Date: 2020-01-01 | Subject: TestSubject | Audience: 1 | Teacher: Amigo Bueno | Lecture start: 10:20, Lecture end: 10:21",
-                formatter.formatLectureList(lectures));
+            "1.  Date: 2020-01-01 | Subject: TestSubject | Audience: 1 | Teacher: Amigo Bueno | Lecture start: 10:20, Lecture end: 10:21",
+            formatter.formatLectureList(lectures));
     }
 
     @Test
@@ -54,8 +54,8 @@ class FormatterTest {
     void formatTeacherListTest() {
         List<Teacher> teachers = new ArrayList<>();
         teachers.add(Teacher.builder().firstName("Amigo").lastName("Bueno").address("Puerto Rico").gender(Gender.FEMALE)
-                .birthDate(LocalDate.of(1999, 1, 1)).cathedra(cathedra).degree(Degree.PROFESSOR).phone("999")
-                .email("dot@dot.com").postalCode("123").education("none").build());
+            .birthDate(LocalDate.of(1999, 1, 1)).cathedra(cathedra).degree(Degree.PROFESSOR).phone("999")
+            .email("dot@dot.com").postalCode("123").education("none").build());
         assertEquals("1.  Name: Bueno Amigo", formatter.formatTeacherList(teachers));
     }
 
@@ -67,7 +67,7 @@ class FormatterTest {
         audiences.add(audience1);
         audiences.add(audience2);
         assertEquals("1.  Audience: 3 | Capacity: 5" + System.lineSeparator() + "2.  Audience: 1 | Capacity: 5",
-                formatter.formatAudienceList(audiences));
+            formatter.formatAudienceList(audiences));
     }
 
     @Test
@@ -76,8 +76,8 @@ class FormatterTest {
         Group group = Group.builder().name("name").cathedra(cathedra).build();
 
         Student student = Student.builder().firstName("Amigo").lastName("Bueno").address("Puerto Rico")
-                .gender(Gender.FEMALE).birthDate(LocalDate.of(1999, 1, 1)).phone("999").email("dot@dot.com")
-                .postalCode("123").education("none").group(group).build();
+            .gender(Gender.FEMALE).birthDate(LocalDate.of(1999, 1, 1)).phone("999").email("dot@dot.com")
+            .postalCode("123").education("none").group(group).build();
         students.add(student);
         assertEquals("1.  Name: Bueno Amigo | Group: name", formatter.formatStudentList(students));
     }
@@ -93,7 +93,7 @@ class FormatterTest {
     void formatVacationListTest() {
         List<Vacation> vacations = new ArrayList<>();
         vacations.add(
-                Vacation.builder().start(LocalDate.of(1999, 1, 1)).end(LocalDate.of(2000, 1, 1)).teacher(null).build());
+            Vacation.builder().start(LocalDate.of(1999, 1, 1)).end(LocalDate.of(2000, 1, 1)).teacher(null).build());
         assertEquals("1.  Dates: 1999-01-01 to 2000-01-01", formatter.formatVacationList(vacations));
     }
 

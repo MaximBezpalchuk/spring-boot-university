@@ -12,12 +12,12 @@ import java.time.LocalDate;
 @Component
 public class LectureRowMapper implements RowMapper<Lecture> {
 
-    private JdbcCathedraDao cathedraDao;
-    private JdbcGroupDao groupDao;
-    private JdbcAudienceDao audienceDao;
-    private JdbcLectureTimeDao lectureTimeDao;
-    private JdbcTeacherDao teacherDao;
-    private JdbcSubjectDao subjectDao;
+    private final JdbcCathedraDao cathedraDao;
+    private final JdbcGroupDao groupDao;
+    private final JdbcAudienceDao audienceDao;
+    private final JdbcLectureTimeDao lectureTimeDao;
+    private final JdbcTeacherDao teacherDao;
+    private final JdbcSubjectDao subjectDao;
 
     public LectureRowMapper(JdbcCathedraDao cathedraDao, JdbcGroupDao groupDao, JdbcAudienceDao audienceDao,
                             JdbcLectureTimeDao lectureTimeDao, JdbcTeacherDao teacherDao, JdbcSubjectDao subjectDao) {
@@ -33,10 +33,10 @@ public class LectureRowMapper implements RowMapper<Lecture> {
     public Lecture mapRow(ResultSet resultSet, int rowNum) throws SQLException {
 
         Lecture lecture = Lecture.builder()
-                .id(resultSet.getInt("id"))
-                .date(resultSet.getObject("date", LocalDate.class))
-                .group(groupDao.findByLectureId(resultSet.getInt("id")))
-                .build();
+            .id(resultSet.getInt("id"))
+            .date(resultSet.getObject("date", LocalDate.class))
+            .group(groupDao.findByLectureId(resultSet.getInt("id")))
+            .build();
         cathedraDao.findById(resultSet.getInt("cathedra_id")).ifPresent(lecture::setCathedra);
         subjectDao.findById(resultSet.getInt("subject_id")).ifPresent(lecture::setSubject);
         lectureTimeDao.findById(resultSet.getInt("lecture_time_id")).ifPresent(lecture::setTime);

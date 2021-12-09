@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Component
 public class StudentRowMapper implements RowMapper<Student> {
 
-    private JdbcGroupDao groupDao;
+    private final JdbcGroupDao groupDao;
 
     public StudentRowMapper(JdbcGroupDao groupDao) {
         this.groupDao = groupDao;
@@ -22,17 +22,17 @@ public class StudentRowMapper implements RowMapper<Student> {
     @Override
     public Student mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         Student student = Student.builder()
-                .firstName(resultSet.getString("first_name"))
-                .lastName(resultSet.getString("last_name"))
-                .address(resultSet.getString("address"))
-                .gender(Gender.valueOf(resultSet.getString("gender")))
-                .birthDate(resultSet.getObject("birth_date", LocalDate.class))
-                .phone(resultSet.getString("phone"))
-                .email(resultSet.getString("email"))
-                .postalCode(resultSet.getString("postal_code"))
-                .education(resultSet.getString("education"))
-                .id(resultSet.getInt("id"))
-                .build();
+            .firstName(resultSet.getString("first_name"))
+            .lastName(resultSet.getString("last_name"))
+            .address(resultSet.getString("address"))
+            .gender(Gender.valueOf(resultSet.getString("gender")))
+            .birthDate(resultSet.getObject("birth_date", LocalDate.class))
+            .phone(resultSet.getString("phone"))
+            .email(resultSet.getString("email"))
+            .postalCode(resultSet.getString("postal_code"))
+            .education(resultSet.getString("education"))
+            .id(resultSet.getInt("id"))
+            .build();
         int groupId = resultSet.getInt("group_id");
         groupDao.findById(groupId).ifPresent(student::setGroup);
 

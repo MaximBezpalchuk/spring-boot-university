@@ -39,7 +39,7 @@ public class JdbcVacationDao implements VacationDao {
     private static final String SELECT_BY_DATE_IN_PERIOD_AND_TEACHER_ID = "SELECT * FROM vacations WHERE start >= ? AND finish <= ? AND teacher_id = ?";
 
     private final JdbcTemplate jdbcTemplate;
-    private VacationRowMapper rowMapper;
+    private final VacationRowMapper rowMapper;
 
     public JdbcVacationDao(JdbcTemplate jdbcTemplate, VacationRowMapper rowMapper) {
         this.jdbcTemplate = jdbcTemplate;
@@ -55,10 +55,10 @@ public class JdbcVacationDao implements VacationDao {
     @Override
     public Page<Vacation> findPaginatedVacationsByTeacherId(Pageable pageable, int id) {
         logger.debug("Find all vacations with pageSize:{} and offset:{} by teacherId:{}", pageable.getPageSize(),
-                pageable.getOffset(), id);
+            pageable.getOffset(), id);
         int total = jdbcTemplate.queryForObject(COUNT_ALL, Integer.class, id);
         List<Vacation> vacations = jdbcTemplate.query(SELECT_BY_PAGE, rowMapper, id, pageable.getPageSize(),
-                pageable.getOffset());
+            pageable.getOffset());
 
         return new PageImpl<>(vacations, pageable, total);
     }
@@ -80,7 +80,7 @@ public class JdbcVacationDao implements VacationDao {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(connection -> {
                 PreparedStatement statement = connection.prepareStatement(INSERT_VACATION,
-                        Statement.RETURN_GENERATED_KEYS);
+                    Statement.RETURN_GENERATED_KEYS);
                 statement.setObject(1, vacation.getStart());
                 statement.setObject(2, vacation.getEnd());
                 statement.setInt(3, vacation.getTeacher().getId());
@@ -90,7 +90,7 @@ public class JdbcVacationDao implements VacationDao {
             logger.debug("New vacation created with id: {}", vacation.getId());
         } else {
             jdbcTemplate.update(UPDATE_VACATION, vacation.getStart(), vacation.getEnd(), vacation.getTeacher().getId(),
-                    vacation.getId());
+                vacation.getId());
             logger.debug("Vacation with id {} was updated", vacation.getId());
         }
     }
@@ -112,7 +112,7 @@ public class JdbcVacationDao implements VacationDao {
         logger.debug("Find vacation by vacation start: {}, end: {}, teacher id: {}", start, end, teacher.getId());
         try {
             return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_PERIOD_AND_TEACHER_ID, rowMapper, start, end,
-                    teacher.getId()));
+                teacher.getId()));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }

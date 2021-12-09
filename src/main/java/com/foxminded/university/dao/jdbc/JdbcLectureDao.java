@@ -43,7 +43,7 @@ public class JdbcLectureDao implements LectureDao {
     private static final String SELECT_BY_TEACHER_ID_AND_PERIOD = "SELECT * FROM lectures WHERE teacher_id = ? AND date >= ? AND date <= ?";
 
     private final JdbcTemplate jdbcTemplate;
-    private LectureRowMapper rowMapper;
+    private final LectureRowMapper rowMapper;
 
     public JdbcLectureDao(JdbcTemplate jdbcTemplate, LectureRowMapper rowMapper) {
         this.jdbcTemplate = jdbcTemplate;
@@ -61,7 +61,7 @@ public class JdbcLectureDao implements LectureDao {
         logger.debug("Find all lectures with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
         int total = jdbcTemplate.queryForObject(COUNT_ALL, Integer.class);
         List<Lecture> lectures = jdbcTemplate.query(SELECT_BY_PAGE, rowMapper, pageable.getPageSize(),
-                pageable.getOffset());
+            pageable.getOffset());
 
         return new PageImpl<>(lectures, pageable, total);
     }
@@ -84,7 +84,7 @@ public class JdbcLectureDao implements LectureDao {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(connection -> {
                 PreparedStatement statement = connection.prepareStatement(INSERT_LECTURE,
-                        Statement.RETURN_GENERATED_KEYS);
+                    Statement.RETURN_GENERATED_KEYS);
                 statement.setInt(1, lecture.getCathedra().getId());
                 statement.setInt(2, lecture.getSubject().getId());
                 statement.setObject(3, lecture.getDate());
@@ -97,8 +97,8 @@ public class JdbcLectureDao implements LectureDao {
             logger.debug("New lecture created with id: {}", lecture.getId());
         } else {
             jdbcTemplate.update(UPDATE_LECTURE, lecture.getCathedra().getId(), lecture.getSubject().getId(),
-                    lecture.getDate(), lecture.getTime().getId(), lecture.getAudience().getId(),
-                    lecture.getTeacher().getId(), lecture.getId());
+                lecture.getDate(), lecture.getTime().getId(), lecture.getAudience().getId(),
+                lecture.getTeacher().getId(), lecture.getId());
             logger.debug("Lecture with id {} was updated", lecture.getId());
         }
         insertGroup(lecture);
@@ -115,7 +115,7 @@ public class JdbcLectureDao implements LectureDao {
         Optional<Lecture> lectureOpt = findById(lecture.getId());
         if (lectureOpt.isPresent()) {
             for (Group group : lecture.getGroups().stream()
-                    .filter(group -> !lectureOpt.get().getGroups().contains(group)).collect(Collectors.toList())) {
+                .filter(group -> !lectureOpt.get().getGroups().contains(group)).collect(Collectors.toList())) {
                 jdbcTemplate.update(INSERT_GROUP, group.getId(), lecture.getId());
                 logger.debug("Insert group with id {} into lecture with id {}", group.getId(), lecture.getId());
             }
@@ -126,7 +126,7 @@ public class JdbcLectureDao implements LectureDao {
         Optional<Lecture> lectureOpt = findById(lecture.getId());
         if (lectureOpt.isPresent()) {
             for (Group group : lectureOpt.get().getGroups().stream()
-                    .filter(group -> !lecture.getGroups().contains(group)).collect(Collectors.toList())) {
+                .filter(group -> !lecture.getGroups().contains(group)).collect(Collectors.toList())) {
                 jdbcTemplate.update(DELETE_GROUP, group.getId(), lecture.getId());
                 logger.debug("Delete group with id {} from lecture with id {}", group.getId(), lecture.getId());
             }
@@ -137,11 +137,11 @@ public class JdbcLectureDao implements LectureDao {
     public Optional<Lecture> findByAudienceDateAndLectureTime(Audience audience, LocalDate date,
                                                               LectureTime lectureTime) {
         logger.debug("Find lectures by audience with id {}, date {} and lecture time id {}", audience.getId(), date,
-                lectureTime.getId());
+            lectureTime.getId());
         try {
             return Optional.of(
-                    jdbcTemplate.queryForObject(SELECT_BY_AUDIENCE_DATE_LECTURE_TIME, rowMapper, audience.getId(), date,
-                            lectureTime.getId()));
+                jdbcTemplate.queryForObject(SELECT_BY_AUDIENCE_DATE_LECTURE_TIME, rowMapper, audience.getId(), date,
+                    lectureTime.getId()));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -151,12 +151,12 @@ public class JdbcLectureDao implements LectureDao {
     public Optional<Lecture> findByTeacherAudienceDateAndLectureTime(Teacher teacher, Audience audience, LocalDate date,
                                                                      LectureTime lectureTime) {
         logger.debug("Find lectures by teacher with id: {}, audience with id {}, date {} and lecture time id {}",
-                teacher.getId(), audience.getId(), date,
-                lectureTime.getId());
+            teacher.getId(), audience.getId(), date,
+            lectureTime.getId());
         try {
             return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_TEACHER_AUDIENCE_DATE_LECTURE_TIME, rowMapper,
-                    teacher.getId(), audience.getId(), date,
-                    lectureTime.getId()));
+                teacher.getId(), audience.getId(), date,
+                lectureTime.getId()));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -165,9 +165,9 @@ public class JdbcLectureDao implements LectureDao {
     @Override
     public List<Lecture> findLecturesByTeacherDateAndTime(Teacher teacher, LocalDate date, LectureTime time) {
         logger.debug("Find lectures by teacher with id {}, date {} and lecture time id {}", teacher.getId(), date,
-                time.getId());
+            time.getId());
         return jdbcTemplate.query(SELECT_BY_TEACHER_ID_DATE_AND_LECTURE_TIME_ID, rowMapper, teacher.getId(), date,
-                time.getId());
+            time.getId());
     }
 
     @Override

@@ -15,8 +15,8 @@ import java.time.LocalDate;
 @Component
 public class TeacherRowMapper implements RowMapper<Teacher> {
 
-    private JdbcCathedraDao cathedraDao;
-    private JdbcSubjectDao subjectDao;
+    private final JdbcCathedraDao cathedraDao;
+    private final JdbcSubjectDao subjectDao;
 
     public TeacherRowMapper(JdbcCathedraDao cathedraDao, JdbcSubjectDao subjectDao) {
         this.subjectDao = subjectDao;
@@ -27,19 +27,19 @@ public class TeacherRowMapper implements RowMapper<Teacher> {
     public Teacher mapRow(ResultSet resultSet, int rowNum) throws SQLException {
 
         Teacher teacher = Teacher.builder()
-                .firstName(resultSet.getString("first_name"))
-                .lastName(resultSet.getString("last_name"))
-                .address(resultSet.getString("address"))
-                .gender(Gender.valueOf(resultSet.getString("gender")))
-                .birthDate(resultSet.getObject("birth_date", LocalDate.class))
-                .degree(Degree.valueOf(resultSet.getString("degree")))
-                .phone(resultSet.getString("phone"))
-                .email(resultSet.getString("email"))
-                .postalCode(resultSet.getString("postal_code"))
-                .education(resultSet.getString("education"))
-                .id(resultSet.getInt("id"))
-                .subjects(subjectDao.findByTeacherId(resultSet.getInt("id")))
-                .build();
+            .firstName(resultSet.getString("first_name"))
+            .lastName(resultSet.getString("last_name"))
+            .address(resultSet.getString("address"))
+            .gender(Gender.valueOf(resultSet.getString("gender")))
+            .birthDate(resultSet.getObject("birth_date", LocalDate.class))
+            .degree(Degree.valueOf(resultSet.getString("degree")))
+            .phone(resultSet.getString("phone"))
+            .email(resultSet.getString("email"))
+            .postalCode(resultSet.getString("postal_code"))
+            .education(resultSet.getString("education"))
+            .id(resultSet.getInt("id"))
+            .subjects(subjectDao.findByTeacherId(resultSet.getInt("id")))
+            .build();
         cathedraDao.findById(resultSet.getInt("cathedra_id")).ifPresent(teacher::setCathedra);
 
         return teacher;

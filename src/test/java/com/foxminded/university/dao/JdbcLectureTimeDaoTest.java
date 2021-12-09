@@ -41,9 +41,9 @@ public class JdbcLectureTimeDaoTest {
     @Test
     void givenExistingLectureTime_whenFindById_thenLectureTimeFound() {
         Optional<LectureTime> expected = Optional.of(LectureTime.builder()
-                .id(1).start(LocalTime.of(8, 0, 0))
-                .end(LocalTime.of(9, 30, 0))
-                .build());
+            .id(1).start(LocalTime.of(8, 0, 0))
+            .end(LocalTime.of(9, 30, 0))
+            .build());
         Optional<LectureTime> actual = lectureTimeDao.findById(1);
 
         assertEquals(expected, actual);
@@ -58,9 +58,9 @@ public class JdbcLectureTimeDaoTest {
     void givenNewLectureTime_whenSaveLectureTime_thenAllExistingLectureTimesFound() {
         int expected = countRowsInTable(template, TABLE_NAME) + 1;
         lectureTimeDao.save(LectureTime.builder()
-                .start(LocalTime.of(21, 0, 0))
-                .end(LocalTime.of(22, 30, 0))
-                .build());
+            .start(LocalTime.of(21, 0, 0))
+            .end(LocalTime.of(22, 30, 0))
+            .build());
 
         assertEquals(expected, countRowsInTable(template, TABLE_NAME));
     }
@@ -68,15 +68,15 @@ public class JdbcLectureTimeDaoTest {
     @Test
     void givenExitstingLectureTime_whenSaveWithChanges_thenChangesApplied() {
         LectureTime expected = LectureTime.builder()
-                .id(1)
-                .start(LocalTime.of(21, 0, 0))
-                .end(LocalTime.of(21, 0, 0))
-                .build();
+            .id(1)
+            .start(LocalTime.of(21, 0, 0))
+            .end(LocalTime.of(21, 0, 0))
+            .build();
         lectureTimeDao.save(expected);
         assertEquals(1, countRowsInTableWhere(template, TABLE_NAME,
-                "id = 1 "
-                        + "AND start = '21:00:00' "
-                        + "AND finish = '21:00:00'"));
+            "id = 1 "
+                + "AND start = '21:00:00' "
+                + "AND finish = '21:00:00'"));
     }
 
     @Test
@@ -90,9 +90,9 @@ public class JdbcLectureTimeDaoTest {
     @Test
     void givenPeriod_whenFindByPeriod_thenLectureTimeFound() {
         Optional<LectureTime> expected = Optional.of(LectureTime.builder()
-                .id(1).start(LocalTime.of(8, 0, 0))
-                .end(LocalTime.of(9, 30, 0))
-                .build());
+            .id(1).start(LocalTime.of(8, 0, 0))
+            .end(LocalTime.of(9, 30, 0))
+            .build());
         Optional<LectureTime> actual = lectureTimeDao.findByPeriod(expected.get().getStart(), expected.get().getEnd());
 
         assertEquals(expected, actual);

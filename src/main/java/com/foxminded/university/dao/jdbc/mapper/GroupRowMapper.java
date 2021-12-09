@@ -11,7 +11,7 @@ import java.sql.SQLException;
 @Component
 public class GroupRowMapper implements RowMapper<Group> {
 
-    private JdbcCathedraDao cathedraDao;
+    private final JdbcCathedraDao cathedraDao;
 
     public GroupRowMapper(JdbcCathedraDao cathedraDao) {
         this.cathedraDao = cathedraDao;
@@ -20,9 +20,9 @@ public class GroupRowMapper implements RowMapper<Group> {
     @Override
     public Group mapRow(ResultSet resultSet, int rowNum) throws SQLException {
         Group group = Group.builder()
-                .id(resultSet.getInt("id"))
-                .name(resultSet.getString("name"))
-                .build();
+            .id(resultSet.getInt("id"))
+            .name(resultSet.getString("name"))
+            .build();
         cathedraDao.findById(resultSet.getInt("cathedra_id")).ifPresent(group::setCathedra);
 
         return group;

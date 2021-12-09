@@ -43,7 +43,7 @@ public class JdbcTeacherDao implements TeacherDao {
     private static final String SELECT_BY_FREE_OF_VACATIONS_DATE_AND_SUBJECT_WITH_CURRENT_TEACHER = "SELECT DISTINCT teachers.* FROM teachers LEFT JOIN subjects_teachers AS st ON teachers.id = st.teacher_id LEFT JOIN vacations AS vac ON teachers.id = vac.teacher_id WHERE st.subject_id = ? AND ((?::DATE NOT BETWEEN vac.start AND vac.finish) OR (vac.start IS NULL AND vac.finish IS NULL))AND NOT EXISTS (select id from lectures where lectures.teacher_id = teachers.id AND lectures.date = ?::DATE AND lectures.lecture_time_id = ?)";
 
     private final JdbcTemplate jdbcTemplate;
-    private TeacherRowMapper rowMapper;
+    private final TeacherRowMapper rowMapper;
 
     public JdbcTeacherDao(JdbcTemplate jdbcTemplate, TeacherRowMapper rowMapper) {
         this.jdbcTemplate = jdbcTemplate;
@@ -61,7 +61,7 @@ public class JdbcTeacherDao implements TeacherDao {
         logger.debug("Find all teachers with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
         int total = jdbcTemplate.queryForObject(COUNT_ALL, Integer.class);
         List<Teacher> teachers = jdbcTemplate.query(SELECT_BY_PAGE, rowMapper, pageable.getPageSize(),
-                pageable.getOffset());
+            pageable.getOffset());
 
         return new PageImpl<>(teachers, pageable, total);
     }
@@ -84,13 +84,13 @@ public class JdbcTeacherDao implements TeacherDao {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(connection -> {
                 PreparedStatement statement = connection.prepareStatement(INSERT_TEACHER,
-                        Statement.RETURN_GENERATED_KEYS);
+                    Statement.RETURN_GENERATED_KEYS);
                 statement.setString(1, teacher.getFirstName());
                 statement.setString(2, teacher.getLastName());
                 statement.setString(3, teacher.getPhone());
                 statement.setString(4, teacher.getAddress());
                 statement.setString(5, teacher.getEmail());
-                statement.setString(6, teacher.getGender().toString());
+                statement.setString(6, teacher.getGender());
                 statement.setString(7, teacher.getPostalCode());
                 statement.setString(8, teacher.getEducation());
                 statement.setObject(9, teacher.getBirthDate());
@@ -100,13 +100,13 @@ public class JdbcTeacherDao implements TeacherDao {
             }, keyHolder);
             teacher.setId((int) keyHolder.getKeyList().get(0).get("id"));
             teacher.getSubjects().stream()
-                    .forEach(subject -> jdbcTemplate.update(INSERT_SUBJECT, subject.getId(), teacher.getId()));
+                .forEach(subject -> jdbcTemplate.update(INSERT_SUBJECT, subject.getId(), teacher.getId()));
             logger.debug("New teacher created with id: {}", teacher.getId());
         } else {
             jdbcTemplate.update(UPDATE_TEACHER, teacher.getFirstName(), teacher.getLastName(), teacher.getPhone(),
-                    teacher.getAddress(), teacher.getEmail(), teacher.getGender().toString(), teacher.getPostalCode(),
-                    teacher.getEducation(), teacher.getBirthDate(), teacher.getCathedra().getId(),
-                    teacher.getDegree().toString(), teacher.getId());
+                teacher.getAddress(), teacher.getEmail(), teacher.getGender(), teacher.getPostalCode(),
+                teacher.getEducation(), teacher.getBirthDate(), teacher.getCathedra().getId(),
+                teacher.getDegree().toString(), teacher.getId());
 
             Teacher teacherOld = findById(teacher.getId()).orElse(null);
             updateSubjects(teacherOld, teacher);
@@ -124,24 +124,24 @@ public class JdbcTeacherDao implements TeacherDao {
     private void updateSubjects(Teacher teacherOld, Teacher teacherNew) {
         Predicate<Subject> subjPredicate = teacherOld.getSubjects()::contains;
         teacherNew.getSubjects().stream().filter(subjPredicate.negate()::test)
-                .forEach(subject -> jdbcTemplate.update(INSERT_SUBJECT, subject.getId(), teacherNew.getId()));
+            .forEach(subject -> jdbcTemplate.update(INSERT_SUBJECT, subject.getId(), teacherNew.getId()));
         logger.debug("Update subjects in teacher with id {}", teacherNew.getId());
     }
 
     private void deleteSubjects(Teacher teacherOld, Teacher teacherNew) {
         Predicate<Subject> subjPredicate = teacherNew.getSubjects()::contains;
         teacherOld.getSubjects().stream().filter(subjPredicate.negate()::test)
-                .forEach(subject -> jdbcTemplate.update(DELETE_SUBJECT, subject.getId(), teacherNew.getId()));
+            .forEach(subject -> jdbcTemplate.update(DELETE_SUBJECT, subject.getId(), teacherNew.getId()));
         logger.debug("Delete subjects in teacher with id {}", teacherNew.getId());
     }
 
     @Override
     public Optional<Teacher> findByFullNameAndBirthDate(String firstName, String lastName, LocalDate birthDate) {
         logger.debug("Find teacher by first name: {}, last name: {} and birth date: {}", firstName, lastName,
-                birthDate);
+            birthDate);
         try {
             return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_FULL_NAME_AND_BIRTHDAY, rowMapper, firstName,
-                    lastName, birthDate));
+                lastName, birthDate));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -150,15 +150,15 @@ public class JdbcTeacherDao implements TeacherDao {
     @Override
     public List<Teacher> findByFreeDateAndSubjectWithCurrentTeacher(LocalDate date, LectureTime time, Subject subject) {
         logger.debug(
-                "Find teachers who havent lectures and vacation this period: {} at {} - {} and who can teach this subject: {}",
-                date, time.getStart(), time.getEnd(), subject.getName());
+            "Find teachers who havent lectures and vacation this period: {} at {} - {} and who can teach this subject: {}",
+            date, time.getStart(), time.getEnd(), subject.getName());
         List<Teacher> teachers = jdbcTemplate.query(SELECT_BY_FREE_OF_VACATIONS_DATE_AND_SUBJECT_WITH_CURRENT_TEACHER,
-                rowMapper, subject.getId(), date, date, time.getId());
+            rowMapper, subject.getId(), date, date, time.getId());
         if (teachers.isEmpty()) {
             throw new EntityNotFoundException(
-                    "Can`t find teachers who havent lectures and vacation this period:" + date + " at "
-                            + time.getStart() + " - " + time.getEnd() + " and who can teach this subject: "
-                            + subject.getName());
+                "Can`t find teachers who havent lectures and vacation this period:" + date + " at "
+                    + time.getStart() + " - " + time.getEnd() + " and who can teach this subject: "
+                    + subject.getName());
         }
 
         return teachers;

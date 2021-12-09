@@ -75,7 +75,7 @@ public class Vacation {
             return false;
         Vacation other = (Vacation) obj;
         return Objects.equals(end, other.end) && id == other.id && Objects.equals(start, other.start)
-                && Objects.equals(teacher, other.teacher);
+            && Objects.equals(teacher, other.teacher);
     }
 
     public static class Builder {

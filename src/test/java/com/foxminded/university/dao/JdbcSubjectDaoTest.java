@@ -47,11 +47,11 @@ public class JdbcSubjectDaoTest {
     @Test
     void givenPageable_whenFindPaginatedSubjects_thenSubjectsFound() {
         List<Subject> subjects = Arrays.asList(Subject.builder()
-                .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
-                .name("Weapon Tactics")
-                .description("Learning how to use heavy weapon and guerrilla tactics")
-                .id(1)
-                .build());
+            .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+            .name("Weapon Tactics")
+            .description("Learning how to use heavy weapon and guerrilla tactics")
+            .id(1)
+            .build());
         Page<Subject> expected = new PageImpl<>(subjects, PageRequest.of(0, 1), 3);
         Page<Subject> actual = subjectDao.findPaginatedSubjects(PageRequest.of(0, 1));
 
@@ -61,11 +61,11 @@ public class JdbcSubjectDaoTest {
     @Test
     void givenExistingSubject_whenFindById_thenSubjectFound() {
         Optional<Subject> expected = Optional.of(Subject.builder()
-                .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
-                .name("Weapon Tactics")
-                .description("Learning how to use heavy weapon and guerrilla tactics")
-                .id(1)
-                .build());
+            .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+            .name("Weapon Tactics")
+            .description("Learning how to use heavy weapon and guerrilla tactics")
+            .id(1)
+            .build());
         Optional<Subject> actual = subjectDao.findById(1);
 
         assertEquals(expected, actual);
@@ -80,10 +80,10 @@ public class JdbcSubjectDaoTest {
     void givenNewSubject_whenSaveSubject_thenAllExistingSubjectsFound() {
         int expected = countRowsInTable(template, TABLE_NAME) + 1;
         subjectDao.save(Subject.builder()
-                .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
-                .name("Weapon Tactics123")
-                .description("Learning how to use heavy weapon and guerrilla tactics123")
-                .build());
+            .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+            .name("Weapon Tactics123")
+            .description("Learning how to use heavy weapon and guerrilla tactics123")
+            .build());
 
         assertEquals(expected, countRowsInTable(template, TABLE_NAME));
     }
@@ -91,15 +91,15 @@ public class JdbcSubjectDaoTest {
     @Test
     void givenExitstingSubject_whenSaveWithChanges_thenChangesApplied() {
         Subject expected = Subject.builder()
-                .id(1)
-                .name("Test Name")
-                .description("Test Description")
-                .cathedra(Cathedra.builder().id(1).build())
-                .build();
+            .id(1)
+            .name("Test Name")
+            .description("Test Description")
+            .cathedra(Cathedra.builder().id(1).build())
+            .build();
         subjectDao.save(expected);
 
         assertEquals(1, countRowsInTableWhere(template, TABLE_NAME,
-                "id = 1 AND name = 'Test Name' AND description = 'Test Description'"));
+            "id = 1 AND name = 'Test Name' AND description = 'Test Description'"));
     }
 
     @Test
@@ -115,10 +115,10 @@ public class JdbcSubjectDaoTest {
         List<Subject> expected = new ArrayList<>();
         Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Subject subject1 = Subject.builder()
-                .id(1).cathedra(cathedra)
-                .name("Weapon Tactics")
-                .description("Learning how to use heavy weapon and guerrilla tactics")
-                .build();
+            .id(1).cathedra(cathedra)
+            .name("Weapon Tactics")
+            .description("Learning how to use heavy weapon and guerrilla tactics")
+            .build();
         expected.add(subject1);
         List<Subject> actual = subjectDao.findByTeacherId(1);
 
@@ -128,11 +128,11 @@ public class JdbcSubjectDaoTest {
     @Test
     void givenSubjectName_whenFindByName_thenSubjectFound() {
         Optional<Subject> expected = Optional.of(Subject.builder()
-                .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
-                .name("Weapon Tactics")
-                .description("Learning how to use heavy weapon and guerrilla tactics")
-                .id(1)
-                .build());
+            .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+            .name("Weapon Tactics")
+            .description("Learning how to use heavy weapon and guerrilla tactics")
+            .id(1)
+            .build());
         Optional<Subject> actual = subjectDao.findByName("Weapon Tactics");
 
         assertEquals(expected, actual);

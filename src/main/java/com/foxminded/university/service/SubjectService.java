@@ -19,7 +19,7 @@ public class SubjectService {
 
     private static final Logger logger = LoggerFactory.getLogger(SubjectService.class);
 
-    private SubjectDao subjectDao;
+    private final SubjectDao subjectDao;
 
     public SubjectService(JdbcSubjectDao subjectDao) {
         this.subjectDao = subjectDao;
@@ -38,7 +38,7 @@ public class SubjectService {
     public Subject findById(int id) {
         logger.debug("Find subject by id {}", id);
         return subjectDao.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Can`t find any subject with id: " + id));
+            .orElseThrow(() -> new EntityNotFoundException("Can`t find any subject with id: " + id));
     }
 
     public void save(Subject subject) {

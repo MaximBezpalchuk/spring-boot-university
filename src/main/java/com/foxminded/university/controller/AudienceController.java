@@ -15,8 +15,8 @@ public class AudienceController {
 
     private static final Logger logger = LoggerFactory.getLogger(AudienceController.class);
 
-    private AudienceService audienceService;
-    private CathedraService cathedraService;
+    private final AudienceService audienceService;
+    private final CathedraService cathedraService;
 
     public AudienceController(AudienceService audienceService, CathedraService cathedraService) {
         this.audienceService = audienceService;

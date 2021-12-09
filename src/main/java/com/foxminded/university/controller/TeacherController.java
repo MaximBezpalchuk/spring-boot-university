@@ -24,10 +24,10 @@ public class TeacherController {
     private static final Logger logger = LoggerFactory.getLogger(TeacherController.class);
     @Autowired
     private LectureToEventMapper lectureToEventMapper;
-    private TeacherService teacherService;
-    private SubjectService subjectService;
-    private CathedraService cathedraService;
-    private LectureService lectureService;
+    private final TeacherService teacherService;
+    private final SubjectService subjectService;
+    private final CathedraService cathedraService;
+    private final LectureService lectureService;
 
     public TeacherController(TeacherService teacherService, SubjectService subjectService,
                              CathedraService cathedraService, LectureService lectureService) {
@@ -67,7 +67,7 @@ public class TeacherController {
     public String create(@ModelAttribute Teacher teacher, Model model) {
         teacher.setCathedra(cathedraService.findById(teacher.getCathedra().getId()));
         teacher.setSubjects(teacher.getSubjects().stream().map(subject -> subjectService.findById(subject.getId()))
-                .collect(Collectors.toList()));
+            .collect(Collectors.toList()));
         teacherService.save(teacher);
         logger.debug("Create new teacher. Id {}", teacher.getId());
 
@@ -89,7 +89,7 @@ public class TeacherController {
         logger.debug("Update teacher with id {}", id);
         teacher.setCathedra(cathedraService.findById(teacher.getCathedra().getId()));
         teacher.setSubjects(teacher.getSubjects().stream().map(subject -> subjectService.findById(subject.getId()))
-                .collect(Collectors.toList()));
+            .collect(Collectors.toList()));
         teacherService.save(teacher);
 
         return "redirect:/teachers";

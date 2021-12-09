@@ -48,26 +48,26 @@ public class JdbcTeacherDaoTest {
     void givenPageable_whenFindPaginatedTeachers_thenTeachersFound() {
         Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Subject subject = Subject.builder()
-                .id(1)
-                .cathedra(cathedra)
-                .name("Weapon Tactics")
-                .description("Learning how to use heavy weapon and guerrilla tactics")
-                .build();
+            .id(1)
+            .cathedra(cathedra)
+            .name("Weapon Tactics")
+            .description("Learning how to use heavy weapon and guerrilla tactics")
+            .build();
         List<Teacher> teachers = Arrays.asList(Teacher.builder()
-                .firstName("Daniel")
-                .lastName("Morpheus")
-                .address("Virtual Reality Capsule no 1")
-                .gender(Gender.MALE)
-                .birthDate(LocalDate.of(1970, 1, 1))
-                .cathedra(cathedra)
-                .degree(Degree.PROFESSOR)
-                .phone("1")
-                .email("1@bigowl.com")
-                .postalCode("12345")
-                .education("Higher education")
-                .id(1)
-                .subjects(Arrays.asList(subject))
-                .build());
+            .firstName("Daniel")
+            .lastName("Morpheus")
+            .address("Virtual Reality Capsule no 1")
+            .gender(Gender.MALE)
+            .birthDate(LocalDate.of(1970, 1, 1))
+            .cathedra(cathedra)
+            .degree(Degree.PROFESSOR)
+            .phone("1")
+            .email("1@bigowl.com")
+            .postalCode("12345")
+            .education("Higher education")
+            .id(1)
+            .subjects(Arrays.asList(subject))
+            .build());
         Page<Teacher> expected = new PageImpl<>(teachers, PageRequest.of(0, 1), 2);
         Page<Teacher> actual = teacherDao.findPaginatedTeachers(PageRequest.of(0, 1));
 
@@ -77,26 +77,26 @@ public class JdbcTeacherDaoTest {
     @Test
     void givenExistingTeacher_whenFindById_thenTeacherFound() {
         Optional<Teacher> expected = Optional.of(Teacher.builder()
-                .firstName("Daniel")
-                .lastName("Morpheus")
-                .address("Virtual Reality Capsule no 1")
-                .gender(Gender.MALE)
-                .birthDate(LocalDate.of(1970, 1, 1))
-                .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
-                .degree(Degree.PROFESSOR)
-                .phone("1")
-                .email("1@bigowl.com")
-                .postalCode("12345")
-                .education("Higher education")
-                .id(1)
-                .build());
+            .firstName("Daniel")
+            .lastName("Morpheus")
+            .address("Virtual Reality Capsule no 1")
+            .gender(Gender.MALE)
+            .birthDate(LocalDate.of(1970, 1, 1))
+            .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+            .degree(Degree.PROFESSOR)
+            .phone("1")
+            .email("1@bigowl.com")
+            .postalCode("12345")
+            .education("Higher education")
+            .id(1)
+            .build());
         List<Subject> subjects = new ArrayList<>();
         Subject subject = Subject.builder()
-                .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
-                .name("Weapon Tactics")
-                .description("Learning how to use heavy weapon and guerrilla tactics")
-                .id(1)
-                .build();
+            .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+            .name("Weapon Tactics")
+            .description("Learning how to use heavy weapon and guerrilla tactics")
+            .id(1)
+            .build();
         subjects.add(subject);
         expected.get().setSubjects(subjects);
         Optional<Teacher> actual = teacherDao.findById(1);
@@ -113,25 +113,25 @@ public class JdbcTeacherDaoTest {
     void givenNewTeacher_whenSaveTeacher_thenAllExistingTeachersFound() {
         int expected = countRowsInTable(template, TABLE_NAME) + 1;
         Teacher teacher = Teacher.builder()
-                .firstName("Test")
-                .lastName("Test")
-                .address("Virtual Reality Capsule no 1")
-                .gender(Gender.MALE)
-                .birthDate(LocalDate.of(1970, 1, 1))
-                .cathedra(Cathedra.builder().id(1).build())
-                .degree(Degree.PROFESSOR)
-                .phone("1")
-                .email("1@bigowl.com")
-                .postalCode("12345")
-                .education("Higher education")
-                .build();
+            .firstName("Test")
+            .lastName("Test")
+            .address("Virtual Reality Capsule no 1")
+            .gender(Gender.MALE)
+            .birthDate(LocalDate.of(1970, 1, 1))
+            .cathedra(Cathedra.builder().id(1).build())
+            .degree(Degree.PROFESSOR)
+            .phone("1")
+            .email("1@bigowl.com")
+            .postalCode("12345")
+            .education("Higher education")
+            .build();
         List<Subject> subjects = new ArrayList<>();
         Subject subject = Subject.builder()
-                .cathedra(Cathedra.builder().id(1).build())
-                .name("Weapon Tactics")
-                .description("Learning how to use heavy weapon and guerrilla tactics")
-                .id(1)
-                .build();
+            .cathedra(Cathedra.builder().id(1).build())
+            .name("Weapon Tactics")
+            .description("Learning how to use heavy weapon and guerrilla tactics")
+            .id(1)
+            .build();
         subjects.add(subject);
         teacher.setSubjects(subjects);
         teacherDao.save(teacher);
@@ -142,45 +142,45 @@ public class JdbcTeacherDaoTest {
     @Test
     void givenExitstingTeacher_whenSaveWithChanges_thenChangesApplied() {
         Teacher expected = Teacher.builder()
-                .id(1)
-                .firstName("TestName")
-                .lastName("Test")
-                .address("Virtual Reality Capsule no 2")
-                .gender(Gender.MALE)
-                .birthDate(LocalDate.of(1970, 1, 1))
-                .cathedra(Cathedra.builder().id(1).build())
-                .degree(Degree.PROFESSOR)
-                .phone("1")
-                .email("123@bigowl.com")
-                .postalCode("1234567")
-                .education("Higher education123")
-                .build();
+            .id(1)
+            .firstName("TestName")
+            .lastName("Test")
+            .address("Virtual Reality Capsule no 2")
+            .gender(Gender.MALE)
+            .birthDate(LocalDate.of(1970, 1, 1))
+            .cathedra(Cathedra.builder().id(1).build())
+            .degree(Degree.PROFESSOR)
+            .phone("1")
+            .email("123@bigowl.com")
+            .postalCode("1234567")
+            .education("Higher education123")
+            .build();
         List<Subject> subjects = new ArrayList<>();
         Subject subject = Subject.builder()
-                .cathedra(Cathedra.builder()
-                        .id(1)
-                        .name("Fantastic Cathedra")
-                        .build())
-                .name("Weapon Tactics")
-                .description("Learning how to use heavy weapon and guerrilla tactics")
+            .cathedra(Cathedra.builder()
                 .id(1)
-                .build();
+                .name("Fantastic Cathedra")
+                .build())
+            .name("Weapon Tactics")
+            .description("Learning how to use heavy weapon and guerrilla tactics")
+            .id(1)
+            .build();
         subjects.add(subject);
         expected.setSubjects(subjects);
         teacherDao.save(expected);
 
         assertEquals(1, countRowsInTableWhere(template, TABLE_NAME,
-                "id = 1 "
-                        + "AND first_name = 'TestName' "
-                        + "AND last_name = 'Test' "
-                        + "AND address = 'Virtual Reality Capsule no 2' "
-                        + "AND gender = 'MALE' "
-                        + "AND birth_date = '1970-01-01' "
-                        + "AND cathedra_id = 1 "
-                        + "AND degree = 'PROFESSOR' "
-                        + "AND phone = '1' "
-                        + "AND email = '123@bigowl.com' "
-                        + "AND postal_code = '1234567' AND education = 'Higher education123'"));
+            "id = 1 "
+                + "AND first_name = 'TestName' "
+                + "AND last_name = 'Test' "
+                + "AND address = 'Virtual Reality Capsule no 2' "
+                + "AND gender = 'MALE' "
+                + "AND birth_date = '1970-01-01' "
+                + "AND cathedra_id = 1 "
+                + "AND degree = 'PROFESSOR' "
+                + "AND phone = '1' "
+                + "AND email = '123@bigowl.com' "
+                + "AND postal_code = '1234567' AND education = 'Higher education123'"));
 
         assertEquals(1, countRowsInTableWhere(template, "subjects_teachers", "teacher_id = 1"));
     }
@@ -198,11 +198,11 @@ public class JdbcTeacherDaoTest {
         int expected = countRowsInTable(template, "subjects_teachers") + 1;
         Teacher teacher = teacherDao.findById(1).get();
         teacher.getSubjects().add(Subject.builder()
-                .cathedra(teacher.getCathedra())
-                .name("Wandless Magic")
-                .description("Learning how to use spells without magic wand")
-                .id(2)
-                .build());
+            .cathedra(teacher.getCathedra())
+            .name("Wandless Magic")
+            .description("Learning how to use spells without magic wand")
+            .id(2)
+            .build());
         teacherDao.save(teacher);
         int actual = countRowsInTable(template, "subjects_teachers");
 
@@ -213,26 +213,26 @@ public class JdbcTeacherDaoTest {
     void givenFirstNameAndLastNameAndBirthDate_whenFindByFullNameAndBirthDate_thenTeacherFound() {
         Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Optional<Teacher> expected = Optional.of(Teacher.builder()
-                .firstName("Daniel")
-                .lastName("Morpheus")
-                .address("Virtual Reality Capsule no 1")
-                .gender(Gender.MALE)
-                .birthDate(LocalDate.of(1970, 1, 1))
-                .cathedra(cathedra)
-                .degree(Degree.PROFESSOR)
-                .phone("1")
-                .email("1@bigowl.com")
-                .postalCode("12345")
-                .education("Higher education")
-                .id(1)
-                .build());
+            .firstName("Daniel")
+            .lastName("Morpheus")
+            .address("Virtual Reality Capsule no 1")
+            .gender(Gender.MALE)
+            .birthDate(LocalDate.of(1970, 1, 1))
+            .cathedra(cathedra)
+            .degree(Degree.PROFESSOR)
+            .phone("1")
+            .email("1@bigowl.com")
+            .postalCode("12345")
+            .education("Higher education")
+            .id(1)
+            .build());
         List<Subject> subjects = new ArrayList<>();
         Subject subject = Subject.builder().cathedra(cathedra).name("Weapon Tactics")
-                .description("Learning how to use heavy weapon and guerrilla tactics").id(1).build();
+            .description("Learning how to use heavy weapon and guerrilla tactics").id(1).build();
         subjects.add(subject);
         expected.get().setSubjects(subjects);
         Optional<Teacher> actual = teacherDao.findByFullNameAndBirthDate(expected.get().getFirstName(),
-                expected.get().getLastName(), expected.get().getBirthDate());
+            expected.get().getLastName(), expected.get().getBirthDate());
 
         assertEquals(expected, actual);
     }

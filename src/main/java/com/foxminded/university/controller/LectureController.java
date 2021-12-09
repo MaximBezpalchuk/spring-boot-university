@@ -30,14 +30,14 @@ public class LectureController {
 
     @Autowired
     private LectureToEventMapper lectureToEventMapper;
-    private LectureService lectureService;
-    private GroupService groupService;
-    private TeacherService teacherService;
-    private AudienceService audienceService;
-    private SubjectService subjectService;
-    private StudentService studentService;
-    private CathedraService cathedraService;
-    private LectureTimeService lectureTimeService;
+    private final LectureService lectureService;
+    private final GroupService groupService;
+    private final TeacherService teacherService;
+    private final AudienceService audienceService;
+    private final SubjectService subjectService;
+    private final StudentService studentService;
+    private final CathedraService cathedraService;
+    private final LectureTimeService lectureTimeService;
 
     public LectureController(LectureService lectureService, GroupService groupService, TeacherService teacherService,
                              AudienceService audienceService, SubjectService subjectService, CathedraService cathedraService,
@@ -90,7 +90,7 @@ public class LectureController {
         lecture.setTime(lectureTimeService.findById(lecture.getTime().getId()));
         lecture.setSubject(subjectService.findById(lecture.getSubject().getId()));
         lecture.setGroups(lecture.getGroups().stream().map(group -> groupService.findById(group.getId()))
-                .collect(Collectors.toList()));
+            .collect(Collectors.toList()));
         lectureService.save(lecture);
         logger.debug("Create new lecture. Id {}", lecture.getId());
 
@@ -120,7 +120,7 @@ public class LectureController {
         lecture.setTime(lectureTimeService.findById(lecture.getTime().getId()));
         lecture.setSubject(subjectService.findById(lecture.getSubject().getId()));
         lecture.setGroups(lecture.getGroups().stream().map(group -> groupService.findById(group.getId()))
-                .collect(Collectors.toList()));
+            .collect(Collectors.toList()));
         lectureService.save(lecture);
 
         return "redirect:/lectures/" + id;
@@ -155,11 +155,11 @@ public class LectureController {
                                                   @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
                                                   @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
         ObjectMapper mapper = JsonMapper.builder()
-                .findAndAddModules()
-                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-                .build();
+            .findAndAddModules()
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .build();
         List<Event> events = lectureService.findByTeacherIdAndPeriod(id, start, end).stream()
-                .map(lectureToEventMapper::lectureToEvent).collect(Collectors.toList());
+            .map(lectureToEventMapper::lectureToEvent).collect(Collectors.toList());
         try {
             return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(events);
         } catch (Exception e) {
@@ -190,11 +190,11 @@ public class LectureController {
                                                   @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
                                                   @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
         ObjectMapper mapper = JsonMapper.builder()
-                .findAndAddModules()
-                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-                .build();
+            .findAndAddModules()
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            .build();
         List<Event> events = lectureService.findByStudentIdAndPeriod(id, start, end).stream()
-                .map(lectureToEventMapper::lectureToEvent).collect(Collectors.toList());
+            .map(lectureToEventMapper::lectureToEvent).collect(Collectors.toList());
         try {
             return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(events);
         } catch (Exception e) {

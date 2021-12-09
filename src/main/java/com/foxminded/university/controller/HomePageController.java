@@ -12,7 +12,7 @@ public class HomePageController {
 
     private static final Logger logger = LoggerFactory.getLogger(HomePageController.class);
 
-    private CathedraService cathedraService;
+    private final CathedraService cathedraService;
 
     public HomePageController(CathedraService cathedraService) {
         this.cathedraService = cathedraService;

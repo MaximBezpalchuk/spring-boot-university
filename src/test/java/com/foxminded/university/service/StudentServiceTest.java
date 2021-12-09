@@ -86,7 +86,7 @@ public class StudentServiceTest {
     void givenNewStudent_whenSave_thenSaved() {
         Student student = Student.builder().id(1).group(Group.builder().name("Test").build()).build();
         when(studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
-                student.getBirthDate())).thenReturn(Optional.of(student));
+            student.getBirthDate())).thenReturn(Optional.of(student));
         when(studentDao.findByGroupId(student.getGroup().getId())).thenReturn(new ArrayList<>());
         studentService.save(student);
 
@@ -96,13 +96,13 @@ public class StudentServiceTest {
     @Test
     void givenExistingStudent_whenSave_thenSaved() {
         Student student = Student.builder()
-                .id(1)
-                .firstName("TestFirstName")
-                .lastName("TestLastName")
-                .group(Group.builder().id(10).name("Test").build())
-                .build();
+            .id(1)
+            .firstName("TestFirstName")
+            .lastName("TestLastName")
+            .group(Group.builder().id(10).name("Test").build())
+            .build();
         when(studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
-                student.getBirthDate())).thenReturn(Optional.of(student));
+            student.getBirthDate())).thenReturn(Optional.of(student));
         when(studentDao.findByGroupId(student.getGroup().getId())).thenReturn(new ArrayList<>());
         studentService.save(student);
 
@@ -112,39 +112,39 @@ public class StudentServiceTest {
     @Test
     void givenNotUniqueStudent_whenSave_thenEntityNotUniqueException() {
         Student student1 = Student.builder()
-                .id(1)
-                .firstName("TestFirstName")
-                .lastName("TestLastName")
-                .birthDate(LocalDate.of(2020, 1, 1))
-                .group(Group.builder().id(10).name("Test").build())
-                .build();
+            .id(1)
+            .firstName("TestFirstName")
+            .lastName("TestLastName")
+            .birthDate(LocalDate.of(2020, 1, 1))
+            .group(Group.builder().id(10).name("Test").build())
+            .build();
         Student student2 = Student.builder()
-                .id(11)
-                .firstName("TestFirstName")
-                .lastName("TestLastName")
-                .birthDate(LocalDate.of(2020, 1, 1))
-                .group(Group.builder().id(10).name("Test").build())
-                .build();
+            .id(11)
+            .firstName("TestFirstName")
+            .lastName("TestLastName")
+            .birthDate(LocalDate.of(2020, 1, 1))
+            .group(Group.builder().id(10).name("Test").build())
+            .build();
         when(studentDao.findByFullNameAndBirthDate(student1.getFirstName(),
-                student1.getLastName(), student1.getBirthDate())).thenReturn(Optional.of(student2));
+            student1.getLastName(), student1.getBirthDate())).thenReturn(Optional.of(student2));
         Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
             studentService.save(student1);
         });
 
         assertEquals("Student with full name TestFirstName TestLastName and  birth date 2020-01-01 is already exists!",
-                exception.getMessage());
+            exception.getMessage());
     }
 
     @Test
     void givenStudentWhenGroupIsFull_whenSave_thenStudentGroupIsFullException() {
         Student student = Student.builder()
-                .id(1)
-                .firstName("TestFirstName")
-                .lastName("TestLastName")
-                .group(Group.builder().id(10).name("Test").build())
-                .build();
+            .id(1)
+            .firstName("TestFirstName")
+            .lastName("TestLastName")
+            .group(Group.builder().id(10).name("Test").build())
+            .build();
         when(studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
-                student.getBirthDate())).thenReturn(Optional.of(student));
+            student.getBirthDate())).thenReturn(Optional.of(student));
         when(studentDao.findByGroupId(student.getGroup().getId())).thenReturn(Arrays.asList(student, student));
         Exception exception = assertThrows(GroupOverflowException.class, () -> {
             studentService.save(student);

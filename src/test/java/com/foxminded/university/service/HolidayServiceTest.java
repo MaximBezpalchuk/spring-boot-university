@@ -83,9 +83,9 @@ public class HolidayServiceTest {
     @Test
     void givenExistingHoliday_whenSave_thenSaved() {
         Holiday holiday = Holiday.builder()
-                .name("TestName")
-                .date(LocalDate.of(2020, 1, 1))
-                .build();
+            .name("TestName")
+            .date(LocalDate.of(2020, 1, 1))
+            .build();
         when(holidayDao.findByNameAndDate(holiday.getName(), holiday.getDate())).thenReturn(Optional.of(holiday));
         holidayService.save(holiday);
 
@@ -102,15 +102,15 @@ public class HolidayServiceTest {
     @Test
     void givenNotUniqueAudience_whenSave_thenEntityNotUniqueException() {
         Holiday holiday1 = Holiday.builder()
-                .id(1)
-                .name("TestName")
-                .date(LocalDate.of(2020, 1, 1))
-                .build();
+            .id(1)
+            .name("TestName")
+            .date(LocalDate.of(2020, 1, 1))
+            .build();
         Holiday holiday2 = Holiday.builder()
-                .id(10)
-                .name("TestName")
-                .date(LocalDate.of(2020, 1, 1))
-                .build();
+            .id(10)
+            .name("TestName")
+            .date(LocalDate.of(2020, 1, 1))
+            .build();
         when(holidayDao.findByNameAndDate(holiday1.getName(), holiday1.getDate())).thenReturn(Optional.of(holiday2));
         Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
             holidayService.save(holiday1);

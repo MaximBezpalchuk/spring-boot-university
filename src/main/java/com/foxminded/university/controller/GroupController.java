@@ -15,8 +15,8 @@ public class GroupController {
 
     private static final Logger logger = LoggerFactory.getLogger(GroupController.class);
 
-    private GroupService groupService;
-    private CathedraService cathedraService;
+    private final GroupService groupService;
+    private final CathedraService cathedraService;
 
     public GroupController(GroupService groupService, CathedraService cathedraService) {
         this.groupService = groupService;

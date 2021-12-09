@@ -70,7 +70,7 @@ public class Audience {
             return false;
         Audience other = (Audience) obj;
         return capacity == other.capacity && Objects.equals(cathedra, other.cathedra) && id == other.id
-                && room == other.room;
+            && room == other.room;
     }
 
     public static class Builder {

@@ -57,6 +57,6 @@ public class Event {
             return false;
         Event other = (Event) obj;
         return Objects.equals(end, other.end) && Objects.equals(start, other.start)
-                && Objects.equals(title, other.title) && Objects.equals(url, other.url);
+            && Objects.equals(title, other.title) && Objects.equals(url, other.url);
     }
 }

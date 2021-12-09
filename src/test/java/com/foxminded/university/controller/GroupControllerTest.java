@@ -44,19 +44,19 @@ public class GroupControllerTest {
         Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Group group1 = Group.builder().id(1).name("Killers").cathedra(cathedra).build();
         Group group2 = Group.builder()
-                .id(2)
-                .name("Mages")
-                .cathedra(cathedra)
-                .build();
+            .id(2)
+            .name("Mages")
+            .cathedra(cathedra)
+            .build();
         List<Group> groups = Arrays.asList(group1, group2);
 
         when(groupService.findAll()).thenReturn(groups);
 
         mockMvc.perform(get("/groups"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("groups/index"))
-                .andExpect(forwardedUrl("groups/index"))
-                .andExpect(model().attribute("groups", groups));
+            .andExpect(status().isOk())
+            .andExpect(view().name("groups/index"))
+            .andExpect(forwardedUrl("groups/index"))
+            .andExpect(model().attribute("groups", groups));
 
         verifyNoMoreInteractions(groupService);
     }
@@ -69,10 +69,10 @@ public class GroupControllerTest {
         when(groupService.findById(group.getId())).thenReturn(group);
 
         mockMvc.perform(get("/groups/{id}", group.getId()))
-                .andExpect(status().isOk())
-                .andExpect(view().name("groups/show"))
-                .andExpect(forwardedUrl("groups/show"))
-                .andExpect(model().attribute("group", group));
+            .andExpect(status().isOk())
+            .andExpect(view().name("groups/show"))
+            .andExpect(forwardedUrl("groups/show"))
+            .andExpect(model().attribute("group", group));
     }
 
     @Test
@@ -82,21 +82,21 @@ public class GroupControllerTest {
         when(cathedraService.findAll()).thenReturn(Arrays.asList(cathedra));
 
         mockMvc.perform(get("/groups/new"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("groups/new"))
-                .andExpect(forwardedUrl("groups/new"))
-                .andExpect(model().attribute("group", instanceOf(Group.class)));
+            .andExpect(status().isOk())
+            .andExpect(view().name("groups/new"))
+            .andExpect(forwardedUrl("groups/new"))
+            .andExpect(model().attribute("group", instanceOf(Group.class)));
     }
 
     @Test
     void whenSaveGroup_thenGroupSaved() throws Exception {
         Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Group group = Group.builder()
-                .name("Killers2")
-                .cathedra(cathedra)
-                .build();
+            .name("Killers2")
+            .cathedra(cathedra)
+            .build();
         mockMvc.perform(post("/groups").flashAttr("group", group))
-                .andExpect(redirectedUrl("/groups"));
+            .andExpect(redirectedUrl("/groups"));
 
         verify(groupService).save(group);
     }
@@ -105,25 +105,25 @@ public class GroupControllerTest {
     void whenEditGroup_thenGroupFound() throws Exception {
         Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Group expected = Group.builder()
-                .id(1)
-                .name("Killers")
-                .cathedra(cathedra)
-                .build();
+            .id(1)
+            .name("Killers")
+            .cathedra(cathedra)
+            .build();
 
         when(groupService.findById(1)).thenReturn(expected);
         when(cathedraService.findAll()).thenReturn(Arrays.asList(cathedra));
 
         mockMvc.perform(get("/groups/{id}/edit", 1))
-                .andExpect(status().isOk())
-                .andExpect(view().name("groups/edit"))
-                .andExpect(forwardedUrl("groups/edit"))
-                .andExpect(model().attribute("group", is(expected)));
+            .andExpect(status().isOk())
+            .andExpect(view().name("groups/edit"))
+            .andExpect(forwardedUrl("groups/edit"))
+            .andExpect(model().attribute("group", is(expected)));
     }
 
     @Test
     void whenDeleteGroup_thenGroupDeleted() throws Exception {
         mockMvc.perform(delete("/groups/{id}", 1))
-                .andExpect(redirectedUrl("/groups"));
+            .andExpect(redirectedUrl("/groups"));
 
         verify(groupService).deleteById(1);
     }

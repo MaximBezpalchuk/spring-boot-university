@@ -29,7 +29,7 @@ public class JdbcAudienceDao implements AudienceDao {
     private static final String SELECT_BY_ROOM = "SELECT * FROM audiences WHERE room = ?";
 
     private final JdbcTemplate jdbcTemplate;
-    private AudienceRowMapper rowMapper;
+    private final AudienceRowMapper rowMapper;
 
     public JdbcAudienceDao(JdbcTemplate jdbcTemplate, AudienceRowMapper rowMapper) {
         this.jdbcTemplate = jdbcTemplate;
@@ -59,7 +59,7 @@ public class JdbcAudienceDao implements AudienceDao {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(connection -> {
                 PreparedStatement statement = connection.prepareStatement(INSERT_AUDIENCE,
-                        Statement.RETURN_GENERATED_KEYS);
+                    Statement.RETURN_GENERATED_KEYS);
                 statement.setInt(1, audience.getRoom());
                 statement.setInt(2, audience.getCapacity());
                 statement.setInt(3, audience.getCathedra().getId());
@@ -69,7 +69,7 @@ public class JdbcAudienceDao implements AudienceDao {
             logger.debug("New audience created with id: {}", audience.getId());
         } else {
             jdbcTemplate.update(UPDATE_AUDIENCE, audience.getRoom(), audience.getCapacity(),
-                    audience.getCathedra().getId(), audience.getId());
+                audience.getCathedra().getId(), audience.getId());
             logger.debug("Audience with id {} was updated", audience.getId());
         }
 

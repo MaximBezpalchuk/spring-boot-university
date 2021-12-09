@@ -70,7 +70,7 @@ public class Subject {
             return false;
         Subject other = (Subject) obj;
         return Objects.equals(cathedra, other.cathedra) && Objects.equals(description, other.description)
-                && id == other.id && Objects.equals(name, other.name);
+            && id == other.id && Objects.equals(name, other.name);
     }
 
     public static class Builder {

@@ -84,13 +84,13 @@ public class AudienceServiceTest {
     @Test
     void givenNotUniqueAudience_whenSave_thenEntityNotUniqueException() {
         Audience audience1 = Audience.builder()
-                .id(1)
-                .room(10)
-                .build();
+            .id(1)
+            .room(10)
+            .build();
         Audience audience2 = Audience.builder()
-                .id(5)
-                .room(10)
-                .build();
+            .id(5)
+            .room(10)
+            .build();
         when(audienceDao.findByRoom(audience1.getRoom())).thenReturn(Optional.of(audience2));
         Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
             audienceService.save(audience1);

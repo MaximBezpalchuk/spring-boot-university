@@ -14,7 +14,7 @@ public class LectureTimeController {
 
     private static final Logger logger = LoggerFactory.getLogger(LectureTimeController.class);
 
-    private LectureTimeService lectureTimeService;
+    private final LectureTimeService lectureTimeService;
 
     public LectureTimeController(LectureTimeService lectureTimeService) {
         this.lectureTimeService = lectureTimeService;

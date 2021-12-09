@@ -51,41 +51,41 @@ public class JdbcLectureDaoTest {
         Audience audience = Audience.builder().id(1).cathedra(cathedra).room(1).capacity(10).build();
         Group group = Group.builder().id(1).cathedra(cathedra).name("Killers").build();
         Subject subject = Subject.builder()
-                .id(1)
-                .cathedra(cathedra)
-                .name("Weapon Tactics")
-                .description("Learning how to use heavy weapon and guerrilla tactics")
-                .build();
+            .id(1)
+            .cathedra(cathedra)
+            .name("Weapon Tactics")
+            .description("Learning how to use heavy weapon and guerrilla tactics")
+            .build();
         Teacher teacher = Teacher.builder()
-                .firstName("Daniel")
-                .lastName("Morpheus")
-                .address("Virtual Reality Capsule no 1")
-                .gender(Gender.MALE)
-                .birthDate(LocalDate.of(1970, 1, 1))
-                .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
-                .degree(Degree.PROFESSOR)
-                .phone("1")
-                .email("1@bigowl.com")
-                .postalCode("12345")
-                .education("Higher education")
-                .id(1)
-                .subjects(Arrays.asList(subject))
-                .build();
+            .firstName("Daniel")
+            .lastName("Morpheus")
+            .address("Virtual Reality Capsule no 1")
+            .gender(Gender.MALE)
+            .birthDate(LocalDate.of(1970, 1, 1))
+            .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+            .degree(Degree.PROFESSOR)
+            .phone("1")
+            .email("1@bigowl.com")
+            .postalCode("12345")
+            .education("Higher education")
+            .id(1)
+            .subjects(Arrays.asList(subject))
+            .build();
         LectureTime time = LectureTime.builder()
-                .id(1)
-                .start(LocalTime.of(8, 0))
-                .end(LocalTime.of(9, 30))
-                .build();
+            .id(1)
+            .start(LocalTime.of(8, 0))
+            .end(LocalTime.of(9, 30))
+            .build();
         Optional<Lecture> expected = Optional.of(Lecture.builder()
-                .id(1)
-                .group(Arrays.asList(group))
-                .cathedra(cathedra)
-                .subject(subject)
-                .date(LocalDate.of(2021, 4, 4))
-                .time(time)
-                .audience(audience)
-                .teacher(teacher)
-                .build());
+            .id(1)
+            .group(Arrays.asList(group))
+            .cathedra(cathedra)
+            .subject(subject)
+            .date(LocalDate.of(2021, 4, 4))
+            .time(time)
+            .audience(audience)
+            .teacher(teacher)
+            .build());
         Optional<Lecture> actual = lectureDao.findById(1);
 
         assertEquals(expected, actual);
@@ -97,41 +97,41 @@ public class JdbcLectureDaoTest {
         Audience audience = Audience.builder().id(1).cathedra(cathedra).room(1).capacity(10).build();
         Group group = Group.builder().id(1).cathedra(cathedra).name("Killers").build();
         Subject subject = Subject.builder()
-                .id(1)
-                .cathedra(cathedra)
-                .name("Weapon Tactics")
-                .description("Learning how to use heavy weapon and guerrilla tactics")
-                .build();
+            .id(1)
+            .cathedra(cathedra)
+            .name("Weapon Tactics")
+            .description("Learning how to use heavy weapon and guerrilla tactics")
+            .build();
         Teacher teacher = Teacher.builder()
-                .firstName("Daniel")
-                .lastName("Morpheus")
-                .address("Virtual Reality Capsule no 1")
-                .gender(Gender.MALE)
-                .birthDate(LocalDate.of(1970, 1, 1))
-                .cathedra(cathedra)
-                .degree(Degree.PROFESSOR)
-                .phone("1")
-                .email("1@bigowl.com")
-                .postalCode("12345")
-                .education("Higher education")
-                .id(1)
-                .subjects(Arrays.asList(subject))
-                .build();
+            .firstName("Daniel")
+            .lastName("Morpheus")
+            .address("Virtual Reality Capsule no 1")
+            .gender(Gender.MALE)
+            .birthDate(LocalDate.of(1970, 1, 1))
+            .cathedra(cathedra)
+            .degree(Degree.PROFESSOR)
+            .phone("1")
+            .email("1@bigowl.com")
+            .postalCode("12345")
+            .education("Higher education")
+            .id(1)
+            .subjects(Arrays.asList(subject))
+            .build();
         LectureTime time = LectureTime.builder()
-                .id(1)
-                .start(LocalTime.of(8, 0))
-                .end(LocalTime.of(9, 30))
-                .build();
+            .id(1)
+            .start(LocalTime.of(8, 0))
+            .end(LocalTime.of(9, 30))
+            .build();
         List<Lecture> lectures = Arrays.asList(Lecture.builder()
-                .id(1)
-                .group(Arrays.asList(group))
-                .cathedra(cathedra)
-                .subject(subject)
-                .date(LocalDate.of(2021, 4, 4))
-                .time(time)
-                .audience(audience)
-                .teacher(teacher)
-                .build());
+            .id(1)
+            .group(Arrays.asList(group))
+            .cathedra(cathedra)
+            .subject(subject)
+            .date(LocalDate.of(2021, 4, 4))
+            .time(time)
+            .audience(audience)
+            .teacher(teacher)
+            .build());
         Page<Lecture> expected = new PageImpl<>(lectures, PageRequest.of(0, 1), 11);
         Page<Lecture> actual = lectureDao.findPaginatedLectures(PageRequest.of(0, 1));
 
@@ -147,14 +147,14 @@ public class JdbcLectureDaoTest {
     void givenNewLecture_whenSaveLecture_thenAllExistingLecturesFound() {
         int expected = countRowsInTable(template, TABLE_NAME) + 1;
         lectureDao.save(
-                Lecture.builder().cathedra(Cathedra.builder()
-                        .id(1).build())
-                        .subject(Subject.builder().id(1).build())
-                        .date(LocalDate.of(2021, 4, 4))
-                        .time(LectureTime.builder().id(1).build())
-                        .audience(Audience.builder().id(1).build())
-                        .teacher(Teacher.builder().id(1).build())
-                        .build());
+            Lecture.builder().cathedra(Cathedra.builder()
+                .id(1).build())
+                .subject(Subject.builder().id(1).build())
+                .date(LocalDate.of(2021, 4, 4))
+                .time(LectureTime.builder().id(1).build())
+                .audience(Audience.builder().id(1).build())
+                .teacher(Teacher.builder().id(1).build())
+                .build());
 
         assertEquals(expected, countRowsInTable(template, TABLE_NAME));
     }
@@ -162,24 +162,24 @@ public class JdbcLectureDaoTest {
     @Test
     void givenExitstingLecture_whenSaveWithChanges_thenChangesApplied() {
         Lecture expected = Lecture.builder()
-                .id(1)
-                .cathedra(Cathedra.builder().id(1).build())
-                .subject(Subject.builder().id(2).build())
-                .date(LocalDate.of(2021, 4, 5))
-                .time(LectureTime.builder().id(2).build())
-                .audience(Audience.builder().id(2).build())
-                .teacher(Teacher.builder().id(2).build())
-                .group(new ArrayList<>()).build();
+            .id(1)
+            .cathedra(Cathedra.builder().id(1).build())
+            .subject(Subject.builder().id(2).build())
+            .date(LocalDate.of(2021, 4, 5))
+            .time(LectureTime.builder().id(2).build())
+            .audience(Audience.builder().id(2).build())
+            .teacher(Teacher.builder().id(2).build())
+            .group(new ArrayList<>()).build();
         lectureDao.save(expected);
 
         assertEquals(1, countRowsInTableWhere(template, TABLE_NAME,
-                "id = 1 "
-                        + "AND cathedra_id = 1 "
-                        + "AND subject_id = 2 "
-                        + "AND date = '2021-04-05' "
-                        + "AND lecture_time_id = 2 "
-                        + "AND audience_id = 2 "
-                        + "AND teacher_id = 2"));
+            "id = 1 "
+                + "AND cathedra_id = 1 "
+                + "AND subject_id = 2 "
+                + "AND date = '2021-04-05' "
+                + "AND lecture_time_id = 2 "
+                + "AND audience_id = 2 "
+                + "AND teacher_id = 2"));
 
         assertEquals(0, countRowsInTableWhere(template, "lectures_groups", "lecture_id = 1 "));
     }
@@ -198,44 +198,44 @@ public class JdbcLectureDaoTest {
         Audience audience = Audience.builder().id(1).cathedra(cathedra).room(1).capacity(10).build();
         Group group = Group.builder().id(1).cathedra(cathedra).name("Killers").build();
         Subject subject = Subject.builder()
-                .id(1)
-                .cathedra(cathedra)
-                .name("Weapon Tactics")
-                .description("Learning how to use heavy weapon and guerrilla tactics")
-                .build();
+            .id(1)
+            .cathedra(cathedra)
+            .name("Weapon Tactics")
+            .description("Learning how to use heavy weapon and guerrilla tactics")
+            .build();
         Teacher teacher = Teacher.builder()
-                .firstName("Daniel")
-                .lastName("Morpheus")
-                .address("Virtual Reality Capsule no 1")
-                .gender(Gender.MALE)
-                .birthDate(LocalDate.of(1970, 1, 1))
-                .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
-                .degree(Degree.PROFESSOR)
-                .phone("1")
-                .email("1@bigowl.com")
-                .postalCode("12345")
-                .education("Higher education")
-                .id(1)
-                .subjects(Arrays.asList(subject))
-                .build();
+            .firstName("Daniel")
+            .lastName("Morpheus")
+            .address("Virtual Reality Capsule no 1")
+            .gender(Gender.MALE)
+            .birthDate(LocalDate.of(1970, 1, 1))
+            .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+            .degree(Degree.PROFESSOR)
+            .phone("1")
+            .email("1@bigowl.com")
+            .postalCode("12345")
+            .education("Higher education")
+            .id(1)
+            .subjects(Arrays.asList(subject))
+            .build();
         LectureTime time = LectureTime.builder()
-                .id(1)
-                .start(LocalTime.of(8, 0))
-                .end(LocalTime.of(9, 30))
-                .build();
+            .id(1)
+            .start(LocalTime.of(8, 0))
+            .end(LocalTime.of(9, 30))
+            .build();
         Optional<Lecture> expected = Optional.of(Lecture.builder()
-                .id(1)
-                .group(Arrays.asList(group))
-                .cathedra(cathedra)
-                .subject(subject)
-                .date(LocalDate.of(2021, 4, 4))
-                .time(time)
-                .audience(audience)
-                .teacher(teacher)
-                .build());
+            .id(1)
+            .group(Arrays.asList(group))
+            .cathedra(cathedra)
+            .subject(subject)
+            .date(LocalDate.of(2021, 4, 4))
+            .time(time)
+            .audience(audience)
+            .teacher(teacher)
+            .build());
         Optional<Lecture> actual = lectureDao.findByAudienceDateAndLectureTime(Audience.builder().id(1).build(),
-                LocalDate.of(2021, 4, 4),
-                LectureTime.builder().id(1).build());
+            LocalDate.of(2021, 4, 4),
+            LectureTime.builder().id(1).build());
 
         assertEquals(expected, actual);
     }
@@ -246,43 +246,43 @@ public class JdbcLectureDaoTest {
         Audience audience = Audience.builder().id(1).cathedra(cathedra).room(1).capacity(10).build();
         Group group = Group.builder().id(1).cathedra(cathedra).name("Killers").build();
         Subject subject = Subject.builder()
-                .id(1)
-                .cathedra(cathedra)
-                .name("Weapon Tactics")
-                .description("Learning how to use heavy weapon and guerrilla tactics")
-                .build();
+            .id(1)
+            .cathedra(cathedra)
+            .name("Weapon Tactics")
+            .description("Learning how to use heavy weapon and guerrilla tactics")
+            .build();
         Teacher teacher = Teacher.builder()
-                .firstName("Daniel")
-                .lastName("Morpheus")
-                .address("Virtual Reality Capsule no 1")
-                .gender(Gender.MALE)
-                .birthDate(LocalDate.of(1970, 1, 1))
-                .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
-                .degree(Degree.PROFESSOR)
-                .phone("1")
-                .email("1@bigowl.com")
-                .postalCode("12345")
-                .education("Higher education")
-                .id(1)
-                .subjects(Arrays.asList(subject))
-                .build();
+            .firstName("Daniel")
+            .lastName("Morpheus")
+            .address("Virtual Reality Capsule no 1")
+            .gender(Gender.MALE)
+            .birthDate(LocalDate.of(1970, 1, 1))
+            .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+            .degree(Degree.PROFESSOR)
+            .phone("1")
+            .email("1@bigowl.com")
+            .postalCode("12345")
+            .education("Higher education")
+            .id(1)
+            .subjects(Arrays.asList(subject))
+            .build();
         LectureTime time = LectureTime.builder()
-                .id(1)
-                .start(LocalTime.of(8, 0))
-                .end(LocalTime.of(9, 30))
-                .build();
+            .id(1)
+            .start(LocalTime.of(8, 0))
+            .end(LocalTime.of(9, 30))
+            .build();
         Optional<Lecture> expected = Optional.of(Lecture.builder()
-                .id(1)
-                .group(Arrays.asList(group))
-                .cathedra(cathedra)
-                .subject(subject)
-                .date(LocalDate.of(2021, 4, 4))
-                .time(time)
-                .audience(audience)
-                .teacher(teacher)
-                .build());
+            .id(1)
+            .group(Arrays.asList(group))
+            .cathedra(cathedra)
+            .subject(subject)
+            .date(LocalDate.of(2021, 4, 4))
+            .time(time)
+            .audience(audience)
+            .teacher(teacher)
+            .build());
         Optional<Lecture> actual = lectureDao.findByAudienceDateAndLectureTime(Audience.builder().id(1).build(),
-                LocalDate.of(2021, 4, 4), LectureTime.builder().id(1).build());
+            LocalDate.of(2021, 4, 4), LectureTime.builder().id(1).build());
 
         assertEquals(expected, actual);
     }
@@ -290,7 +290,7 @@ public class JdbcLectureDaoTest {
     @Test
     void givenStudentId_whenFindByStudentId_thenLecturesFound() {
         List<Lecture> actual = lectureDao.findLecturesByStudentAndPeriod(Student.builder().id(1).build(),
-                LocalDate.of(2021, 4, 4), LocalDate.of(2021, 4, 8));
+            LocalDate.of(2021, 4, 4), LocalDate.of(2021, 4, 8));
 
         assertEquals(8, actual.size());
     }
@@ -298,7 +298,7 @@ public class JdbcLectureDaoTest {
     @Test
     void givenTeacherId_whenFindByTeacherId_thenLecturesFound() {
         List<Lecture> actual = lectureDao.findLecturesByTeacherAndPeriod(Teacher.builder().id(2).build(),
-                LocalDate.of(2021, 4, 4), LocalDate.of(2021, 4, 8));
+            LocalDate.of(2021, 4, 4), LocalDate.of(2021, 4, 8));
 
         assertEquals(7, actual.size());
     }

@@ -29,7 +29,7 @@ public class JdbcCathedraDao implements CathedraDao {
     private static final String SELECT_BY_NAME = "SELECT * FROM cathedras WHERE name = ?";
 
     private final JdbcTemplate jdbcTemplate;
-    private CathedraRowMapper rowMapper;
+    private final CathedraRowMapper rowMapper;
 
     public JdbcCathedraDao(JdbcTemplate jdbcTemplate, CathedraRowMapper rowMapper) {
         this.jdbcTemplate = jdbcTemplate;
@@ -59,7 +59,7 @@ public class JdbcCathedraDao implements CathedraDao {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(connection -> {
                 PreparedStatement statement = connection.prepareStatement(INSERT_CATHEDRA,
-                        Statement.RETURN_GENERATED_KEYS);
+                    Statement.RETURN_GENERATED_KEYS);
                 statement.setString(1, cathedra.getName());
                 return statement;
             }, keyHolder);

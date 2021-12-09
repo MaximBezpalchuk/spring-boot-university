@@ -41,10 +41,10 @@ public class JdbcGroupDaoTest {
     @Test
     void givenExistingGroup_whenFindById_thenGroupFound() {
         Optional<Group> expected = Optional.of(Group.builder()
-                .id(1)
-                .name("Killers")
-                .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
-                .build());
+            .id(1)
+            .name("Killers")
+            .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+            .build());
         Optional<Group> actual = groupDao.findById(1);
 
         assertEquals(expected, actual);
@@ -59,9 +59,9 @@ public class JdbcGroupDaoTest {
     void givenNewGroup_whenSaveGroup_thenAllExistingGroupsFound() {
         int expected = countRowsInTable(template, TABLE_NAME) + 1;
         groupDao.save(Group.builder()
-                .name("Test Name")
-                .cathedra(Cathedra.builder().id(1).build())
-                .build());
+            .name("Test Name")
+            .cathedra(Cathedra.builder().id(1).build())
+            .build());
 
         assertEquals(expected, countRowsInTable(template, TABLE_NAME));
     }
@@ -86,10 +86,10 @@ public class JdbcGroupDaoTest {
     @Test
     void givenGroupName_whenFindByName_thenGroupFound() {
         Optional<Group> expected = Optional.of(Group.builder()
-                .id(1)
-                .name("Killers")
-                .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
-                .build());
+            .id(1)
+            .name("Killers")
+            .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+            .build());
         Optional<Group> actual = groupDao.findByName("Killers");
 
         assertEquals(expected, actual);

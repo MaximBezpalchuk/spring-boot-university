@@ -69,7 +69,7 @@ public class Teacher extends Person {
             return false;
         Teacher other = (Teacher) obj;
         return Objects.equals(cathedra, other.cathedra) && degree == other.degree
-                && Objects.equals(subjects, other.subjects);
+            && Objects.equals(subjects, other.subjects);
     }
 
     public static class Builder extends Person.Builder<Builder> {
@@ -100,7 +100,7 @@ public class Teacher extends Person {
 
         public Teacher build() {
             return new Teacher(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate,
-                    cathedra, subjects, degree);
+                cathedra, subjects, degree);
         }
 
     }

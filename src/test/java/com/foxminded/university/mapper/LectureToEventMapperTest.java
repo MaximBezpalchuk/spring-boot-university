@@ -23,16 +23,16 @@ public class LectureToEventMapperTest {
     void shouldMapLectureToEvent() throws Exception {
         // given
         Subject subject = Subject.builder()
-                .id(1)
-                .name("Subject name")
-                .build();
+            .id(1)
+            .name("Subject name")
+            .build();
         LectureTime time = LectureTime.builder().id(1).start(LocalTime.of(8, 0)).end(LocalTime.of(9, 45)).build();
         Lecture lecture = Lecture.builder()
-                .id(1)
-                .date(LocalDate.of(2021, 1, 1))
-                .subject(subject)
-                .time(time)
-                .build();
+            .id(1)
+            .date(LocalDate.of(2021, 1, 1))
+            .subject(subject)
+            .time(time)
+            .build();
         // when
         Event event = LectureToEventMapper.INSTANCE.lectureToEvent(lecture);
 

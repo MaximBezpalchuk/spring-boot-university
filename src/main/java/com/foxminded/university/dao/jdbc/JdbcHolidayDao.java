@@ -36,7 +36,7 @@ public class JdbcHolidayDao implements HolidayDao {
     private static final String SELECT_BY_DATE = "SELECT * FROM holidays WHERE date = ?";
 
     private final JdbcTemplate jdbcTemplate;
-    private HolidayRowMapper rowMapper;
+    private final HolidayRowMapper rowMapper;
 
     public JdbcHolidayDao(JdbcTemplate jdbcTemplate, HolidayRowMapper rowMapper) {
         this.jdbcTemplate = jdbcTemplate;
@@ -54,7 +54,7 @@ public class JdbcHolidayDao implements HolidayDao {
         logger.debug("Find all holidays with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
         int total = jdbcTemplate.queryForObject(COUNT_ALL, Integer.class);
         List<Holiday> holidays = jdbcTemplate.query(SELECT_BY_PAGE, rowMapper, pageable.getPageSize(),
-                pageable.getOffset());
+            pageable.getOffset());
 
         return new PageImpl<>(holidays, pageable, total);
     }
@@ -76,7 +76,7 @@ public class JdbcHolidayDao implements HolidayDao {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(connection -> {
                 PreparedStatement statement = connection.prepareStatement(INSERT_HOLIDAY,
-                        Statement.RETURN_GENERATED_KEYS);
+                    Statement.RETURN_GENERATED_KEYS);
                 statement.setString(1, holiday.getName());
                 statement.setObject(2, holiday.getDate());
                 statement.setInt(3, holiday.getCathedra().getId());
@@ -86,7 +86,7 @@ public class JdbcHolidayDao implements HolidayDao {
             logger.debug("New holiday created with id: {}", holiday.getId());
         } else {
             jdbcTemplate.update(UPDATE_HOLIDAY, holiday.getName(), holiday.getDate(), holiday.getCathedra().getId(),
-                    holiday.getId());
+                holiday.getId());
             logger.debug("Holiday with id {} was updated", holiday.getId());
         }
     }

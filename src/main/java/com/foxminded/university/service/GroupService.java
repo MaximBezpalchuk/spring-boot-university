@@ -17,7 +17,7 @@ public class GroupService {
 
     private static final Logger logger = LoggerFactory.getLogger(GroupService.class);
 
-    private GroupDao groupDao;
+    private final GroupDao groupDao;
 
     public GroupService(JdbcGroupDao groupDao) {
         this.groupDao = groupDao;
@@ -31,7 +31,7 @@ public class GroupService {
     public Group findById(int id) {
         logger.debug("Find group by id {}", id);
         return groupDao.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Can`t find any group with id: " + id));
+            .orElseThrow(() -> new EntityNotFoundException("Can`t find any group with id: " + id));
     }
 
     public void save(Group group) {

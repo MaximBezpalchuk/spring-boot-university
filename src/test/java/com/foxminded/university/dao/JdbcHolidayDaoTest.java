@@ -47,11 +47,11 @@ public class JdbcHolidayDaoTest {
     @Test
     void givenPageable_whenFindPaginatedHolidays_thenHolidaysFound() {
         List<Holiday> holidays = Arrays.asList(Holiday.builder()
-                .id(1)
-                .name("Christmas")
-                .date(LocalDate.of(2021, 12, 25))
-                .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
-                .build());
+            .id(1)
+            .name("Christmas")
+            .date(LocalDate.of(2021, 12, 25))
+            .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+            .build());
         Page<Holiday> expected = new PageImpl<>(holidays, PageRequest.of(0, 1), 6);
         Page<Holiday> actual = holidayDao.findPaginatedHolidays(PageRequest.of(0, 1));
 
@@ -61,11 +61,11 @@ public class JdbcHolidayDaoTest {
     @Test
     void givenExistingHoliday_whenFindById_thenHolidayFound() {
         Optional<Holiday> expected = Optional.of(Holiday.builder()
-                .id(1)
-                .name("Christmas")
-                .date(LocalDate.of(2021, 12, 25))
-                .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
-                .build());
+            .id(1)
+            .name("Christmas")
+            .date(LocalDate.of(2021, 12, 25))
+            .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+            .build());
         Optional<Holiday> actual = holidayDao.findById(1);
 
         assertEquals(expected, actual);
@@ -80,10 +80,10 @@ public class JdbcHolidayDaoTest {
     void givenNewHoliday_whenSaveHoliday_thenAllExistingHolidaysFound() {
         int expected = countRowsInTable(template, TABLE_NAME) + 1;
         Holiday holiday = Holiday.builder()
-                .name("Christmas2")
-                .date(LocalDate.of(2021, 12, 25))
-                .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
-                .build();
+            .name("Christmas2")
+            .date(LocalDate.of(2021, 12, 25))
+            .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+            .build();
         holidayDao.save(holiday);
 
         assertEquals(expected, countRowsInTable(template, TABLE_NAME));
@@ -92,15 +92,15 @@ public class JdbcHolidayDaoTest {
     @Test
     void givenExitstingHoliday_whenSaveWithChanges_thenChangesApplied() {
         Holiday expected = Holiday.builder()
-                .id(1)
-                .name("Test Name")
-                .date(LocalDate.of(2021, 12, 26))
-                .cathedra(Cathedra.builder().id(1).build())
-                .build();
+            .id(1)
+            .name("Test Name")
+            .date(LocalDate.of(2021, 12, 26))
+            .cathedra(Cathedra.builder().id(1).build())
+            .build();
         holidayDao.save(expected);
 
         assertEquals(1,
-                countRowsInTableWhere(template, TABLE_NAME, "id = 1 AND name = 'Test Name' and date= '2021-12-26'"));
+            countRowsInTableWhere(template, TABLE_NAME, "id = 1 AND name = 'Test Name' and date= '2021-12-26'"));
     }
 
     @Test
@@ -114,11 +114,11 @@ public class JdbcHolidayDaoTest {
     @Test
     void givenHolidayName_whenFindByNameAndDate_thenHolidayFound() {
         Optional<Holiday> expected = Optional.of(Holiday.builder()
-                .id(1)
-                .name("Christmas")
-                .date(LocalDate.of(2021, 12, 25))
-                .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
-                .build());
+            .id(1)
+            .name("Christmas")
+            .date(LocalDate.of(2021, 12, 25))
+            .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+            .build());
         Optional<Holiday> actual = holidayDao.findByNameAndDate("Christmas", LocalDate.of(2021, 12, 25));
 
         assertEquals(expected, actual);
@@ -127,11 +127,11 @@ public class JdbcHolidayDaoTest {
     @Test
     void givenHolidayName_whenFindByDate_thenHolidayFound() {
         List<Holiday> expected = Arrays.asList(Holiday.builder()
-                .id(1)
-                .name("Christmas")
-                .date(LocalDate.of(2021, 12, 25))
-                .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
-                .build());
+            .id(1)
+            .name("Christmas")
+            .date(LocalDate.of(2021, 12, 25))
+            .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+            .build());
         List<Holiday> actual = holidayDao.findByDate(LocalDate.of(2021, 12, 25));
 
         assertEquals(expected, actual);

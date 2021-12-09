@@ -37,7 +37,7 @@ public class JdbcStudentDao implements StudentDao {
     private static final String SELECT_BY_GROUP_ID = "SELECT * FROM students WHERE group_id = ?";
 
     private final JdbcTemplate jdbcTemplate;
-    private StudentRowMapper rowMapper;
+    private final StudentRowMapper rowMapper;
 
     public JdbcStudentDao(JdbcTemplate jdbcTemplate, StudentRowMapper rowMapper) {
         this.jdbcTemplate = jdbcTemplate;
@@ -55,7 +55,7 @@ public class JdbcStudentDao implements StudentDao {
         logger.debug("Find all students with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
         int total = jdbcTemplate.queryForObject(COUNT_ALL, Integer.class);
         List<Student> students = jdbcTemplate.query(SELECT_BY_PAGE, rowMapper, pageable.getPageSize(),
-                pageable.getOffset());
+            pageable.getOffset());
 
         return new PageImpl<>(students, pageable, total);
     }
@@ -78,13 +78,13 @@ public class JdbcStudentDao implements StudentDao {
             Group group = student.getGroup();
             jdbcTemplate.update(connection -> {
                 PreparedStatement statement = connection.prepareStatement(INSERT_STUDENT,
-                        Statement.RETURN_GENERATED_KEYS);
+                    Statement.RETURN_GENERATED_KEYS);
                 statement.setString(1, student.getFirstName());
                 statement.setString(2, student.getLastName());
                 statement.setString(3, student.getPhone());
                 statement.setString(4, student.getAddress());
                 statement.setString(5, student.getEmail());
-                statement.setString(6, student.getGender().toString());
+                statement.setString(6, student.getGender());
                 statement.setString(7, student.getPostalCode());
                 statement.setString(8, student.getEducation());
                 statement.setObject(9, student.getBirthDate());
@@ -107,7 +107,7 @@ public class JdbcStudentDao implements StudentDao {
                 statement.setString(3, student.getPhone());
                 statement.setString(4, student.getAddress());
                 statement.setString(5, student.getEmail());
-                statement.setString(6, student.getGender().toString());
+                statement.setString(6, student.getGender());
                 statement.setString(7, student.getPostalCode());
                 statement.setString(8, student.getEducation());
                 statement.setObject(9, student.getBirthDate());
@@ -132,10 +132,10 @@ public class JdbcStudentDao implements StudentDao {
     @Override
     public Optional<Student> findByFullNameAndBirthDate(String firstName, String lastName, LocalDate birthDate) {
         logger.debug("Find student with first name: {}, last name: {} and birthDate {}", firstName, lastName,
-                birthDate);
+            birthDate);
         try {
             return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_FULL_NAME_AND_BIRTHDAY, rowMapper, firstName,
-                    lastName, birthDate));
+                lastName, birthDate));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }

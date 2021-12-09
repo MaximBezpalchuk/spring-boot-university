@@ -31,6 +31,6 @@ public class SpringMvcDispatcherServletInitializer extends AbstractAnnotationCon
 
     private void registerHiddenFieldFilter(ServletContext aContext) {
         aContext.addFilter("hiddenHttpMethodFilter", new HiddenHttpMethodFilter()).addMappingForUrlPatterns(null, true,
-                "/*");
+            "/*");
     }
 }

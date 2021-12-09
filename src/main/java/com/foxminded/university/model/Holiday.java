@@ -76,7 +76,7 @@ public class Holiday {
             return false;
         Holiday other = (Holiday) obj;
         return Objects.equals(cathedra, other.cathedra) && Objects.equals(date, other.date) && id == other.id
-                && Objects.equals(name, other.name);
+            && Objects.equals(name, other.name);
     }
 
     public static class Builder {

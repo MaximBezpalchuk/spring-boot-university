@@ -21,8 +21,8 @@ public class HolidayController {
 
     @Autowired
     private LectureToEventMapper lectureToEventMapper;
-    private HolidayService holidayService;
-    private CathedraService cathedraService;
+    private final HolidayService holidayService;
+    private final CathedraService cathedraService;
 
     public HolidayController(HolidayService holidayService, CathedraService cathedraService) {
         this.holidayService = holidayService;

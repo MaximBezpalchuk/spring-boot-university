@@ -35,7 +35,7 @@ public class JdbcSubjectDao implements SubjectDao {
     private static final String SELECT_BY_NAME = "SELECT * FROM subjects WHERE name = ?";
 
     private final JdbcTemplate jdbcTemplate;
-    private SubjectRowMapper rowMapper;
+    private final SubjectRowMapper rowMapper;
 
     public JdbcSubjectDao(JdbcTemplate jdbcTemplate, SubjectRowMapper rowMapper) {
         this.jdbcTemplate = jdbcTemplate;
@@ -53,7 +53,7 @@ public class JdbcSubjectDao implements SubjectDao {
         logger.debug("Find all subjects with pageSize:{} and offset:{}", pageable.getPageSize(), pageable.getOffset());
         int total = jdbcTemplate.queryForObject(COUNT_ALL, Integer.class);
         List<Subject> subjects = jdbcTemplate.query(SELECT_BY_PAGE, rowMapper, pageable.getPageSize(),
-                pageable.getOffset());
+            pageable.getOffset());
 
         return new PageImpl<>(subjects, pageable, total);
     }
@@ -75,7 +75,7 @@ public class JdbcSubjectDao implements SubjectDao {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(connection -> {
                 PreparedStatement statement = connection.prepareStatement(INSERT_SUBJECT,
-                        Statement.RETURN_GENERATED_KEYS);
+                    Statement.RETURN_GENERATED_KEYS);
                 statement.setString(1, subject.getName());
                 statement.setString(2, subject.getDescription());
                 statement.setInt(3, subject.getCathedra().getId());
@@ -85,7 +85,7 @@ public class JdbcSubjectDao implements SubjectDao {
             logger.debug("New subject created with id: {}", subject.getId());
         } else {
             jdbcTemplate.update(UPDATE_SUBJECT, subject.getName(), subject.getDescription(),
-                    subject.getCathedra().getId(), subject.getId());
+                subject.getCathedra().getId(), subject.getId());
             logger.debug("Subject with id {} was updated", subject.getId());
         }
 

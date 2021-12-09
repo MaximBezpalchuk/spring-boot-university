@@ -51,26 +51,26 @@ public class SubjectControllerTest {
     public void whenGetAllSubjects_thenAllSubjectsReturned() throws Exception {
         Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Subject subject1 = Subject.builder()
-                .id(1)
-                .name("Subject Name")
-                .description("Subject desc")
-                .cathedra(cathedra)
-                .build();
+            .id(1)
+            .name("Subject Name")
+            .description("Subject desc")
+            .cathedra(cathedra)
+            .build();
         Subject subject2 = Subject.builder()
-                .id(2)
-                .name("Subject2 Name")
-                .description("Subject2 desc")
-                .cathedra(cathedra)
-                .build();
+            .id(2)
+            .name("Subject2 Name")
+            .description("Subject2 desc")
+            .cathedra(cathedra)
+            .build();
         List<Subject> subjects = Arrays.asList(subject1, subject2);
         Page<Subject> page = new PageImpl<>(subjects, PageRequest.of(0, 1), 2);
         when(subjectService.findAll(isA(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/subjects"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("subjects/index"))
-                .andExpect(forwardedUrl("subjects/index"))
-                .andExpect(model().attribute("subjects", page));
+            .andExpect(status().isOk())
+            .andExpect(view().name("subjects/index"))
+            .andExpect(forwardedUrl("subjects/index"))
+            .andExpect(model().attribute("subjects", page));
         verifyNoMoreInteractions(subjectService);
     }
 
@@ -78,18 +78,18 @@ public class SubjectControllerTest {
     public void whenGetOneSubject_thenOneSubjectReturned() throws Exception {
         Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Subject subject = Subject.builder()
-                .id(1)
-                .name("Subject Name")
-                .description("Subject desc")
-                .cathedra(cathedra)
-                .build();
+            .id(1)
+            .name("Subject Name")
+            .description("Subject desc")
+            .cathedra(cathedra)
+            .build();
         when(subjectService.findById(subject.getId())).thenReturn(subject);
 
         mockMvc.perform(get("/subjects/{id}", subject.getId()))
-                .andExpect(status().isOk())
-                .andExpect(view().name("subjects/show"))
-                .andExpect(forwardedUrl("subjects/show"))
-                .andExpect(model().attribute("subject", subject));
+            .andExpect(status().isOk())
+            .andExpect(view().name("subjects/show"))
+            .andExpect(forwardedUrl("subjects/show"))
+            .andExpect(model().attribute("subject", subject));
     }
 
     @Test
@@ -99,23 +99,23 @@ public class SubjectControllerTest {
         when(cathedraService.findAll()).thenReturn(Arrays.asList(cathedra));
 
         mockMvc.perform(get("/subjects/new"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("subjects/new"))
-                .andExpect(forwardedUrl("subjects/new"))
-                .andExpect(model().attribute("subject", instanceOf(Subject.class)));
+            .andExpect(status().isOk())
+            .andExpect(view().name("subjects/new"))
+            .andExpect(forwardedUrl("subjects/new"))
+            .andExpect(model().attribute("subject", instanceOf(Subject.class)));
     }
 
     @Test
     void whenSaveSubject_thenSubjectSaved() throws Exception {
         Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Subject subject = Subject.builder()
-                .name("Subject Name")
-                .description("Subject desc")
-                .cathedra(cathedra)
-                .build();
+            .name("Subject Name")
+            .description("Subject desc")
+            .cathedra(cathedra)
+            .build();
 
         mockMvc.perform(post("/subjects").flashAttr("subject", subject))
-                .andExpect(redirectedUrl("/subjects"));
+            .andExpect(redirectedUrl("/subjects"));
 
         verify(subjectService).save(subject);
     }
@@ -123,30 +123,30 @@ public class SubjectControllerTest {
     @Test
     void whenEditSubject_thenSubjectFound() throws Exception {
         Cathedra cathedra = Cathedra.builder()
-                .id(1)
-                .name("Fantastic Cathedra")
-                .build();
+            .id(1)
+            .name("Fantastic Cathedra")
+            .build();
         Subject expected = Subject.builder()
-                .id(1)
-                .name("Subject Name")
-                .description("Subject desc")
-                .cathedra(cathedra)
-                .build();
+            .id(1)
+            .name("Subject Name")
+            .description("Subject desc")
+            .cathedra(cathedra)
+            .build();
 
         when(subjectService.findById(1)).thenReturn(expected);
         when(cathedraService.findAll()).thenReturn(Arrays.asList(cathedra));
 
         mockMvc.perform(get("/subjects/{id}/edit", 1))
-                .andExpect(status().isOk())
-                .andExpect(view().name("subjects/edit"))
-                .andExpect(forwardedUrl("subjects/edit"))
-                .andExpect(model().attribute("subject", is(expected)));
+            .andExpect(status().isOk())
+            .andExpect(view().name("subjects/edit"))
+            .andExpect(forwardedUrl("subjects/edit"))
+            .andExpect(model().attribute("subject", is(expected)));
     }
 
     @Test
     void whenDeleteSubject_thenSubjectDeleted() throws Exception {
         mockMvc.perform(delete("/subjects/{id}", 1))
-                .andExpect(redirectedUrl("/subjects"));
+            .andExpect(redirectedUrl("/subjects"));
 
         verify(subjectService).deleteById(1);
     }

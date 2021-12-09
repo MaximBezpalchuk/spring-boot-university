@@ -17,8 +17,8 @@ public class SubjectController {
 
     private static final Logger logger = LoggerFactory.getLogger(SubjectController.class);
 
-    private SubjectService subjectService;
-    private CathedraService cathedraService;
+    private final SubjectService subjectService;
+    private final CathedraService cathedraService;
 
     public SubjectController(SubjectService subjectService, CathedraService cathedraService) {
         this.subjectService = subjectService;

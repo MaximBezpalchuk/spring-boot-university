@@ -30,7 +30,7 @@ public class JdbcLectureTimeDao implements LectureTimeDao {
     private static final String SELECT_BY_PERIOD = "SELECT * FROM lecture_times WHERE start = ? AND finish = ?";
 
     private final JdbcTemplate jdbcTemplate;
-    private LectureTimeRowMapper rowMapper;
+    private final LectureTimeRowMapper rowMapper;
 
     public JdbcLectureTimeDao(JdbcTemplate jdbcTemplate, LectureTimeRowMapper rowMapper) {
         this.jdbcTemplate = jdbcTemplate;
@@ -60,7 +60,7 @@ public class JdbcLectureTimeDao implements LectureTimeDao {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(connection -> {
                 PreparedStatement statement = connection.prepareStatement(INSERT_LECTURE_TIME,
-                        Statement.RETURN_GENERATED_KEYS);
+                    Statement.RETURN_GENERATED_KEYS);
                 statement.setObject(1, lectureTime.getStart());
                 statement.setObject(2, lectureTime.getEnd());
                 return statement;

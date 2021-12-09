@@ -17,7 +17,7 @@ public class CathedraService {
 
     private static final Logger logger = LoggerFactory.getLogger(CathedraService.class);
 
-    private CathedraDao cathedraDao;
+    private final CathedraDao cathedraDao;
 
     public CathedraService(JdbcCathedraDao cathedraDao) {
         this.cathedraDao = cathedraDao;
@@ -31,7 +31,7 @@ public class CathedraService {
     public Cathedra findById(int id) {
         logger.debug("Find cathedra by id {}", id);
         return cathedraDao.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Can`t find any cathedra with id: " + id));
+            .orElseThrow(() -> new EntityNotFoundException("Can`t find any cathedra with id: " + id));
     }
 
     public void save(Cathedra cathedra) {

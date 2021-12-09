@@ -30,7 +30,7 @@ public class JdbcGroupDao implements GroupDao {
     private static final String SELECT_BY_NAME = "SELECT * FROM groups WHERE name = ?";
 
     private final JdbcTemplate jdbcTemplate;
-    private GroupRowMapper rowMapper;
+    private final GroupRowMapper rowMapper;
 
     public JdbcGroupDao(JdbcTemplate jdbcTemplate, GroupRowMapper rowMapper) {
         this.jdbcTemplate = jdbcTemplate;
@@ -60,7 +60,7 @@ public class JdbcGroupDao implements GroupDao {
             KeyHolder keyHolder = new GeneratedKeyHolder();
             jdbcTemplate.update(connection -> {
                 PreparedStatement statement = connection.prepareStatement(INSERT_GROUP,
-                        Statement.RETURN_GENERATED_KEYS);
+                    Statement.RETURN_GENERATED_KEYS);
                 statement.setString(1, group.getName());
                 statement.setInt(2, group.getCathedra().getId());
                 return statement;

@@ -25,9 +25,9 @@ public class VacationController {
 
     private static final Logger logger = LoggerFactory.getLogger(VacationController.class);
 
-    private TeacherService teacherService;
-    private VacationService vacationService;
-    private LectureService lectureService;
+    private final TeacherService teacherService;
+    private final VacationService vacationService;
+    private final LectureService lectureService;
 
     public VacationController(TeacherService teacherService, VacationService vacationService,
                               LectureService lectureService) {
@@ -40,7 +40,7 @@ public class VacationController {
     public String all(@PathVariable int teacherId, Model model, Pageable pageable) {
         logger.debug("Show index page");
         Page<Vacation> page = vacationService
-                .findByTeacherId(pageable, teacherId);
+            .findByTeacherId(pageable, teacherId);
         model.addAttribute("vacations", page);
         model.addAttribute("teacher", teacherService.findById(teacherId));
 
@@ -67,7 +67,7 @@ public class VacationController {
     public String createVacation(@PathVariable int teacherId, @ModelAttribute Vacation vacation) {
         vacation.setTeacher(teacherService.findById(teacherId));
         List<Lecture> lectures = lectureService.findByTeacherIdAndPeriod(teacherId, vacation.getStart(),
-                vacation.getEnd());
+            vacation.getEnd());
         if (lectures.isEmpty()) {
             vacationService.save(vacation);
             logger.debug("Create new vacation. Id {}", vacation.getId());
@@ -77,7 +77,7 @@ public class VacationController {
             logger.debug("Vacation wasn`t created! Need to change teacher in some lectures");
 
             return "redirect:/teachers/" + teacherId + "/vacations/lectures?start=" + vacation.getStart() + "&end="
-                    + vacation.getEnd();
+                + vacation.getEnd();
         }
     }
 
@@ -122,7 +122,7 @@ public class VacationController {
     public String update(@ModelAttribute Vacation vacation, @PathVariable int teacherId, @PathVariable int id) {
         vacation.setTeacher(teacherService.findById(teacherId));
         List<Lecture> lectures = lectureService.findByTeacherIdAndPeriod(teacherId, vacation.getStart(),
-                vacation.getEnd());
+            vacation.getEnd());
         if (lectures.isEmpty()) {
             logger.debug("Update vacation with id {}", id);
             vacationService.save(vacation);
@@ -132,7 +132,7 @@ public class VacationController {
             logger.debug("Vacation wasn`t created! Need to change teacher in some lectures");
 
             return "redirect:/teachers/" + teacherId + "/vacations/lectures?start=" + vacation.getStart() + "&end="
-                    + vacation.getEnd();
+                + vacation.getEnd();
         }
     }
 
