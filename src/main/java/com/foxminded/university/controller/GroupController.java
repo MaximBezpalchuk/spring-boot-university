@@ -49,18 +49,18 @@ public class GroupController {
 
     @PostMapping
     public String create(@ModelAttribute Group group, Model model) {
+        logger.debug("Create new group. Id {}", group.getId());
         group.setCathedra(cathedraService.findById(group.getCathedra().getId()));
         groupService.save(group);
-        logger.debug("Create new group. Id {}", group.getId());
 
         return "redirect:/groups";
     }
 
     @GetMapping("/{id}/edit")
     public String editGroup(@PathVariable int id, Model model) {
+        logger.debug("Show edit group page");
         model.addAttribute("cathedras", cathedraService.findAll());
         model.addAttribute("group", groupService.findById(id));
-        logger.debug("Show edit group page");
 
         return "groups/edit";
     }
@@ -75,9 +75,9 @@ public class GroupController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable int id) {
-        logger.debug("Delete group with id {}", id);
-        groupService.deleteById(id);
+    public String delete(@ModelAttribute Group group) {
+        logger.debug("Delete group with id {}", group.getId());
+        groupService.delete(group);
 
         return "redirect:/groups";
     }

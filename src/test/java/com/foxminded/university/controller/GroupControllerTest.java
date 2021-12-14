@@ -125,6 +125,6 @@ public class GroupControllerTest {
         mockMvc.perform(delete("/groups/{id}", 1))
             .andExpect(redirectedUrl("/groups"));
 
-        verify(groupService).deleteById(1);
+        verify(groupService).delete(Group.builder().id(1).build());
     }
 }

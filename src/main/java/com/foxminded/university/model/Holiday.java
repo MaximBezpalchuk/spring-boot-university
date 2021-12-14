@@ -2,17 +2,47 @@ package com.foxminded.university.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
+@NamedQueries(
+    {
+        @NamedQuery(
+            name = "findAllHolidays",
+            query = "FROM Holiday"
+        ),
+        @NamedQuery(
+            name = "countAllHolidays",
+            query = "SELECT COUNT(h) FROM Holiday h"
+        ),
+        @NamedQuery(
+            name = "findHolidayByNameAndDate",
+            query = "FROM Holiday WHERE name=:name AND date=:date"
+        ),
+        @NamedQuery(
+            name = "findHolidayByDate",
+            query = "FROM Holiday WHERE date=:date"
+        )
+    })
+
+@Entity
+@Table(name = "holidays")
 public class Holiday {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column
     private String name;
+    @Column
     @JsonSerialize(as = LocalDate.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate date;
+    @ManyToOne(fetch = FetchType.LAZY)
     private Cathedra cathedra;
 
     private Holiday(int id, String name, LocalDate date, Cathedra cathedra) {

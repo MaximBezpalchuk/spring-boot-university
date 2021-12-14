@@ -1,6 +1,6 @@
 package com.foxminded.university.controller;
 
-import com.foxminded.university.dao.jdbc.mapper.LectureToEventMapper;
+import com.foxminded.university.dao.mapper.LectureToEventMapper;
 import com.foxminded.university.model.*;
 import com.foxminded.university.service.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -238,7 +238,7 @@ public class LectureControllerTest {
         mockMvc.perform(delete("/lectures/{id}", 1))
             .andExpect(redirectedUrl("/lectures"));
 
-        verify(lectureService).deleteById(1);
+        verify(lectureService).delete(Lecture.builder().id(1).build());
     }
 
     @Test

@@ -2,14 +2,37 @@ package com.foxminded.university.model;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.Objects;
 
+@NamedQueries(
+    {
+        @NamedQuery(
+            name = "findAllLectureTimes",
+            query = "FROM LectureTime"
+        )
+    })
+@NamedNativeQueries(
+    {
+        @NamedNativeQuery(
+            name = "findLectureTimeByPeriod",
+            query = "SELECT * FROM lecture_times WHERE start=:start AND finish=:end"
+        )
+
+    })
+
+@Entity
+@Table(name = "lecture_times")
 public class LectureTime {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime start;
+    @Column(name = "finish")
     @DateTimeFormat(pattern = "HH:mm")
     private LocalTime end;
 

@@ -1,41 +1,41 @@
-package com.foxminded.university.dao;
+package com.foxminded.university.dao.hibernate;
 
 import com.foxminded.university.config.TestConfig;
-import com.foxminded.university.dao.jdbc.JdbcLectureTimeDao;
+import com.foxminded.university.dao.LectureTimeDao;
 import com.foxminded.university.model.LectureTime;
+import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
-import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestConfig.class)
-@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
-public class JdbcLectureTimeDaoTest {
+@ContextConfiguration(classes = {TestConfig.class})
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@Transactional
+public class HibernateLectureTimeDaoTest {
 
-    private final static String TABLE_NAME = "lecture_times";
     @Autowired
-    private JdbcTemplate template;
+    private SessionFactory sessionFactory;
     @Autowired
-    private JdbcLectureTimeDao lectureTimeDao;
+    private LectureTimeDao lectureTimeDao;
 
     @Test
     void whenFindAll_thenAllExistingLectureTimesFound() {
-        int expected = countRowsInTable(template, TABLE_NAME);
-        int actual = lectureTimeDao.findAll().size();
+        int expected = (int) (long) sessionFactory.getCurrentSession().createQuery("SELECT COUNT(lt) FROM LectureTime lt").getSingleResult();
+        List<LectureTime> actual = lectureTimeDao.findAll();
 
-        assertEquals(expected, actual);
+        assertEquals(actual.size(), expected);
     }
 
     @Test
@@ -56,41 +56,39 @@ public class JdbcLectureTimeDaoTest {
 
     @Test
     void givenNewLectureTime_whenSaveLectureTime_thenAllExistingLectureTimesFound() {
-        int expected = countRowsInTable(template, TABLE_NAME) + 1;
-        lectureTimeDao.save(LectureTime.builder()
+        LectureTime expected = LectureTime.builder()
             .start(LocalTime.of(21, 0, 0))
             .end(LocalTime.of(22, 30, 0))
-            .build());
-
-        assertEquals(expected, countRowsInTable(template, TABLE_NAME));
-    }
-
-    @Test
-    void givenExitstingLectureTime_whenSaveWithChanges_thenChangesApplied() {
-        LectureTime expected = LectureTime.builder()
-            .id(1)
-            .start(LocalTime.of(21, 0, 0))
-            .end(LocalTime.of(21, 0, 0))
             .build();
         lectureTimeDao.save(expected);
-        assertEquals(1, countRowsInTableWhere(template, TABLE_NAME,
-            "id = 1 "
-                + "AND start = '21:00:00' "
-                + "AND finish = '21:00:00'"));
+        LectureTime actual = sessionFactory.getCurrentSession().get(LectureTime.class, 9);
+
+        assertEquals(expected, actual);
     }
 
     @Test
-    void whenDeleteExistingLectureTime_thenAllExistingLectureTimesFound() {
-        int expected = countRowsInTable(template, TABLE_NAME) - 1;
-        lectureTimeDao.deleteById(3);
+    void givenExistingLectureTime_whenSaveWithChanges_thenChangesApplied() {
+        LectureTime expected = sessionFactory.getCurrentSession().get(LectureTime.class, 1);
+        expected.setStart(LocalTime.of(8, 23));
+        lectureTimeDao.save(expected);
+        LectureTime actual = sessionFactory.getCurrentSession().get(LectureTime.class, 1);
 
-        assertEquals(expected, countRowsInTable(template, TABLE_NAME));
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void whenDeleteExistingLectureTime_thenLectureTimeDeleted() {
+        lectureTimeDao.delete(LectureTime.builder().id(2).build());
+        LectureTime actual = sessionFactory.getCurrentSession().get(LectureTime.class, 2);
+
+        assertNull(actual);
     }
 
     @Test
     void givenPeriod_whenFindByPeriod_thenLectureTimeFound() {
         Optional<LectureTime> expected = Optional.of(LectureTime.builder()
-            .id(1).start(LocalTime.of(8, 0, 0))
+            .id(1)
+            .start(LocalTime.of(8, 0, 0))
             .end(LocalTime.of(9, 30, 0))
             .build());
         Optional<LectureTime> actual = lectureTimeDao.findByPeriod(expected.get().getStart(), expected.get().getEnd());

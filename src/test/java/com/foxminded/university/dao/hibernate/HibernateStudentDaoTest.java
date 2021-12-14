@@ -1,22 +1,21 @@
-package com.foxminded.university.dao;
+package com.foxminded.university.dao.hibernate;
 
 import com.foxminded.university.config.TestConfig;
-import com.foxminded.university.dao.jdbc.JdbcStudentDao;
-import com.foxminded.university.model.Cathedra;
+import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.model.Gender;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Student;
+import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -24,32 +23,30 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
-import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestConfig.class)
-@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
-public class JdbcStudentDaoTest {
+@ContextConfiguration(classes = {TestConfig.class})
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@Transactional
+public class HibernateStudentDaoTest {
 
-    private final static String TABLE_NAME = "students";
     @Autowired
-    private JdbcTemplate template;
+    private SessionFactory sessionFactory;
     @Autowired
-    private JdbcStudentDao studentDao;
+    private StudentDao studentDao;
 
     @Test
     void whenFindAll_thenAllExistingStudentsFound() {
-        int expected = countRowsInTable(template, TABLE_NAME);
-        int actual = studentDao.findAll().size();
+        int expected = (int) (long) sessionFactory.getCurrentSession().createQuery("SELECT COUNT(s) FROM Student s").getSingleResult();
+        List<Student> actual = studentDao.findAll();
 
-        assertEquals(expected, actual);
+        assertEquals(actual.size(), expected);
     }
 
     @Test
     void givenPageable_whenFindPaginatedStudents_thenStudentsFound() {
-        Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
-        Group group = Group.builder().id(1).cathedra(cathedra).name("Killers").build();
+        Group group = sessionFactory.getCurrentSession().get(Group.class, 1);
         List<Student> students = Arrays.asList(Student.builder()
             .firstName("Petr")
             .lastName("Orlov")
@@ -71,8 +68,7 @@ public class JdbcStudentDaoTest {
 
     @Test
     void givenExistingStudent_whenFindById_thenStudentFound() {
-        Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
-        Group group = Group.builder().id(1).cathedra(cathedra).name("Killers").build();
+        Group group = sessionFactory.getCurrentSession().get(Group.class, 1);
         Optional<Student> expected = Optional.of(Student.builder()
             .firstName("Petr")
             .lastName("Orlov")
@@ -98,8 +94,8 @@ public class JdbcStudentDaoTest {
 
     @Test
     void givenNewStudent_whenSaveStudent_thenAllExistingStudentsFound() {
-        int expected = countRowsInTable(template, TABLE_NAME) + 1;
-        Student student = Student.builder()
+        Group group = sessionFactory.getCurrentSession().get(Group.class, 1);
+        Student expected = Student.builder()
             .firstName("Petr123")
             .lastName("Orlov123")
             .address("Empty Street 8")
@@ -109,54 +105,35 @@ public class JdbcStudentDaoTest {
             .email("1@owl.com")
             .postalCode("999")
             .education("General secondary education")
-            .group(Group.builder().id(1).build())
-            .build();
-        studentDao.save(student);
-
-        assertEquals(expected, countRowsInTable(template, TABLE_NAME));
-    }
-
-    @Test
-    void givenExitstingStudent_whenSaveWithChanges_thenChangesApplied() {
-        Student expected = Student.builder()
-            .id(1)
-            .firstName("Test Name")
-            .lastName("Orlov123")
-            .address("Empty Street 812312")
-            .gender(Gender.MALE)
-            .birthDate(LocalDate.of(1994, 3, 21))
-            .phone("888005353535321123")
-            .email("1123@owl.com")
-            .postalCode("999123123")
-            .education("General secondary education12321")
-            .group(Group.builder().id(1).build())
+            .group(group)
             .build();
         studentDao.save(expected);
+        Student actual = sessionFactory.getCurrentSession().get(Student.class, 6);
 
-        assertEquals(1, countRowsInTableWhere(template, TABLE_NAME,
-            "id = 1 "
-                + "AND first_name = 'Test Name' "
-                + "AND last_name = 'Orlov123' "
-                + "AND address = 'Empty Street 812312' "
-                + "AND gender = 'MALE' "
-                + "AND birth_date = '1994-03-21' "
-                + "AND phone = '888005353535321123' "
-                + "AND email = '1123@owl.com' "
-                + "AND postal_code = '999123123' "
-                + "AND education = 'General secondary education12321'"
-                + "AND group_id = 1"));
+        assertEquals(expected, actual);
     }
 
     @Test
-    void whenDeleteExistingStudent_thenAllExistingStudentsFound() {
-        int expected = countRowsInTable(template, TABLE_NAME) - 1;
-        studentDao.deleteById(3);
+    void givenExistingStudent_whenSaveWithChanges_thenChangesApplied() {
+        Student expected = sessionFactory.getCurrentSession().get(Student.class, 1);
+        expected.setFirstName("Test Name");
+        studentDao.save(expected);
+        Student actual = sessionFactory.getCurrentSession().get(Student.class, 1);
 
-        assertEquals(expected, countRowsInTable(template, TABLE_NAME));
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void whenDeleteExistingStudent_thenStudentDeleted() {
+        studentDao.delete(Student.builder().id(2).build());
+        Student actual = sessionFactory.getCurrentSession().get(Student.class, 2);
+
+        assertNull(actual);
     }
 
     @Test
     void givenFirstNameAndLastNameAndBirthDate_whenFindByFullNameAndBirthDate_thenStudentFound() {
+        Group group = sessionFactory.getCurrentSession().get(Group.class, 1);
         Optional<Student> expected = Optional.of(Student.builder()
             .firstName("Petr")
             .lastName("Orlov")
@@ -167,8 +144,7 @@ public class JdbcStudentDaoTest {
             .email("1@owl.com")
             .postalCode("999")
             .education("General secondary education")
-            .group(Group.builder().id(1).name("Killers")
-                .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build()).build())
+            .group(group)
             .id(1)
             .build());
         Optional<Student> actual = studentDao.findByFullNameAndBirthDate(expected.get().getFirstName(),
@@ -179,6 +155,7 @@ public class JdbcStudentDaoTest {
 
     @Test
     void givenGroupName_whenFindByGroupId_thenStudentsFound() {
+        Group group = sessionFactory.getCurrentSession().get(Group.class, 2);
         Student student1 = Student.builder()
             .firstName("Kim")
             .lastName("Cattrall")
@@ -189,8 +166,7 @@ public class JdbcStudentDaoTest {
             .email("4@owl.com")
             .postalCode("12345")
             .education("College education")
-            .group(Group.builder().id(2).name("Mages")
-                .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build()).build())
+            .group(group)
             .id(4)
             .build();
         Student student2 = Student.builder()
@@ -203,8 +179,7 @@ public class JdbcStudentDaoTest {
             .email("5@owl.com")
             .postalCode("12345")
             .education("College education")
-            .group(Group.builder().id(2).name("Mages")
-                .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build()).build())
+            .group(group)
             .id(5)
             .build();
         List<Student> expected = Arrays.asList(student1, student2);

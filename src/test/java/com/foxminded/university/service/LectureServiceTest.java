@@ -1,9 +1,9 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
-import com.foxminded.university.dao.jdbc.JdbcLectureDao;
-import com.foxminded.university.dao.jdbc.JdbcStudentDao;
-import com.foxminded.university.dao.jdbc.JdbcVacationDao;
+import com.foxminded.university.dao.HolidayDao;
+import com.foxminded.university.dao.LectureDao;
+import com.foxminded.university.dao.StudentDao;
+import com.foxminded.university.dao.VacationDao;
 import com.foxminded.university.exception.*;
 import com.foxminded.university.model.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,13 +34,13 @@ import static org.mockito.Mockito.when;
 public class LectureServiceTest {
 
     @Mock
-    private JdbcLectureDao lectureDao;
+    private LectureDao lectureDao;
     @Mock
-    private JdbcVacationDao vacationDao;
+    private VacationDao vacationDao;
     @Mock
-    private JdbcHolidayDao holidayDao;
+    private HolidayDao holidayDao;
     @Mock
-    private JdbcStudentDao studentDao;
+    private StudentDao studentDao;
     @Mock
     private StudentService studentService;
     @Mock
@@ -98,7 +98,7 @@ public class LectureServiceTest {
         Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Teacher teacher = Teacher.builder()
             .id(1)
-            .subjects(Arrays.asList(Subject.builder().id(1).cathedra(cathedra).build()))
+            .subjects(Arrays.asList(Subject.builder().id(1).name("Test name").build()))
             .build();
         Lecture lecture = Lecture.builder()
             .audience(Audience.builder().capacity(10).build())
@@ -107,9 +107,7 @@ public class LectureServiceTest {
                 .start(LocalTime.of(9, 0))
                 .end(LocalTime.of(10, 0)).build())
             .teacher(teacher)
-            .subject(Subject.builder().id(1).cathedra(cathedra).build()).build();
-        when(lectureDao.findByAudienceDateAndLectureTime(lecture.getAudience(), lecture.getDate(), lecture.getTime()))
-            .thenReturn(Optional.of(lecture));
+            .subject(Subject.builder().id(1).name("Test name").build()).build();
         lectureService.save(lecture);
 
         verify(lectureDao).save(lecture);
@@ -120,7 +118,7 @@ public class LectureServiceTest {
         Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Teacher teacher = Teacher.builder()
             .id(1)
-            .subjects(Arrays.asList(Subject.builder().id(1).cathedra(cathedra).build()))
+            .subjects(Arrays.asList(Subject.builder().id(1).name("Test name").build()))
             .build();
         Audience audience = Audience.builder().id(1).capacity(100).build();
         LocalDate date = LocalDate.of(2021, 9, 8);
@@ -131,8 +129,7 @@ public class LectureServiceTest {
             .audience(audience)
             .time(lectureTime)
             .teacher(teacher)
-            .subject(Subject.builder().id(1).cathedra(cathedra).build()).build();
-        when(lectureDao.findByAudienceDateAndLectureTime(audience, date, lectureTime)).thenReturn(Optional.of(lecture));
+            .subject(Subject.builder().id(1).name("Test name").build()).build();
         lectureService.save(lecture);
 
         verify(lectureDao).save(lecture);
@@ -274,7 +271,7 @@ public class LectureServiceTest {
 
     @Test
     void givenLectureWithMoreStudentsThenAudienceCapacity_whenSave_thenLectureInSmallAudienceException() {
-        Subject subject = Subject.builder().build();
+        Subject subject = Subject.builder().name("Test name").build();
         Group group = Group.builder().id(1).build();
         Lecture lecture = Lecture.builder()
             .id(1)
@@ -296,7 +293,7 @@ public class LectureServiceTest {
 
     @Test
     void givenLectureWithAudienceInUse_whenSave_thenLectureInOccupiedAudienceException() {
-        Subject subject = Subject.builder().build();
+        Subject subject = Subject.builder().name("Test name").build();
         Lecture lecture = Lecture.builder()
             .id(1)
             .date(LocalDate.of(2021, 9, 6))
@@ -317,9 +314,10 @@ public class LectureServiceTest {
 
     @Test
     void givenExistingLectureId_whenDelete_thenDeleted() {
-        lectureService.deleteById(1);
+        Lecture lecture = Lecture.builder().id(1).build();
+        lectureService.delete(lecture);
 
-        verify(lectureDao).deleteById(1);
+        verify(lectureDao).delete(lecture);
     }
 
     @Test

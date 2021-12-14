@@ -52,18 +52,18 @@ public class SubjectController {
 
     @PostMapping
     public String create(@ModelAttribute Subject subject, Model model) {
+        logger.debug("Create new subject. Id {}", subject.getId());
         subject.setCathedra(cathedraService.findById(subject.getCathedra().getId()));
         subjectService.save(subject);
-        logger.debug("Create new subject. Id {}", subject.getId());
 
         return "redirect:/subjects";
     }
 
     @GetMapping("/{id}/edit")
     public String editSubject(@PathVariable int id, Model model) {
+        logger.debug("Show edit subject page");
         model.addAttribute("cathedras", cathedraService.findAll());
         model.addAttribute("subject", subjectService.findById(id));
-        logger.debug("Show edit subject page");
 
         return "subjects/edit";
     }
@@ -78,9 +78,9 @@ public class SubjectController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable int id) {
-        logger.debug("Delete subject with id {}", id);
-        subjectService.deleteById(id);
+    public String delete(@ModelAttribute Subject subject) {
+        logger.debug("Delete subject with id {}", subject.getId());
+        subjectService.delete(subject);
 
         return "redirect:/subjects";
     }

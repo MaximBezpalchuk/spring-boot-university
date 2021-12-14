@@ -1,6 +1,6 @@
 package com.foxminded.university.controller;
 
-import com.foxminded.university.dao.jdbc.mapper.LectureToEventMapper;
+import com.foxminded.university.dao.mapper.LectureToEventMapper;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Student;
 import com.foxminded.university.service.GroupService;
@@ -148,6 +148,6 @@ public class StudentControllerTest {
         mockMvc.perform(delete("/students/{id}", 1))
             .andExpect(redirectedUrl("/students"));
 
-        verify(studentService).deleteById(1);
+        verify(studentService).delete(Student.builder().id(1).build());
     }
 }

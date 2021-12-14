@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.jdbc.JdbcGroupDao;
+import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Group;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 public class GroupServiceTest {
 
     @Mock
-    private JdbcGroupDao groupDao;
+    private GroupDao groupDao;
     @InjectMocks
     private GroupService groupService;
 
@@ -78,20 +78,10 @@ public class GroupServiceTest {
 
     @Test
     void givenExistingGroupId_whenDelete_thenDeleted() {
-        groupService.deleteById(1);
+        Group group = Group.builder().id(1).build();
+        groupService.delete(group);
 
-        verify(groupDao).deleteById(1);
-    }
-
-    @Test
-    void givenListOfGroups_whenFindByLectureId_thenAllExistingGroupsFound() {
-        Group group1 = Group.builder().id(1).build();
-        Group group2 = Group.builder().id(2).build();
-        List<Group> expected = Arrays.asList(group1, group2);
-        when(groupDao.findByLectureId(2)).thenReturn(expected);
-        List<Group> actual = groupService.findByLectureId(2);
-
-        assertEquals(expected, actual);
+        verify(groupDao).delete(group);
     }
 
     @Test

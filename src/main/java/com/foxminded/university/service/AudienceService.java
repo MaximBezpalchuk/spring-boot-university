@@ -1,7 +1,6 @@
 package com.foxminded.university.service;
 
 import com.foxminded.university.dao.AudienceDao;
-import com.foxminded.university.dao.jdbc.JdbcAudienceDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Audience;
@@ -19,7 +18,7 @@ public class AudienceService {
 
     private final AudienceDao audienceDao;
 
-    public AudienceService(JdbcAudienceDao audienceDao) {
+    public AudienceService(AudienceDao audienceDao) {
         this.audienceDao = audienceDao;
     }
 
@@ -40,9 +39,9 @@ public class AudienceService {
         audienceDao.save(audience);
     }
 
-    public void deleteById(int id) {
-        logger.debug("Delete audience by id: {}", id);
-        audienceDao.deleteById(id);
+    public void delete(Audience audience) {
+        logger.debug("Delete audience with id: {}", audience.getId());
+        audienceDao.delete(audience);
     }
 
     private void uniqueCheck(Audience audience) {

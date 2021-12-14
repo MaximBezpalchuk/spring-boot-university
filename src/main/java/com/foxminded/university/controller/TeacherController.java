@@ -1,14 +1,11 @@
 package com.foxminded.university.controller;
 
-import com.foxminded.university.dao.jdbc.mapper.LectureToEventMapper;
 import com.foxminded.university.model.Teacher;
 import com.foxminded.university.service.CathedraService;
-import com.foxminded.university.service.LectureService;
 import com.foxminded.university.service.SubjectService;
 import com.foxminded.university.service.TeacherService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
@@ -22,19 +19,15 @@ import java.util.stream.Collectors;
 public class TeacherController {
 
     private static final Logger logger = LoggerFactory.getLogger(TeacherController.class);
-    @Autowired
-    private LectureToEventMapper lectureToEventMapper;
     private final TeacherService teacherService;
     private final SubjectService subjectService;
     private final CathedraService cathedraService;
-    private final LectureService lectureService;
 
     public TeacherController(TeacherService teacherService, SubjectService subjectService,
-                             CathedraService cathedraService, LectureService lectureService) {
+                             CathedraService cathedraService) {
         this.teacherService = teacherService;
         this.subjectService = subjectService;
         this.cathedraService = cathedraService;
-        this.lectureService = lectureService;
     }
 
     @GetMapping
@@ -55,7 +48,7 @@ public class TeacherController {
     }
 
     @GetMapping("/new")
-    public String newStudent(Teacher teacher, Model model) {
+    public String newTeacher(Teacher teacher, Model model) {
         logger.debug("Show create page");
         model.addAttribute("cathedras", cathedraService.findAll());
         model.addAttribute("subjects", subjectService.findAll());
@@ -65,21 +58,21 @@ public class TeacherController {
 
     @PostMapping
     public String create(@ModelAttribute Teacher teacher, Model model) {
+        logger.debug("Create new teacher. Id {}", teacher.getId());
         teacher.setCathedra(cathedraService.findById(teacher.getCathedra().getId()));
         teacher.setSubjects(teacher.getSubjects().stream().map(subject -> subjectService.findById(subject.getId()))
             .collect(Collectors.toList()));
         teacherService.save(teacher);
-        logger.debug("Create new teacher. Id {}", teacher.getId());
 
         return "redirect:/teachers";
     }
 
     @GetMapping("/{id}/edit")
     public String editTeacher(@PathVariable int id, Model model) {
+        logger.debug("Show edit teacher page");
         model.addAttribute("teacher", teacherService.findById(id));
         model.addAttribute("cathedras", cathedraService.findAll());
         model.addAttribute("subjects", subjectService.findAll());
-        logger.debug("Show edit teacher page");
 
         return "teachers/edit";
     }
@@ -96,9 +89,9 @@ public class TeacherController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable int id) {
-        logger.debug("Delete teacher with id {}", id);
-        teacherService.deleteById(id);
+    public String delete(@ModelAttribute Teacher teacher) {
+        logger.debug("Delete teacher with id {}", teacher.getId());
+        teacherService.delete(teacher);
 
         return "redirect:/teachers";
     }

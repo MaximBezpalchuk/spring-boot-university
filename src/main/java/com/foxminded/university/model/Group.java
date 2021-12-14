@@ -1,11 +1,30 @@
 package com.foxminded.university.model;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@NamedQueries(
+    {
+        @NamedQuery(
+            name = "findAllGroups",
+            query = "FROM Group"
+        ),
+        @NamedQuery(
+            name = "findGroupByName",
+            query = "FROM Group WHERE name=:name"
+        )
+    })
+
+@Entity
+@Table(name = "groups")
 public class Group {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column
     private String name;
+    @ManyToOne(fetch = FetchType.LAZY)
     private Cathedra cathedra;
 
     private Group(int id, String name, Cathedra cathedra) {

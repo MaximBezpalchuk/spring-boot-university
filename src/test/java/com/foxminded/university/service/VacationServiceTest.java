@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.jdbc.JdbcVacationDao;
+import com.foxminded.university.dao.VacationDao;
 import com.foxminded.university.exception.ChosenDurationException;
 import com.foxminded.university.exception.DurationException;
 import com.foxminded.university.exception.EntityNotFoundException;
@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
 public class VacationServiceTest {
 
     @Mock
-    private JdbcVacationDao vacationDao;
+    private VacationDao vacationDao;
     @InjectMocks
     private VacationService vacationService;
 
@@ -195,9 +195,10 @@ public class VacationServiceTest {
 
     @Test
     void givenExistingVacationId_whenDelete_thenDeleted() {
-        vacationService.deleteById(1);
+        Vacation vacation = Vacation.builder().id(1).build();
+        vacationService.delete(vacation);
 
-        verify(vacationDao).deleteById(1);
+        verify(vacationDao).delete(vacation);
     }
 
     @Test

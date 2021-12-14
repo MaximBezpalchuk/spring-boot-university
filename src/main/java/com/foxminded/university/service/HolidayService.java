@@ -1,7 +1,6 @@
 package com.foxminded.university.service;
 
 import com.foxminded.university.dao.HolidayDao;
-import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Holiday;
@@ -21,7 +20,7 @@ public class HolidayService {
 
     private final HolidayDao holidayDao;
 
-    public HolidayService(JdbcHolidayDao holidayDao) {
+    public HolidayService(HolidayDao holidayDao) {
         this.holidayDao = holidayDao;
     }
 
@@ -47,9 +46,9 @@ public class HolidayService {
         holidayDao.save(holiday);
     }
 
-    public void deleteById(int id) {
-        logger.debug("Delete holiday by id: {}", id);
-        holidayDao.deleteById(id);
+    public void delete(Holiday holiday) {
+        logger.debug("Delete holiday with id: {}", holiday.getId());
+        holidayDao.delete(holiday);
     }
 
     private void uniqueCheck(Holiday holiday) {

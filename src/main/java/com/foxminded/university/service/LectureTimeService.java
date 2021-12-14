@@ -1,7 +1,6 @@
 package com.foxminded.university.service;
 
 import com.foxminded.university.dao.LectureTimeDao;
-import com.foxminded.university.dao.jdbc.JdbcLectureTimeDao;
 import com.foxminded.university.exception.ChosenDurationException;
 import com.foxminded.university.exception.DurationException;
 import com.foxminded.university.exception.EntityNotFoundException;
@@ -25,7 +24,7 @@ public class LectureTimeService {
     @Value("${minLectureDurationInMinutes}")
     private int minLectureDurationInMinutes;
 
-    public LectureTimeService(JdbcLectureTimeDao lectureTimeDao) {
+    public LectureTimeService(LectureTimeDao lectureTimeDao) {
         this.lectureTimeDao = lectureTimeDao;
     }
 
@@ -49,9 +48,9 @@ public class LectureTimeService {
 
     }
 
-    public void deleteById(int id) {
-        logger.debug("Delete lecture time by id: {}", id);
-        lectureTimeDao.deleteById(id);
+    public void delete(LectureTime lectureTime) {
+        logger.debug("Delete lecture time with id: {}", lectureTime.getId());
+        lectureTimeDao.delete(lectureTime);
     }
 
     private void uniqueCheck(LectureTime lectureTime) {

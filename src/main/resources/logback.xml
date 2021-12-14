@@ -8,7 +8,7 @@
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <Target>System.out</Target>
         <filter class="ch.qos.logback.classic.filter.LevelFilter">
-            <level>INFO</level>
+            <level>TRACE</level>
             <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
         </filter>
@@ -53,6 +53,9 @@
             <pattern>%d{dd.MM.yyyy HH:mm:ss.SSS} [%thread] %-5level %logger{2} - %m%n</pattern>
         </encoder>
     </appender>
+
+    <logger name="org.hibernate.type" level="ALL"/>
+    <logger name="org.hibernate" level="DEBUG"/>
 
     <root level="info">
         <appender-ref ref="STDOUT"/>

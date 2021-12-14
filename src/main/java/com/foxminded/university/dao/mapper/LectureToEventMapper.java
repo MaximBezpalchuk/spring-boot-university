@@ -1,4 +1,4 @@
-package com.foxminded.university.dao.jdbc.mapper;
+package com.foxminded.university.dao.mapper;
 
 import com.foxminded.university.model.Event;
 import com.foxminded.university.model.Lecture;

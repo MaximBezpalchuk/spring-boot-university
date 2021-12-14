@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.jdbc.JdbcTeacherDao;
+import com.foxminded.university.dao.TeacherDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Teacher;
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
 public class TeacherServiceTest {
 
     @Mock
-    private JdbcTeacherDao teacherDao;
+    private TeacherDao teacherDao;
     @InjectMocks
     private TeacherService teacherService;
 
@@ -96,9 +96,10 @@ public class TeacherServiceTest {
 
     @Test
     void givenExistingTeacherId_whenDelete_thenDeleted() {
-        teacherService.deleteById(1);
+        Teacher teacher = Teacher.builder().id(1).build();
+        teacherService.delete(teacher);
 
-        verify(teacherDao).deleteById(1);
+        verify(teacherDao).delete(teacher);
     }
 
     @Test

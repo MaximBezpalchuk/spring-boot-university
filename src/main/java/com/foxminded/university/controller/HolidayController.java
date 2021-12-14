@@ -1,12 +1,10 @@
 package com.foxminded.university.controller;
 
-import com.foxminded.university.dao.jdbc.mapper.LectureToEventMapper;
 import com.foxminded.university.model.Holiday;
 import com.foxminded.university.service.CathedraService;
 import com.foxminded.university.service.HolidayService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
@@ -19,8 +17,6 @@ public class HolidayController {
 
     private static final Logger logger = LoggerFactory.getLogger(HolidayController.class);
 
-    @Autowired
-    private LectureToEventMapper lectureToEventMapper;
     private final HolidayService holidayService;
     private final CathedraService cathedraService;
 
@@ -56,18 +52,18 @@ public class HolidayController {
 
     @PostMapping
     public String create(@ModelAttribute Holiday holiday, Model model) {
+        logger.debug("Create new holiday. Id {}", holiday.getId());
         holiday.setCathedra(cathedraService.findById(holiday.getCathedra().getId()));
         holidayService.save(holiday);
-        logger.debug("Create new holiday. Id {}", holiday.getId());
 
         return "redirect:/holidays";
     }
 
     @GetMapping("/{id}/edit")
     public String editHoliday(@PathVariable int id, Model model) {
+        logger.debug("Show edit holiday page");
         model.addAttribute("cathedras", cathedraService.findAll());
         model.addAttribute("holiday", holidayService.findById(id));
-        logger.debug("Show edit holiday page");
 
         return "holidays/edit";
     }
@@ -82,9 +78,9 @@ public class HolidayController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable int id) {
-        logger.debug("Delete holiday with id {}", id);
-        holidayService.deleteById(id);
+    public String delete(@ModelAttribute Holiday holiday) {
+        logger.debug("Delete holiday with id {}", holiday.getId());
+        holidayService.delete(holiday);
 
         return "redirect:/holidays";
     }

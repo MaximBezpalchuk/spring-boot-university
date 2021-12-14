@@ -1,7 +1,6 @@
 package com.foxminded.university.service;
 
 import com.foxminded.university.dao.TeacherDao;
-import com.foxminded.university.dao.jdbc.JdbcTeacherDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Lecture;
@@ -22,7 +21,7 @@ public class TeacherService {
 
     private final TeacherDao teacherDao;
 
-    public TeacherService(JdbcTeacherDao teacherDao) {
+    public TeacherService(TeacherDao teacherDao) {
         this.teacherDao = teacherDao;
     }
 
@@ -48,14 +47,13 @@ public class TeacherService {
         teacherDao.save(teacher);
     }
 
-    public void deleteById(int id) {
-        logger.debug("Delete teacher by id: {}", id);
-        teacherDao.deleteById(id);
+    public void delete(Teacher teacher) {
+        logger.debug("Delete teacher with id: {}", teacher.getId());
+        teacherDao.delete(teacher);
     }
 
     private void uniqueCheck(Teacher teacher) {
         logger.debug("Check teacher is unique");
-
         Optional<Teacher> existingTeacher = teacherDao.findByFullNameAndBirthDate(teacher.getFirstName(),
             teacher.getLastName(), teacher.getBirthDate());
         if (existingTeacher.isPresent() && (existingTeacher.get().getId() != teacher.getId())) {

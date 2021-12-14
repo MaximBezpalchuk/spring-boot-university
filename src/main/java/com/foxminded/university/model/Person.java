@@ -2,20 +2,34 @@ package com.foxminded.university.model;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
+@MappedSuperclass
 public class Person {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(name = "first_name")
     private String firstName;
+    @Column(name = "last_name")
     private String lastName;
+    @Column
     private String phone;
+    @Column
     private String address;
+    @Column
     private String email;
+    @Column
+    @Enumerated(EnumType.STRING)
     private Gender gender;
+    @Column(name = "postal_code")
     private String postalCode;
+    @Column
     private String education;
+    @Column(name = "birth_date")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
 

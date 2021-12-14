@@ -1,7 +1,6 @@
 package com.foxminded.university.service;
 
 import com.foxminded.university.dao.SubjectDao;
-import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Subject;
@@ -21,7 +20,7 @@ public class SubjectService {
 
     private final SubjectDao subjectDao;
 
-    public SubjectService(JdbcSubjectDao subjectDao) {
+    public SubjectService(SubjectDao subjectDao) {
         this.subjectDao = subjectDao;
     }
 
@@ -47,14 +46,9 @@ public class SubjectService {
         subjectDao.save(subject);
     }
 
-    public void deleteById(int id) {
-        logger.debug("Delete subject by id: {}", id);
-        subjectDao.deleteById(id);
-    }
-
-    public List<Subject> findByTeacherId(int id) {
-        logger.debug("Find subject by teacher id: {}", id);
-        return subjectDao.findByTeacherId(id);
+    public void delete(Subject subject) {
+        logger.debug("Delete subject with id: {}", subject.getId());
+        subjectDao.delete(subject);
     }
 
     private void uniqueCheck(Subject subject) {

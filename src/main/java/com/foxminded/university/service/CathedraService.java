@@ -1,7 +1,6 @@
 package com.foxminded.university.service;
 
 import com.foxminded.university.dao.CathedraDao;
-import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Cathedra;
@@ -19,7 +18,7 @@ public class CathedraService {
 
     private final CathedraDao cathedraDao;
 
-    public CathedraService(JdbcCathedraDao cathedraDao) {
+    public CathedraService(CathedraDao cathedraDao) {
         this.cathedraDao = cathedraDao;
     }
 
@@ -40,9 +39,9 @@ public class CathedraService {
         cathedraDao.save(cathedra);
     }
 
-    public void deleteById(int id) {
-        logger.debug("Delete cathedra by id: {}", id);
-        cathedraDao.deleteById(id);
+    public void delete(Cathedra cathedra) {
+        logger.debug("Delete cathedra with id: {}", cathedra.getId());
+        cathedraDao.delete(cathedra);
     }
 
     private void uniqueCheck(Cathedra cathedra) {

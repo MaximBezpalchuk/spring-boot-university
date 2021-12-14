@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.jdbc.JdbcAudienceDao;
+import com.foxminded.university.dao.AudienceDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Audience;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 public class AudienceServiceTest {
 
     @Mock
-    private JdbcAudienceDao audienceDao;
+    private AudienceDao audienceDao;
     @InjectMocks
     private AudienceService audienceService;
 
@@ -76,9 +76,10 @@ public class AudienceServiceTest {
 
     @Test
     void givenExistingAudienceId_whenDelete_thenDeleted() {
-        audienceService.deleteById(3);
+        Audience audience = Audience.builder().id(3).build();
+        audienceService.delete(audience);
 
-        verify(audienceDao).deleteById(3);
+        verify(audienceDao).delete(audience);
     }
 
     @Test

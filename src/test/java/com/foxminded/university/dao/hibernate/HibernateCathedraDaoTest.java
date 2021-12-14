@@ -1,40 +1,40 @@
-package com.foxminded.university.dao;
+package com.foxminded.university.dao.hibernate;
 
 import com.foxminded.university.config.TestConfig;
-import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
+import com.foxminded.university.dao.CathedraDao;
 import com.foxminded.university.model.Cathedra;
+import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
-import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestConfig.class)
-@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
-public class JdbcCathedraDaoTest {
+@ContextConfiguration(classes = {TestConfig.class})
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@Transactional
+public class HibernateCathedraDaoTest {
 
-    private final static String TABLE_NAME = "cathedras";
     @Autowired
-    private JdbcTemplate template;
+    private SessionFactory sessionFactory;
     @Autowired
-    private JdbcCathedraDao cathedraDao;
+    private CathedraDao cathedraDao;
 
     @Test
     void whenFindAll_thenAllExistingCathedrasFound() {
-        int expected = countRowsInTable(template, TABLE_NAME);
-        int actual = cathedraDao.findAll().size();
+        int expected = (int) (long) sessionFactory.getCurrentSession().createQuery("SELECT COUNT(c) FROM Cathedra c").getSingleResult();
+        List<Cathedra> actual = cathedraDao.findAll();
 
-        assertEquals(expected, actual);
+        assertEquals(actual.size(), expected);
     }
 
     @Test
@@ -55,31 +55,29 @@ public class JdbcCathedraDaoTest {
 
     @Test
     void givenNewCathedra_whenSaveCathedra_thenAllExistingCathedrasFound() {
-        int expected = countRowsInTable(template, TABLE_NAME) + 1;
-        cathedraDao.save(Cathedra.builder()
-            .name("Fantastic Cathedra 2")
-            .build());
-
-        assertEquals(expected, countRowsInTable(template, TABLE_NAME));
-    }
-
-    @Test
-    void givenExitstingCathedra_whenSaveWithChanges_thenChangesApplied() {
-        Cathedra expected = Cathedra.builder()
-            .id(1)
-            .name("TestName")
-            .build();
+        Cathedra expected = Cathedra.builder().name("Fantastic Cathedra 2").build();
         cathedraDao.save(expected);
+        Cathedra actual = sessionFactory.getCurrentSession().get(Cathedra.class, 2);
 
-        assertEquals(1, countRowsInTableWhere(template, TABLE_NAME, "id = 1 AND name = 'TestName'"));
+        assertEquals(expected, actual);
     }
 
     @Test
-    void whenDeleteExistingCathedra_thenAllExistingCathedrasFound() {
-        int expected = countRowsInTable(template, TABLE_NAME) - 1;
-        cathedraDao.deleteById(1);
+    void givenExistingCathedra_whenSaveWithChanges_thenChangesApplied() {
+        Cathedra expected = sessionFactory.getCurrentSession().get(Cathedra.class, 1);
+        expected.setName("Test name");
+        cathedraDao.save(expected);
+        Cathedra actual = sessionFactory.getCurrentSession().get(Cathedra.class, 1);
 
-        assertEquals(expected, countRowsInTable(template, TABLE_NAME));
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void whenDeleteExistingCathedra_thenCathedraDeleted() {
+        cathedraDao.delete(Cathedra.builder().id(1).build());
+        Cathedra actual = sessionFactory.getCurrentSession().get(Cathedra.class, 1);
+
+        assertNull(actual);
     }
 
     @Test

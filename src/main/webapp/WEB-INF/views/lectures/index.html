@@ -7,7 +7,7 @@
 </head>
 <body>
 <h1>Lectures</h1>
-<a th:href="@{new}" th:text="New">New</a>
+<a th:href="@{lectures/new}" th:text="New">New</a>
 <table border="1">
     <tr th:each="lecture : ${lectures.content}">
         <td th:text="${lecture.date}">Date</td>

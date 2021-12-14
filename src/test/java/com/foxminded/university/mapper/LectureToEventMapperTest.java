@@ -1,6 +1,6 @@
 package com.foxminded.university.mapper;
 
-import com.foxminded.university.dao.jdbc.mapper.LectureToEventMapper;
+import com.foxminded.university.dao.mapper.LectureToEventMapper;
 import com.foxminded.university.model.Event;
 import com.foxminded.university.model.Lecture;
 import com.foxminded.university.model.LectureTime;

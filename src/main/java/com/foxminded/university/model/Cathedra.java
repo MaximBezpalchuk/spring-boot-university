@@ -1,10 +1,28 @@
 package com.foxminded.university.model;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@NamedQueries(
+    {
+        @NamedQuery(
+            name = "findAllCathedras",
+            query = "FROM Cathedra"
+        ),
+        @NamedQuery(
+            name = "findCathedraByName",
+            query = "FROM Cathedra WHERE name=:name"
+        )
+    })
+
+@Entity
+@Table(name = "cathedras")
 public class Cathedra {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column
     private String name;
 
     private Cathedra(int id, String name) {

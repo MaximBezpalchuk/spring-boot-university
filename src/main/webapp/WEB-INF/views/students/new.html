@@ -41,7 +41,7 @@
     <br>
     <label for="groupSelector">Choose group: </label>
     <select id="groupSelector" th:field="*{group.id}">
-        <option value="0">No group</option>
+        <option value="0" disabled>No group</option>
         <option th:each="anyGroup : ${groups}"
                 th:field="*{group.id}"
                 th:value="${anyGroup?.id}"

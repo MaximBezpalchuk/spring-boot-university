@@ -1,12 +1,32 @@
 package com.foxminded.university.model;
 
+import javax.persistence.*;
 import java.util.Objects;
 
+@NamedQueries(
+    {
+        @NamedQuery(
+            name = "findAllAudiences",
+            query = "FROM Audience"
+        ),
+        @NamedQuery(
+            name = "findAudienceByRoomNumber",
+            query = "FROM Audience WHERE room=:room"
+        )
+    })
+
+@Entity
+@Table(name = "audiences")
 public class Audience {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column
     private int room;
+    @Column
     private int capacity;
+    @ManyToOne(fetch = FetchType.LAZY)
     private Cathedra cathedra;
 
     private Audience(int id, int room, int capacity, Cathedra cathedra) {

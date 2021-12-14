@@ -1,14 +1,45 @@
 package com.foxminded.university.model;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@NamedQueries(
+    {
+        @NamedQuery(
+            name = "findAllTeachers",
+            query = "FROM Teacher"
+        ),
+        @NamedQuery(
+            name = "countAllTeachers",
+            query = "SELECT COUNT(t) FROM Teacher t"
+        ),
+        @NamedQuery(
+            name = "findTeacherByFullNameAndBirthDate",
+            query = "FROM Teacher WHERE firstName=:first_name AND lastName=:last_name AND birthDate=:birth_date"
+        )
+    })
+@NamedNativeQueries(
+    {
+        @NamedNativeQuery(
+            name = "findTeacherByFreeDateAndSubjectWithCurrentTeacher",
+            query = "SELECT DISTINCT teachers.* FROM teachers LEFT JOIN subjects_teachers AS st ON teachers.id = st.teacher_id LEFT JOIN vacations AS vac ON teachers.id = vac.teacher_id WHERE st.subject_id =:subject_id AND ((:date NOT BETWEEN vac.start AND vac.finish) OR (vac.start IS NULL AND vac.finish IS NULL))AND NOT EXISTS (select id from lectures where lectures.teacher_id = teachers.id AND lectures.date =:date AND lectures.lecture_time_id = :lecture_time_id)"
+        )
+    })
+
+@Entity
+@Table(name = "teachers")
 public class Teacher extends Person {
 
+    @ManyToOne(fetch = FetchType.LAZY)
     private Cathedra cathedra;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "subjects_teachers", joinColumns = @JoinColumn(name = "teacher_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
     private List<Subject> subjects = new ArrayList<>();
+    @Column
+    @Enumerated(EnumType.STRING)
     private Degree degree;
 
     public Teacher(int id, String firstName, String lastName, String phone, String address, String email, Gender gender,

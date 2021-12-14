@@ -69,8 +69,8 @@ public class VacationController {
         List<Lecture> lectures = lectureService.findByTeacherIdAndPeriod(teacherId, vacation.getStart(),
             vacation.getEnd());
         if (lectures.isEmpty()) {
-            vacationService.save(vacation);
             logger.debug("Create new vacation. Id {}", vacation.getId());
+            vacationService.save(vacation);
 
             return "redirect:/teachers/" + teacherId + "/vacations";
         } else {
@@ -85,6 +85,7 @@ public class VacationController {
     public String changeTeacherOnLectures(@PathVariable int teacherId, Model model,
                                           @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
                                           @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
+        logger.debug("Change teacher on lectures - teacher with id {}", teacherId);
         List<Lecture> lectures = lectureService.findByTeacherIdAndPeriod(teacherId, start, end);
         model.addAttribute("teacher", teacherService.findById(teacherId));
         model.addAttribute("lectures", lectures);
@@ -98,6 +99,7 @@ public class VacationController {
     public String autofillTeachersOnLectures(@PathVariable int teacherId, Model model,
                                              @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
                                              @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
+        logger.debug("Autofill teacher on lectures - teacher with id {}", teacherId);
         List<Lecture> lectures = lectureService.findByTeacherIdAndPeriod(teacherId, start, end);
         for (Lecture lecture : lectures) {
             List<Teacher> teachers = teacherService.findTeachersForChange(lecture);
@@ -111,9 +113,9 @@ public class VacationController {
 
     @GetMapping("/{id}/edit")
     public String editVacation(@PathVariable int teacherId, @PathVariable int id, Model model) {
+        logger.debug("Show edit vacation page");
         model.addAttribute("teacher", teacherService.findById(teacherId));
         model.addAttribute("vacation", vacationService.findById(id));
-        logger.debug("Show edit vacation page");
 
         return "teachers/vacations/edit";
     }
@@ -137,9 +139,9 @@ public class VacationController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable int teacherId, @PathVariable int id) {
-        logger.debug("Delete vacation with id {}", id);
-        vacationService.deleteById(id);
+    public String delete(@ModelAttribute Vacation vacation, @PathVariable int teacherId) {
+        logger.debug("Delete vacation with id {}", vacation.getId());
+        vacationService.delete(vacation);
 
         return "redirect:/teachers/" + teacherId + "/vacations";
     }

@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
+import com.foxminded.university.dao.HolidayDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Holiday;
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
 public class HolidayServiceTest {
 
     @Mock
-    private JdbcHolidayDao holidayDao;
+    private HolidayDao holidayDao;
     @InjectMocks
     private HolidayService holidayService;
 
@@ -94,9 +94,10 @@ public class HolidayServiceTest {
 
     @Test
     void givenExistingHolidayId_whenDelete_thenDeleted() {
-        holidayService.deleteById(1);
+        Holiday holiday = Holiday.builder().id(1).build();
+        holidayService.delete(holiday);
 
-        verify(holidayDao).deleteById(1);
+        verify(holidayDao).delete(holiday);
     }
 
     @Test

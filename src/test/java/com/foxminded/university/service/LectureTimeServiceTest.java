@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.jdbc.JdbcLectureTimeDao;
+import com.foxminded.university.dao.LectureTimeDao;
 import com.foxminded.university.exception.ChosenDurationException;
 import com.foxminded.university.exception.DurationException;
 import com.foxminded.university.exception.EntityNotFoundException;
@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 public class LectureTimeServiceTest {
 
     @Mock
-    private JdbcLectureTimeDao lectureTimeDao;
+    private LectureTimeDao lectureTimeDao;
     @InjectMocks
     private LectureTimeService lectureTimeService;
 
@@ -149,8 +149,9 @@ public class LectureTimeServiceTest {
 
     @Test
     void givenExistingLectureTimeId_whenDelete_thenDeleted() {
-        lectureTimeService.deleteById(1);
+        LectureTime lectureTime = LectureTime.builder().id(1).build();
+        lectureTimeService.delete(lectureTime);
 
-        verify(lectureTimeDao).deleteById(1);
+        verify(lectureTimeDao).delete(lectureTime);
     }
 }

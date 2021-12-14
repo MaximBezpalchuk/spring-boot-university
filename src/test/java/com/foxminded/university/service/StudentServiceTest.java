@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.jdbc.JdbcStudentDao;
+import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.exception.GroupOverflowException;
@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
 public class StudentServiceTest {
 
     @Mock
-    private JdbcStudentDao studentDao;
+    private StudentDao studentDao;
     @InjectMocks
     private StudentService studentService;
 
@@ -155,8 +155,9 @@ public class StudentServiceTest {
 
     @Test
     void givenExistingStudentId_whenDelete_thenDeleted() {
-        studentService.deleteById(1);
+        Student student = Student.builder().id(1).build();
+        studentService.delete(student);
 
-        verify(studentDao).deleteById(1);
+        verify(studentDao).delete(student);
     }
 }

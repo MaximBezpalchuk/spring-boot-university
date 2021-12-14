@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.jdbc.JdbcSubjectDao;
+import com.foxminded.university.dao.SubjectDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Subject;
@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 public class SubjectServiceTest {
 
     @Mock
-    private JdbcSubjectDao subjectDao;
+    private SubjectDao subjectDao;
     @InjectMocks
     private SubjectService subjectService;
 
@@ -90,9 +90,10 @@ public class SubjectServiceTest {
 
     @Test
     void givenExistingSubjectId_whenDelete_thenDeleted() {
-        subjectService.deleteById(1);
+        Subject subject = Subject.builder().id(1).build();
+        subjectService.delete(subject);
 
-        verify(subjectDao).deleteById(1);
+        verify(subjectDao).delete(subject);
     }
 
     @Test
@@ -105,16 +106,5 @@ public class SubjectServiceTest {
         });
 
         assertEquals("Subject with name TestName is already exists!", exception.getMessage());
-    }
-
-    @Test
-    void givenListOfSubjects_whenFindByTeacherId_thenAllExistingSubjectsFound() {
-        Subject subject1 = Subject.builder().id(1).build();
-        Subject subject2 = Subject.builder().id(1).build();
-        List<Subject> expected = Arrays.asList(subject1, subject2);
-        when(subjectDao.findByTeacherId(2)).thenReturn(expected);
-        List<Subject> actual = subjectService.findByTeacherId(2);
-
-        assertEquals(expected, actual);
     }
 }

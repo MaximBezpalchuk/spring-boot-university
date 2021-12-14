@@ -1,7 +1,6 @@
 package com.foxminded.university.service;
 
 import com.foxminded.university.dao.VacationDao;
-import com.foxminded.university.dao.jdbc.JdbcVacationDao;
 import com.foxminded.university.exception.ChosenDurationException;
 import com.foxminded.university.exception.DurationException;
 import com.foxminded.university.exception.EntityNotFoundException;
@@ -15,7 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.Period;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -29,7 +28,7 @@ public class VacationService {
     @Value("#{${maxVacation}}")
     private Map<Degree, Integer> maxVacation;
 
-    public VacationService(JdbcVacationDao vacationDao) {
+    public VacationService(VacationDao vacationDao) {
         this.vacationDao = vacationDao;
     }
 
@@ -53,9 +52,9 @@ public class VacationService {
         vacationDao.save(vacation);
     }
 
-    public void deleteById(int id) {
-        logger.debug("Delete vacation by id: {}", id);
-        vacationDao.deleteById(id);
+    public void delete(Vacation vacation) {
+        logger.debug("Delete vacation with id: {}", vacation.getId());
+        vacationDao.delete(vacation);
     }
 
     public List<Vacation> findByTeacherId(int id) {
@@ -96,15 +95,15 @@ public class VacationService {
         }
     }
 
-    private int getVacationDaysCount(Vacation vacation) {
-        return Math.abs(Period.between(vacation.getStart(), vacation.getEnd()).getDays());
+    private long getVacationDaysCount(Vacation vacation) {
+        return Math.abs(ChronoUnit.DAYS.between(vacation.getStart(), vacation.getEnd()));
     }
 
     private void vacationDurationLessOrEqualsThanMaxCheck(Vacation vacation) {
         logger.debug("Check vacation duration less or equals than max");
-        int teacherVacationDays = vacationDao
+        long teacherVacationDays = vacationDao
             .findByTeacherIdAndYear(vacation.getTeacher().getId(), vacation.getStart().getYear()).stream()
-            .map(vac -> getVacationDaysCount(vac)).mapToInt(Integer::intValue).sum();
+            .map(vac -> getVacationDaysCount(vac)).mapToLong(Long::longValue).sum();
 
         if ((teacherVacationDays + getVacationDaysCount(vacation)) >= maxVacation
             .get(vacation.getTeacher().getDegree())) {

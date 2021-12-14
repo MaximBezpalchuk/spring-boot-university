@@ -8,7 +8,6 @@
 <body>
 <h1>Holidays</h1>
 <a th:href="@{holidays/new}" th:text="New">New</a>
-<a th:href="@{holidays/calendar}" th:text="'Calendar'">Calendar</a>
 <table border="1">
     <tr th:each="holiday : ${holidays.content}">
         <td th:text="${holiday.name}">Name</td>

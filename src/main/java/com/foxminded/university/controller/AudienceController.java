@@ -49,18 +49,18 @@ public class AudienceController {
 
     @PostMapping
     public String create(@ModelAttribute Audience audience) {
+        logger.debug("Create new audience. Id {}", audience.getId());
         audience.setCathedra(cathedraService.findById(audience.getCathedra().getId()));
         audienceService.save(audience);
-        logger.debug("Create new audience. Id {}", audience.getId());
 
         return "redirect:/audiences";
     }
 
     @GetMapping("/{id}/edit")
     public String editAudience(@PathVariable int id, Model model) {
+        logger.debug("Show edit audience page");
         model.addAttribute("cathedras", cathedraService.findAll());
         model.addAttribute("audience", audienceService.findById(id));
-        logger.debug("Show edit audience page");
 
         return "audiences/edit";
     }
@@ -75,9 +75,9 @@ public class AudienceController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable int id) {
-        logger.debug("Delete audience with id {}", id);
-        audienceService.deleteById(id);
+    public String delete(@ModelAttribute Audience audience) {
+        logger.debug("Delete audience with id {}", audience.getId());
+        audienceService.delete(audience);
 
         return "redirect:/audiences";
     }

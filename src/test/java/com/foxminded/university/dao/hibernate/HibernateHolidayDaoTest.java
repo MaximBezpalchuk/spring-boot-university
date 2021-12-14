@@ -1,20 +1,20 @@
-package com.foxminded.university.dao;
+package com.foxminded.university.dao.hibernate;
 
 import com.foxminded.university.config.TestConfig;
-import com.foxminded.university.dao.jdbc.JdbcHolidayDao;
+import com.foxminded.university.dao.HolidayDao;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Holiday;
+import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -22,26 +22,25 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
-import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTableWhere;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = TestConfig.class)
-@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
-public class JdbcHolidayDaoTest {
+@ContextConfiguration(classes = {TestConfig.class})
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@Transactional
+public class HibernateHolidayDaoTest {
 
-    private final static String TABLE_NAME = "holidays";
     @Autowired
-    private JdbcTemplate template;
+    private SessionFactory sessionFactory;
     @Autowired
-    private JdbcHolidayDao holidayDao;
+    private HolidayDao holidayDao;
 
     @Test
     void whenFindAll_thenAllExistingHolidaysFound() {
-        int expected = countRowsInTable(template, TABLE_NAME);
-        int actual = holidayDao.findAll().size();
+        int expected = (int) (long) sessionFactory.getCurrentSession().createQuery("SELECT COUNT(h) FROM Holiday h").getSingleResult();
+        List<Holiday> actual = holidayDao.findAll();
 
-        assertEquals(expected, actual);
+        assertEquals(actual.size(), expected);
     }
 
     @Test
@@ -50,7 +49,7 @@ public class JdbcHolidayDaoTest {
             .id(1)
             .name("Christmas")
             .date(LocalDate.of(2021, 12, 25))
-            .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
             .build());
         Page<Holiday> expected = new PageImpl<>(holidays, PageRequest.of(0, 1), 6);
         Page<Holiday> actual = holidayDao.findPaginatedHolidays(PageRequest.of(0, 1));
@@ -64,7 +63,7 @@ public class JdbcHolidayDaoTest {
             .id(1)
             .name("Christmas")
             .date(LocalDate.of(2021, 12, 25))
-            .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
             .build());
         Optional<Holiday> actual = holidayDao.findById(1);
 
@@ -78,37 +77,33 @@ public class JdbcHolidayDaoTest {
 
     @Test
     void givenNewHoliday_whenSaveHoliday_thenAllExistingHolidaysFound() {
-        int expected = countRowsInTable(template, TABLE_NAME) + 1;
-        Holiday holiday = Holiday.builder()
+        Holiday expected = Holiday.builder()
             .name("Christmas2")
             .date(LocalDate.of(2021, 12, 25))
-            .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
-            .build();
-        holidayDao.save(holiday);
-
-        assertEquals(expected, countRowsInTable(template, TABLE_NAME));
-    }
-
-    @Test
-    void givenExitstingHoliday_whenSaveWithChanges_thenChangesApplied() {
-        Holiday expected = Holiday.builder()
-            .id(1)
-            .name("Test Name")
-            .date(LocalDate.of(2021, 12, 26))
-            .cathedra(Cathedra.builder().id(1).build())
+            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
             .build();
         holidayDao.save(expected);
+        Holiday actual = sessionFactory.getCurrentSession().get(Holiday.class, 7);
 
-        assertEquals(1,
-            countRowsInTableWhere(template, TABLE_NAME, "id = 1 AND name = 'Test Name' and date= '2021-12-26'"));
+        assertEquals(expected, actual);
     }
 
     @Test
-    void whenDeleteExistingHoliday_thenAllExistingHolidaysFound() {
-        int expected = countRowsInTable(template, TABLE_NAME) - 1;
-        holidayDao.deleteById(3);
+    void givenExistingHoliday_whenSaveWithChanges_thenChangesApplied() {
+        Holiday expected = sessionFactory.getCurrentSession().get(Holiday.class, 1);
+        expected.setName("Test Name");
+        holidayDao.save(expected);
+        Holiday actual = sessionFactory.getCurrentSession().get(Holiday.class, 1);
 
-        assertEquals(expected, countRowsInTable(template, TABLE_NAME));
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void whenDeleteExistingHoliday_thenHolidayDeleted() {
+        holidayDao.delete(Holiday.builder().id(2).build());
+        Holiday actual = sessionFactory.getCurrentSession().get(Holiday.class, 2);
+
+        assertNull(actual);
     }
 
     @Test
@@ -117,7 +112,7 @@ public class JdbcHolidayDaoTest {
             .id(1)
             .name("Christmas")
             .date(LocalDate.of(2021, 12, 25))
-            .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
             .build());
         Optional<Holiday> actual = holidayDao.findByNameAndDate("Christmas", LocalDate.of(2021, 12, 25));
 
@@ -130,7 +125,7 @@ public class JdbcHolidayDaoTest {
             .id(1)
             .name("Christmas")
             .date(LocalDate.of(2021, 12, 25))
-            .cathedra(Cathedra.builder().id(1).name("Fantastic Cathedra").build())
+            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
             .build());
         List<Holiday> actual = holidayDao.findByDate(LocalDate.of(2021, 12, 25));
 

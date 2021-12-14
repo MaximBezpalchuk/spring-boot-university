@@ -52,20 +52,20 @@ public class StudentController {
 
     @PostMapping
     public String create(@ModelAttribute Student student, Model model) {
-        if (student.getGroup().getId() != 0) {
+        logger.debug("Create new student. Id {}", student.getId());
+        if (student.getGroup() != null) {
             student.setGroup(groupService.findById(student.getGroup().getId()));
         }
         studentService.save(student);
-        logger.debug("Create new student. Id {}", student.getId());
 
         return "redirect:/students";
     }
 
     @GetMapping("/{id}/edit")
     public String editStudent(@PathVariable int id, Model model) {
+        logger.debug("Show edit student page");
         model.addAttribute("student", studentService.findById(id));
         model.addAttribute("groups", groupService.findAll());
-        logger.debug("Show edit student page");
 
         return "students/edit";
     }
@@ -82,9 +82,9 @@ public class StudentController {
     }
 
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable int id) {
-        logger.debug("Delete student with id {}", id);
-        studentService.deleteById(id);
+    public String delete(@ModelAttribute Student student) {
+        logger.debug("Delete student with id {}", student.getId());
+        studentService.delete(student);
 
         return "redirect:/students";
     }

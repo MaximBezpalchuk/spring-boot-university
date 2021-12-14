@@ -1,7 +1,6 @@
 package com.foxminded.university.service;
 
 import com.foxminded.university.dao.GroupDao;
-import com.foxminded.university.dao.jdbc.JdbcGroupDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Group;
@@ -19,7 +18,7 @@ public class GroupService {
 
     private final GroupDao groupDao;
 
-    public GroupService(JdbcGroupDao groupDao) {
+    public GroupService(GroupDao groupDao) {
         this.groupDao = groupDao;
     }
 
@@ -40,14 +39,9 @@ public class GroupService {
         groupDao.save(group);
     }
 
-    public void deleteById(int id) {
-        logger.debug("Delete group by id: {}", id);
-        groupDao.deleteById(id);
-    }
-
-    public List<Group> findByLectureId(int id) {
-        logger.debug("Find groups by lecture id");
-        return groupDao.findByLectureId(id);
+    public void delete(Group group) {
+        logger.debug("Delete group with id: {}", group.getId());
+        groupDao.delete(group);
     }
 
     private void uniqueCheck(Group group) {

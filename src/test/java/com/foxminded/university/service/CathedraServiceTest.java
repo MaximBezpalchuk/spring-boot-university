@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.jdbc.JdbcCathedraDao;
+import com.foxminded.university.dao.CathedraDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Cathedra;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 public class CathedraServiceTest {
 
     @Mock
-    private JdbcCathedraDao cathedraDao;
+    private CathedraDao cathedraDao;
     @InjectMocks
     private CathedraService cathedraService;
 
@@ -74,9 +74,10 @@ public class CathedraServiceTest {
 
     @Test
     void givenExistingAudienceId_whenDelete_thenDeleted() {
-        cathedraService.deleteById(1);
+        Cathedra cathedra = Cathedra.builder().id(1).build();
+        cathedraService.delete(cathedra);
 
-        verify(cathedraDao).deleteById(1);
+        verify(cathedraDao).delete(cathedra);
     }
 
     @Test

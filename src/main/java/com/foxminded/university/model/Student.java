@@ -1,10 +1,35 @@
 package com.foxminded.university.model;
 
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
+@NamedQueries(
+    {
+        @NamedQuery(
+            name = "findAllStudents",
+            query = "FROM Student"
+        ),
+        @NamedQuery(
+            name = "countAllStudents",
+            query = "SELECT COUNT(s) FROM Student s"
+        ),
+        @NamedQuery(
+            name = "findStudentByFullNameAndBirthDate",
+            query = "FROM Student WHERE firstName=:first_name AND lastName=:last_name AND birthDate=:birth_date"
+        ),
+        @NamedQuery(
+            name = "findStudentByGroupId",
+            query = "FROM Student WHERE group.id=:group_id"
+        )
+    })
+
+@Entity
+@Table(name = "students")
 public class Student extends Person {
 
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "group_id")
     private Group group;
 
     public Student(int id, String firstName, String lastName, String phone, String address, String email,

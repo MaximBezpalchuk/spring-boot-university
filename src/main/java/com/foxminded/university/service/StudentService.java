@@ -1,7 +1,6 @@
 package com.foxminded.university.service;
 
 import com.foxminded.university.dao.StudentDao;
-import com.foxminded.university.dao.jdbc.JdbcStudentDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.exception.GroupOverflowException;
@@ -25,7 +24,7 @@ public class StudentService {
     @Value("${maxGroupSize}")
     private int maxGroupSize;
 
-    public StudentService(JdbcStudentDao studentDao) {
+    public StudentService(StudentDao studentDao) {
         this.studentDao = studentDao;
     }
 
@@ -52,9 +51,9 @@ public class StudentService {
         studentDao.save(student);
     }
 
-    public void deleteById(int id) {
-        logger.debug("Delete student by id: {}", id);
-        studentDao.deleteById(id);
+    public void delete(Student student) {
+        logger.debug("Delete student with id: {}", student.getId());
+        studentDao.delete(student);
     }
 
     private void uniqueCheck(Student student) {
