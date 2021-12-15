@@ -283,7 +283,7 @@ public class LectureControllerTest {
             + "  \"title\" : \"Subject name\",\r\n"
             + "  \"start\" : \"2021-01-01T08:00:00\",\r\n"
             + "  \"end\" : \"2021-01-01T09:45:00\",\r\n"
-            + "  \"url\" : \"/university/lectures/1\"\r\n"
+            + "  \"url\" : \"/lectures/1\"\r\n"
             + "} ]";
         MvcResult rt = mockMvc.perform(get("/students/1/shedule/events?start=2021-04-04&end=2021-04-08"))
             .andExpect(status().isOk())
@@ -336,7 +336,7 @@ public class LectureControllerTest {
             + "  \"title\" : \"Subject name\",\r\n"
             + "  \"start\" : \"2021-01-01T08:00:00\",\r\n"
             + "  \"end\" : \"2021-01-01T09:45:00\",\r\n"
-            + "  \"url\" : \"/university/lectures/1\"\r\n"
+            + "  \"url\" : \"/lectures/1\"\r\n"
             + "} ]";
         MvcResult rt = mockMvc.perform(get("/teachers/1/shedule/events?start=2021-04-04&end=2021-04-08"))
             .andExpect(status().isOk())
