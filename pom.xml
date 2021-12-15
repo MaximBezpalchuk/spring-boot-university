@@ -105,7 +105,7 @@
             <artifactId>mapstruct-spring-annotations</artifactId>
             <version>${org.mapstruct.extensions.spring.version}</version>
         </dependency>
-        <!--
+
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>bootstrap</artifactId>
@@ -126,7 +126,6 @@
             <artifactId>jquery</artifactId>
             <version>${jquery.version}</version>
         </dependency>
--->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>

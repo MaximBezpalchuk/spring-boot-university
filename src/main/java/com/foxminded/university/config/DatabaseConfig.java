@@ -1,5 +1,7 @@
 package com.foxminded.university.config;
 
+import com.foxminded.university.formatter.GroupFormatter;
+import com.foxminded.university.formatter.SubjectFormatter;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -8,6 +10,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
@@ -15,18 +19,24 @@ import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.templatemode.TemplateMode;
 
 import javax.sql.DataSource;
 import java.io.IOException;
+import java.util.List;
 import java.util.Properties;
 
 @Configuration
 @ComponentScan("com.foxminded.university")
-//@PropertySource("classpath:config.properties")
+@PropertySource("classpath:config.properties")
 @EnableTransactionManagement
 public class DatabaseConfig {
+
+    @Value("${defaultPageSize}")
+    private int defaultPageSize;
 
     @Bean
     public SpringResourceTemplateResolver templateResolver() {
@@ -42,21 +52,20 @@ public class DatabaseConfig {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
         sessionFactory.setPackagesToScan("com.foxminded.university.model");
-        sessionFactory.setHibernateProperties(hibernateProperties());
+        //sessionFactory.setHibernateProperties(hibernateProperties());
         sessionFactory.afterPropertiesSet();
 
         return sessionFactory.getObject();
     }
 
-    private Properties hibernateProperties() {
-        Properties properties = new Properties();
-        properties.put("hibernate.dialect", "org.hibernate.dialect.PostgreSQL9Dialect");
-        properties.put("hibernate.show_sql", "true");
-        properties.put("logging.level.org.hibernate.type", "trace");
-        properties.put("hibernate.current_session_context_class",
-                "org.springframework.orm.hibernate5.SpringSessionContext");
+    @Bean
+    GroupFormatter groupFormatter() {
+        return new GroupFormatter();
+    }
 
-        return properties;
+    @Bean
+    SubjectFormatter subjectFormatter() {
+        return new SubjectFormatter();
     }
 
 
