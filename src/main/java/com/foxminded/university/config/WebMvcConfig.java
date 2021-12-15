@@ -23,14 +23,14 @@ import org.thymeleaf.templateresolver.ITemplateResolver;
 
 import java.util.List;
 
-@Configuration
-@ComponentScan("com.foxminded.university")
-@PropertySource("classpath:config.properties")
-@EnableWebMvc
+//@Configuration
+//@ComponentScan("com.foxminded.university")
+//@PropertySource("classpath:config.properties")
+//@EnableWebMvc
 public class WebMvcConfig implements WebMvcConfigurer {
-
-    @Autowired
-    SessionFactory sessionFactory;
+    /*
+        @Autowired
+        SessionFactory sessionFactory;*/
     @Value("${defaultPageSize}")
     private int defaultPageSize;
 
@@ -42,7 +42,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         templateResolver.setTemplateMode(TemplateMode.HTML);
         return templateResolver;
     }
-
+    /*
     @Bean
     public SpringTemplateEngine templateEngine(ITemplateResolver templateResolver) {
         SpringTemplateEngine templateEngine = new SpringTemplateEngine();
@@ -57,7 +57,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         resolver.setTemplateEngine(templateEngine(templateResolver()));
         registry.viewResolver(resolver);
     }
-
+*/
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
@@ -77,7 +77,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addFormatter(new GroupFormatter()); // add multiply group choice on lectures/new
         registry.addFormatter(new SubjectFormatter()); // add multiply subject choice on teachers/new
     }
-
+/*
     @Bean
     public OpenSessionInViewInterceptor openSessionInViewInterceptor() {
         OpenSessionInViewInterceptor openSessionInterceptor = new OpenSessionInViewInterceptor();
@@ -89,4 +89,5 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addWebRequestInterceptor(openSessionInViewInterceptor());
     }
+    */
 }

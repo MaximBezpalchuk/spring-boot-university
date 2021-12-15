@@ -1,0 +1,22 @@
+spring:
+  jpa:
+    database: POSTGRESQL
+    show-aql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/University
+    username: postgres
+    password: root
+    driverClassName: org.postgresql.Driver
+  sql:
+    init:
+      platform: postgres
+
+minLectureDurationInMinutes: 30
+maxGroupSize: 10
+maxVacation:
+  PROFESSOR: 20
+  ASSISTANT: 16
+  UNKNOWN: 14
+startWorkingDay: 8
+endWorkingDay: 22
+defaultPageSize: 3

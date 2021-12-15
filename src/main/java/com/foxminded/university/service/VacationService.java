@@ -25,7 +25,7 @@ public class VacationService {
     private static final Logger logger = LoggerFactory.getLogger(VacationService.class);
 
     private final VacationDao vacationDao;
-    @Value("#{${maxVacation}}")
+    //@Value("#{${maxVacation}}")
     private Map<Degree, Integer> maxVacation;
 
     public VacationService(VacationDao vacationDao) {
