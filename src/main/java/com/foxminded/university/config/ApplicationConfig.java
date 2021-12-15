@@ -35,9 +35,6 @@ import java.util.Properties;
 @EnableTransactionManagement
 public class ApplicationConfig {
 
-    @Value("${defaultPageSize}")
-    private int defaultPageSize;
-
     @Bean
     public SpringResourceTemplateResolver templateResolver() {
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
