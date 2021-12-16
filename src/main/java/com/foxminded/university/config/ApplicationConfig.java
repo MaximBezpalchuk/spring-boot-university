@@ -4,10 +4,7 @@ import com.foxminded.university.formatter.GroupFormatter;
 import com.foxminded.university.formatter.SubjectFormatter;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.PageRequest;
@@ -31,7 +28,10 @@ import java.util.Properties;
 
 @Configuration
 @ComponentScan("com.foxminded.university")
-@PropertySource("classpath:config.properties")
+@PropertySources({
+        @PropertySource("classpath:application.yml"),
+        @PropertySource("classpath:config.properties")
+})
 @EnableTransactionManagement
 public class ApplicationConfig {
 
@@ -52,15 +52,5 @@ public class ApplicationConfig {
         sessionFactory.afterPropertiesSet();
 
         return sessionFactory.getObject();
-    }
-
-    @Bean
-    GroupFormatter groupFormatter() {
-        return new GroupFormatter();
-    }
-
-    @Bean
-    SubjectFormatter subjectFormatter() {
-        return new SubjectFormatter();
     }
 }
