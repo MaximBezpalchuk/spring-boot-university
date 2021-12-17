@@ -28,10 +28,7 @@ import java.util.Properties;
 
 @Configuration
 @ComponentScan("com.foxminded.university")
-@PropertySources({
-        @PropertySource("classpath:application.yml"),
-        @PropertySource("classpath:config.properties")
-})
+@PropertySource("classpath:application.yml")
 @EnableTransactionManagement
 public class ApplicationConfig {
 
