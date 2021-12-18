@@ -26,8 +26,8 @@ spring:
 university:
   minLectureDurationInMinutes: 30
   maxGroupSize: 10
-  startWorkingDay: 5
-  endWorkingDay: 23
+  startWorkingDay: 6
+  endWorkingDay: 22
   maxVacation:
     PROFESSOR: 20
     ASSISTANT: 16
