@@ -1,5 +1,6 @@
 package com.foxminded.university.service;
 
+import com.foxminded.university.config.UniversityConfig;
 import com.foxminded.university.dao.VacationDao;
 import com.foxminded.university.exception.ChosenDurationException;
 import com.foxminded.university.exception.DurationException;
@@ -25,11 +26,11 @@ public class VacationService {
     private static final Logger logger = LoggerFactory.getLogger(VacationService.class);
 
     private final VacationDao vacationDao;
-    @Value("#{${maxVacation}}")
-    private Map<Degree, Integer> maxVacation;
+    private UniversityConfig universityConfig;
 
-    public VacationService(VacationDao vacationDao) {
+    public VacationService(VacationDao vacationDao, UniversityConfig universityConfig) {
         this.vacationDao = vacationDao;
+        this.universityConfig = universityConfig;
     }
 
     public List<Vacation> findAll() {
@@ -105,11 +106,11 @@ public class VacationService {
             .findByTeacherIdAndYear(vacation.getTeacher().getId(), vacation.getStart().getYear()).stream()
             .map(vac -> getVacationDaysCount(vac)).mapToLong(Long::longValue).sum();
 
-        if ((teacherVacationDays + getVacationDaysCount(vacation)) >= maxVacation
+        if ((teacherVacationDays + getVacationDaysCount(vacation)) >= universityConfig.getMaxVacation()
             .get(vacation.getTeacher().getDegree())) {
             throw new ChosenDurationException("Vacations duration(existing " + teacherVacationDays + " plus appointed "
                 + getVacationDaysCount(vacation) + ") can`t be more than max("
-                + maxVacation.get(vacation.getTeacher().getDegree()) + ") for degree "
+                + universityConfig.getMaxVacation().get(vacation.getTeacher().getDegree()) + ") for degree "
                 + vacation.getTeacher().getDegree() + "!");
         }
     }

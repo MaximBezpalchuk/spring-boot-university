@@ -1,5 +1,6 @@
 package com.foxminded.university.service;
 
+import com.foxminded.university.config.UniversityConfig;
 import com.foxminded.university.dao.LectureTimeDao;
 import com.foxminded.university.exception.ChosenDurationException;
 import com.foxminded.university.exception.DurationException;
@@ -21,11 +22,11 @@ public class LectureTimeService {
     private static final Logger logger = LoggerFactory.getLogger(LectureTimeService.class);
 
     private final LectureTimeDao lectureTimeDao;
-    @Value("${minLectureDurationInMinutes}")
-    private int minLectureDurationInMinutes;
+    private UniversityConfig universityConfig;
 
-    public LectureTimeService(LectureTimeDao lectureTimeDao) {
+    public LectureTimeService(LectureTimeDao lectureTimeDao, UniversityConfig universityConfig) {
         this.lectureTimeDao = lectureTimeDao;
+        this.universityConfig = universityConfig;
     }
 
     public List<LectureTime> findAll() {
@@ -75,9 +76,9 @@ public class LectureTimeService {
     private void durationMoreThanChosenTimeCheck(LectureTime lectureTime) {
         logger.debug("Check that duration is more than min lecture duration");
         long durationInMinutes = Duration.between(lectureTime.getStart(), lectureTime.getEnd()).toMinutes();
-        if (durationInMinutes <= minLectureDurationInMinutes) {
+        if (durationInMinutes <= universityConfig.getMinLectureDurationInMinutes()) {
             throw new ChosenDurationException("Duration " + durationInMinutes
-                + " minutes is less than min lecture duration (" + minLectureDurationInMinutes + " minutes)!");
+                + " minutes is less than min lecture duration (" + universityConfig.getMinLectureDurationInMinutes() + " minutes)!");
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.foxminded.university.service;
 
+import com.foxminded.university.config.UniversityConfig;
 import com.foxminded.university.dao.HolidayDao;
 import com.foxminded.university.dao.LectureDao;
 import com.foxminded.university.dao.StudentDao;
@@ -10,7 +11,6 @@ import com.foxminded.university.model.Lecture;
 import com.foxminded.university.model.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -33,19 +33,17 @@ public class LectureService {
     private final StudentDao studentDao;
     private final StudentService studentService;
     private final TeacherService teacherService;
-    @Value("${startWorkingDay}")
-    private int startWorkingDay;
-    @Value("${endWorkingDay}")
-    private int endWorkingDay;
+    private UniversityConfig universityConfig;
 
     public LectureService(LectureDao lectureDao, VacationDao vacationDao, HolidayDao holidayDao,
-                          StudentDao studentDao, StudentService studentService, TeacherService teacherService) {
+                          StudentDao studentDao, StudentService studentService, TeacherService teacherService, UniversityConfig universityConfig) {
         this.lectureDao = lectureDao;
         this.vacationDao = vacationDao;
         this.holidayDao = holidayDao;
         this.studentDao = studentDao;
         this.studentService = studentService;
         this.teacherService = teacherService;
+        this.universityConfig = universityConfig;
     }
 
     public List<Lecture> findAll() {
@@ -103,8 +101,8 @@ public class LectureService {
 
     private void afterHoursCheck(Lecture lecture) {
         logger.debug("Check lecture is after hours");
-        if (lecture.getTime().getEnd().getHour() > endWorkingDay
-            || lecture.getTime().getStart().getHour() < startWorkingDay) {
+        if (lecture.getTime().getEnd().getHour() > universityConfig.getEndWorkingDay()
+            || lecture.getTime().getStart().getHour() < universityConfig.getStartWorkingDay()) {
             throw new AfterHoursException("Lecture can`t be in after hours! Specified period is: "
                 + lecture.getTime().getStart() + " - " + lecture.getTime().getEnd());
         }

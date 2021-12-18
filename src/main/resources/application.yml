@@ -23,8 +23,12 @@ spring:
         default-page-size: 3
         one-indexed-parameters: true
 
-minLectureDurationInMinutes: 30
-maxGroupSize: 10
-startWorkingDay: 8
-endWorkingDay: 22
-maxVacation: "{PROFESSOR:20, ASSISTANT:16, UNKNOWN:14}"
+university:
+  minLectureDurationInMinutes: 30
+  maxGroupSize: 10
+  startWorkingDay: 5
+  endWorkingDay: 23
+  maxVacation:
+    PROFESSOR: 20
+    ASSISTANT: 16
+    UNKNOWN: 14

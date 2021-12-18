@@ -1,5 +1,6 @@
 package com.foxminded.university.service;
 
+import com.foxminded.university.config.UniversityConfig;
 import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
@@ -23,9 +24,11 @@ public class StudentService {
     private final StudentDao studentDao;
     @Value("${maxGroupSize}")
     private int maxGroupSize;
+    private UniversityConfig universityConfig;
 
-    public StudentService(StudentDao studentDao) {
+    public StudentService(StudentDao studentDao, UniversityConfig universityConfig) {
         this.studentDao = studentDao;
+        this.universityConfig = universityConfig;
     }
 
     public List<Student> findAll() {
@@ -71,9 +74,9 @@ public class StudentService {
         logger.debug("Check that group is filled");
         if (student.getGroup() != null) {
             int groupSize = studentDao.findByGroupId(student.getGroup().getId()).size();
-            if (groupSize >= maxGroupSize) {
+            if (groupSize >= universityConfig.getMaxGroupSize()) {
                 throw new GroupOverflowException("This group is already full! Group size is: " + groupSize
-                    + ". Max group size is: " + maxGroupSize);
+                    + ". Max group size is: " + universityConfig.getMaxGroupSize());
             }
         }
     }
