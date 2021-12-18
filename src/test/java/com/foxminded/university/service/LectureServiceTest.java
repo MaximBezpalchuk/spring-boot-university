@@ -1,5 +1,6 @@
 package com.foxminded.university.service;
 
+import com.foxminded.university.config.UniversityConfig;
 import com.foxminded.university.dao.HolidayDao;
 import com.foxminded.university.dao.LectureDao;
 import com.foxminded.university.dao.StudentDao;
@@ -45,14 +46,12 @@ public class LectureServiceTest {
     private StudentService studentService;
     @Mock
     private TeacherService teacherService;
+    @Mock
+    private UniversityConfig universityConfig;
     @InjectMocks
     private LectureService lectureService;
-
-    @BeforeEach
-    void setUp() {
-        ReflectionTestUtils.setField(lectureService, "startWorkingDay", 8);
-        ReflectionTestUtils.setField(lectureService, "endWorkingDay", 22);
-    }
+    private int startWorkingDay = 6;
+    private int endWorkingDay = 22;
 
     @Test
     void givenListOfLectures_whenFindAll_thenAllExistingLecturesFound() {
@@ -95,7 +94,6 @@ public class LectureServiceTest {
 
     @Test
     void givenNewLecture_whenSave_thenSaved() {
-        Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Teacher teacher = Teacher.builder()
             .id(1)
             .subjects(Arrays.asList(Subject.builder().id(1).name("Test name").build()))
@@ -108,6 +106,8 @@ public class LectureServiceTest {
                 .end(LocalTime.of(10, 0)).build())
             .teacher(teacher)
             .subject(Subject.builder().id(1).name("Test name").build()).build();
+        when(universityConfig.getStartWorkingDay()).thenReturn(startWorkingDay);
+        when(universityConfig.getEndWorkingDay()).thenReturn(endWorkingDay);
         lectureService.save(lecture);
 
         verify(lectureDao).save(lecture);
@@ -130,6 +130,8 @@ public class LectureServiceTest {
             .time(lectureTime)
             .teacher(teacher)
             .subject(Subject.builder().id(1).name("Test name").build()).build();
+        when(universityConfig.getStartWorkingDay()).thenReturn(startWorkingDay);
+        when(universityConfig.getEndWorkingDay()).thenReturn(endWorkingDay);
         lectureService.save(lecture);
 
         verify(lectureDao).save(lecture);
@@ -210,6 +212,8 @@ public class LectureServiceTest {
             .build();
         when(lectureDao.findLecturesByTeacherDateAndTime(lecture.getTeacher(), lecture.getDate(), lecture.getTime()))
             .thenReturn(Arrays.asList(lecture2));
+        when(universityConfig.getStartWorkingDay()).thenReturn(startWorkingDay);
+        when(universityConfig.getEndWorkingDay()).thenReturn(endWorkingDay);
         Exception exception = assertThrows(BusyTeacherException.class, () -> {
             lectureService.save(lecture);
         });
@@ -229,6 +233,8 @@ public class LectureServiceTest {
         Vacation vacation = Vacation.builder().start(LocalDate.of(2021, 9, 5)).end(LocalDate.of(2021, 9, 7)).build();
         when(vacationDao.findByDateInPeriodAndTeacher(lecture.getDate(), lecture.getTeacher()))
             .thenReturn(Arrays.asList(vacation));
+        when(universityConfig.getStartWorkingDay()).thenReturn(startWorkingDay);
+        when(universityConfig.getEndWorkingDay()).thenReturn(endWorkingDay);
         Exception exception = assertThrows(TeacherInVacationException.class, () -> {
             lectureService.save(lecture);
         });
@@ -246,6 +252,8 @@ public class LectureServiceTest {
             .build();
         when(holidayDao.findByDate(lecture.getDate()))
             .thenReturn(Arrays.asList(Holiday.builder().date(LocalDate.of(2021, 9, 6)).name("Test").build()));
+        when(universityConfig.getStartWorkingDay()).thenReturn(startWorkingDay);
+        when(universityConfig.getEndWorkingDay()).thenReturn(endWorkingDay);
         Exception exception = assertThrows(HolidayException.class, () -> {
             lectureService.save(lecture);
         });
@@ -262,6 +270,8 @@ public class LectureServiceTest {
             .teacher(Teacher.builder().id(1).firstName("TestFirstName").lastName("TestLastName").build())
             .subject(Subject.builder().build())
             .build();
+        when(universityConfig.getStartWorkingDay()).thenReturn(startWorkingDay);
+        when(universityConfig.getEndWorkingDay()).thenReturn(endWorkingDay);
         Exception exception = assertThrows(NotCompetentTeacherException.class, () -> {
             lectureService.save(lecture);
         });
@@ -284,6 +294,8 @@ public class LectureServiceTest {
             .build();
         when(studentDao.findByGroupId(1))
             .thenReturn(Arrays.asList(Student.builder().build(), Student.builder().build()));
+        when(universityConfig.getStartWorkingDay()).thenReturn(startWorkingDay);
+        when(universityConfig.getEndWorkingDay()).thenReturn(endWorkingDay);
         Exception exception = assertThrows(AudienceOverflowException.class, () -> {
             lectureService.save(lecture);
         });
@@ -305,6 +317,8 @@ public class LectureServiceTest {
         Lecture lecture2 = Lecture.builder().id(3).build();
         when(lectureDao.findByAudienceDateAndLectureTime(lecture.getAudience(), lecture.getDate(), lecture.getTime()))
             .thenReturn(Optional.of(lecture2));
+        when(universityConfig.getStartWorkingDay()).thenReturn(startWorkingDay);
+        when(universityConfig.getEndWorkingDay()).thenReturn(endWorkingDay);
         Exception exception = assertThrows(OccupiedAudienceException.class, () -> {
             lectureService.save(lecture);
         });

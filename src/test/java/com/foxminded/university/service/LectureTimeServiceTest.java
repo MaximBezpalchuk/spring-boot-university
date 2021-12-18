@@ -1,5 +1,6 @@
 package com.foxminded.university.service;
 
+import com.foxminded.university.config.UniversityConfig;
 import com.foxminded.university.dao.LectureTimeDao;
 import com.foxminded.university.exception.ChosenDurationException;
 import com.foxminded.university.exception.DurationException;
@@ -29,13 +30,11 @@ public class LectureTimeServiceTest {
 
     @Mock
     private LectureTimeDao lectureTimeDao;
+    @Mock
+    private UniversityConfig universityConfig;
     @InjectMocks
     private LectureTimeService lectureTimeService;
-
-    @BeforeEach
-    void setUp() {
-        ReflectionTestUtils.setField(lectureTimeService, "minLectureDurationInMinutes", 30);
-    }
+    private int minLectureDurationInMinutes = 30;
 
     @Test
     void givenListOfLectureTimes_whenFindAll_thenAllExistingLectureTimesFound() {
@@ -125,6 +124,7 @@ public class LectureTimeServiceTest {
             .start(start)
             .end(end)
             .build();
+        when(universityConfig.getMinLectureDurationInMinutes()).thenReturn(minLectureDurationInMinutes);
         Exception exception = assertThrows(ChosenDurationException.class, () -> {
             lectureTimeService.save(lectureTime);
         });

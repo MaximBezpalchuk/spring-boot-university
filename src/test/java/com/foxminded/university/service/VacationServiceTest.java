@@ -1,5 +1,6 @@
 package com.foxminded.university.service;
 
+import com.foxminded.university.config.UniversityConfig;
 import com.foxminded.university.dao.VacationDao;
 import com.foxminded.university.exception.ChosenDurationException;
 import com.foxminded.university.exception.DurationException;
@@ -17,7 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -32,16 +32,18 @@ public class VacationServiceTest {
 
     @Mock
     private VacationDao vacationDao;
+    @Mock
+    private UniversityConfig universityConfig;
     @InjectMocks
     private VacationService vacationService;
+    private Map<Degree, Integer> maxVacation;
 
     @BeforeEach
-    void setUp() {
-        Map<Degree, Integer> maxVacation = new HashMap<>();
+    void init() {
+        maxVacation = new HashMap<>();
         maxVacation.put(Degree.PROFESSOR, 20);
         maxVacation.put(Degree.ASSISTANT, 16);
         maxVacation.put(Degree.UNKNOWN, 14);
-        ReflectionTestUtils.setField(vacationService, "maxVacation", maxVacation);
     }
 
     @Test
@@ -92,6 +94,7 @@ public class VacationServiceTest {
             .end(end)
             .teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build())
             .build();
+        when(universityConfig.getMaxVacation()).thenReturn(maxVacation);
         vacationService.save(vacation);
 
         verify(vacationDao).save(vacation);
@@ -108,6 +111,7 @@ public class VacationServiceTest {
             .teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build())
             .build();
         when(vacationDao.findByPeriodAndTeacher(start, end, vacation.getTeacher())).thenReturn(Optional.of(vacation));
+        when(universityConfig.getMaxVacation()).thenReturn(maxVacation);
         vacationService.save(vacation);
 
         verify(vacationDao).save(vacation);
@@ -185,6 +189,7 @@ public class VacationServiceTest {
             .build();
         when(vacationDao.findByTeacherIdAndYear(vacation.getTeacher().getId(), vacation.getStart().getYear()))
             .thenReturn(Arrays.asList(vacation));
+        when(universityConfig.getMaxVacation()).thenReturn(maxVacation);
         Exception exception = assertThrows(ChosenDurationException.class, () -> {
             vacationService.save(vacation);
         });

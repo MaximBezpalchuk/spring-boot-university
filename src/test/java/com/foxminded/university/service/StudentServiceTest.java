@@ -1,5 +1,6 @@
 package com.foxminded.university.service;
 
+import com.foxminded.university.config.UniversityConfig;
 import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
@@ -35,13 +36,11 @@ public class StudentServiceTest {
 
     @Mock
     private StudentDao studentDao;
+    @Mock
+    private UniversityConfig universityConfig;
     @InjectMocks
     private StudentService studentService;
-
-    @BeforeEach
-    void setUp() {
-        ReflectionTestUtils.setField(studentService, "maxGroupSize", 1);
-    }
+    private int maxGroupSize = 1;
 
     @Test
     void givenListOfStudents_whenFindAll_thenAllExistingStudentsFound() {
@@ -88,6 +87,7 @@ public class StudentServiceTest {
         when(studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
             student.getBirthDate())).thenReturn(Optional.of(student));
         when(studentDao.findByGroupId(student.getGroup().getId())).thenReturn(new ArrayList<>());
+        when(universityConfig.getMaxGroupSize()).thenReturn(maxGroupSize);
         studentService.save(student);
 
         verify(studentDao).save(student);
@@ -104,6 +104,7 @@ public class StudentServiceTest {
         when(studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
             student.getBirthDate())).thenReturn(Optional.of(student));
         when(studentDao.findByGroupId(student.getGroup().getId())).thenReturn(new ArrayList<>());
+        when(universityConfig.getMaxGroupSize()).thenReturn(maxGroupSize);
         studentService.save(student);
 
         verify(studentDao).save(student);
@@ -146,6 +147,7 @@ public class StudentServiceTest {
         when(studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
             student.getBirthDate())).thenReturn(Optional.of(student));
         when(studentDao.findByGroupId(student.getGroup().getId())).thenReturn(Arrays.asList(student, student));
+        when(universityConfig.getMaxGroupSize()).thenReturn(maxGroupSize);
         Exception exception = assertThrows(GroupOverflowException.class, () -> {
             studentService.save(student);
         });
