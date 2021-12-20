@@ -2,13 +2,12 @@ package com.foxminded.university.config;
 
 import com.foxminded.university.model.Degree;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
-@Component
 @ConfigurationProperties(prefix = "university")
 public class UniversityConfig {
+
     private int minLectureDurationInMinutes;
     private int maxGroupSize;
     private int startWorkingDay;
