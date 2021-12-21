@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.config.UniversityConfig;
+import com.foxminded.university.config.UniversityConfigProperties;
 import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
@@ -21,9 +21,9 @@ public class StudentService {
     private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
     private final StudentDao studentDao;
-    private UniversityConfig universityConfig;
+    private UniversityConfigProperties universityConfig;
 
-    public StudentService(StudentDao studentDao, UniversityConfig universityConfig) {
+    public StudentService(StudentDao studentDao, UniversityConfigProperties universityConfig) {
         this.studentDao = studentDao;
         this.universityConfig = universityConfig;
     }

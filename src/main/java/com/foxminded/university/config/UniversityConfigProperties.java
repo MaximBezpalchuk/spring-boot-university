@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.util.Map;
 
 @ConfigurationProperties(prefix = "university")
-public class UniversityConfig {
+public class UniversityConfigProperties {
 
     private int minLectureDurationInMinutes;
     private int maxGroupSize;

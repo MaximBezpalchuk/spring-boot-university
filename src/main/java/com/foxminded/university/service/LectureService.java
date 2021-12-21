@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.config.UniversityConfig;
+import com.foxminded.university.config.UniversityConfigProperties;
 import com.foxminded.university.dao.HolidayDao;
 import com.foxminded.university.dao.LectureDao;
 import com.foxminded.university.dao.StudentDao;
@@ -33,10 +33,10 @@ public class LectureService {
     private final StudentDao studentDao;
     private final StudentService studentService;
     private final TeacherService teacherService;
-    private UniversityConfig universityConfig;
+    private UniversityConfigProperties universityConfig;
 
     public LectureService(LectureDao lectureDao, VacationDao vacationDao, HolidayDao holidayDao,
-                          StudentDao studentDao, StudentService studentService, TeacherService teacherService, UniversityConfig universityConfig) {
+                          StudentDao studentDao, StudentService studentService, TeacherService teacherService, UniversityConfigProperties universityConfig) {
         this.lectureDao = lectureDao;
         this.vacationDao = vacationDao;
         this.holidayDao = holidayDao;
