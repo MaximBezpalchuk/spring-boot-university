@@ -39,7 +39,7 @@ public class LectureToEventMapperTest {
         // then
         assertNotNull(event);
         assertEquals(event.getTitle(), "Subject name");
-        assertEquals(event.getUrl(), "/university/lectures/1");
+        assertEquals(event.getUrl(), "/lectures/1");
         assertEquals(event.getStart(), LocalDateTime.of(LocalDate.of(2021, 1, 1), LocalTime.of(8, 0)));
         assertEquals(event.getEnd(), LocalDateTime.of(LocalDate.of(2021, 1, 1), LocalTime.of(9, 45)));
     }

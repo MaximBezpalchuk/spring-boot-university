@@ -1,5 +1,6 @@
 package com.foxminded.university.service;
 
+import com.foxminded.university.config.UniversityConfigProperties;
 import com.foxminded.university.dao.LectureTimeDao;
 import com.foxminded.university.exception.ChosenDurationException;
 import com.foxminded.university.exception.DurationException;
@@ -8,7 +9,6 @@ import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.LectureTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -21,11 +21,11 @@ public class LectureTimeService {
     private static final Logger logger = LoggerFactory.getLogger(LectureTimeService.class);
 
     private final LectureTimeDao lectureTimeDao;
-    @Value("${minLectureDurationInMinutes}")
-    private int minLectureDurationInMinutes;
+    private UniversityConfigProperties universityConfig;
 
-    public LectureTimeService(LectureTimeDao lectureTimeDao) {
+    public LectureTimeService(LectureTimeDao lectureTimeDao, UniversityConfigProperties universityConfig) {
         this.lectureTimeDao = lectureTimeDao;
+        this.universityConfig = universityConfig;
     }
 
     public List<LectureTime> findAll() {
@@ -36,7 +36,7 @@ public class LectureTimeService {
     public LectureTime findById(int id) {
         logger.debug("Find lecture time by id {}", id);
         return lectureTimeDao.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Can`t find any lecture time with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Can`t find any lecture time with id: " + id));
     }
 
     public void save(LectureTime lectureTime) {
@@ -56,11 +56,11 @@ public class LectureTimeService {
     private void uniqueCheck(LectureTime lectureTime) {
         logger.debug("Check lecture time is unique");
         Optional<LectureTime> existingLectureTime = lectureTimeDao.findByPeriod(lectureTime.getStart(),
-            lectureTime.getEnd());
+                lectureTime.getEnd());
 
         if (existingLectureTime.isPresent() && (existingLectureTime.get().getId() != lectureTime.getId())) {
             throw new EntityNotUniqueException("Lecture time with start time " + lectureTime.getStart()
-                + " and end time " + lectureTime.getEnd() + " is already exists!");
+                    + " and end time " + lectureTime.getEnd() + " is already exists!");
         }
     }
 
@@ -68,16 +68,16 @@ public class LectureTimeService {
         logger.debug("Check that start time is after end time");
         if (!lectureTime.getStart().isBefore(lectureTime.getEnd())) {
             throw new DurationException("Lecture time`s start (" + lectureTime.getStart()
-                + ") can`t be after lecture time`s end (" + lectureTime.getEnd() + ")!");
+                    + ") can`t be after lecture time`s end (" + lectureTime.getEnd() + ")!");
         }
     }
 
     private void durationMoreThanChosenTimeCheck(LectureTime lectureTime) {
         logger.debug("Check that duration is more than min lecture duration");
         long durationInMinutes = Duration.between(lectureTime.getStart(), lectureTime.getEnd()).toMinutes();
-        if (durationInMinutes <= minLectureDurationInMinutes) {
+        if (durationInMinutes <= universityConfig.getMinLectureDurationInMinutes()) {
             throw new ChosenDurationException("Duration " + durationInMinutes
-                + " minutes is less than min lecture duration (" + minLectureDurationInMinutes + " minutes)!");
+                    + " minutes is less than min lecture duration (" + universityConfig.getMinLectureDurationInMinutes() + " minutes)!");
         }
     }
 }

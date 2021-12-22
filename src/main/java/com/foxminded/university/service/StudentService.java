@@ -1,5 +1,6 @@
 package com.foxminded.university.service;
 
+import com.foxminded.university.config.UniversityConfigProperties;
 import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
@@ -7,7 +8,6 @@ import com.foxminded.university.exception.GroupOverflowException;
 import com.foxminded.university.model.Student;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -21,11 +21,11 @@ public class StudentService {
     private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
     private final StudentDao studentDao;
-    @Value("${maxGroupSize}")
-    private int maxGroupSize;
+    private UniversityConfigProperties universityConfig;
 
-    public StudentService(StudentDao studentDao) {
+    public StudentService(StudentDao studentDao, UniversityConfigProperties universityConfig) {
         this.studentDao = studentDao;
+        this.universityConfig = universityConfig;
     }
 
     public List<Student> findAll() {
@@ -41,7 +41,7 @@ public class StudentService {
     public Student findById(int id) {
         logger.debug("Find student by id {}", id);
         return studentDao.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException("Can`t find any student with id: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Can`t find any student with id: " + id));
     }
 
     public void save(Student student) {
@@ -59,11 +59,11 @@ public class StudentService {
     private void uniqueCheck(Student student) {
         logger.debug("Check student is unique");
         Optional<Student> existingStudent = studentDao.findByFullNameAndBirthDate(student.getFirstName(),
-            student.getLastName(), student.getBirthDate());
+                student.getLastName(), student.getBirthDate());
 
         if (existingStudent.isPresent() && (existingStudent.get().getId() != student.getId())) {
             throw new EntityNotUniqueException("Student with full name " + student.getFirstName() + " "
-                + student.getLastName() + " and  birth date " + student.getBirthDate() + " is already exists!");
+                    + student.getLastName() + " and  birth date " + student.getBirthDate() + " is already exists!");
         }
     }
 
@@ -71,9 +71,9 @@ public class StudentService {
         logger.debug("Check that group is filled");
         if (student.getGroup() != null) {
             int groupSize = studentDao.findByGroupId(student.getGroup().getId()).size();
-            if (groupSize >= maxGroupSize) {
+            if (groupSize >= universityConfig.getMaxGroupSize()) {
                 throw new GroupOverflowException("This group is already full! Group size is: " + groupSize
-                    + ". Max group size is: " + maxGroupSize);
+                        + ". Max group size is: " + universityConfig.getMaxGroupSize());
             }
         }
     }

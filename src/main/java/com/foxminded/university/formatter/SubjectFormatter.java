@@ -2,10 +2,12 @@ package com.foxminded.university.formatter;
 
 import com.foxminded.university.model.Subject;
 import org.springframework.format.Formatter;
+import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.util.Locale;
 
+@Component
 public class SubjectFormatter implements Formatter<Subject> {
 
     @Override

@@ -1,5 +1,6 @@
 package com.foxminded.university.service;
 
+import com.foxminded.university.config.UniversityConfigProperties;
 import com.foxminded.university.dao.HolidayDao;
 import com.foxminded.university.dao.LectureDao;
 import com.foxminded.university.dao.StudentDao;
@@ -12,11 +13,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -31,6 +33,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class LectureServiceTest {
 
     @Mock
@@ -45,13 +48,17 @@ public class LectureServiceTest {
     private StudentService studentService;
     @Mock
     private TeacherService teacherService;
+    @Mock
+    private UniversityConfigProperties universityConfig;
     @InjectMocks
     private LectureService lectureService;
+    private int startWorkingDay = 6;
+    private int endWorkingDay = 22;
 
     @BeforeEach
-    void setUp() {
-        ReflectionTestUtils.setField(lectureService, "startWorkingDay", 8);
-        ReflectionTestUtils.setField(lectureService, "endWorkingDay", 22);
+    void setWorkingDays(){
+        when(universityConfig.getStartWorkingDay()).thenReturn(startWorkingDay);
+        when(universityConfig.getEndWorkingDay()).thenReturn(endWorkingDay);
     }
 
     @Test
@@ -95,7 +102,6 @@ public class LectureServiceTest {
 
     @Test
     void givenNewLecture_whenSave_thenSaved() {
-        Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Teacher teacher = Teacher.builder()
             .id(1)
             .subjects(Arrays.asList(Subject.builder().id(1).name("Test name").build()))
@@ -115,7 +121,6 @@ public class LectureServiceTest {
 
     @Test
     void givenExistingLecture_whenSave_thenSaved() {
-        Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Teacher teacher = Teacher.builder()
             .id(1)
             .subjects(Arrays.asList(Subject.builder().id(1).name("Test name").build()))
@@ -188,13 +193,13 @@ public class LectureServiceTest {
         Lecture lecture = Lecture.builder()
             .id(1)
             .date(LocalDate.of(2021, 9, 6))
-            .time(LectureTime.builder().id(1).start(LocalTime.of(7, 0)).end(LocalTime.of(10, 0)).build())
+            .time(LectureTime.builder().id(1).start(LocalTime.of(5, 0)).end(LocalTime.of(10, 0)).build())
             .build();
         Exception exception = assertThrows(AfterHoursException.class, () -> {
             lectureService.save(lecture);
         });
 
-        assertEquals("Lecture can`t be in after hours! Specified period is: 07:00 - 10:00", exception.getMessage());
+        assertEquals("Lecture can`t be in after hours! Specified period is: 05:00 - 10:00", exception.getMessage());
     }
 
     @Test
