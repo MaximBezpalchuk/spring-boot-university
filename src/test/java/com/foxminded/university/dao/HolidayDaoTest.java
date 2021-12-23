@@ -1,9 +1,8 @@
-package com.foxminded.university.dao.hibernate;
+package com.foxminded.university.dao;
 
 import com.foxminded.university.dao.HolidayDao;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Holiday;
-import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -24,16 +24,16 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @Transactional
-public class HibernateHolidayDaoTest {
+public class HolidayDaoTest {
 
     @Autowired
-    private SessionFactory sessionFactory;
+    private EntityManager entityManager;
     @Autowired
     private HolidayDao holidayDao;
 
     @Test
     void whenFindAll_thenAllExistingHolidaysFound() {
-        int expected = (int) (long) sessionFactory.getCurrentSession().createQuery("SELECT COUNT(h) FROM Holiday h").getSingleResult();
+        int expected = (int) (long) entityManager.createQuery("SELECT COUNT(h) FROM Holiday h").getSingleResult();
         List<Holiday> actual = holidayDao.findAll();
 
         assertEquals(actual.size(), expected);
@@ -45,7 +45,7 @@ public class HibernateHolidayDaoTest {
             .id(1)
             .name("Christmas")
             .date(LocalDate.of(2021, 12, 25))
-            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .cathedra(entityManager.find(Cathedra.class, 1))
             .build());
         Page<Holiday> expected = new PageImpl<>(holidays, PageRequest.of(0, 1), 6);
         Page<Holiday> actual = holidayDao.findAll(PageRequest.of(0, 1));
@@ -59,7 +59,7 @@ public class HibernateHolidayDaoTest {
             .id(1)
             .name("Christmas")
             .date(LocalDate.of(2021, 12, 25))
-            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .cathedra(entityManager.find(Cathedra.class, 1))
             .build());
         Optional<Holiday> actual = holidayDao.findById(1);
 
@@ -76,20 +76,20 @@ public class HibernateHolidayDaoTest {
         Holiday expected = Holiday.builder()
             .name("Christmas2")
             .date(LocalDate.of(2021, 12, 25))
-            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .cathedra(entityManager.find(Cathedra.class, 1))
             .build();
         holidayDao.save(expected);
-        Holiday actual = sessionFactory.getCurrentSession().get(Holiday.class, 7);
+        Holiday actual = entityManager.find(Holiday.class, 7);
 
         assertEquals(expected, actual);
     }
 
     @Test
     void givenExistingHoliday_whenSaveWithChanges_thenChangesApplied() {
-        Holiday expected = sessionFactory.getCurrentSession().get(Holiday.class, 1);
+        Holiday expected = entityManager.find(Holiday.class, 1);
         expected.setName("Test Name");
         holidayDao.save(expected);
-        Holiday actual = sessionFactory.getCurrentSession().get(Holiday.class, 1);
+        Holiday actual = entityManager.find(Holiday.class, 1);
 
         assertEquals(expected, actual);
     }
@@ -97,7 +97,7 @@ public class HibernateHolidayDaoTest {
     @Test
     void whenDeleteExistingHoliday_thenHolidayDeleted() {
         holidayDao.delete(Holiday.builder().id(2).build());
-        Holiday actual = sessionFactory.getCurrentSession().get(Holiday.class, 2);
+        Holiday actual = entityManager.find(Holiday.class, 2);
 
         assertNull(actual);
     }
@@ -108,7 +108,7 @@ public class HibernateHolidayDaoTest {
             .id(1)
             .name("Christmas")
             .date(LocalDate.of(2021, 12, 25))
-            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .cathedra(entityManager.find(Cathedra.class, 1))
             .build());
         Optional<Holiday> actual = holidayDao.findByNameAndDate("Christmas", LocalDate.of(2021, 12, 25));
 
@@ -121,7 +121,7 @@ public class HibernateHolidayDaoTest {
             .id(1)
             .name("Christmas")
             .date(LocalDate.of(2021, 12, 25))
-            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .cathedra(entityManager.find(Cathedra.class, 1))
             .build());
         List<Holiday> actual = holidayDao.findByDate(LocalDate.of(2021, 12, 25));
 

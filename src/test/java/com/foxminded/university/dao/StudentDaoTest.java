@@ -1,10 +1,8 @@
-package com.foxminded.university.dao.hibernate;
+package com.foxminded.university.dao;
 
-import com.foxminded.university.dao.StudentDao;
 import com.foxminded.university.model.Gender;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Student;
-import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -25,16 +24,16 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @Transactional
-public class HibernateStudentDaoTest {
+public class StudentDaoTest {
 
     @Autowired
-    private SessionFactory sessionFactory;
+    private EntityManager entityManager;
     @Autowired
     private StudentDao studentDao;
 
     @Test
     void whenFindAll_thenAllExistingStudentsFound() {
-        int expected = (int) (long) sessionFactory.getCurrentSession().createQuery("SELECT COUNT(s) FROM Student s").getSingleResult();
+        int expected = (int) (long) entityManager.createQuery("SELECT COUNT(s) FROM Student s").getSingleResult();
         List<Student> actual = studentDao.findAll();
 
         assertEquals(actual.size(), expected);
@@ -42,7 +41,7 @@ public class HibernateStudentDaoTest {
 
     @Test
     void givenPageable_whenFindPaginatedStudents_thenStudentsFound() {
-        Group group = sessionFactory.getCurrentSession().get(Group.class, 1);
+        Group group = entityManager.find(Group.class, 1);
         List<Student> students = Arrays.asList(Student.builder()
             .firstName("Petr")
             .lastName("Orlov")
@@ -64,7 +63,7 @@ public class HibernateStudentDaoTest {
 
     @Test
     void givenExistingStudent_whenFindById_thenStudentFound() {
-        Group group = sessionFactory.getCurrentSession().get(Group.class, 1);
+        Group group = entityManager.find(Group.class, 1);
         Optional<Student> expected = Optional.of(Student.builder()
             .firstName("Petr")
             .lastName("Orlov")
@@ -90,7 +89,7 @@ public class HibernateStudentDaoTest {
 
     @Test
     void givenNewStudent_whenSaveStudent_thenAllExistingStudentsFound() {
-        Group group = sessionFactory.getCurrentSession().get(Group.class, 1);
+        Group group = entityManager.find(Group.class, 1);
         Student expected = Student.builder()
             .firstName("Petr123")
             .lastName("Orlov123")
@@ -104,17 +103,17 @@ public class HibernateStudentDaoTest {
             .group(group)
             .build();
         studentDao.save(expected);
-        Student actual = sessionFactory.getCurrentSession().get(Student.class, 6);
+        Student actual = entityManager.find(Student.class, 6);
 
         assertEquals(expected, actual);
     }
 
     @Test
     void givenExistingStudent_whenSaveWithChanges_thenChangesApplied() {
-        Student expected = sessionFactory.getCurrentSession().get(Student.class, 1);
+        Student expected = entityManager.find(Student.class, 1);
         expected.setFirstName("Test Name");
         studentDao.save(expected);
-        Student actual = sessionFactory.getCurrentSession().get(Student.class, 1);
+        Student actual = entityManager.find(Student.class, 1);
 
         assertEquals(expected, actual);
     }
@@ -122,14 +121,14 @@ public class HibernateStudentDaoTest {
     @Test
     void whenDeleteExistingStudent_thenStudentDeleted() {
         studentDao.delete(Student.builder().id(2).build());
-        Student actual = sessionFactory.getCurrentSession().get(Student.class, 2);
+        Student actual = entityManager.find(Student.class, 2);
 
         assertNull(actual);
     }
 
     @Test
     void givenFirstNameAndLastNameAndBirthDate_whenFindByFullNameAndBirthDate_thenStudentFound() {
-        Group group = sessionFactory.getCurrentSession().get(Group.class, 1);
+        Group group = entityManager.find(Group.class, 1);
         Optional<Student> expected = Optional.of(Student.builder()
             .firstName("Petr")
             .lastName("Orlov")
@@ -151,7 +150,7 @@ public class HibernateStudentDaoTest {
 
     @Test
     void givenGroupName_whenFindByGroupId_thenStudentsFound() {
-        Group group = sessionFactory.getCurrentSession().get(Group.class, 2);
+        Group group = entityManager.find(Group.class, 2);
         Student student1 = Student.builder()
             .firstName("Kim")
             .lastName("Cattrall")

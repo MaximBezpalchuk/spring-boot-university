@@ -56,7 +56,7 @@ public class LectureServiceTest {
     private int endWorkingDay = 22;
 
     @BeforeEach
-    void setWorkingDays(){
+    void setWorkingDays() {
         when(universityConfig.getStartWorkingDay()).thenReturn(startWorkingDay);
         when(universityConfig.getEndWorkingDay()).thenReturn(endWorkingDay);
     }
@@ -329,9 +329,9 @@ public class LectureServiceTest {
     void givenStudentId_whenFindLecturesByStudentId_thenAllExistingLecturesFound() {
         Lecture lecture1 = Lecture.builder().id(1).build();
         List<Lecture> expected = Arrays.asList(lecture1);
-        Student student = Student.builder().id(1).build();
+        Student student = Student.builder().id(1).group(Group.builder().id(1).build()).build();
         when(studentService.findById(1)).thenReturn(student);
-        when(lectureDao.findLecturesByStudentAndPeriod(student, LocalDate.of(2021, 4, 4), LocalDate.of(2021, 4, 8)))
+        when(lectureDao.findLecturesByGroupAndPeriod(student.getGroup(), LocalDate.of(2021, 4, 4), LocalDate.of(2021, 4, 8)))
             .thenReturn(expected);
         List<Lecture> actual = lectureService.findByStudentIdAndPeriod(1, LocalDate.of(2021, 4, 4),
             LocalDate.of(2021, 4, 8));
