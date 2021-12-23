@@ -12,7 +12,7 @@ import java.util.Objects;
     {
         @NamedQuery(
             name = "Lecture.findByAudienceDateAndLectureTime",
-            query = "SELECT l FROM Lecture l WHERE l.audience=:audience AND l.date=:date AND l.time.id=:time"
+            query = "SELECT l FROM Lecture l WHERE l.audience=:audience AND l.date=:date AND l.time=:time"
         ),
         @NamedQuery(
             name = "Lecture.findByTeacherAudienceDateAndLectureTime",
@@ -25,17 +25,12 @@ import java.util.Objects;
         @NamedQuery(
             name = "Lecture.findLecturesByTeacherAndPeriod",
             query = "SELECT l FROM Lecture l WHERE l.teacher=:teacher AND l.date>=:start AND l.date<=:end"
+        ),
+        @NamedQuery(
+            name = "Lecture.findLecturesByGroupAndPeriod",
+            query = "SELECT l FROM Lecture l WHERE :group MEMBER OF l.groups AND l.date >=:start AND l.date <=:end"
         )
-
     })
-@NamedNativeQueries({
-    @NamedNativeQuery(
-        name = "Lecture.findLecturesByStudentAndPeriod",
-        query = "SELECT lec.*, lg.group_id FROM lectures AS lec LEFT JOIN lectures_groups AS lg ON lg.lecture_id = lec.id WHERE group_id = (SELECT group_id FROM students WHERE id =:student_id) AND date >=:start AND date <=:end",
-        resultClass = Lecture.class
-    )
-})
-
 
 @Entity
 @Table(name = "lectures")

@@ -161,7 +161,7 @@ public class LectureService {
 
     public List<Lecture> findByStudentIdAndPeriod(int id, LocalDate start, LocalDate end) {
         logger.debug("Find all lectures by student id and period");
-        return lectureDao.findLecturesByStudentAndPeriod(studentService.findById(id), start, end);
+        return lectureDao.findLecturesByGroupAndPeriod(studentService.findById(id).getGroup(), start, end);
     }
 
     public List<Lecture> findByTeacherIdAndPeriod(int id, LocalDate start, LocalDate end) {

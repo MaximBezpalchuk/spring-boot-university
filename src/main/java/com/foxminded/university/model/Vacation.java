@@ -6,28 +6,20 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
-@NamedQueries(
-    {
-        @NamedQuery(
-            name = "Vacation.findByTeacherId",
-            query = "FROM Vacation WHERE teacher.id=:teacher_id"
-        ),
-        @NamedQuery(
-            name = "Vacation.findByTeacherIdAndYear",
-            query = "FROM Vacation WHERE teacher.id=:teacher_id AND EXTRACT(YEAR FROM start)=:year"
-        )
-    })
-@NamedNativeQueries(
-    {
-        @NamedNativeQuery(
-            name = "Vacation.findByPeriodAndTeacher",
-            query = "SELECT * FROM vacations WHERE start=:start AND finish=:end AND teacher_id=:teacher_id"
-        ),
-        @NamedNativeQuery(
-            name = "Vacation.findByDateInPeriodAndTeacher",
-            query = "SELECT * FROM vacations WHERE start >=:date AND finish<=:date AND teacher_id=:teacher_id"
-        )
-    })
+@NamedQueries({
+    @NamedQuery(
+        name = "Vacation.findByTeacherIdAndYear",
+        query = "SELECT v FROM Vacation v WHERE v.teacher.id=:teacher_id AND FUNCTION('YEAR',v.start)=:year"
+    ),
+    @NamedQuery(
+        name = "Vacation.findByPeriodAndTeacher",
+        query = "SELECT v FROM Vacation v WHERE v.start=:start AND v.end=:end AND v.teacher=:teacher"
+    ),
+    @NamedQuery(
+        name = "Vacation.findByDateInPeriodAndTeacher",
+        query = "SELECT v FROM Vacation v WHERE v.start >=:date AND v.end<=:date AND v.teacher=:teacher"
+    )
+})
 
 @Entity
 @Table(name = "vacations")
@@ -55,12 +47,8 @@ public class Vacation {
     public Vacation() {
     }
 
-    public void setStart(LocalDate start) {
-        this.start = start;
-    }
-
-    public void setEnd(LocalDate end) {
-        this.end = end;
+    public static Builder builder() {
+        return new Builder();
     }
 
     public int getId() {
@@ -83,12 +71,34 @@ public class Vacation {
         return start;
     }
 
+    public void setStart(LocalDate start) {
+        this.start = start;
+    }
+
     public LocalDate getEnd() {
         return end;
     }
 
-    public static Builder builder() {
-        return new Builder();
+    public void setEnd(LocalDate end) {
+        this.end = end;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(end, id, start, teacher);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Vacation other = (Vacation) obj;
+        return Objects.equals(end, other.end) && id == other.id && Objects.equals(start, other.start)
+            && Objects.equals(teacher, other.teacher);
     }
 
     public static class Builder {
@@ -121,24 +131,6 @@ public class Vacation {
         public Vacation build() {
             return new Vacation(id, start, end, teacher);
         }
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(end, id, start, teacher);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        Vacation other = (Vacation) obj;
-        return Objects.equals(end, other.end) && id == other.id && Objects.equals(start, other.start)
-            && Objects.equals(teacher, other.teacher);
     }
 
 }
