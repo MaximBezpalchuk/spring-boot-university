@@ -80,7 +80,7 @@ public class HibernateLectureDaoTest {
             .teacher(teacher)
             .build());
         Page<Lecture> expected = new PageImpl<>(lectures, PageRequest.of(0, 1), 11);
-        Page<Lecture> actual = lectureDao.findPaginatedLectures(PageRequest.of(0, 1));
+        Page<Lecture> actual = lectureDao.findAll(PageRequest.of(0, 1));
 
         assertEquals(expected, actual);
     }

@@ -47,7 +47,7 @@ public class HolidayServiceTest {
     void givenPageable_whenFindAll_thenAllPageableHolidaysFound() {
         List<Holiday> holidays = Arrays.asList(Holiday.builder().id(1).build());
         Page<Holiday> expected = new PageImpl<>(holidays, PageRequest.of(0, 1), 1);
-        when(holidayDao.findPaginatedHolidays(isA(Pageable.class))).thenReturn(expected);
+        when(holidayDao.findAll(isA(Pageable.class))).thenReturn(expected);
         Page<Holiday> actual = holidayService.findAll(PageRequest.of(0, 1));
 
         assertEquals(expected, actual);

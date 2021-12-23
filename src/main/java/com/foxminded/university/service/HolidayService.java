@@ -31,7 +31,7 @@ public class HolidayService {
 
     public Page<Holiday> findAll(final Pageable pageable) {
         logger.debug("Find all holidays paginated");
-        return holidayDao.findPaginatedHolidays(pageable);
+        return holidayDao.findAll(pageable);
     }
 
     public Holiday findById(int id) {

@@ -63,7 +63,7 @@ public class StudentServiceTest {
     void givenPageable_whenFindAll_thenAllPageableStudentsFound() {
         List<Student> students = Arrays.asList(Student.builder().id(1).build());
         Page<Student> expected = new PageImpl<>(students, PageRequest.of(0, 1), 1);
-        when(studentDao.findPaginatedStudents(isA(Pageable.class))).thenReturn(expected);
+        when(studentDao.findAll(isA(Pageable.class))).thenReturn(expected);
         Page<Student> actual = studentService.findAll(PageRequest.of(0, 1));
 
         assertEquals(expected, actual);

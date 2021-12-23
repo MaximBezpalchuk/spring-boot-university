@@ -31,7 +31,7 @@ public class SubjectService {
 
     public Page<Subject> findAll(final Pageable pageable) {
         logger.debug("Find all holidays paginated");
-        return subjectDao.findPaginatedSubjects(pageable);
+        return subjectDao.findAll(pageable);
     }
 
     public Subject findById(int id) {

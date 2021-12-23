@@ -47,7 +47,7 @@ public class HibernateSubjectDaoTest {
             .id(1)
             .build());
         Page<Subject> expected = new PageImpl<>(subjects, PageRequest.of(0, 1), 3);
-        Page<Subject> actual = subjectDao.findPaginatedSubjects(PageRequest.of(0, 1));
+        Page<Subject> actual = subjectDao.findAll(PageRequest.of(0, 1));
 
         assertEquals(expected, actual);
     }

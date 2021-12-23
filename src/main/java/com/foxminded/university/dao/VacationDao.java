@@ -4,12 +4,15 @@ import com.foxminded.university.model.Teacher;
 import com.foxminded.university.model.Vacation;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-public interface VacationDao extends GenericDao<Vacation> {
+@Repository
+public interface VacationDao extends JpaRepository<Vacation, Integer> {
 
     List<Vacation> findByTeacherId(int id);
 
@@ -19,5 +22,5 @@ public interface VacationDao extends GenericDao<Vacation> {
 
     List<Vacation> findByTeacherIdAndYear(int id, int year);
 
-    Page<Vacation> findPaginatedVacationsByTeacherId(Pageable pageable, int id);
+    Page<Vacation> findAllByTeacherId(Pageable pageable, int id);
 }

@@ -3,18 +3,6 @@ package com.foxminded.university.model;
 import javax.persistence.*;
 import java.util.Objects;
 
-@NamedQueries(
-    {
-        @NamedQuery(
-            name = "findAllAudiences",
-            query = "FROM Audience"
-        ),
-        @NamedQuery(
-            name = "findAudienceByRoomNumber",
-            query = "FROM Audience WHERE room=:room"
-        )
-    })
-
 @Entity
 @Table(name = "audiences")
 public class Audience {
@@ -90,7 +78,7 @@ public class Audience {
             return false;
         Audience other = (Audience) obj;
         return capacity == other.capacity && Objects.equals(cathedra, other.cathedra) && id == other.id
-            && room == other.room;
+                && room == other.room;
     }
 
     public static class Builder {

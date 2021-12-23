@@ -7,20 +7,8 @@ import java.util.Objects;
 @NamedQueries(
     {
         @NamedQuery(
-            name = "findAllStudents",
-            query = "FROM Student"
-        ),
-        @NamedQuery(
-            name = "countAllStudents",
-            query = "SELECT COUNT(s) FROM Student s"
-        ),
-        @NamedQuery(
-            name = "findStudentByFullNameAndBirthDate",
-            query = "FROM Student WHERE firstName=:first_name AND lastName=:last_name AND birthDate=:birth_date"
-        ),
-        @NamedQuery(
-            name = "findStudentByGroupId",
-            query = "FROM Student WHERE group.id=:group_id"
+            name = "Student.findByFullNameAndBirthDate",
+            query = "SELECT s FROM Student s WHERE s.firstName=:first_name AND s.lastName=:last_name AND s.birthDate=:birth_date"
         )
     })
 

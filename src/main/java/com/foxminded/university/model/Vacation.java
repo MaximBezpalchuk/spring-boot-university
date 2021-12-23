@@ -9,30 +9,22 @@ import java.util.Objects;
 @NamedQueries(
     {
         @NamedQuery(
-            name = "findAllVacations",
-            query = "FROM Vacation"
-        ),
-        @NamedQuery(
-            name = "countAllVacationsByTeacherId",
-            query = "SELECT COUNT(v) FROM Vacation v WHERE teacher.id=:teacher_id"
-        ),
-        @NamedQuery(
-            name = "findAllVacationsByTeacherId",
+            name = "Vacation.findByTeacherId",
             query = "FROM Vacation WHERE teacher.id=:teacher_id"
         ),
         @NamedQuery(
-            name = "findVacationsByTeacherIdAndYear",
+            name = "Vacation.findByTeacherIdAndYear",
             query = "FROM Vacation WHERE teacher.id=:teacher_id AND EXTRACT(YEAR FROM start)=:year"
         )
     })
 @NamedNativeQueries(
     {
         @NamedNativeQuery(
-            name = "findVacationByPeriodAndTeacher",
+            name = "Vacation.findByPeriodAndTeacher",
             query = "SELECT * FROM vacations WHERE start=:start AND finish=:end AND teacher_id=:teacher_id"
         ),
         @NamedNativeQuery(
-            name = "findVacationsByDateInPeriodAndTeacher",
+            name = "Vacation.findByDateInPeriodAndTeacher",
             query = "SELECT * FROM vacations WHERE start >=:date AND finish<=:date AND teacher_id=:teacher_id"
         )
     })

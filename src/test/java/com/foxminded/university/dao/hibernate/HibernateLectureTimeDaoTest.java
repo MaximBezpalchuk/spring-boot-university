@@ -87,7 +87,7 @@ public class HibernateLectureTimeDaoTest {
             .start(LocalTime.of(8, 0, 0))
             .end(LocalTime.of(9, 30, 0))
             .build());
-        Optional<LectureTime> actual = lectureTimeDao.findByPeriod(expected.get().getStart(), expected.get().getEnd());
+        Optional<LectureTime> actual = lectureTimeDao.findByStartAndEnd(expected.get().getStart(), expected.get().getEnd());
 
         assertEquals(expected, actual);
     }

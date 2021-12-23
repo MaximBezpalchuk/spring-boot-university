@@ -32,7 +32,7 @@ public class TeacherService {
 
     public Page<Teacher> findAll(final Pageable pageable) {
         logger.debug("Find all teachers paginated");
-        return teacherDao.findPaginatedTeachers(pageable);
+        return teacherDao.findAll(pageable);
     }
 
     public Teacher findById(int id) {

@@ -62,7 +62,7 @@ public class VacationService {
 
     public Page<Vacation> findByTeacherId(final Pageable pageable, int id) {
         logger.debug("Find all vacations paginated by teacher id");
-        return vacationDao.findPaginatedVacationsByTeacherId(pageable, id);
+        return vacationDao.findAllByTeacherId(pageable, id);
     }
 
     private void uniqueCheck(Vacation vacation) {

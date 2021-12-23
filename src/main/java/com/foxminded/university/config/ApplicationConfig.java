@@ -27,14 +27,4 @@ public class ApplicationConfig {
 
         return templateResolver;
     }
-
-    @Bean
-    public SessionFactory sessionFactory(DataSource dataSource) throws IOException {
-        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-        sessionFactory.setDataSource(dataSource);
-        sessionFactory.setPackagesToScan("com.foxminded.university.model");
-        sessionFactory.afterPropertiesSet();
-
-        return sessionFactory.getObject();
-    }
 }

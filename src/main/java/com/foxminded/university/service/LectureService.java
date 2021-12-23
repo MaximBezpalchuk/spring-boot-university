@@ -53,7 +53,7 @@ public class LectureService {
 
     public Page<Lecture> findAll(final Pageable pageable) {
         logger.debug("Find all lectures paginated");
-        return lectureDao.findPaginatedLectures(pageable);
+        return lectureDao.findAll(pageable);
     }
 
     public Lecture findById(int id) {

@@ -84,7 +84,7 @@ public class LectureTimeServiceTest {
                 .start(start)
                 .end(end)
                 .build();
-        when(lectureTimeDao.findByPeriod(start, end)).thenReturn(Optional.of(lectureTime));
+        when(lectureTimeDao.findByStartAndEnd(start, end)).thenReturn(Optional.of(lectureTime));
         lectureTimeService.save(lectureTime);
 
         verify(lectureTimeDao).save(lectureTime);
@@ -104,7 +104,7 @@ public class LectureTimeServiceTest {
                 .start(start)
                 .end(end)
                 .build();
-        when(lectureTimeDao.findByPeriod(lectureTime1.getStart(),
+        when(lectureTimeDao.findByStartAndEnd(lectureTime1.getStart(),
                 lectureTime1.getEnd())).thenReturn(Optional.of(lectureTime2));
         Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
             lectureTimeService.save(lectureTime1);

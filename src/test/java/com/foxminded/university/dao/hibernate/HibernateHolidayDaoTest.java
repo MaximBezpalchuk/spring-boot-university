@@ -48,7 +48,7 @@ public class HibernateHolidayDaoTest {
             .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
             .build());
         Page<Holiday> expected = new PageImpl<>(holidays, PageRequest.of(0, 1), 6);
-        Page<Holiday> actual = holidayDao.findPaginatedHolidays(PageRequest.of(0, 1));
+        Page<Holiday> actual = holidayDao.findAll(PageRequest.of(0, 1));
 
         assertEquals(expected, actual);
     }

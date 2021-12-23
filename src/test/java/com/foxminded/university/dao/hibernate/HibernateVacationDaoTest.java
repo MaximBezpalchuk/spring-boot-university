@@ -49,7 +49,7 @@ public class HibernateVacationDaoTest {
             .teacher(teacher)
             .build());
         Page<Vacation> expected = new PageImpl<>(vacations, PageRequest.of(0, 1), 2);
-        Page<Vacation> actual = vacationDao.findPaginatedVacationsByTeacherId(PageRequest.of(0, 1), 1);
+        Page<Vacation> actual = vacationDao.findAllByTeacherId(PageRequest.of(0, 1), 1);
 
         assertEquals(expected, actual);
     }

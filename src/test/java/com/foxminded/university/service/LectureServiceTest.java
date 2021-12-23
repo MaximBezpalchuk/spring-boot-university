@@ -75,7 +75,7 @@ public class LectureServiceTest {
     void givenPageable_whenFindAll_thenAllPageableLecturesFound() {
         List<Lecture> lectures = Arrays.asList(Lecture.builder().id(1).build());
         Page<Lecture> expected = new PageImpl<>(lectures, PageRequest.of(0, 1), 1);
-        when(lectureDao.findPaginatedLectures(isA(Pageable.class))).thenReturn(expected);
+        when(lectureDao.findAll(isA(Pageable.class))).thenReturn(expected);
         Page<Lecture> actual = lectureService.findAll(PageRequest.of(0, 1));
 
         assertEquals(expected, actual);

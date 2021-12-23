@@ -58,7 +58,7 @@ public class HibernateTeacherDaoTest {
             .subjects(Arrays.asList(subject))
             .build());
         Page<Teacher> expected = new PageImpl<>(teachers, PageRequest.of(0, 1), 2);
-        Page<Teacher> actual = teacherDao.findPaginatedTeachers(PageRequest.of(0, 1));
+        Page<Teacher> actual = teacherDao.findAll(PageRequest.of(0, 1));
 
         assertEquals(expected, actual);
     }

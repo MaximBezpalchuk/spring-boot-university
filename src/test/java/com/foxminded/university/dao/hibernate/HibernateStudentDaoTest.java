@@ -56,7 +56,7 @@ public class HibernateStudentDaoTest {
             .group(group)
             .id(1)
             .build());
-        Page<Student> actual = studentDao.findPaginatedStudents(PageRequest.of(0, 1));
+        Page<Student> actual = studentDao.findAll(PageRequest.of(0, 1));
         Page<Student> expected = new PageImpl<>(students, PageRequest.of(0, 1), 5);
 
         assertEquals(expected, actual);

@@ -55,7 +55,7 @@ public class LectureTimeService {
 
     private void uniqueCheck(LectureTime lectureTime) {
         logger.debug("Check lecture time is unique");
-        Optional<LectureTime> existingLectureTime = lectureTimeDao.findByPeriod(lectureTime.getStart(),
+        Optional<LectureTime> existingLectureTime = lectureTimeDao.findByStartAndEnd(lectureTime.getStart(),
                 lectureTime.getEnd());
 
         if (existingLectureTime.isPresent() && (existingLectureTime.get().getId() != lectureTime.getId())) {

@@ -46,7 +46,7 @@ public class SubjectServiceTest {
     void givenPageable_whenFindAll_thenAllPageableSubjectsFound() {
         List<Subject> subjects = Arrays.asList(Subject.builder().id(1).build());
         Page<Subject> expected = new PageImpl<>(subjects, PageRequest.of(0, 1), 1);
-        when(subjectDao.findPaginatedSubjects(isA(Pageable.class))).thenReturn(expected);
+        when(subjectDao.findAll(isA(Pageable.class))).thenReturn(expected);
         Page<Subject> actual = subjectService.findAll(PageRequest.of(0, 1));
 
         assertEquals(expected, actual);

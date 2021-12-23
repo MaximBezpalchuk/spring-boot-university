@@ -64,7 +64,7 @@ public class VacationServiceTest {
     void givenPageable_whenFindAll_thenAllPageableVacationsFound() {
         List<Vacation> vacations = Arrays.asList(Vacation.builder().id(1).build());
         Page<Vacation> expected = new PageImpl<>(vacations, PageRequest.of(0, 1), 1);
-        when(vacationDao.findPaginatedVacationsByTeacherId(PageRequest.of(0, 1), 1)).thenReturn(expected);
+        when(vacationDao.findAllByTeacherId(PageRequest.of(0, 1), 1)).thenReturn(expected);
         Page<Vacation> actual = vacationService.findByTeacherId(PageRequest.of(0, 1), 1);
 
         assertEquals(expected, actual);

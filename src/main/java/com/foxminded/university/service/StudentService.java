@@ -35,7 +35,7 @@ public class StudentService {
 
     public Page<Student> findAll(final Pageable pageable) {
         logger.debug("Find all holidays paginated");
-        return studentDao.findPaginatedStudents(pageable);
+        return studentDao.findAll(pageable);
     }
 
     public Student findById(int id) {
