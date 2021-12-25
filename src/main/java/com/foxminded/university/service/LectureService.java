@@ -83,7 +83,7 @@ public class LectureService {
 
     private void uniqueCheck(Lecture lecture) {
         logger.debug("Check lecture is unique");
-        Optional<Lecture> existingLecture = lectureRepository.findByTeacherAudienceDateAndLectureTime(lecture.getTeacher(),
+        Optional<Lecture> existingLecture = lectureRepository.findByTeacherAndAudienceAndDateAndTime(lecture.getTeacher(),
             lecture.getAudience(), lecture.getDate(), lecture.getTime());
         if (existingLecture.isPresent() && (existingLecture.get().getId() != lecture.getId())) {
             throw new EntityNotUniqueException("Lecture with audience number " + lecture.getAudience().getRoom()
@@ -110,7 +110,7 @@ public class LectureService {
 
     private void teacherBusyCheck(Lecture lecture) {
         logger.debug("Check teacher for this lecture is busy");
-        if (lectureRepository.findLecturesByTeacherDateAndTime(lecture.getTeacher(), lecture.getDate(), lecture.getTime())
+        if (lectureRepository.findLecturesByTeacherAndDateAndTime(lecture.getTeacher(), lecture.getDate(), lecture.getTime())
             .stream().filter(lec -> lec.getId() != lecture.getId()).findAny().isPresent()) {
             throw new BusyTeacherException("Teacher is on another lecture this time! Teacher is: "
                 + lecture.getTeacher().getFirstName() + " " + lecture.getTeacher().getLastName());
@@ -151,7 +151,7 @@ public class LectureService {
 
     private void audienceOccupiedCheck(Lecture lecture) {
         logger.debug("Check audience is occupied");
-        Optional<Lecture> existingLecture = lectureRepository.findByAudienceDateAndLectureTime(lecture.getAudience(),
+        Optional<Lecture> existingLecture = lectureRepository.findByAudienceAndDateAndTime(lecture.getAudience(),
             lecture.getDate(), lecture.getTime());
         if (existingLecture.isPresent() && existingLecture.get().getId() != lecture.getId()) {
             throw new OccupiedAudienceException(
@@ -161,11 +161,11 @@ public class LectureService {
 
     public List<Lecture> findByStudentIdAndPeriod(int id, LocalDate start, LocalDate end) {
         logger.debug("Find all lectures by student id and period");
-        return lectureRepository.findLecturesByGroupAndPeriod(studentService.findById(id).getGroup(), start, end);
+        return lectureRepository.findByGroupsContainingAndDateGreaterThanEqualAndDateLessThanEqual(studentService.findById(id).getGroup(), start, end);
     }
 
     public List<Lecture> findByTeacherIdAndPeriod(int id, LocalDate start, LocalDate end) {
         logger.debug("Find all lectures by teacher and period");
-        return lectureRepository.findLecturesByTeacherAndPeriod(teacherService.findById(id), start, end);
+        return lectureRepository.findByTeacherAndDateGreaterThanEqualAndDateLessThanEqual(teacherService.findById(id), start, end);
     }
 }

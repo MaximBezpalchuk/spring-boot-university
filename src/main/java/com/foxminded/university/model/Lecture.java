@@ -8,30 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@NamedQueries(
-    {
-        @NamedQuery(
-            name = "Lecture.findByAudienceDateAndLectureTime",
-            query = "SELECT l FROM Lecture l WHERE l.audience=:audience AND l.date=:date AND l.time=:time"
-        ),
-        @NamedQuery(
-            name = "Lecture.findByTeacherAudienceDateAndLectureTime",
-            query = "SELECT l FROM Lecture l WHERE l.teacher=:teacher AND l.audience=:audience AND l.date=:date AND l.time=:time"
-        ),
-        @NamedQuery(
-            name = "Lecture.findLecturesByTeacherDateAndTime",
-            query = "SELECT l FROM Lecture l WHERE l.teacher=:teacher AND l.date=:date AND l.time=:time"
-        ),
-        @NamedQuery(
-            name = "Lecture.findLecturesByTeacherAndPeriod",
-            query = "SELECT l FROM Lecture l WHERE l.teacher=:teacher AND l.date>=:start AND l.date<=:end"
-        ),
-        @NamedQuery(
-            name = "Lecture.findLecturesByGroupAndPeriod",
-            query = "SELECT l FROM Lecture l WHERE :group MEMBER OF l.groups AND l.date >=:start AND l.date <=:end"
-        )
-    })
-
 @Entity
 @Table(name = "lectures")
 public class Lecture {

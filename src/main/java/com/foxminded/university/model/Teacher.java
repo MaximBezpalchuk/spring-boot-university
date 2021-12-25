@@ -6,14 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@NamedQueries(
-    {
-        @NamedQuery(
-            name = "Teacher.findByFullNameAndBirthDate",
-            query = "SELECT t FROM Teacher t WHERE t.firstName=:first_name AND t.lastName=:last_name AND t.birthDate=:birth_date"
-        )
-    })
-
 @NamedNativeQueries(
     {
         @NamedNativeQuery(

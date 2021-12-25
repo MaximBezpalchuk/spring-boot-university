@@ -17,7 +17,7 @@ public interface VacationRepository extends JpaRepository<Vacation, Integer> {
 
     List<Vacation> findByTeacherId(int id);
 
-    Optional<Vacation> findByPeriodAndTeacher(@Param("start") LocalDate start, @Param("end") LocalDate end, @Param("teacher") Teacher teacher);
+    Optional<Vacation> findByStartAndEndAndTeacher(LocalDate start, LocalDate end, Teacher teacher);
 
     List<Vacation> findByDateInPeriodAndTeacher(@Param("date") LocalDate date, @Param("teacher") Teacher teacher);
 

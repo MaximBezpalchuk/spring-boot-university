@@ -18,7 +18,6 @@ import org.mockito.quality.Strictness;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -28,7 +27,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -63,7 +61,7 @@ public class StudentServiceTest {
     void givenPageable_whenFindAll_thenAllPageableStudentsFound() {
         List<Student> students = Arrays.asList(Student.builder().id(1).build());
         Page<Student> expected = new PageImpl<>(students, PageRequest.of(0, 1), 1);
-        when(studentRepository.findAll(isA(Pageable.class))).thenReturn(expected);
+        when(studentRepository.findAll(PageRequest.of(0, 1))).thenReturn(expected);
         Page<Student> actual = studentService.findAll(PageRequest.of(0, 1));
 
         assertEquals(expected, actual);
@@ -91,7 +89,7 @@ public class StudentServiceTest {
     @Test
     void givenNewStudent_whenSave_thenSaved() {
         Student student = Student.builder().id(1).group(Group.builder().name("Test").build()).build();
-        when(studentRepository.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
+        when(studentRepository.findByFirstNameAndLastNameAndBirthDate(student.getFirstName(), student.getLastName(),
                 student.getBirthDate())).thenReturn(Optional.of(student));
         when(studentRepository.findByGroupId(student.getGroup().getId())).thenReturn(new ArrayList<>());
         studentService.save(student);
@@ -107,7 +105,7 @@ public class StudentServiceTest {
                 .lastName("TestLastName")
                 .group(Group.builder().id(10).name("Test").build())
                 .build();
-        when(studentRepository.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
+        when(studentRepository.findByFirstNameAndLastNameAndBirthDate(student.getFirstName(), student.getLastName(),
                 student.getBirthDate())).thenReturn(Optional.of(student));
         when(studentRepository.findByGroupId(student.getGroup().getId())).thenReturn(new ArrayList<>());
         studentService.save(student);
@@ -131,7 +129,7 @@ public class StudentServiceTest {
                 .birthDate(LocalDate.of(2020, 1, 1))
                 .group(Group.builder().id(10).name("Test").build())
                 .build();
-        when(studentRepository.findByFullNameAndBirthDate(student1.getFirstName(),
+        when(studentRepository.findByFirstNameAndLastNameAndBirthDate(student1.getFirstName(),
                 student1.getLastName(), student1.getBirthDate())).thenReturn(Optional.of(student2));
         Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
             studentService.save(student1);
@@ -149,7 +147,7 @@ public class StudentServiceTest {
                 .lastName("TestLastName")
                 .group(Group.builder().id(10).name("Test").build())
                 .build();
-        when(studentRepository.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
+        when(studentRepository.findByFirstNameAndLastNameAndBirthDate(student.getFirstName(), student.getLastName(),
                 student.getBirthDate())).thenReturn(Optional.of(student));
         when(studentRepository.findByGroupId(student.getGroup().getId())).thenReturn(Arrays.asList(student, student));
         Exception exception = assertThrows(GroupOverflowException.class, () -> {

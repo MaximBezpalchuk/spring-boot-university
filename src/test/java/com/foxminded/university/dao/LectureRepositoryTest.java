@@ -148,7 +148,7 @@ public class LectureRepositoryTest {
             .audience(audience)
             .teacher(teacher)
             .build());
-        Optional<Lecture> actual = lectureRepository.findByAudienceDateAndLectureTime(Audience.builder().id(1).build(),
+        Optional<Lecture> actual = lectureRepository.findByAudienceAndDateAndTime(Audience.builder().id(1).build(),
             LocalDate.of(2021, 4, 4),
             LectureTime.builder().id(1).build());
 
@@ -173,7 +173,7 @@ public class LectureRepositoryTest {
             .audience(audience)
             .teacher(teacher)
             .build());
-        Optional<Lecture> actual = lectureRepository.findByAudienceDateAndLectureTime(Audience.builder().id(1).build(),
+        Optional<Lecture> actual = lectureRepository.findByAudienceAndDateAndTime(Audience.builder().id(1).build(),
             LocalDate.of(2021, 4, 4), LectureTime.builder().id(1).build());
 
         assertEquals(expected, actual);
@@ -181,7 +181,7 @@ public class LectureRepositoryTest {
 
     @Test
     void givenStudentId_whenFindByStudentId_thenLecturesFound() {
-        List<Lecture> actual = lectureRepository.findLecturesByGroupAndPeriod(Group.builder().id(1).build(),
+        List<Lecture> actual = lectureRepository.findByGroupsContainingAndDateGreaterThanEqualAndDateLessThanEqual(Group.builder().id(1).build(),
             LocalDate.of(2021, 4, 4), LocalDate.of(2021, 4, 8));
 
         assertEquals(8, actual.size());
@@ -189,7 +189,7 @@ public class LectureRepositoryTest {
 
     @Test
     void givenTeacherId_whenFindByTeacherId_thenLecturesFound() {
-        List<Lecture> actual = lectureRepository.findLecturesByTeacherAndPeriod(Teacher.builder().id(2).build(),
+        List<Lecture> actual = lectureRepository.findByTeacherAndDateGreaterThanEqualAndDateLessThanEqual(Teacher.builder().id(2).build(),
             LocalDate.of(2021, 4, 4), LocalDate.of(2021, 4, 8));
 
         assertEquals(7, actual.size());

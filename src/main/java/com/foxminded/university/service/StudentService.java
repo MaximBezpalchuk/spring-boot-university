@@ -58,7 +58,7 @@ public class StudentService {
 
     private void uniqueCheck(Student student) {
         logger.debug("Check student is unique");
-        Optional<Student> existingStudent = studentRepository.findByFullNameAndBirthDate(student.getFirstName(),
+        Optional<Student> existingStudent = studentRepository.findByFirstNameAndLastNameAndBirthDate(student.getFirstName(),
                 student.getLastName(), student.getBirthDate());
 
         if (existingStudent.isPresent() && (existingStudent.get().getId() != student.getId())) {

@@ -113,7 +113,7 @@ public class VacationServiceTest {
                 .end(end)
                 .teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build())
                 .build();
-        when(vacationRepository.findByPeriodAndTeacher(start, end, vacation.getTeacher())).thenReturn(Optional.of(vacation));
+        when(vacationRepository.findByStartAndEndAndTeacher(start, end, vacation.getTeacher())).thenReturn(Optional.of(vacation));
         vacationService.save(vacation);
 
         verify(vacationRepository).save(vacation);
@@ -137,7 +137,7 @@ public class VacationServiceTest {
                 .teacher(Teacher.builder().id(1).firstName("TestFirstName").lastName("TestLastName")
                         .degree(Degree.ASSISTANT).build())
                 .build();
-        when(vacationRepository.findByPeriodAndTeacher(vacation1.getStart(), vacation1.getEnd(),
+        when(vacationRepository.findByStartAndEndAndTeacher(vacation1.getStart(), vacation1.getEnd(),
                 vacation1.getTeacher())).thenReturn(Optional.of(vacation2));
         Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
             vacationService.save(vacation1);

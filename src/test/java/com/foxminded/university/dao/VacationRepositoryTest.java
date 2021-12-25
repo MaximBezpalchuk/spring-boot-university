@@ -136,7 +136,7 @@ public class VacationRepositoryTest {
             .end(LocalDate.of(2021, 1, 29))
             .teacher(teacher)
             .build());
-        Optional<Vacation> actual = vacationRepository.findByPeriodAndTeacher(expected.get().getStart(),
+        Optional<Vacation> actual = vacationRepository.findByStartAndEndAndTeacher(expected.get().getStart(),
             expected.get().getEnd(), teacher);
 
         assertEquals(expected, actual);

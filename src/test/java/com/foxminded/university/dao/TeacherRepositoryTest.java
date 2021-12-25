@@ -159,7 +159,7 @@ public class TeacherRepositoryTest {
             .id(1)
             .subjects(Arrays.asList(entityManager.find(Subject.class, 1)))
             .build());
-        Optional<Teacher> actual = teacherRepository.findByFullNameAndBirthDate(expected.get().getFirstName(),
+        Optional<Teacher> actual = teacherRepository.findByFirstNameAndLastNameAndBirthDate(expected.get().getFirstName(),
             expected.get().getLastName(), expected.get().getBirthDate());
 
         assertEquals(expected, actual);

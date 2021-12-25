@@ -14,15 +14,15 @@ import java.util.Optional;
 @Repository
 public interface LectureRepository extends JpaRepository<Lecture, Integer> {
 
-    Optional<Lecture> findByAudienceDateAndLectureTime(@Param("audience") Audience audience, @Param("date") LocalDate date, @Param("time") LectureTime time);
+    Optional<Lecture> findByAudienceAndDateAndTime(Audience audience, LocalDate date, LectureTime time);
 
-    Optional<Lecture> findByTeacherAudienceDateAndLectureTime(@Param("teacher") Teacher teacher, @Param("audience") Audience audience, @Param("date") LocalDate date, @Param("time") LectureTime lectureTime);
+    Optional<Lecture> findByTeacherAndAudienceAndDateAndTime(Teacher teacher, Audience audience, LocalDate date, LectureTime time);
 
-    List<Lecture> findLecturesByTeacherDateAndTime(@Param("teacher") Teacher teacher, @Param("date") LocalDate date, @Param("time") LectureTime time);
+    List<Lecture> findLecturesByTeacherAndDateAndTime(Teacher teacher, LocalDate date, LectureTime time);
 
     Page<Lecture> findAll(Pageable pageable);
 
-    List<Lecture> findLecturesByGroupAndPeriod(@Param("group") Group group, @Param("start") LocalDate start, @Param("end") LocalDate end);
+    List<Lecture> findByGroupsContainingAndDateGreaterThanEqualAndDateLessThanEqual(Group group, LocalDate start, LocalDate end);
 
-    List<Lecture> findLecturesByTeacherAndPeriod(@Param("teacher") Teacher teacher, @Param("start") LocalDate start, @Param("end") LocalDate end);
+    List<Lecture> findByTeacherAndDateGreaterThanEqualAndDateLessThanEqual(Teacher teacher,  LocalDate start, LocalDate end);
 }

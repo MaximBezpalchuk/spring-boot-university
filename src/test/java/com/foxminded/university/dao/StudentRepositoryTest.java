@@ -142,7 +142,7 @@ public class StudentRepositoryTest {
             .group(group)
             .id(1)
             .build());
-        Optional<Student> actual = studentRepository.findByFullNameAndBirthDate(expected.get().getFirstName(),
+        Optional<Student> actual = studentRepository.findByFirstNameAndLastNameAndBirthDate(expected.get().getFirstName(),
             expected.get().getLastName(), expected.get().getBirthDate());
 
         assertEquals(expected, actual);

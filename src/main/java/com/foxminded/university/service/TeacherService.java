@@ -54,7 +54,7 @@ public class TeacherService {
 
     private void uniqueCheck(Teacher teacher) {
         logger.debug("Check teacher is unique");
-        Optional<Teacher> existingTeacher = teacherRepository.findByFullNameAndBirthDate(teacher.getFirstName(),
+        Optional<Teacher> existingTeacher = teacherRepository.findByFirstNameAndLastNameAndBirthDate(teacher.getFirstName(),
             teacher.getLastName(), teacher.getBirthDate());
         if (existingTeacher.isPresent() && (existingTeacher.get().getId() != teacher.getId())) {
             throw new EntityNotUniqueException("Teacher with full name " + teacher.getFirstName() + " "

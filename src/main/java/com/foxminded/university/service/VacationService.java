@@ -67,7 +67,7 @@ public class VacationService {
 
     private void uniqueCheck(Vacation vacation) {
         logger.debug("Check vacation is unique");
-        Optional<Vacation> existingVacation = vacationRepository.findByPeriodAndTeacher(vacation.getStart(), vacation.getEnd(),
+        Optional<Vacation> existingVacation = vacationRepository.findByStartAndEndAndTeacher(vacation.getStart(), vacation.getEnd(),
                 vacation.getTeacher());
 
         if (existingVacation.isPresent() && (existingVacation.get().getId() != vacation.getId())) {

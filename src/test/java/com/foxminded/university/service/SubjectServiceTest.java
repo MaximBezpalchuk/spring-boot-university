@@ -12,7 +12,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,7 +19,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -46,7 +44,7 @@ public class SubjectServiceTest {
     void givenPageable_whenFindAll_thenAllPageableSubjectsFound() {
         List<Subject> subjects = Arrays.asList(Subject.builder().id(1).build());
         Page<Subject> expected = new PageImpl<>(subjects, PageRequest.of(0, 1), 1);
-        when(subjectRepository.findAll(isA(Pageable.class))).thenReturn(expected);
+        when(subjectRepository.findAll(PageRequest.of(0, 1))).thenReturn(expected);
         Page<Subject> actual = subjectService.findAll(PageRequest.of(0, 1));
 
         assertEquals(expected, actual);

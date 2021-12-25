@@ -12,10 +12,6 @@ import java.util.Objects;
         query = "SELECT v FROM Vacation v WHERE v.teacher.id=:teacher_id AND FUNCTION('YEAR',v.start)=:year"
     ),
     @NamedQuery(
-        name = "Vacation.findByPeriodAndTeacher",
-        query = "SELECT v FROM Vacation v WHERE v.start=:start AND v.end=:end AND v.teacher=:teacher"
-    ),
-    @NamedQuery(
         name = "Vacation.findByDateInPeriodAndTeacher",
         query = "SELECT v FROM Vacation v WHERE v.start >=:date AND v.end<=:date AND v.teacher=:teacher"
     )

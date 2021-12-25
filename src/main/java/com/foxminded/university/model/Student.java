@@ -4,14 +4,6 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
-@NamedQueries(
-    {
-        @NamedQuery(
-            name = "Student.findByFullNameAndBirthDate",
-            query = "SELECT s FROM Student s WHERE s.firstName=:first_name AND s.lastName=:last_name AND s.birthDate=:birth_date"
-        )
-    })
-
 @Entity
 @Table(name = "students")
 public class Student extends Person {
