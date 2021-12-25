@@ -24,17 +24,17 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @Transactional
-public class StudentDaoTest {
+public class StudentRepositoryTest {
 
     @Autowired
     private EntityManager entityManager;
     @Autowired
-    private StudentDao studentDao;
+    private StudentRepository studentRepository;
 
     @Test
     void whenFindAll_thenAllExistingStudentsFound() {
         int expected = (int) (long) entityManager.createQuery("SELECT COUNT(s) FROM Student s").getSingleResult();
-        List<Student> actual = studentDao.findAll();
+        List<Student> actual = studentRepository.findAll();
 
         assertEquals(actual.size(), expected);
     }
@@ -55,7 +55,7 @@ public class StudentDaoTest {
             .group(group)
             .id(1)
             .build());
-        Page<Student> actual = studentDao.findAll(PageRequest.of(0, 1));
+        Page<Student> actual = studentRepository.findAll(PageRequest.of(0, 1));
         Page<Student> expected = new PageImpl<>(students, PageRequest.of(0, 1), 5);
 
         assertEquals(expected, actual);
@@ -77,14 +77,14 @@ public class StudentDaoTest {
             .group(group)
             .id(1)
             .build());
-        Optional<Student> actual = studentDao.findById(1);
+        Optional<Student> actual = studentRepository.findById(1);
 
         assertEquals(expected, actual);
     }
 
     @Test
     void givenNotExistingStudent_whenFindById_thenReturnEmptyOptional() {
-        assertEquals(studentDao.findById(100), Optional.empty());
+        assertEquals(studentRepository.findById(100), Optional.empty());
     }
 
     @Test
@@ -102,7 +102,7 @@ public class StudentDaoTest {
             .education("General secondary education")
             .group(group)
             .build();
-        studentDao.save(expected);
+        studentRepository.save(expected);
         Student actual = entityManager.find(Student.class, 6);
 
         assertEquals(expected, actual);
@@ -112,7 +112,7 @@ public class StudentDaoTest {
     void givenExistingStudent_whenSaveWithChanges_thenChangesApplied() {
         Student expected = entityManager.find(Student.class, 1);
         expected.setFirstName("Test Name");
-        studentDao.save(expected);
+        studentRepository.save(expected);
         Student actual = entityManager.find(Student.class, 1);
 
         assertEquals(expected, actual);
@@ -120,7 +120,7 @@ public class StudentDaoTest {
 
     @Test
     void whenDeleteExistingStudent_thenStudentDeleted() {
-        studentDao.delete(Student.builder().id(2).build());
+        studentRepository.delete(Student.builder().id(2).build());
         Student actual = entityManager.find(Student.class, 2);
 
         assertNull(actual);
@@ -142,7 +142,7 @@ public class StudentDaoTest {
             .group(group)
             .id(1)
             .build());
-        Optional<Student> actual = studentDao.findByFullNameAndBirthDate(expected.get().getFirstName(),
+        Optional<Student> actual = studentRepository.findByFullNameAndBirthDate(expected.get().getFirstName(),
             expected.get().getLastName(), expected.get().getBirthDate());
 
         assertEquals(expected, actual);
@@ -178,7 +178,7 @@ public class StudentDaoTest {
             .id(5)
             .build();
         List<Student> expected = Arrays.asList(student1, student2);
-        List<Student> actual = studentDao.findByGroupId(2);
+        List<Student> actual = studentRepository.findByGroupId(2);
 
         assertEquals(expected, actual);
     }

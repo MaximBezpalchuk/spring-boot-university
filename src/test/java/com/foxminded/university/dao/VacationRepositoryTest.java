@@ -23,17 +23,17 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @Transactional
-public class VacationDaoTest {
+public class VacationRepositoryTest {
 
     @Autowired
     private EntityManager entityManager;
     @Autowired
-    private VacationDao vacationDao;
+    private VacationRepository vacationRepository;
 
     @Test
     void whenFindAll_thenAllExistingVacationsFound() {
         int expected = (int) (long) entityManager.createQuery("SELECT COUNT(v) FROM Vacation v").getSingleResult();
-        List<Vacation> actual = vacationDao.findAll();
+        List<Vacation> actual = vacationRepository.findAll();
 
         assertEquals(actual.size(), expected);
     }
@@ -48,7 +48,7 @@ public class VacationDaoTest {
             .teacher(teacher)
             .build());
         Page<Vacation> expected = new PageImpl<>(vacations, PageRequest.of(0, 1), 2);
-        Page<Vacation> actual = vacationDao.findAllByTeacherId(PageRequest.of(0, 1), 1);
+        Page<Vacation> actual = vacationRepository.findAllByTeacherId(PageRequest.of(0, 1), 1);
 
         assertEquals(expected, actual);
     }
@@ -62,14 +62,14 @@ public class VacationDaoTest {
             .end(LocalDate.of(2021, 1, 29))
             .teacher(teacher)
             .build());
-        Optional<Vacation> actual = vacationDao.findById(1);
+        Optional<Vacation> actual = vacationRepository.findById(1);
 
         assertEquals(expected, actual);
     }
 
     @Test
     void givenNotExistingVacation_whenFindById_thenReturnEmptyOptional() {
-        assertEquals(vacationDao.findById(100), Optional.empty());
+        assertEquals(vacationRepository.findById(100), Optional.empty());
     }
 
     @Test
@@ -79,7 +79,7 @@ public class VacationDaoTest {
             .end(LocalDate.of(2021, 3, 29))
             .teacher(entityManager.find(Teacher.class, 1))
             .build();
-        vacationDao.save(expected);
+        vacationRepository.save(expected);
         Vacation actual = entityManager.find(Vacation.class, 5);
 
         assertEquals(expected, actual);
@@ -93,7 +93,7 @@ public class VacationDaoTest {
             .end(LocalDate.of(2021, 1, 1))
             .teacher(entityManager.find(Teacher.class, 2))
             .build();
-        vacationDao.save(expected);
+        vacationRepository.save(expected);
         Vacation actual = entityManager.find(Vacation.class, 1);
 
         assertEquals(expected, actual);
@@ -101,7 +101,7 @@ public class VacationDaoTest {
 
     @Test
     void whenDeleteExistingVacation_thenVacationDeleted() {
-        vacationDao.delete(Vacation.builder().id(2).build());
+        vacationRepository.delete(Vacation.builder().id(2).build());
         Vacation actual = entityManager.find(Vacation.class, 2);
 
         assertNull(actual);
@@ -122,7 +122,7 @@ public class VacationDaoTest {
             .teacher(entityManager.find(Teacher.class, 1))
             .build();
         List<Vacation> expected = Arrays.asList(vacation1, vacation2);
-        List<Vacation> actual = vacationDao.findByTeacherId(1);
+        List<Vacation> actual = vacationRepository.findByTeacherId(1);
 
         assertEquals(expected, actual);
     }
@@ -136,7 +136,7 @@ public class VacationDaoTest {
             .end(LocalDate.of(2021, 1, 29))
             .teacher(teacher)
             .build());
-        Optional<Vacation> actual = vacationDao.findByPeriodAndTeacher(expected.get().getStart(),
+        Optional<Vacation> actual = vacationRepository.findByPeriodAndTeacher(expected.get().getStart(),
             expected.get().getEnd(), teacher);
 
         assertEquals(expected, actual);
@@ -157,7 +157,7 @@ public class VacationDaoTest {
             .end(LocalDate.of(2021, 6, 29))
             .teacher(teacher)
             .build();
-        List<Vacation> actual = vacationDao.findByTeacherIdAndYear(1, 2021);
+        List<Vacation> actual = vacationRepository.findByTeacherIdAndYear(1, 2021);
 
         assertEquals(Arrays.asList(vacation1, vacation2), actual);
     }

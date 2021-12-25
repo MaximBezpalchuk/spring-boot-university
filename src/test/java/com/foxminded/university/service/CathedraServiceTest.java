@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.CathedraDao;
+import com.foxminded.university.dao.CathedraRepository;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Cathedra;
@@ -23,14 +23,14 @@ import static org.mockito.Mockito.when;
 public class CathedraServiceTest {
 
     @Mock
-    private CathedraDao cathedraDao;
+    private CathedraRepository cathedraRepository;
     @InjectMocks
     private CathedraService cathedraService;
 
     @Test
     void givenListOfCathedras_whenFindAll_thenAllExistingCathedrasFound() {
         List<Cathedra> expected = Arrays.asList(Cathedra.builder().id(1).build());
-        when(cathedraDao.findAll()).thenReturn(expected);
+        when(cathedraRepository.findAll()).thenReturn(expected);
         List<Cathedra> actual = cathedraService.findAll();
 
         assertEquals(expected, actual);
@@ -39,7 +39,7 @@ public class CathedraServiceTest {
     @Test
     void givenExistingCathedra_whenFindById_thenCathedraFound() throws EntityNotFoundException {
         Optional<Cathedra> expected = Optional.of(Cathedra.builder().id(1).build());
-        when(cathedraDao.findById(1)).thenReturn(expected);
+        when(cathedraRepository.findById(1)).thenReturn(expected);
         Cathedra actual = cathedraService.findById(1);
 
         assertEquals(expected.get(), actual);
@@ -47,7 +47,7 @@ public class CathedraServiceTest {
 
     @Test
     void givenExistingCathedra_whenFindById_thenEntityNotFoundException() {
-        when(cathedraDao.findById(10)).thenReturn(Optional.empty());
+        when(cathedraRepository.findById(10)).thenReturn(Optional.empty());
         Exception exception = assertThrows(EntityNotFoundException.class, () -> {
             cathedraService.findById(10);
         });
@@ -60,16 +60,16 @@ public class CathedraServiceTest {
         Cathedra cathedra = Cathedra.builder().build();
         cathedraService.save(cathedra);
 
-        verify(cathedraDao).save(cathedra);
+        verify(cathedraRepository).save(cathedra);
     }
 
     @Test
     void givenExistingCathedra_whenSave_thenSaved() {
         Cathedra cathedra = Cathedra.builder().name("TestName").build();
-        when(cathedraDao.findByName(cathedra.getName())).thenReturn(Optional.of(cathedra));
+        when(cathedraRepository.findByName(cathedra.getName())).thenReturn(Optional.of(cathedra));
         cathedraService.save(cathedra);
 
-        verify(cathedraDao).save(cathedra);
+        verify(cathedraRepository).save(cathedra);
     }
 
     @Test
@@ -77,14 +77,14 @@ public class CathedraServiceTest {
         Cathedra cathedra = Cathedra.builder().id(1).build();
         cathedraService.delete(cathedra);
 
-        verify(cathedraDao).delete(cathedra);
+        verify(cathedraRepository).delete(cathedra);
     }
 
     @Test
     void givenNotUniqueCathedra_whenSave_thenEntityNotUniqueException() {
         Cathedra cathedra1 = Cathedra.builder().id(1).name("Test1").build();
         Cathedra cathedra2 = Cathedra.builder().id(2).name("Test2").build();
-        when(cathedraDao.findByName(cathedra1.getName())).thenReturn(Optional.of(cathedra2));
+        when(cathedraRepository.findByName(cathedra1.getName())).thenReturn(Optional.of(cathedra2));
         Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
             cathedraService.save(cathedra1);
         });

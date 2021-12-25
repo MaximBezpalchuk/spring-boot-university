@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface VacationDao extends JpaRepository<Vacation, Integer> {
+public interface VacationRepository extends JpaRepository<Vacation, Integer> {
 
     List<Vacation> findByTeacherId(int id);
 

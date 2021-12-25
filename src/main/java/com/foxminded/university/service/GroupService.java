@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.GroupDao;
+import com.foxminded.university.dao.GroupRepository;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Group;
@@ -16,37 +16,37 @@ public class GroupService {
 
     private static final Logger logger = LoggerFactory.getLogger(GroupService.class);
 
-    private final GroupDao groupDao;
+    private final GroupRepository groupRepository;
 
-    public GroupService(GroupDao groupDao) {
-        this.groupDao = groupDao;
+    public GroupService(GroupRepository groupRepository) {
+        this.groupRepository = groupRepository;
     }
 
     public List<Group> findAll() {
         logger.debug("Find all groups");
-        return groupDao.findAll();
+        return groupRepository.findAll();
     }
 
     public Group findById(int id) {
         logger.debug("Find group by id {}", id);
-        return groupDao.findById(id)
+        return groupRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Can`t find any group with id: " + id));
     }
 
     public void save(Group group) {
         logger.debug("Save group");
         uniqueCheck(group);
-        groupDao.save(group);
+        groupRepository.save(group);
     }
 
     public void delete(Group group) {
         logger.debug("Delete group with id: {}", group.getId());
-        groupDao.delete(group);
+        groupRepository.delete(group);
     }
 
     private void uniqueCheck(Group group) {
         logger.debug("Check group is unique");
-        Optional<Group> existingGroup = groupDao.findByName(group.getName());
+        Optional<Group> existingGroup = groupRepository.findByName(group.getName());
         if (existingGroup.isPresent() && (existingGroup.get().getId() != group.getId())) {
             throw new EntityNotUniqueException("Group with name " + group.getName() + " is already exists!");
         }

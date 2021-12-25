@@ -1,13 +1,13 @@
 package com.foxminded.university.dao;
 
-import com.foxminded.university.model.Cathedra;
+import com.foxminded.university.model.Audience;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface CathedraDao extends JpaRepository<Cathedra, Integer> {
+public interface AudienceRepository extends JpaRepository<Audience, Integer> {
 
-    Optional<Cathedra> findByName(String name);
+    Optional<Audience> findByRoom(int room);
 }

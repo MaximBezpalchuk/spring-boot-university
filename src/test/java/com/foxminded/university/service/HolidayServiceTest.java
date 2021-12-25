@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.HolidayDao;
+import com.foxminded.university.dao.HolidayRepository;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Holiday;
@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
 public class HolidayServiceTest {
 
     @Mock
-    private HolidayDao holidayDao;
+    private HolidayRepository holidayRepository;
     @InjectMocks
     private HolidayService holidayService;
 
@@ -37,7 +37,7 @@ public class HolidayServiceTest {
     void givenListOfHolidays_whenFindAll_thenAllExistingHolidaysFound() {
         Holiday holiday1 = Holiday.builder().id(1).build();
         List<Holiday> expected = Arrays.asList(holiday1);
-        when(holidayDao.findAll()).thenReturn(expected);
+        when(holidayRepository.findAll()).thenReturn(expected);
         List<Holiday> actual = holidayService.findAll();
 
         assertEquals(expected, actual);
@@ -47,7 +47,7 @@ public class HolidayServiceTest {
     void givenPageable_whenFindAll_thenAllPageableHolidaysFound() {
         List<Holiday> holidays = Arrays.asList(Holiday.builder().id(1).build());
         Page<Holiday> expected = new PageImpl<>(holidays, PageRequest.of(0, 1), 1);
-        when(holidayDao.findAll(isA(Pageable.class))).thenReturn(expected);
+        when(holidayRepository.findAll(isA(Pageable.class))).thenReturn(expected);
         Page<Holiday> actual = holidayService.findAll(PageRequest.of(0, 1));
 
         assertEquals(expected, actual);
@@ -56,7 +56,7 @@ public class HolidayServiceTest {
     @Test
     void givenExistingHoliday_whenFindById_thenHolidayFound() {
         Optional<Holiday> expected = Optional.of(Holiday.builder().id(1).build());
-        when(holidayDao.findById(1)).thenReturn(expected);
+        when(holidayRepository.findById(1)).thenReturn(expected);
         Holiday actual = holidayService.findById(1);
 
         assertEquals(expected.get(), actual);
@@ -64,7 +64,7 @@ public class HolidayServiceTest {
 
     @Test
     void givenExistingHoliday_whenFindById_thenEntityNotFoundException() {
-        when(holidayDao.findById(10)).thenReturn(Optional.empty());
+        when(holidayRepository.findById(10)).thenReturn(Optional.empty());
         Exception exception = assertThrows(EntityNotFoundException.class, () -> {
             holidayService.findById(10);
         });
@@ -77,7 +77,7 @@ public class HolidayServiceTest {
         Holiday holiday = Holiday.builder().build();
         holidayService.save(holiday);
 
-        verify(holidayDao).save(holiday);
+        verify(holidayRepository).save(holiday);
     }
 
     @Test
@@ -86,10 +86,10 @@ public class HolidayServiceTest {
             .name("TestName")
             .date(LocalDate.of(2020, 1, 1))
             .build();
-        when(holidayDao.findByNameAndDate(holiday.getName(), holiday.getDate())).thenReturn(Optional.of(holiday));
+        when(holidayRepository.findByNameAndDate(holiday.getName(), holiday.getDate())).thenReturn(Optional.of(holiday));
         holidayService.save(holiday);
 
-        verify(holidayDao).save(holiday);
+        verify(holidayRepository).save(holiday);
     }
 
     @Test
@@ -97,7 +97,7 @@ public class HolidayServiceTest {
         Holiday holiday = Holiday.builder().id(1).build();
         holidayService.delete(holiday);
 
-        verify(holidayDao).delete(holiday);
+        verify(holidayRepository).delete(holiday);
     }
 
     @Test
@@ -112,7 +112,7 @@ public class HolidayServiceTest {
             .name("TestName")
             .date(LocalDate.of(2020, 1, 1))
             .build();
-        when(holidayDao.findByNameAndDate(holiday1.getName(), holiday1.getDate())).thenReturn(Optional.of(holiday2));
+        when(holidayRepository.findByNameAndDate(holiday1.getName(), holiday1.getDate())).thenReturn(Optional.of(holiday2));
         Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
             holidayService.save(holiday1);
         });

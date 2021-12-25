@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.SubjectDao;
+import com.foxminded.university.dao.SubjectRepository;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Subject;
@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 public class SubjectServiceTest {
 
     @Mock
-    private SubjectDao subjectDao;
+    private SubjectRepository subjectRepository;
     @InjectMocks
     private SubjectService subjectService;
 
@@ -36,7 +36,7 @@ public class SubjectServiceTest {
     void givenListOfSubjects_whenFindAll_thenAllExistingSubjectsFound() {
         Subject subject1 = Subject.builder().id(1).build();
         List<Subject> expected = Arrays.asList(subject1);
-        when(subjectDao.findAll()).thenReturn(expected);
+        when(subjectRepository.findAll()).thenReturn(expected);
         List<Subject> actual = subjectService.findAll();
 
         assertEquals(expected, actual);
@@ -46,7 +46,7 @@ public class SubjectServiceTest {
     void givenPageable_whenFindAll_thenAllPageableSubjectsFound() {
         List<Subject> subjects = Arrays.asList(Subject.builder().id(1).build());
         Page<Subject> expected = new PageImpl<>(subjects, PageRequest.of(0, 1), 1);
-        when(subjectDao.findAll(isA(Pageable.class))).thenReturn(expected);
+        when(subjectRepository.findAll(isA(Pageable.class))).thenReturn(expected);
         Page<Subject> actual = subjectService.findAll(PageRequest.of(0, 1));
 
         assertEquals(expected, actual);
@@ -55,7 +55,7 @@ public class SubjectServiceTest {
     @Test
     void givenExistingSubject_whenFindById_thenSubjectFound() {
         Optional<Subject> expected = Optional.of(Subject.builder().id(1).build());
-        when(subjectDao.findById(1)).thenReturn(expected);
+        when(subjectRepository.findById(1)).thenReturn(expected);
         Subject actual = subjectService.findById(1);
 
         assertEquals(expected.get(), actual);
@@ -63,7 +63,7 @@ public class SubjectServiceTest {
 
     @Test
     void givenExistingSubject_whenFindById_thenEntityNotFoundException() {
-        when(subjectDao.findById(10)).thenReturn(Optional.empty());
+        when(subjectRepository.findById(10)).thenReturn(Optional.empty());
         Exception exception = assertThrows(EntityNotFoundException.class, () -> {
             subjectService.findById(10);
         });
@@ -76,16 +76,16 @@ public class SubjectServiceTest {
         Subject subject = Subject.builder().id(1).build();
         subjectService.save(subject);
 
-        verify(subjectDao).save(subject);
+        verify(subjectRepository).save(subject);
     }
 
     @Test
     void givenExistingSubject_whenSave_thenSaved() {
         Subject subject = Subject.builder().id(1).name("TestName").build();
-        when(subjectDao.findByName(subject.getName())).thenReturn(Optional.of(subject));
+        when(subjectRepository.findByName(subject.getName())).thenReturn(Optional.of(subject));
         subjectService.save(subject);
 
-        verify(subjectDao).save(subject);
+        verify(subjectRepository).save(subject);
     }
 
     @Test
@@ -93,14 +93,14 @@ public class SubjectServiceTest {
         Subject subject = Subject.builder().id(1).build();
         subjectService.delete(subject);
 
-        verify(subjectDao).delete(subject);
+        verify(subjectRepository).delete(subject);
     }
 
     @Test
     void givenNotUniqueSubject_whenSave_thenEntityNotUniqueException() {
         Subject subject1 = Subject.builder().id(1).name("TestName").build();
         Subject subject2 = Subject.builder().id(2).name("TestName").build();
-        when(subjectDao.findByName(subject1.getName())).thenReturn(Optional.of(subject2));
+        when(subjectRepository.findByName(subject1.getName())).thenReturn(Optional.of(subject2));
         Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
             subjectService.save(subject1);
         });

@@ -17,17 +17,17 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @Transactional
-public class CathedraDaoTest {
+public class CathedraRepositoryTest {
 
     @Autowired
     private EntityManager entityManager;
     @Autowired
-    private CathedraDao cathedraDao;
+    private CathedraRepository cathedraRepository;
 
     @Test
     void whenFindAll_thenAllExistingCathedrasFound() {
         int expected = (int) (long) entityManager.createQuery("SELECT COUNT(c) FROM Cathedra c").getSingleResult();
-        List<Cathedra> actual = cathedraDao.findAll();
+        List<Cathedra> actual = cathedraRepository.findAll();
 
         assertEquals(actual.size(), expected);
     }
@@ -38,20 +38,20 @@ public class CathedraDaoTest {
             .id(1)
             .name("Fantastic Cathedra")
             .build());
-        Optional<Cathedra> actual = cathedraDao.findById(1);
+        Optional<Cathedra> actual = cathedraRepository.findById(1);
 
         assertEquals(expected, actual);
     }
 
     @Test
     void givenNotExistingCathedra_whenFindById_thenReturnEmptyOptional() {
-        assertEquals(cathedraDao.findById(100), Optional.empty());
+        assertEquals(cathedraRepository.findById(100), Optional.empty());
     }
 
     @Test
     void givenNewCathedra_whenSaveCathedra_thenAllExistingCathedrasFound() {
         Cathedra expected = Cathedra.builder().name("Fantastic Cathedra 2").build();
-        cathedraDao.save(expected);
+        cathedraRepository.save(expected);
         Cathedra actual = entityManager.find(Cathedra.class, 2);
 
         assertEquals(expected, actual);
@@ -61,7 +61,7 @@ public class CathedraDaoTest {
     void givenExistingCathedra_whenSaveWithChanges_thenChangesApplied() {
         Cathedra expected = entityManager.find(Cathedra.class, 1);
         expected.setName("Test name");
-        cathedraDao.save(expected);
+        cathedraRepository.save(expected);
         Cathedra actual = entityManager.find(Cathedra.class, 1);
 
         assertEquals(expected, actual);
@@ -69,7 +69,7 @@ public class CathedraDaoTest {
 
     @Test
     void whenDeleteExistingCathedra_thenCathedraDeleted() {
-        cathedraDao.delete(Cathedra.builder().id(1).build());
+        cathedraRepository.delete(Cathedra.builder().id(1).build());
         Cathedra actual = entityManager.find(Cathedra.class, 1);
 
         assertNull(actual);
@@ -81,7 +81,7 @@ public class CathedraDaoTest {
             .id(1)
             .name("Fantastic Cathedra")
             .build());
-        Optional<Cathedra> actual = cathedraDao.findByName("Fantastic Cathedra");
+        Optional<Cathedra> actual = cathedraRepository.findByName("Fantastic Cathedra");
 
         assertEquals(expected, actual);
     }

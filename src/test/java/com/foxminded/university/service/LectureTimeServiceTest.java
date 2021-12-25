@@ -1,7 +1,7 @@
 package com.foxminded.university.service;
 
 import com.foxminded.university.config.UniversityConfigProperties;
-import com.foxminded.university.dao.LectureTimeDao;
+import com.foxminded.university.dao.LectureTimeRepository;
 import com.foxminded.university.exception.ChosenDurationException;
 import com.foxminded.university.exception.DurationException;
 import com.foxminded.university.exception.EntityNotFoundException;
@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
 public class LectureTimeServiceTest {
 
     @Mock
-    private LectureTimeDao lectureTimeDao;
+    private LectureTimeRepository lectureTimeRepository;
     @Mock
     private UniversityConfigProperties universityConfig;
     @InjectMocks
@@ -38,7 +38,7 @@ public class LectureTimeServiceTest {
     void givenListOfLectureTimes_whenFindAll_thenAllExistingLectureTimesFound() {
         LectureTime lectureTime1 = LectureTime.builder().id(1).build();
         List<LectureTime> expected = Arrays.asList(lectureTime1);
-        when(lectureTimeDao.findAll()).thenReturn(expected);
+        when(lectureTimeRepository.findAll()).thenReturn(expected);
         List<LectureTime> actual = lectureTimeService.findAll();
 
         assertEquals(expected, actual);
@@ -47,7 +47,7 @@ public class LectureTimeServiceTest {
     @Test
     void givenExistingLectureTime_whenFindById_thenLectureTimeFound() {
         Optional<LectureTime> expected = Optional.of(LectureTime.builder().id(1).build());
-        when(lectureTimeDao.findById(1)).thenReturn(expected);
+        when(lectureTimeRepository.findById(1)).thenReturn(expected);
         LectureTime actual = lectureTimeService.findById(1);
 
         assertEquals(expected.get(), actual);
@@ -55,7 +55,7 @@ public class LectureTimeServiceTest {
 
     @Test
     void givenExistingLectureTime_whenFindById_thenEntityNotFoundException() {
-        when(lectureTimeDao.findById(100)).thenReturn(Optional.empty());
+        when(lectureTimeRepository.findById(100)).thenReturn(Optional.empty());
         Exception exception = assertThrows(EntityNotFoundException.class, () -> {
             lectureTimeService.findById(100);
         });
@@ -73,7 +73,7 @@ public class LectureTimeServiceTest {
                 .build();
         lectureTimeService.save(lectureTime);
 
-        verify(lectureTimeDao).save(lectureTime);
+        verify(lectureTimeRepository).save(lectureTime);
     }
 
     @Test
@@ -84,10 +84,10 @@ public class LectureTimeServiceTest {
                 .start(start)
                 .end(end)
                 .build();
-        when(lectureTimeDao.findByStartAndEnd(start, end)).thenReturn(Optional.of(lectureTime));
+        when(lectureTimeRepository.findByStartAndEnd(start, end)).thenReturn(Optional.of(lectureTime));
         lectureTimeService.save(lectureTime);
 
-        verify(lectureTimeDao).save(lectureTime);
+        verify(lectureTimeRepository).save(lectureTime);
     }
 
     @Test
@@ -104,7 +104,7 @@ public class LectureTimeServiceTest {
                 .start(start)
                 .end(end)
                 .build();
-        when(lectureTimeDao.findByStartAndEnd(lectureTime1.getStart(),
+        when(lectureTimeRepository.findByStartAndEnd(lectureTime1.getStart(),
                 lectureTime1.getEnd())).thenReturn(Optional.of(lectureTime2));
         Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
             lectureTimeService.save(lectureTime1);
@@ -150,6 +150,6 @@ public class LectureTimeServiceTest {
         LectureTime lectureTime = LectureTime.builder().id(1).build();
         lectureTimeService.delete(lectureTime);
 
-        verify(lectureTimeDao).delete(lectureTime);
+        verify(lectureTimeRepository).delete(lectureTime);
     }
 }

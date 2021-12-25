@@ -22,17 +22,17 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @Transactional
-public class SubjectDaoTest {
+public class SubjectRepositoryTest {
 
     @Autowired
     private EntityManager entityManager;
     @Autowired
-    private SubjectDao subjectDao;
+    private SubjectRepository subjectRepository;
 
     @Test
     void whenFindAll_thenAllExistingSubjectsFound() {
         int expected = (int) (long) entityManager.createQuery("SELECT COUNT(s) FROM Subject s").getSingleResult();
-        List<Subject> actual = subjectDao.findAll();
+        List<Subject> actual = subjectRepository.findAll();
 
         assertEquals(actual.size(), expected);
     }
@@ -46,7 +46,7 @@ public class SubjectDaoTest {
             .id(1)
             .build());
         Page<Subject> expected = new PageImpl<>(subjects, PageRequest.of(0, 1), 3);
-        Page<Subject> actual = subjectDao.findAll(PageRequest.of(0, 1));
+        Page<Subject> actual = subjectRepository.findAll(PageRequest.of(0, 1));
 
         assertEquals(expected, actual);
     }
@@ -59,14 +59,14 @@ public class SubjectDaoTest {
             .description("Learning how to use heavy weapon and guerrilla tactics")
             .id(1)
             .build());
-        Optional<Subject> actual = subjectDao.findById(1);
+        Optional<Subject> actual = subjectRepository.findById(1);
 
         assertEquals(expected, actual);
     }
 
     @Test
     void givenNotExistingSubject_whenFindById_thenReturnEmptyOptional() {
-        assertEquals(subjectDao.findById(100), Optional.empty());
+        assertEquals(subjectRepository.findById(100), Optional.empty());
     }
 
     @Test
@@ -76,7 +76,7 @@ public class SubjectDaoTest {
             .name("Weapon Tactics123")
             .description("Learning how to use heavy weapon and guerrilla tactics123")
             .build();
-        subjectDao.save(expected);
+        subjectRepository.save(expected);
         Subject actual = entityManager.find(Subject.class, 4);
 
         assertEquals(expected, actual);
@@ -86,7 +86,7 @@ public class SubjectDaoTest {
     void givenExistingSubject_whenSaveWithChanges_thenChangesApplied() {
         Subject expected = entityManager.find(Subject.class, 1);
         expected.setName("Test Name");
-        subjectDao.save(expected);
+        subjectRepository.save(expected);
         Subject actual = entityManager.find(Subject.class, 1);
 
         assertEquals(expected, actual);
@@ -94,7 +94,7 @@ public class SubjectDaoTest {
 
     @Test
     void whenDeleteExistingSubject_thenSubjectDeleted() {
-        subjectDao.delete(Subject.builder().id(2).build());
+        subjectRepository.delete(Subject.builder().id(2).build());
         Subject actual = entityManager.find(Subject.class, 2);
 
         assertNull(actual);
@@ -108,7 +108,7 @@ public class SubjectDaoTest {
             .description("Learning how to use heavy weapon and guerrilla tactics")
             .id(1)
             .build());
-        Optional<Subject> actual = subjectDao.findByName("Weapon Tactics");
+        Optional<Subject> actual = subjectRepository.findByName("Weapon Tactics");
 
         assertEquals(expected, actual);
     }

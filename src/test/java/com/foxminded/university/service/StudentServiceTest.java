@@ -1,7 +1,7 @@
 package com.foxminded.university.service;
 
 import com.foxminded.university.config.UniversityConfigProperties;
-import com.foxminded.university.dao.StudentDao;
+import com.foxminded.university.dao.StudentRepository;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.exception.GroupOverflowException;
@@ -37,7 +37,7 @@ import static org.mockito.Mockito.when;
 public class StudentServiceTest {
 
     @Mock
-    private StudentDao studentDao;
+    private StudentRepository studentRepository;
     @Mock
     private UniversityConfigProperties universityConfig;
     @InjectMocks
@@ -53,7 +53,7 @@ public class StudentServiceTest {
     void givenListOfStudents_whenFindAll_thenAllExistingStudentsFound() {
         Student student1 = Student.builder().id(1).build();
         List<Student> expected = Arrays.asList(student1);
-        when(studentDao.findAll()).thenReturn(expected);
+        when(studentRepository.findAll()).thenReturn(expected);
         List<Student> actual = studentService.findAll();
 
         assertEquals(expected, actual);
@@ -63,7 +63,7 @@ public class StudentServiceTest {
     void givenPageable_whenFindAll_thenAllPageableStudentsFound() {
         List<Student> students = Arrays.asList(Student.builder().id(1).build());
         Page<Student> expected = new PageImpl<>(students, PageRequest.of(0, 1), 1);
-        when(studentDao.findAll(isA(Pageable.class))).thenReturn(expected);
+        when(studentRepository.findAll(isA(Pageable.class))).thenReturn(expected);
         Page<Student> actual = studentService.findAll(PageRequest.of(0, 1));
 
         assertEquals(expected, actual);
@@ -72,7 +72,7 @@ public class StudentServiceTest {
     @Test
     void givenExistingStudent_whenFindById_thenStudentFound() {
         Optional<Student> expected = Optional.of(Student.builder().id(1).build());
-        when(studentDao.findById(1)).thenReturn(expected);
+        when(studentRepository.findById(1)).thenReturn(expected);
         Student actual = studentService.findById(1);
 
         assertEquals(expected.get(), actual);
@@ -80,7 +80,7 @@ public class StudentServiceTest {
 
     @Test
     void givenExistingStudent_whenFindById_thenEntityNotFoundException() {
-        when(studentDao.findById(10)).thenReturn(Optional.empty());
+        when(studentRepository.findById(10)).thenReturn(Optional.empty());
         Exception exception = assertThrows(EntityNotFoundException.class, () -> {
             studentService.findById(10);
         });
@@ -91,12 +91,12 @@ public class StudentServiceTest {
     @Test
     void givenNewStudent_whenSave_thenSaved() {
         Student student = Student.builder().id(1).group(Group.builder().name("Test").build()).build();
-        when(studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
+        when(studentRepository.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
                 student.getBirthDate())).thenReturn(Optional.of(student));
-        when(studentDao.findByGroupId(student.getGroup().getId())).thenReturn(new ArrayList<>());
+        when(studentRepository.findByGroupId(student.getGroup().getId())).thenReturn(new ArrayList<>());
         studentService.save(student);
 
-        verify(studentDao).save(student);
+        verify(studentRepository).save(student);
     }
 
     @Test
@@ -107,12 +107,12 @@ public class StudentServiceTest {
                 .lastName("TestLastName")
                 .group(Group.builder().id(10).name("Test").build())
                 .build();
-        when(studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
+        when(studentRepository.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
                 student.getBirthDate())).thenReturn(Optional.of(student));
-        when(studentDao.findByGroupId(student.getGroup().getId())).thenReturn(new ArrayList<>());
+        when(studentRepository.findByGroupId(student.getGroup().getId())).thenReturn(new ArrayList<>());
         studentService.save(student);
 
-        verify(studentDao).save(student);
+        verify(studentRepository).save(student);
     }
 
     @Test
@@ -131,7 +131,7 @@ public class StudentServiceTest {
                 .birthDate(LocalDate.of(2020, 1, 1))
                 .group(Group.builder().id(10).name("Test").build())
                 .build();
-        when(studentDao.findByFullNameAndBirthDate(student1.getFirstName(),
+        when(studentRepository.findByFullNameAndBirthDate(student1.getFirstName(),
                 student1.getLastName(), student1.getBirthDate())).thenReturn(Optional.of(student2));
         Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
             studentService.save(student1);
@@ -149,9 +149,9 @@ public class StudentServiceTest {
                 .lastName("TestLastName")
                 .group(Group.builder().id(10).name("Test").build())
                 .build();
-        when(studentDao.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
+        when(studentRepository.findByFullNameAndBirthDate(student.getFirstName(), student.getLastName(),
                 student.getBirthDate())).thenReturn(Optional.of(student));
-        when(studentDao.findByGroupId(student.getGroup().getId())).thenReturn(Arrays.asList(student, student));
+        when(studentRepository.findByGroupId(student.getGroup().getId())).thenReturn(Arrays.asList(student, student));
         Exception exception = assertThrows(GroupOverflowException.class, () -> {
             studentService.save(student);
         });
@@ -164,6 +164,6 @@ public class StudentServiceTest {
         Student student = Student.builder().id(1).build();
         studentService.delete(student);
 
-        verify(studentDao).delete(student);
+        verify(studentRepository).delete(student);
     }
 }

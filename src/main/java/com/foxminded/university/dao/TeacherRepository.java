@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface TeacherDao extends JpaRepository<Teacher, Integer> {
+public interface TeacherRepository extends JpaRepository<Teacher, Integer> {
 
     Optional<Teacher> findByFullNameAndBirthDate(@Param("first_name") String firstName, @Param("last_name") String lastName, @Param("birth_date") LocalDate birthDate);
 

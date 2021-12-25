@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.TeacherDao;
+import com.foxminded.university.dao.TeacherRepository;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Lecture;
@@ -19,42 +19,42 @@ public class TeacherService {
 
     private static final Logger logger = LoggerFactory.getLogger(TeacherService.class);
 
-    private final TeacherDao teacherDao;
+    private final TeacherRepository teacherRepository;
 
-    public TeacherService(TeacherDao teacherDao) {
-        this.teacherDao = teacherDao;
+    public TeacherService(TeacherRepository teacherRepository) {
+        this.teacherRepository = teacherRepository;
     }
 
     public List<Teacher> findAll() {
         logger.debug("Find all teachers");
-        return teacherDao.findAll();
+        return teacherRepository.findAll();
     }
 
     public Page<Teacher> findAll(final Pageable pageable) {
         logger.debug("Find all teachers paginated");
-        return teacherDao.findAll(pageable);
+        return teacherRepository.findAll(pageable);
     }
 
     public Teacher findById(int id) {
         logger.debug("Find teacher by id {}", id);
-        return teacherDao.findById(id)
+        return teacherRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Can`t find any teacher with id: " + id));
     }
 
     public void save(Teacher teacher) {
         logger.debug("Save teacher");
         uniqueCheck(teacher);
-        teacherDao.save(teacher);
+        teacherRepository.save(teacher);
     }
 
     public void delete(Teacher teacher) {
         logger.debug("Delete teacher with id: {}", teacher.getId());
-        teacherDao.delete(teacher);
+        teacherRepository.delete(teacher);
     }
 
     private void uniqueCheck(Teacher teacher) {
         logger.debug("Check teacher is unique");
-        Optional<Teacher> existingTeacher = teacherDao.findByFullNameAndBirthDate(teacher.getFirstName(),
+        Optional<Teacher> existingTeacher = teacherRepository.findByFullNameAndBirthDate(teacher.getFirstName(),
             teacher.getLastName(), teacher.getBirthDate());
         if (existingTeacher.isPresent() && (existingTeacher.get().getId() != teacher.getId())) {
             throw new EntityNotUniqueException("Teacher with full name " + teacher.getFirstName() + " "
@@ -64,7 +64,7 @@ public class TeacherService {
 
     public List<Teacher> findTeachersForChange(Lecture lecture) {
         logger.debug("Find teachers who havent lectures and vacation this periodand who can teach this subject");
-        return teacherDao.findByFreeDateAndSubjectWithCurrentTeacher(lecture.getDate(), lecture.getTime(),
+        return teacherRepository.findByFreeDateAndSubjectWithCurrentTeacher(lecture.getDate(), lecture.getTime(),
             lecture.getSubject());
     }
 }

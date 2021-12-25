@@ -8,7 +8,7 @@ import java.time.LocalTime;
 import java.util.Optional;
 
 @Repository
-public interface LectureTimeDao extends JpaRepository<LectureTime, Integer> {
+public interface LectureTimeRepository extends JpaRepository<LectureTime, Integer> {
 
     Optional<LectureTime> findByStartAndEnd(LocalTime start, LocalTime end);
 }

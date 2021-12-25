@@ -18,17 +18,17 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @Transactional
-public class AudienceDaoTest {
+public class AudienceRepositoryTest {
 
     @Autowired
     private EntityManager entityManager;
     @Autowired
-    private AudienceDao audienceDao;
+    private AudienceRepository audienceRepository;
 
     @Test
     void whenFindAll_thenAllExistingAudiencesFound() {
         int expected = (int) (long) entityManager.createQuery("SELECT COUNT(a) FROM Audience a").getSingleResult();
-        List<Audience> actual = audienceDao.findAll();
+        List<Audience> actual = audienceRepository.findAll();
 
         assertEquals(actual.size(), expected);
     }
@@ -41,7 +41,7 @@ public class AudienceDaoTest {
             .capacity(10)
             .cathedra(entityManager.find(Cathedra.class, 1))
             .build());
-        Optional<Audience> actual = audienceDao.findById(1);
+        Optional<Audience> actual = audienceRepository.findById(1);
 
         assertEquals(expected, actual);
 
@@ -49,7 +49,7 @@ public class AudienceDaoTest {
 
     @Test
     void givenNotExistingAudience_whenFindById_thenReturnEmptyOptional() {
-        assertEquals(audienceDao.findById(100), Optional.empty());
+        assertEquals(audienceRepository.findById(100), Optional.empty());
     }
 
     @Test
@@ -59,7 +59,7 @@ public class AudienceDaoTest {
             .capacity(100)
             .cathedra(entityManager.find(Cathedra.class, 1))
             .build();
-        audienceDao.save(expected);
+        audienceRepository.save(expected);
         Audience actual = entityManager.find(Audience.class, 4);
 
         assertEquals(expected, actual);
@@ -69,7 +69,7 @@ public class AudienceDaoTest {
     void givenExistingAudience_whenSaveWithChanges_thenChangesApplied() {
         Audience expected = entityManager.find(Audience.class, 1);
         expected.setRoom(12345);
-        audienceDao.save(expected);
+        audienceRepository.save(expected);
         Audience actual = entityManager.find(Audience.class, 1);
 
         assertEquals(expected, actual);
@@ -77,7 +77,7 @@ public class AudienceDaoTest {
 
     @Test
     void whenDeleteExistingAudience_thenAudienceDeleted() {
-        audienceDao.delete(Audience.builder().id(2).build());
+        audienceRepository.delete(Audience.builder().id(2).build());
         Audience actual = entityManager.find(Audience.class, 2);
 
         assertNull(actual);
@@ -91,7 +91,7 @@ public class AudienceDaoTest {
             .capacity(10)
             .cathedra(entityManager.find(Cathedra.class, 1))
             .build());
-        Optional<Audience> actual = audienceDao.findByRoom(1);
+        Optional<Audience> actual = audienceRepository.findByRoom(1);
 
         assertEquals(expected, actual);
     }

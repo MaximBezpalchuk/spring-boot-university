@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface HolidayDao extends JpaRepository<Holiday, Integer> {
+public interface HolidayRepository extends JpaRepository<Holiday, Integer> {
 
     Optional<Holiday> findByNameAndDate(String name, LocalDate date);
 

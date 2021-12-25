@@ -22,17 +22,17 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @Transactional
-public class TeacherDaoTest {
+public class TeacherRepositoryTest {
 
     @Autowired
     private EntityManager entityManager;
     @Autowired
-    private TeacherDao teacherDao;
+    private TeacherRepository teacherRepository;
 
     @Test
     void whenFindAll_thenAllExistingTeachersFound() {
         int expected = (int) (long) entityManager.createQuery("SELECT COUNT(t) FROM Teacher t").getSingleResult();
-        List<Teacher> actual = teacherDao.findAll();
+        List<Teacher> actual = teacherRepository.findAll();
 
         assertEquals(actual.size(), expected);
     }
@@ -57,7 +57,7 @@ public class TeacherDaoTest {
             .subjects(Arrays.asList(subject))
             .build());
         Page<Teacher> expected = new PageImpl<>(teachers, PageRequest.of(0, 1), 2);
-        Page<Teacher> actual = teacherDao.findAll(PageRequest.of(0, 1));
+        Page<Teacher> actual = teacherRepository.findAll(PageRequest.of(0, 1));
 
         assertEquals(expected, actual);
     }
@@ -79,14 +79,14 @@ public class TeacherDaoTest {
             .subjects(Arrays.asList(entityManager.find(Subject.class, 1)))
             .id(1)
             .build());
-        Optional<Teacher> actual = teacherDao.findById(1);
+        Optional<Teacher> actual = teacherRepository.findById(1);
 
         assertEquals(expected, actual);
     }
 
     @Test
     void givenNotExistingTeacher_whenFindById_thenReturnEmptyOptional() {
-        assertEquals(teacherDao.findById(100), Optional.empty());
+        assertEquals(teacherRepository.findById(100), Optional.empty());
     }
 
     @Test
@@ -105,7 +105,7 @@ public class TeacherDaoTest {
             .education("Higher education")
             .subjects(Arrays.asList(entityManager.find(Subject.class, 1)))
             .build();
-        teacherDao.save(expected);
+        teacherRepository.save(expected);
         Teacher actual = entityManager.find(Teacher.class, 3);
 
         assertEquals(expected, actual);
@@ -128,7 +128,7 @@ public class TeacherDaoTest {
             .education("Higher education123")
             .subjects(Arrays.asList(entityManager.find(Subject.class, 1)))
             .build();
-        teacherDao.save(expected);
+        teacherRepository.save(expected);
         Teacher actual = entityManager.find(Teacher.class, 1);
 
         assertEquals(expected, actual);
@@ -136,7 +136,7 @@ public class TeacherDaoTest {
 
     @Test
     void whenDeleteExistingTeacher_thenTeacherDeleted() {
-        teacherDao.delete(Teacher.builder().id(2).build());
+        teacherRepository.delete(Teacher.builder().id(2).build());
         Teacher actual = entityManager.find(Teacher.class, 2);
 
         assertNull(actual);
@@ -159,7 +159,7 @@ public class TeacherDaoTest {
             .id(1)
             .subjects(Arrays.asList(entityManager.find(Subject.class, 1)))
             .build());
-        Optional<Teacher> actual = teacherDao.findByFullNameAndBirthDate(expected.get().getFirstName(),
+        Optional<Teacher> actual = teacherRepository.findByFullNameAndBirthDate(expected.get().getFirstName(),
             expected.get().getLastName(), expected.get().getBirthDate());
 
         assertEquals(expected, actual);

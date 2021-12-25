@@ -18,17 +18,17 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @Transactional
-public class GroupDaoTest {
+public class GroupRepositoryTest {
 
     @Autowired
     private EntityManager entityManager;
     @Autowired
-    private GroupDao groupDao;
+    private GroupRepository groupRepository;
 
     @Test
     void whenFindAll_thenAllExistingGroupsFound() {
         int expected = (int) (long) entityManager.createQuery("SELECT COUNT(g) FROM Group g").getSingleResult();
-        List<Group> actual = groupDao.findAll();
+        List<Group> actual = groupRepository.findAll();
 
         assertEquals(actual.size(), expected);
     }
@@ -40,7 +40,7 @@ public class GroupDaoTest {
             .name("Killers")
             .cathedra(entityManager.find(Cathedra.class, 1))
             .build());
-        Optional<Group> actual = groupDao.findById(1);
+        Optional<Group> actual = groupRepository.findById(1);
 
         assertEquals(expected, actual);
 
@@ -48,7 +48,7 @@ public class GroupDaoTest {
 
     @Test
     void givenNotExistingGroup_whenFindById_thenReturnEmptyOptional() {
-        assertEquals(groupDao.findById(100), Optional.empty());
+        assertEquals(groupRepository.findById(100), Optional.empty());
     }
 
     @Test
@@ -57,7 +57,7 @@ public class GroupDaoTest {
             .name("Test Name")
             .cathedra(entityManager.find(Cathedra.class, 1))
             .build();
-        groupDao.save(expected);
+        groupRepository.save(expected);
         Group actual = entityManager.find(Group.class, 3);
 
         assertEquals(expected, actual);
@@ -67,7 +67,7 @@ public class GroupDaoTest {
     void givenExistingGroup_whenSaveWithChanges_thenChangesApplied() {
         Group expected = entityManager.find(Group.class, 1);
         expected.setName("Test Name");
-        groupDao.save(expected);
+        groupRepository.save(expected);
         Group actual = entityManager.find(Group.class, 1);
 
         assertEquals(expected, actual);
@@ -75,7 +75,7 @@ public class GroupDaoTest {
 
     @Test
     void whenDeleteExistingGroup_thenGroupDeleted() {
-        groupDao.delete(Group.builder().id(2).build());
+        groupRepository.delete(Group.builder().id(2).build());
         Group actual = entityManager.find(Group.class, 2);
 
         assertNull(actual);
@@ -88,7 +88,7 @@ public class GroupDaoTest {
             .name("Killers")
             .cathedra(entityManager.find(Cathedra.class, 1))
             .build());
-        Optional<Group> actual = groupDao.findByName("Killers");
+        Optional<Group> actual = groupRepository.findByName("Killers");
 
         assertEquals(expected, actual);
     }

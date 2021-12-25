@@ -1,7 +1,7 @@
 package com.foxminded.university.service;
 
 import com.foxminded.university.config.UniversityConfigProperties;
-import com.foxminded.university.dao.VacationDao;
+import com.foxminded.university.dao.VacationRepository;
 import com.foxminded.university.exception.ChosenDurationException;
 import com.foxminded.university.exception.DurationException;
 import com.foxminded.university.exception.EntityNotFoundException;
@@ -22,22 +22,22 @@ public class VacationService {
 
     private static final Logger logger = LoggerFactory.getLogger(VacationService.class);
 
-    private final VacationDao vacationDao;
+    private final VacationRepository vacationRepository;
     private UniversityConfigProperties universityConfig;
 
-    public VacationService(VacationDao vacationDao, UniversityConfigProperties universityConfig) {
-        this.vacationDao = vacationDao;
+    public VacationService(VacationRepository vacationRepository, UniversityConfigProperties universityConfig) {
+        this.vacationRepository = vacationRepository;
         this.universityConfig = universityConfig;
     }
 
     public List<Vacation> findAll() {
         logger.debug("Find all vacations");
-        return vacationDao.findAll();
+        return vacationRepository.findAll();
     }
 
     public Vacation findById(int id) {
         logger.debug("Find vacation by id {}", id);
-        return vacationDao.findById(id)
+        return vacationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Can`t find any vacation with id: " + id));
     }
 
@@ -47,27 +47,27 @@ public class VacationService {
         dateCorrectCheck(vacation);
         dateMoreThenOneDayCheck(vacation);
         vacationDurationLessOrEqualsThanMaxCheck(vacation);
-        vacationDao.save(vacation);
+        vacationRepository.save(vacation);
     }
 
     public void delete(Vacation vacation) {
         logger.debug("Delete vacation with id: {}", vacation.getId());
-        vacationDao.delete(vacation);
+        vacationRepository.delete(vacation);
     }
 
     public List<Vacation> findByTeacherId(int id) {
         logger.debug("Find vacation by teacher id: {}", id);
-        return vacationDao.findByTeacherId(id);
+        return vacationRepository.findByTeacherId(id);
     }
 
     public Page<Vacation> findByTeacherId(final Pageable pageable, int id) {
         logger.debug("Find all vacations paginated by teacher id");
-        return vacationDao.findAllByTeacherId(pageable, id);
+        return vacationRepository.findAllByTeacherId(pageable, id);
     }
 
     private void uniqueCheck(Vacation vacation) {
         logger.debug("Check vacation is unique");
-        Optional<Vacation> existingVacation = vacationDao.findByPeriodAndTeacher(vacation.getStart(), vacation.getEnd(),
+        Optional<Vacation> existingVacation = vacationRepository.findByPeriodAndTeacher(vacation.getStart(), vacation.getEnd(),
                 vacation.getTeacher());
 
         if (existingVacation.isPresent() && (existingVacation.get().getId() != vacation.getId())) {
@@ -99,7 +99,7 @@ public class VacationService {
 
     private void vacationDurationLessOrEqualsThanMaxCheck(Vacation vacation) {
         logger.debug("Check vacation duration less or equals than max");
-        long teacherVacationDays = vacationDao
+        long teacherVacationDays = vacationRepository
                 .findByTeacherIdAndYear(vacation.getTeacher().getId(), vacation.getStart().getYear()).stream()
                 .map(vac -> getVacationDaysCount(vac)).mapToLong(Long::longValue).sum();
 

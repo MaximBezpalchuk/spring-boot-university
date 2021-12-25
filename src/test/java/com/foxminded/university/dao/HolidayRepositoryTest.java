@@ -1,6 +1,5 @@
 package com.foxminded.university.dao;
 
-import com.foxminded.university.dao.HolidayDao;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Holiday;
 import org.junit.jupiter.api.Test;
@@ -24,17 +23,17 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @Transactional
-public class HolidayDaoTest {
+public class HolidayRepositoryTest {
 
     @Autowired
     private EntityManager entityManager;
     @Autowired
-    private HolidayDao holidayDao;
+    private HolidayRepository holidayRepository;
 
     @Test
     void whenFindAll_thenAllExistingHolidaysFound() {
         int expected = (int) (long) entityManager.createQuery("SELECT COUNT(h) FROM Holiday h").getSingleResult();
-        List<Holiday> actual = holidayDao.findAll();
+        List<Holiday> actual = holidayRepository.findAll();
 
         assertEquals(actual.size(), expected);
     }
@@ -48,7 +47,7 @@ public class HolidayDaoTest {
             .cathedra(entityManager.find(Cathedra.class, 1))
             .build());
         Page<Holiday> expected = new PageImpl<>(holidays, PageRequest.of(0, 1), 6);
-        Page<Holiday> actual = holidayDao.findAll(PageRequest.of(0, 1));
+        Page<Holiday> actual = holidayRepository.findAll(PageRequest.of(0, 1));
 
         assertEquals(expected, actual);
     }
@@ -61,14 +60,14 @@ public class HolidayDaoTest {
             .date(LocalDate.of(2021, 12, 25))
             .cathedra(entityManager.find(Cathedra.class, 1))
             .build());
-        Optional<Holiday> actual = holidayDao.findById(1);
+        Optional<Holiday> actual = holidayRepository.findById(1);
 
         assertEquals(expected, actual);
     }
 
     @Test
     void givenNotExistingHoliday_whenFindById_thenReturnEmptyOptional() {
-        assertEquals(holidayDao.findById(100), Optional.empty());
+        assertEquals(holidayRepository.findById(100), Optional.empty());
     }
 
     @Test
@@ -78,7 +77,7 @@ public class HolidayDaoTest {
             .date(LocalDate.of(2021, 12, 25))
             .cathedra(entityManager.find(Cathedra.class, 1))
             .build();
-        holidayDao.save(expected);
+        holidayRepository.save(expected);
         Holiday actual = entityManager.find(Holiday.class, 7);
 
         assertEquals(expected, actual);
@@ -88,7 +87,7 @@ public class HolidayDaoTest {
     void givenExistingHoliday_whenSaveWithChanges_thenChangesApplied() {
         Holiday expected = entityManager.find(Holiday.class, 1);
         expected.setName("Test Name");
-        holidayDao.save(expected);
+        holidayRepository.save(expected);
         Holiday actual = entityManager.find(Holiday.class, 1);
 
         assertEquals(expected, actual);
@@ -96,7 +95,7 @@ public class HolidayDaoTest {
 
     @Test
     void whenDeleteExistingHoliday_thenHolidayDeleted() {
-        holidayDao.delete(Holiday.builder().id(2).build());
+        holidayRepository.delete(Holiday.builder().id(2).build());
         Holiday actual = entityManager.find(Holiday.class, 2);
 
         assertNull(actual);
@@ -110,7 +109,7 @@ public class HolidayDaoTest {
             .date(LocalDate.of(2021, 12, 25))
             .cathedra(entityManager.find(Cathedra.class, 1))
             .build());
-        Optional<Holiday> actual = holidayDao.findByNameAndDate("Christmas", LocalDate.of(2021, 12, 25));
+        Optional<Holiday> actual = holidayRepository.findByNameAndDate("Christmas", LocalDate.of(2021, 12, 25));
 
         assertEquals(expected, actual);
     }
@@ -123,7 +122,7 @@ public class HolidayDaoTest {
             .date(LocalDate.of(2021, 12, 25))
             .cathedra(entityManager.find(Cathedra.class, 1))
             .build());
-        List<Holiday> actual = holidayDao.findByDate(LocalDate.of(2021, 12, 25));
+        List<Holiday> actual = holidayRepository.findByDate(LocalDate.of(2021, 12, 25));
 
         assertEquals(expected, actual);
     }

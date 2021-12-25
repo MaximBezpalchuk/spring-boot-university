@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.AudienceDao;
+import com.foxminded.university.dao.AudienceRepository;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Audience;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 public class AudienceServiceTest {
 
     @Mock
-    private AudienceDao audienceDao;
+    private AudienceRepository audienceRepository;
     @InjectMocks
     private AudienceService audienceService;
 
@@ -32,7 +32,7 @@ public class AudienceServiceTest {
         Audience audience1 = Audience.builder().id(1).build();
         Audience audience2 = Audience.builder().id(2).build();
         List<Audience> expected = Arrays.asList(audience1, audience2);
-        when(audienceDao.findAll()).thenReturn(expected);
+        when(audienceRepository.findAll()).thenReturn(expected);
         List<Audience> actual = audienceService.findAll();
 
         assertEquals(expected, actual);
@@ -41,7 +41,7 @@ public class AudienceServiceTest {
     @Test
     void givenExistingAudience_whenFindById_thenAudienceFound() {
         Optional<Audience> expected = Optional.of(Audience.builder().id(1).build());
-        when(audienceDao.findById(1)).thenReturn(expected);
+        when(audienceRepository.findById(1)).thenReturn(expected);
         Audience actual = audienceService.findById(1);
 
         assertEquals(expected.get(), actual);
@@ -49,7 +49,7 @@ public class AudienceServiceTest {
 
     @Test
     void givenExistingAudience_whenFindById_thenEntityNotFoundException() {
-        when(audienceDao.findById(10)).thenReturn(Optional.empty());
+        when(audienceRepository.findById(10)).thenReturn(Optional.empty());
         Exception exception = assertThrows(EntityNotFoundException.class, () -> {
             audienceService.findById(10);
         });
@@ -62,16 +62,16 @@ public class AudienceServiceTest {
         Audience audience = Audience.builder().build();
         audienceService.save(audience);
 
-        verify(audienceDao).save(audience);
+        verify(audienceRepository).save(audience);
     }
 
     @Test
     void givenExistingAudience_whenSave_thenSaved() {
         Audience audience = Audience.builder().id(1).room(123).build();
-        when(audienceDao.findByRoom(audience.getRoom())).thenReturn(Optional.of(audience));
+        when(audienceRepository.findByRoom(audience.getRoom())).thenReturn(Optional.of(audience));
         audienceService.save(audience);
 
-        verify(audienceDao).save(audience);
+        verify(audienceRepository).save(audience);
     }
 
     @Test
@@ -79,7 +79,7 @@ public class AudienceServiceTest {
         Audience audience = Audience.builder().id(3).build();
         audienceService.delete(audience);
 
-        verify(audienceDao).delete(audience);
+        verify(audienceRepository).delete(audience);
     }
 
     @Test
@@ -92,7 +92,7 @@ public class AudienceServiceTest {
             .id(5)
             .room(10)
             .build();
-        when(audienceDao.findByRoom(audience1.getRoom())).thenReturn(Optional.of(audience2));
+        when(audienceRepository.findByRoom(audience1.getRoom())).thenReturn(Optional.of(audience2));
         Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
             audienceService.save(audience1);
         });

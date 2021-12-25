@@ -18,17 +18,17 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @Transactional
-public class LectureTimeDaoTest {
+public class LectureTimeRepositoryTest {
 
     @Autowired
     private EntityManager entityManager;
     @Autowired
-    private LectureTimeDao lectureTimeDao;
+    private LectureTimeRepository lectureTimeRepository;
 
     @Test
     void whenFindAll_thenAllExistingLectureTimesFound() {
         int expected = (int) (long) entityManager.createQuery("SELECT COUNT(lt) FROM LectureTime lt").getSingleResult();
-        List<LectureTime> actual = lectureTimeDao.findAll();
+        List<LectureTime> actual = lectureTimeRepository.findAll();
 
         assertEquals(actual.size(), expected);
     }
@@ -39,14 +39,14 @@ public class LectureTimeDaoTest {
             .id(1).start(LocalTime.of(8, 0, 0))
             .end(LocalTime.of(9, 30, 0))
             .build());
-        Optional<LectureTime> actual = lectureTimeDao.findById(1);
+        Optional<LectureTime> actual = lectureTimeRepository.findById(1);
 
         assertEquals(expected, actual);
     }
 
     @Test
     void givenNotExistingLectureTime_whenFindById_thenReturnEmptyOptional() {
-        assertEquals(lectureTimeDao.findById(100), Optional.empty());
+        assertEquals(lectureTimeRepository.findById(100), Optional.empty());
     }
 
     @Test
@@ -55,7 +55,7 @@ public class LectureTimeDaoTest {
             .start(LocalTime.of(21, 0, 0))
             .end(LocalTime.of(22, 30, 0))
             .build();
-        lectureTimeDao.save(expected);
+        lectureTimeRepository.save(expected);
         LectureTime actual = entityManager.find(LectureTime.class, 9);
 
         assertEquals(expected, actual);
@@ -65,7 +65,7 @@ public class LectureTimeDaoTest {
     void givenExistingLectureTime_whenSaveWithChanges_thenChangesApplied() {
         LectureTime expected = entityManager.find(LectureTime.class, 1);
         expected.setStart(LocalTime.of(8, 23));
-        lectureTimeDao.save(expected);
+        lectureTimeRepository.save(expected);
         LectureTime actual = entityManager.find(LectureTime.class, 1);
 
         assertEquals(expected, actual);
@@ -73,7 +73,7 @@ public class LectureTimeDaoTest {
 
     @Test
     void whenDeleteExistingLectureTime_thenLectureTimeDeleted() {
-        lectureTimeDao.delete(LectureTime.builder().id(2).build());
+        lectureTimeRepository.delete(LectureTime.builder().id(2).build());
         LectureTime actual = entityManager.find(LectureTime.class, 2);
 
         assertNull(actual);
@@ -86,7 +86,7 @@ public class LectureTimeDaoTest {
             .start(LocalTime.of(8, 0, 0))
             .end(LocalTime.of(9, 30, 0))
             .build());
-        Optional<LectureTime> actual = lectureTimeDao.findByStartAndEnd(expected.get().getStart(), expected.get().getEnd());
+        Optional<LectureTime> actual = lectureTimeRepository.findByStartAndEnd(expected.get().getStart(), expected.get().getEnd());
 
         assertEquals(expected, actual);
     }

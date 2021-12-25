@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface LectureDao extends JpaRepository<Lecture, Integer> {
+public interface LectureRepository extends JpaRepository<Lecture, Integer> {
 
     Optional<Lecture> findByAudienceDateAndLectureTime(@Param("audience") Audience audience, @Param("date") LocalDate date, @Param("time") LectureTime time);
 

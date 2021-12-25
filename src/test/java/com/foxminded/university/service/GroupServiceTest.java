@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.GroupDao;
+import com.foxminded.university.dao.GroupRepository;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Group;
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 public class GroupServiceTest {
 
     @Mock
-    private GroupDao groupDao;
+    private GroupRepository groupRepository;
     @InjectMocks
     private GroupService groupService;
 
@@ -32,7 +32,7 @@ public class GroupServiceTest {
         Group group1 = Group.builder().id(1).build();
         Group group2 = Group.builder().id(2).build();
         List<Group> expected = Arrays.asList(group1, group2);
-        when(groupDao.findAll()).thenReturn(expected);
+        when(groupRepository.findAll()).thenReturn(expected);
         List<Group> actual = groupService.findAll();
 
         assertEquals(expected, actual);
@@ -41,7 +41,7 @@ public class GroupServiceTest {
     @Test
     void givenExistingGroup_whenFindById_thenGroupFound() {
         Optional<Group> expected = Optional.of(Group.builder().id(1).build());
-        when(groupDao.findById(1)).thenReturn(expected);
+        when(groupRepository.findById(1)).thenReturn(expected);
         Group actual = groupService.findById(1);
 
         assertEquals(expected.get(), actual);
@@ -49,7 +49,7 @@ public class GroupServiceTest {
 
     @Test
     void givenExistingGroup_whenFindById_thenEntityNotFoundException() {
-        when(groupDao.findById(10)).thenReturn(Optional.empty());
+        when(groupRepository.findById(10)).thenReturn(Optional.empty());
         Exception exception = assertThrows(EntityNotFoundException.class, () -> {
             groupService.findById(10);
         });
@@ -62,7 +62,7 @@ public class GroupServiceTest {
         Group group = Group.builder().build();
         groupService.save(group);
 
-        verify(groupDao).save(group);
+        verify(groupRepository).save(group);
     }
 
     @Test
@@ -70,10 +70,10 @@ public class GroupServiceTest {
         Group group = Group.builder()
             .name("TestName")
             .build();
-        when(groupDao.findByName(group.getName())).thenReturn(Optional.of(group));
+        when(groupRepository.findByName(group.getName())).thenReturn(Optional.of(group));
         groupService.save(group);
 
-        verify(groupDao).save(group);
+        verify(groupRepository).save(group);
     }
 
     @Test
@@ -81,14 +81,14 @@ public class GroupServiceTest {
         Group group = Group.builder().id(1).build();
         groupService.delete(group);
 
-        verify(groupDao).delete(group);
+        verify(groupRepository).delete(group);
     }
 
     @Test
     void givenNotUniqueGroup_whenSave_thenEntityNotUniqueException() {
         Group group1 = Group.builder().id(1).name("Test1").build();
         Group group2 = Group.builder().id(2).name("Test2").build();
-        when(groupDao.findByName(group1.getName())).thenReturn(Optional.of(group2));
+        when(groupRepository.findByName(group1.getName())).thenReturn(Optional.of(group2));
         Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
             groupService.save(group1);
         });
