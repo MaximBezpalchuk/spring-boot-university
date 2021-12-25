@@ -41,7 +41,7 @@ public class StudentService {
     public Student findById(int id) {
         logger.debug("Find student by id {}", id);
         return studentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Can`t find any student with id: " + id));
+            .orElseThrow(() -> new EntityNotFoundException("Can`t find any student with id: " + id));
     }
 
     public void save(Student student) {
@@ -59,11 +59,11 @@ public class StudentService {
     private void uniqueCheck(Student student) {
         logger.debug("Check student is unique");
         Optional<Student> existingStudent = studentRepository.findByFirstNameAndLastNameAndBirthDate(student.getFirstName(),
-                student.getLastName(), student.getBirthDate());
+            student.getLastName(), student.getBirthDate());
 
         if (existingStudent.isPresent() && (existingStudent.get().getId() != student.getId())) {
             throw new EntityNotUniqueException("Student with full name " + student.getFirstName() + " "
-                    + student.getLastName() + " and  birth date " + student.getBirthDate() + " is already exists!");
+                + student.getLastName() + " and  birth date " + student.getBirthDate() + " is already exists!");
         }
     }
 
@@ -73,7 +73,7 @@ public class StudentService {
             int groupSize = studentRepository.findByGroupId(student.getGroup().getId()).size();
             if (groupSize >= universityConfig.getMaxGroupSize()) {
                 throw new GroupOverflowException("This group is already full! Group size is: " + groupSize
-                        + ". Max group size is: " + universityConfig.getMaxGroupSize());
+                    + ". Max group size is: " + universityConfig.getMaxGroupSize());
             }
         }
     }

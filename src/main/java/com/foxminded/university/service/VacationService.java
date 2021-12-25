@@ -38,7 +38,7 @@ public class VacationService {
     public Vacation findById(int id) {
         logger.debug("Find vacation by id {}", id);
         return vacationRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Can`t find any vacation with id: " + id));
+            .orElseThrow(() -> new EntityNotFoundException("Can`t find any vacation with id: " + id));
     }
 
     public void save(Vacation vacation) {
@@ -68,12 +68,12 @@ public class VacationService {
     private void uniqueCheck(Vacation vacation) {
         logger.debug("Check vacation is unique");
         Optional<Vacation> existingVacation = vacationRepository.findByStartAndEndAndTeacher(vacation.getStart(), vacation.getEnd(),
-                vacation.getTeacher());
+            vacation.getTeacher());
 
         if (existingVacation.isPresent() && (existingVacation.get().getId() != vacation.getId())) {
             throw new EntityNotUniqueException("Vacation with start(" + vacation.getStart() + "), end("
-                    + vacation.getEnd() + ") and teacher(" + vacation.getTeacher().getFirstName() + " "
-                    + vacation.getTeacher().getLastName() + ") id is already exists!");
+                + vacation.getEnd() + ") and teacher(" + vacation.getTeacher().getFirstName() + " "
+                + vacation.getTeacher().getLastName() + ") id is already exists!");
         }
     }
 
@@ -81,7 +81,7 @@ public class VacationService {
         logger.debug("Check vacation start is after end");
         if (!vacation.getStart().isBefore(vacation.getEnd()) && !vacation.getStart().equals(vacation.getEnd())) {
             throw new DurationException("Vacation start date can`t be after vacation end date! Vacation start is: "
-                    + vacation.getStart() + ". Vacation end is: " + vacation.getEnd());
+                + vacation.getStart() + ". Vacation end is: " + vacation.getEnd());
         }
     }
 
@@ -89,7 +89,7 @@ public class VacationService {
         logger.debug("Check vacation duration more or equals 1 day");
         if (getVacationDaysCount(vacation) < 1) {
             throw new DurationException("Vacation can`t be less than 1 day! Vacation start is: " + vacation.getStart()
-                    + ". Vacation end is: " + vacation.getEnd());
+                + ". Vacation end is: " + vacation.getEnd());
         }
     }
 
@@ -100,15 +100,15 @@ public class VacationService {
     private void vacationDurationLessOrEqualsThanMaxCheck(Vacation vacation) {
         logger.debug("Check vacation duration less or equals than max");
         long teacherVacationDays = vacationRepository
-                .findByTeacherIdAndYear(vacation.getTeacher().getId(), vacation.getStart().getYear()).stream()
-                .map(vac -> getVacationDaysCount(vac)).mapToLong(Long::longValue).sum();
+            .findByTeacherIdAndYear(vacation.getTeacher().getId(), vacation.getStart().getYear()).stream()
+            .map(vac -> getVacationDaysCount(vac)).mapToLong(Long::longValue).sum();
 
         if ((teacherVacationDays + getVacationDaysCount(vacation)) >= universityConfig.getMaxVacation()
-                .get(vacation.getTeacher().getDegree())) {
+            .get(vacation.getTeacher().getDegree())) {
             throw new ChosenDurationException("Vacations duration(existing " + teacherVacationDays + " plus appointed "
-                    + getVacationDaysCount(vacation) + ") can`t be more than max("
-                    + universityConfig.getMaxVacation().get(vacation.getTeacher().getDegree()) + ") for degree "
-                    + vacation.getTeacher().getDegree() + "!");
+                + getVacationDaysCount(vacation) + ") can`t be more than max("
+                + universityConfig.getMaxVacation().get(vacation.getTeacher().getDegree()) + ") for degree "
+                + vacation.getTeacher().getDegree() + "!");
         }
     }
 }

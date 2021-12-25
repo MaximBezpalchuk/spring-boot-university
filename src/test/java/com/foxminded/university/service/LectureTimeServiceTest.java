@@ -68,9 +68,9 @@ public class LectureTimeServiceTest {
         LocalTime start = LocalTime.of(9, 0);
         LocalTime end = LocalTime.of(10, 0);
         LectureTime lectureTime = LectureTime.builder()
-                .start(start)
-                .end(end)
-                .build();
+            .start(start)
+            .end(end)
+            .build();
         lectureTimeService.save(lectureTime);
 
         verify(lectureTimeRepository).save(lectureTime);
@@ -81,9 +81,9 @@ public class LectureTimeServiceTest {
         LocalTime start = LocalTime.of(9, 0);
         LocalTime end = LocalTime.of(10, 0);
         LectureTime lectureTime = LectureTime.builder()
-                .start(start)
-                .end(end)
-                .build();
+            .start(start)
+            .end(end)
+            .build();
         when(lectureTimeRepository.findByStartAndEnd(start, end)).thenReturn(Optional.of(lectureTime));
         lectureTimeService.save(lectureTime);
 
@@ -95,23 +95,23 @@ public class LectureTimeServiceTest {
         LocalTime start = LocalTime.of(9, 0);
         LocalTime end = LocalTime.of(10, 0);
         LectureTime lectureTime1 = LectureTime.builder()
-                .id(1)
-                .start(start)
-                .end(end)
-                .build();
+            .id(1)
+            .start(start)
+            .end(end)
+            .build();
         LectureTime lectureTime2 = LectureTime.builder()
-                .id(2)
-                .start(start)
-                .end(end)
-                .build();
+            .id(2)
+            .start(start)
+            .end(end)
+            .build();
         when(lectureTimeRepository.findByStartAndEnd(lectureTime1.getStart(),
-                lectureTime1.getEnd())).thenReturn(Optional.of(lectureTime2));
+            lectureTime1.getEnd())).thenReturn(Optional.of(lectureTime2));
         Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
             lectureTimeService.save(lectureTime1);
         });
 
         assertEquals("Lecture time with start time 09:00 and end time 10:00 is already exists!",
-                exception.getMessage());
+            exception.getMessage());
     }
 
     @Test
@@ -119,9 +119,9 @@ public class LectureTimeServiceTest {
         LocalTime start = LocalTime.of(9, 0);
         LocalTime end = LocalTime.of(9, 20);
         LectureTime lectureTime = LectureTime.builder()
-                .start(start)
-                .end(end)
-                .build();
+            .start(start)
+            .end(end)
+            .build();
         when(universityConfig.getMinLectureDurationInMinutes()).thenReturn(minLectureDurationInMinutes);
         Exception exception = assertThrows(ChosenDurationException.class, () -> {
             lectureTimeService.save(lectureTime);
@@ -135,9 +135,9 @@ public class LectureTimeServiceTest {
         LocalTime start = LocalTime.of(9, 0);
         LocalTime end = LocalTime.of(8, 0);
         LectureTime lectureTime = LectureTime.builder()
-                .start(start)
-                .end(end)
-                .build();
+            .start(start)
+            .end(end)
+            .build();
         Exception exception = assertThrows(DurationException.class, () -> {
             lectureTimeService.save(lectureTime);
         });

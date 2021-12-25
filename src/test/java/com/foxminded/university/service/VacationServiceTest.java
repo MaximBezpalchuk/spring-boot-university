@@ -94,10 +94,10 @@ public class VacationServiceTest {
         LocalDate start = LocalDate.of(2021, 1, 1);
         LocalDate end = LocalDate.of(2021, 1, 2);
         Vacation vacation = Vacation.builder()
-                .start(start)
-                .end(end)
-                .teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build())
-                .build();
+            .start(start)
+            .end(end)
+            .teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build())
+            .build();
         vacationService.save(vacation);
 
         verify(vacationRepository).save(vacation);
@@ -108,11 +108,11 @@ public class VacationServiceTest {
         LocalDate start = LocalDate.of(2021, 1, 1);
         LocalDate end = LocalDate.of(2021, 1, 2);
         Vacation vacation = Vacation.builder()
-                .id(1)
-                .start(start)
-                .end(end)
-                .teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build())
-                .build();
+            .id(1)
+            .start(start)
+            .end(end)
+            .teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build())
+            .build();
         when(vacationRepository.findByStartAndEndAndTeacher(start, end, vacation.getTeacher())).thenReturn(Optional.of(vacation));
         vacationService.save(vacation);
 
@@ -124,28 +124,28 @@ public class VacationServiceTest {
         LocalDate start = LocalDate.of(2021, 1, 1);
         LocalDate end = LocalDate.of(2021, 1, 2);
         Vacation vacation1 = Vacation.builder()
-                .id(1)
-                .start(start)
-                .end(end)
-                .teacher(Teacher.builder().id(1).firstName("TestFirstName").lastName("TestLastName")
-                        .degree(Degree.ASSISTANT).build())
-                .build();
+            .id(1)
+            .start(start)
+            .end(end)
+            .teacher(Teacher.builder().id(1).firstName("TestFirstName").lastName("TestLastName")
+                .degree(Degree.ASSISTANT).build())
+            .build();
         Vacation vacation2 = Vacation.builder()
-                .id(11)
-                .start(start)
-                .end(end)
-                .teacher(Teacher.builder().id(1).firstName("TestFirstName").lastName("TestLastName")
-                        .degree(Degree.ASSISTANT).build())
-                .build();
+            .id(11)
+            .start(start)
+            .end(end)
+            .teacher(Teacher.builder().id(1).firstName("TestFirstName").lastName("TestLastName")
+                .degree(Degree.ASSISTANT).build())
+            .build();
         when(vacationRepository.findByStartAndEndAndTeacher(vacation1.getStart(), vacation1.getEnd(),
-                vacation1.getTeacher())).thenReturn(Optional.of(vacation2));
+            vacation1.getTeacher())).thenReturn(Optional.of(vacation2));
         Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
             vacationService.save(vacation1);
         });
 
         assertEquals(
-                "Vacation with start(2021-01-01), end(2021-01-02) and teacher(TestFirstName TestLastName) id is already exists!",
-                exception.getMessage());
+            "Vacation with start(2021-01-01), end(2021-01-02) and teacher(TestFirstName TestLastName) id is already exists!",
+            exception.getMessage());
     }
 
     @Test
@@ -158,7 +158,7 @@ public class VacationServiceTest {
         });
 
         assertEquals("Vacation can`t be less than 1 day! Vacation start is: 2021-01-01. Vacation end is: 2021-01-01",
-                exception.getMessage());
+            exception.getMessage());
     }
 
     @Test
@@ -166,17 +166,17 @@ public class VacationServiceTest {
         LocalDate start = LocalDate.of(2021, 1, 1);
         LocalDate end = LocalDate.of(2020, 1, 1);
         Vacation vacation = Vacation.builder()
-                .id(1)
-                .start(start)
-                .end(end)
-                .build();
+            .id(1)
+            .start(start)
+            .end(end)
+            .build();
         Exception exception = assertThrows(DurationException.class, () -> {
             vacationService.save(vacation);
         });
 
         assertEquals(
-                "Vacation start date can`t be after vacation end date! Vacation start is: 2021-01-01. Vacation end is: 2020-01-01",
-                exception.getMessage());
+            "Vacation start date can`t be after vacation end date! Vacation start is: 2021-01-01. Vacation end is: 2020-01-01",
+            exception.getMessage());
     }
 
     @Test
@@ -184,19 +184,19 @@ public class VacationServiceTest {
         LocalDate start = LocalDate.of(2021, 1, 1);
         LocalDate end = LocalDate.of(2021, 1, 10);
         Vacation vacation = Vacation.builder()
-                .id(1)
-                .start(start)
-                .end(end)
-                .teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build())
-                .build();
+            .id(1)
+            .start(start)
+            .end(end)
+            .teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build())
+            .build();
         when(vacationRepository.findByTeacherIdAndYear(vacation.getTeacher().getId(), vacation.getStart().getYear()))
-                .thenReturn(Arrays.asList(vacation));
+            .thenReturn(Arrays.asList(vacation));
         Exception exception = assertThrows(ChosenDurationException.class, () -> {
             vacationService.save(vacation);
         });
 
         assertEquals("Vacations duration(existing 9 plus appointed 9) can`t be more than max(16) for degree ASSISTANT!",
-                exception.getMessage());
+            exception.getMessage());
     }
 
     @Test

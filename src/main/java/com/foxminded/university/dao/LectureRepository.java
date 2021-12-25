@@ -23,5 +23,5 @@ public interface LectureRepository extends JpaRepository<Lecture, Integer> {
 
     List<Lecture> findByGroupsContainingAndDateGreaterThanEqualAndDateLessThanEqual(Group group, LocalDate start, LocalDate end);
 
-    List<Lecture> findByTeacherAndDateGreaterThanEqualAndDateLessThanEqual(Teacher teacher,  LocalDate start, LocalDate end);
+    List<Lecture> findByTeacherAndDateGreaterThanEqualAndDateLessThanEqual(Teacher teacher, LocalDate start, LocalDate end);
 }
