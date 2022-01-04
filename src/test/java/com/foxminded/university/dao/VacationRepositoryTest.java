@@ -157,7 +157,7 @@ public class VacationRepositoryTest {
             .end(LocalDate.of(2021, 6, 29))
             .teacher(teacher)
             .build();
-        List<Vacation> actual = vacationRepository.findByTeacherIdAndYear(1, 2021);
+        List<Vacation> actual = vacationRepository.findByTeacherAndYear(teacher, 2021);
 
         assertEquals(Arrays.asList(vacation1, vacation2), actual);
     }

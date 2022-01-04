@@ -189,7 +189,7 @@ public class VacationServiceTest {
             .end(end)
             .teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build())
             .build();
-        when(vacationRepository.findByTeacherIdAndYear(vacation.getTeacher().getId(), vacation.getStart().getYear()))
+        when(vacationRepository.findByTeacherAndYear(vacation.getTeacher(), vacation.getStart().getYear()))
             .thenReturn(Arrays.asList(vacation));
         Exception exception = assertThrows(ChosenDurationException.class, () -> {
             vacationService.save(vacation);

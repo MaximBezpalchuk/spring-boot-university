@@ -21,6 +21,5 @@ public interface TeacherRepository extends JpaRepository<Teacher, Integer> {
 
     Page<Teacher> findAll(Pageable pageable);
 
-    @Query(nativeQuery = true)
-    List<Teacher> findByFreeDateAndSubjectWithCurrentTeacher(@Param("date") LocalDate date, @Param("lecture_time_id") LectureTime time, @Param("subject_id") Subject subject);
+    List<Teacher> findBySubjectsContaining(Subject subject);
 }

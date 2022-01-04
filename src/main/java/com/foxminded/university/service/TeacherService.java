@@ -1,6 +1,8 @@
 package com.foxminded.university.service;
 
+import com.foxminded.university.dao.LectureRepository;
 import com.foxminded.university.dao.TeacherRepository;
+import com.foxminded.university.dao.VacationRepository;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Lecture;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TeacherService {
@@ -20,9 +23,13 @@ public class TeacherService {
     private static final Logger logger = LoggerFactory.getLogger(TeacherService.class);
 
     private final TeacherRepository teacherRepository;
+    private final LectureRepository lectureRepository;
+    private final VacationRepository vacationRepository;
 
-    public TeacherService(TeacherRepository teacherRepository) {
+    public TeacherService(TeacherRepository teacherRepository, LectureRepository lectureRepository, VacationRepository vacationRepository) {
         this.teacherRepository = teacherRepository;
+        this.lectureRepository = lectureRepository;
+        this.vacationRepository = vacationRepository;
     }
 
     public List<Teacher> findAll() {
@@ -64,7 +71,24 @@ public class TeacherService {
 
     public List<Teacher> findTeachersForChange(Lecture lecture) {
         logger.debug("Find teachers who havent lectures and vacation this periodand who can teach this subject");
-        return teacherRepository.findByFreeDateAndSubjectWithCurrentTeacher(lecture.getDate(), lecture.getTime(),
-            lecture.getSubject());
+        return teacherRepository.findBySubjectsContaining(lecture.getSubject()).stream()
+            .filter(teacher -> {
+                    if (lectureRepository.findLecturesByTeacherAndDateAndTime(teacher, lecture.getDate(), lecture.getTime()).isEmpty()) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            )
+            .filter(
+                teacher -> {
+                    if (vacationRepository.findByTeacherAndStartGreaterThanEqualAndEndLessThanEqual(teacher, lecture.getDate(), lecture.getDate()).isEmpty()) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            )
+            .collect(Collectors.toList());
     }
 }

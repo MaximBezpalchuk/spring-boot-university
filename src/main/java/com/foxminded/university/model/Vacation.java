@@ -6,17 +6,6 @@ import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
-@NamedQueries({
-    @NamedQuery(
-        name = "Vacation.findByTeacherIdAndYear",
-        query = "SELECT v FROM Vacation v WHERE v.teacher.id=:teacher_id AND FUNCTION('YEAR',v.start)=:year"
-    ),
-    @NamedQuery(
-        name = "Vacation.findByDateInPeriodAndTeacher",
-        query = "SELECT v FROM Vacation v WHERE v.start >=:date AND v.end<=:date AND v.teacher=:teacher"
-    )
-})
-
 @Entity
 @Table(name = "vacations")
 public class Vacation {

@@ -119,7 +119,7 @@ public class LectureService {
 
     private void teacherInVacationCheck(Lecture lecture) {
         logger.debug("Check teacher for this lecture is in vacation");
-        if (!vacationRepository.findByDateInPeriodAndTeacher(lecture.getDate(), lecture.getTeacher()).isEmpty()) {
+        if (!vacationRepository.findByTeacherAndStartGreaterThanEqualAndEndLessThanEqual(lecture.getTeacher(), lecture.getDate(), lecture.getDate()).isEmpty()) {
             throw new TeacherInVacationException("Teacher is in vacation this date! Date is: " + lecture.getDate());
         }
     }

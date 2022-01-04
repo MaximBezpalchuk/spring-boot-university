@@ -230,7 +230,7 @@ public class LectureServiceTest {
             .teacher(Teacher.builder().id(1).build())
             .build();
         Vacation vacation = Vacation.builder().start(LocalDate.of(2021, 9, 5)).end(LocalDate.of(2021, 9, 7)).build();
-        when(vacationRepository.findByDateInPeriodAndTeacher(lecture.getDate(), lecture.getTeacher()))
+        when(vacationRepository.findByTeacherAndStartGreaterThanEqualAndEndLessThanEqual(lecture.getTeacher(), lecture.getDate(), lecture.getDate()))
             .thenReturn(Arrays.asList(vacation));
         Exception exception = assertThrows(TeacherInVacationException.class, () -> {
             lectureService.save(lecture);

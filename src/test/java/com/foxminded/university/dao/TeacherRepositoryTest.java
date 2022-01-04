@@ -164,4 +164,27 @@ public class TeacherRepositoryTest {
 
         assertEquals(expected, actual);
     }
+
+    @Test
+    void givenSubject_whenFindBySubjectsContaining_thenTeachersFound(){
+        Subject subject = entityManager.find(Subject.class, 1);
+        List<Teacher> expected = Arrays.asList(Teacher.builder()
+            .firstName("Daniel")
+            .lastName("Morpheus")
+            .address("Virtual Reality Capsule no 1")
+            .gender(Gender.MALE)
+            .birthDate(LocalDate.of(1970, 1, 1))
+            .cathedra(entityManager.find(Cathedra.class, 1))
+            .degree(Degree.PROFESSOR)
+            .phone("1")
+            .email("1@bigowl.com")
+            .postalCode("12345")
+            .education("Higher education")
+            .id(1)
+            .subjects(Arrays.asList(subject))
+            .build());
+        List<Teacher> actual = teacherRepository.findBySubjectsContaining(subject);
+
+        assertEquals(expected, actual);
+    }
 }

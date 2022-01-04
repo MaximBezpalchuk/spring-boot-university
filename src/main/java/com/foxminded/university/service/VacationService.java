@@ -100,7 +100,7 @@ public class VacationService {
     private void vacationDurationLessOrEqualsThanMaxCheck(Vacation vacation) {
         logger.debug("Check vacation duration less or equals than max");
         long teacherVacationDays = vacationRepository
-            .findByTeacherIdAndYear(vacation.getTeacher().getId(), vacation.getStart().getYear()).stream()
+            .findByTeacherAndYear(vacation.getTeacher(), vacation.getStart().getYear()).stream()
             .map(vac -> getVacationDaysCount(vac)).mapToLong(Long::longValue).sum();
 
         if ((teacherVacationDays + getVacationDaysCount(vacation)) >= universityConfig.getMaxVacation()
