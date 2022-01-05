@@ -72,23 +72,8 @@ public class TeacherService {
     public List<Teacher> findTeachersForChange(Lecture lecture) {
         logger.debug("Find teachers who havent lectures and vacation this periodand who can teach this subject");
         return teacherRepository.findBySubjectsContaining(lecture.getSubject()).stream()
-            .filter(teacher -> {
-                    if (lectureRepository.findLecturesByTeacherAndDateAndTime(teacher, lecture.getDate(), lecture.getTime()).isEmpty()) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-            )
-            .filter(
-                teacher -> {
-                    if (vacationRepository.findByTeacherAndStartGreaterThanEqualAndEndLessThanEqual(teacher, lecture.getDate(), lecture.getDate()).isEmpty()) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-            )
+            .filter(teacher -> lectureRepository.findLecturesByTeacherAndDateAndTime(teacher, lecture.getDate(), lecture.getTime()).isEmpty())
+            .filter(teacher -> vacationRepository.findByTeacherAndStartGreaterThanEqualAndEndLessThanEqual(teacher, lecture.getDate(), lecture.getDate()).isEmpty())
             .collect(Collectors.toList());
     }
 }
