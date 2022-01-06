@@ -1,10 +1,10 @@
 package com.foxminded.university.service;
 
 import com.foxminded.university.config.UniversityConfigProperties;
-import com.foxminded.university.dao.HolidayDao;
-import com.foxminded.university.dao.LectureDao;
-import com.foxminded.university.dao.StudentDao;
-import com.foxminded.university.dao.VacationDao;
+import com.foxminded.university.dao.HolidayRepository;
+import com.foxminded.university.dao.LectureRepository;
+import com.foxminded.university.dao.StudentRepository;
+import com.foxminded.university.dao.VacationRepository;
 import com.foxminded.university.exception.*;
 import com.foxminded.university.model.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,7 +18,6 @@ import org.mockito.quality.Strictness;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -28,7 +27,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -37,13 +35,13 @@ import static org.mockito.Mockito.when;
 public class LectureServiceTest {
 
     @Mock
-    private LectureDao lectureDao;
+    private LectureRepository lectureRepository;
     @Mock
-    private VacationDao vacationDao;
+    private VacationRepository vacationRepository;
     @Mock
-    private HolidayDao holidayDao;
+    private HolidayRepository holidayRepository;
     @Mock
-    private StudentDao studentDao;
+    private StudentRepository studentRepository;
     @Mock
     private StudentService studentService;
     @Mock
@@ -56,7 +54,7 @@ public class LectureServiceTest {
     private int endWorkingDay = 22;
 
     @BeforeEach
-    void setWorkingDays(){
+    void setWorkingDays() {
         when(universityConfig.getStartWorkingDay()).thenReturn(startWorkingDay);
         when(universityConfig.getEndWorkingDay()).thenReturn(endWorkingDay);
     }
@@ -65,7 +63,7 @@ public class LectureServiceTest {
     void givenListOfLectures_whenFindAll_thenAllExistingLecturesFound() {
         Lecture lecture1 = Lecture.builder().id(1).build();
         List<Lecture> expected = Arrays.asList(lecture1);
-        when(lectureDao.findAll()).thenReturn(expected);
+        when(lectureRepository.findAll()).thenReturn(expected);
         List<Lecture> actual = lectureService.findAll();
 
         assertEquals(expected, actual);
@@ -75,7 +73,7 @@ public class LectureServiceTest {
     void givenPageable_whenFindAll_thenAllPageableLecturesFound() {
         List<Lecture> lectures = Arrays.asList(Lecture.builder().id(1).build());
         Page<Lecture> expected = new PageImpl<>(lectures, PageRequest.of(0, 1), 1);
-        when(lectureDao.findPaginatedLectures(isA(Pageable.class))).thenReturn(expected);
+        when(lectureRepository.findAll(PageRequest.of(0, 1))).thenReturn(expected);
         Page<Lecture> actual = lectureService.findAll(PageRequest.of(0, 1));
 
         assertEquals(expected, actual);
@@ -84,7 +82,7 @@ public class LectureServiceTest {
     @Test
     void givenExistingLecture_whenFindById_thenLectureFound() {
         Optional<Lecture> expected = Optional.of(Lecture.builder().id(1).build());
-        when(lectureDao.findById(1)).thenReturn(expected);
+        when(lectureRepository.findById(1)).thenReturn(expected);
         Lecture actual = lectureService.findById(1);
 
         assertEquals(expected.get(), actual);
@@ -92,7 +90,7 @@ public class LectureServiceTest {
 
     @Test
     void givenExistingLecture_whenFindById_thenEntityNotFoundException() {
-        when(lectureDao.findById(10)).thenReturn(Optional.empty());
+        when(lectureRepository.findById(10)).thenReturn(Optional.empty());
         Exception exception = assertThrows(EntityNotFoundException.class, () -> {
             lectureService.findById(10);
         });
@@ -116,7 +114,7 @@ public class LectureServiceTest {
             .subject(Subject.builder().id(1).name("Test name").build()).build();
         lectureService.save(lecture);
 
-        verify(lectureDao).save(lecture);
+        verify(lectureRepository).save(lecture);
     }
 
     @Test
@@ -137,7 +135,7 @@ public class LectureServiceTest {
             .subject(Subject.builder().id(1).name("Test name").build()).build();
         lectureService.save(lecture);
 
-        verify(lectureDao).save(lecture);
+        verify(lectureRepository).save(lecture);
     }
 
     @Test
@@ -164,7 +162,7 @@ public class LectureServiceTest {
             .time(lectureTime)
             .teacher(teacher)
             .subject(Subject.builder().id(1).cathedra(cathedra).build()).build();
-        when(lectureDao.findByTeacherAudienceDateAndLectureTime(lecture1.getTeacher(), lecture1.getAudience(),
+        when(lectureRepository.findByTeacherAndAudienceAndDateAndTime(lecture1.getTeacher(), lecture1.getAudience(),
             lecture1.getDate(), lecture1.getTime())).thenReturn(Optional.of(lecture2));
         Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
             lectureService.save(lecture1);
@@ -213,7 +211,7 @@ public class LectureServiceTest {
         Lecture lecture2 = Lecture.builder()
             .id(2)
             .build();
-        when(lectureDao.findLecturesByTeacherDateAndTime(lecture.getTeacher(), lecture.getDate(), lecture.getTime()))
+        when(lectureRepository.findLecturesByTeacherAndDateAndTime(lecture.getTeacher(), lecture.getDate(), lecture.getTime()))
             .thenReturn(Arrays.asList(lecture2));
         Exception exception = assertThrows(BusyTeacherException.class, () -> {
             lectureService.save(lecture);
@@ -232,7 +230,7 @@ public class LectureServiceTest {
             .teacher(Teacher.builder().id(1).build())
             .build();
         Vacation vacation = Vacation.builder().start(LocalDate.of(2021, 9, 5)).end(LocalDate.of(2021, 9, 7)).build();
-        when(vacationDao.findByDateInPeriodAndTeacher(lecture.getDate(), lecture.getTeacher()))
+        when(vacationRepository.findByTeacherAndStartGreaterThanEqualAndEndLessThanEqual(lecture.getTeacher(), lecture.getDate(), lecture.getDate()))
             .thenReturn(Arrays.asList(vacation));
         Exception exception = assertThrows(TeacherInVacationException.class, () -> {
             lectureService.save(lecture);
@@ -249,7 +247,7 @@ public class LectureServiceTest {
             .time(LectureTime.builder().id(1).start(LocalTime.of(9, 0)).end(LocalTime.of(10, 0)).build())
             .teacher(Teacher.builder().id(1).build())
             .build();
-        when(holidayDao.findByDate(lecture.getDate()))
+        when(holidayRepository.findByDate(lecture.getDate()))
             .thenReturn(Arrays.asList(Holiday.builder().date(LocalDate.of(2021, 9, 6)).name("Test").build()));
         Exception exception = assertThrows(HolidayException.class, () -> {
             lectureService.save(lecture);
@@ -287,7 +285,7 @@ public class LectureServiceTest {
             .group(Arrays.asList(group))
             .audience(Audience.builder().capacity(1).build())
             .build();
-        when(studentDao.findByGroupId(1))
+        when(studentRepository.findByGroupId(1))
             .thenReturn(Arrays.asList(Student.builder().build(), Student.builder().build()));
         Exception exception = assertThrows(AudienceOverflowException.class, () -> {
             lectureService.save(lecture);
@@ -308,7 +306,7 @@ public class LectureServiceTest {
             .audience(Audience.builder().room(100).capacity(1).build())
             .build();
         Lecture lecture2 = Lecture.builder().id(3).build();
-        when(lectureDao.findByAudienceDateAndLectureTime(lecture.getAudience(), lecture.getDate(), lecture.getTime()))
+        when(lectureRepository.findByAudienceAndDateAndTime(lecture.getAudience(), lecture.getDate(), lecture.getTime()))
             .thenReturn(Optional.of(lecture2));
         Exception exception = assertThrows(OccupiedAudienceException.class, () -> {
             lectureService.save(lecture);
@@ -322,16 +320,16 @@ public class LectureServiceTest {
         Lecture lecture = Lecture.builder().id(1).build();
         lectureService.delete(lecture);
 
-        verify(lectureDao).delete(lecture);
+        verify(lectureRepository).delete(lecture);
     }
 
     @Test
     void givenStudentId_whenFindLecturesByStudentId_thenAllExistingLecturesFound() {
         Lecture lecture1 = Lecture.builder().id(1).build();
         List<Lecture> expected = Arrays.asList(lecture1);
-        Student student = Student.builder().id(1).build();
+        Student student = Student.builder().id(1).group(Group.builder().id(1).build()).build();
         when(studentService.findById(1)).thenReturn(student);
-        when(lectureDao.findLecturesByStudentAndPeriod(student, LocalDate.of(2021, 4, 4), LocalDate.of(2021, 4, 8)))
+        when(lectureRepository.findByGroupsContainingAndDateGreaterThanEqualAndDateLessThanEqual(student.getGroup(), LocalDate.of(2021, 4, 4), LocalDate.of(2021, 4, 8)))
             .thenReturn(expected);
         List<Lecture> actual = lectureService.findByStudentIdAndPeriod(1, LocalDate.of(2021, 4, 4),
             LocalDate.of(2021, 4, 8));
@@ -345,7 +343,7 @@ public class LectureServiceTest {
         List<Lecture> expected = Arrays.asList(lecture1);
         Teacher teacher = Teacher.builder().id(1).build();
         when(teacherService.findById(1)).thenReturn(teacher);
-        when(lectureDao.findLecturesByTeacherAndPeriod(teacher, LocalDate.of(2021, 4, 4), LocalDate.of(2021, 4, 8)))
+        when(lectureRepository.findByTeacherAndDateGreaterThanEqualAndDateLessThanEqual(teacher, LocalDate.of(2021, 4, 4), LocalDate.of(2021, 4, 8)))
             .thenReturn(expected);
         List<Lecture> actual = lectureService.findByTeacherIdAndPeriod(1, LocalDate.of(2021, 4, 4),
             LocalDate.of(2021, 4, 8));

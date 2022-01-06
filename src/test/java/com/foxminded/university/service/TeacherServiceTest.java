@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.TeacherDao;
+import com.foxminded.university.dao.TeacherRepository;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Teacher;
@@ -12,7 +12,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -21,7 +20,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -29,7 +27,7 @@ import static org.mockito.Mockito.when;
 public class TeacherServiceTest {
 
     @Mock
-    private TeacherDao teacherDao;
+    private TeacherRepository teacherRepository;
     @InjectMocks
     private TeacherService teacherService;
 
@@ -37,7 +35,7 @@ public class TeacherServiceTest {
     void givenListOfTeachers_whenFindAll_thenAllExistingTeachersFound() {
         Teacher teacher1 = Teacher.builder().id(1).build();
         List<Teacher> expected = Arrays.asList(teacher1);
-        when(teacherDao.findAll()).thenReturn(expected);
+        when(teacherRepository.findAll()).thenReturn(expected);
         List<Teacher> actual = teacherService.findAll();
 
         assertEquals(expected, actual);
@@ -47,7 +45,7 @@ public class TeacherServiceTest {
     void givenPageable_whenFindAll_thenAllPageableTeachersFound() {
         List<Teacher> teachers = Arrays.asList(Teacher.builder().id(1).build());
         Page<Teacher> expected = new PageImpl<>(teachers, PageRequest.of(0, 1), 1);
-        when(teacherDao.findPaginatedTeachers(isA(Pageable.class))).thenReturn(expected);
+        when(teacherRepository.findAll(PageRequest.of(0, 1))).thenReturn(expected);
         Page<Teacher> actual = teacherService.findAll(PageRequest.of(0, 1));
 
         assertEquals(expected, actual);
@@ -56,7 +54,7 @@ public class TeacherServiceTest {
     @Test
     void givenExistingTeacher_whenFindById_thenTeacherFound() {
         Optional<Teacher> expected = Optional.of(Teacher.builder().id(1).build());
-        when(teacherDao.findById(1)).thenReturn(expected);
+        when(teacherRepository.findById(1)).thenReturn(expected);
         Teacher actual = teacherService.findById(1);
 
         assertEquals(expected.get(), actual);
@@ -64,7 +62,7 @@ public class TeacherServiceTest {
 
     @Test
     void givenExistingTeacher_whenFindById_thenEntityNotFoundException() {
-        when(teacherDao.findById(10)).thenReturn(Optional.empty());
+        when(teacherRepository.findById(10)).thenReturn(Optional.empty());
         Exception exception = assertThrows(EntityNotFoundException.class, () -> {
             teacherService.findById(10);
         });
@@ -77,7 +75,7 @@ public class TeacherServiceTest {
         Teacher teacher = Teacher.builder().id(1).build();
         teacherService.save(teacher);
 
-        verify(teacherDao).save(teacher);
+        verify(teacherRepository).save(teacher);
     }
 
     @Test
@@ -87,11 +85,11 @@ public class TeacherServiceTest {
             .lastName("TestLastName")
             .birthDate(LocalDate.of(1920, 2, 12))
             .build();
-        when(teacherDao.findByFullNameAndBirthDate(teacher.getFirstName(), teacher.getLastName(),
+        when(teacherRepository.findByFirstNameAndLastNameAndBirthDate(teacher.getFirstName(), teacher.getLastName(),
             teacher.getBirthDate())).thenReturn(Optional.of(teacher));
         teacherService.save(teacher);
 
-        verify(teacherDao).save(teacher);
+        verify(teacherRepository).save(teacher);
     }
 
     @Test
@@ -99,7 +97,7 @@ public class TeacherServiceTest {
         Teacher teacher = Teacher.builder().id(1).build();
         teacherService.delete(teacher);
 
-        verify(teacherDao).delete(teacher);
+        verify(teacherRepository).delete(teacher);
     }
 
     @Test
@@ -114,7 +112,7 @@ public class TeacherServiceTest {
             .lastName("TestLastName")
             .birthDate(LocalDate.of(1920, 2, 12))
             .build();
-        when(teacherDao.findByFullNameAndBirthDate(teacher1.getFirstName(), teacher1.getLastName(),
+        when(teacherRepository.findByFirstNameAndLastNameAndBirthDate(teacher1.getFirstName(), teacher1.getLastName(),
             teacher1.getBirthDate())).thenReturn(Optional.of(teacher2));
         Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
             teacherService.save(teacher1);

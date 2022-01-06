@@ -1,7 +1,7 @@
 package com.foxminded.university.service;
 
 import com.foxminded.university.config.UniversityConfigProperties;
-import com.foxminded.university.dao.VacationDao;
+import com.foxminded.university.dao.VacationRepository;
 import com.foxminded.university.exception.ChosenDurationException;
 import com.foxminded.university.exception.DurationException;
 import com.foxminded.university.exception.EntityNotFoundException;
@@ -34,7 +34,7 @@ import static org.mockito.Mockito.when;
 public class VacationServiceTest {
 
     @Mock
-    private VacationDao vacationDao;
+    private VacationRepository vacationRepository;
     @Mock
     private UniversityConfigProperties universityConfig;
     @InjectMocks
@@ -54,7 +54,7 @@ public class VacationServiceTest {
     void givenListOfVacations_whenFindAll_thenAllExistingVacationsFound() {
         Vacation vacation1 = Vacation.builder().id(1).build();
         List<Vacation> expected = Arrays.asList(vacation1);
-        when(vacationDao.findAll()).thenReturn(expected);
+        when(vacationRepository.findAll()).thenReturn(expected);
         List<Vacation> actual = vacationService.findAll();
 
         assertEquals(expected, actual);
@@ -64,7 +64,7 @@ public class VacationServiceTest {
     void givenPageable_whenFindAll_thenAllPageableVacationsFound() {
         List<Vacation> vacations = Arrays.asList(Vacation.builder().id(1).build());
         Page<Vacation> expected = new PageImpl<>(vacations, PageRequest.of(0, 1), 1);
-        when(vacationDao.findPaginatedVacationsByTeacherId(PageRequest.of(0, 1), 1)).thenReturn(expected);
+        when(vacationRepository.findAllByTeacherId(PageRequest.of(0, 1), 1)).thenReturn(expected);
         Page<Vacation> actual = vacationService.findByTeacherId(PageRequest.of(0, 1), 1);
 
         assertEquals(expected, actual);
@@ -73,7 +73,7 @@ public class VacationServiceTest {
     @Test
     void givenExistingVacation_whenFindById_thenVacationFound() {
         Optional<Vacation> expected = Optional.of(Vacation.builder().id(1).build());
-        when(vacationDao.findById(1)).thenReturn(expected);
+        when(vacationRepository.findById(1)).thenReturn(expected);
         Vacation actual = vacationService.findById(1);
 
         assertEquals(expected.get(), actual);
@@ -81,7 +81,7 @@ public class VacationServiceTest {
 
     @Test
     void givenExistingVacation_whenFindById_thenEntityNotFoundException() {
-        when(vacationDao.findById(10)).thenReturn(Optional.empty());
+        when(vacationRepository.findById(10)).thenReturn(Optional.empty());
         Exception exception = assertThrows(EntityNotFoundException.class, () -> {
             vacationService.findById(10);
         });
@@ -94,13 +94,13 @@ public class VacationServiceTest {
         LocalDate start = LocalDate.of(2021, 1, 1);
         LocalDate end = LocalDate.of(2021, 1, 2);
         Vacation vacation = Vacation.builder()
-                .start(start)
-                .end(end)
-                .teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build())
-                .build();
+            .start(start)
+            .end(end)
+            .teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build())
+            .build();
         vacationService.save(vacation);
 
-        verify(vacationDao).save(vacation);
+        verify(vacationRepository).save(vacation);
     }
 
     @Test
@@ -108,15 +108,15 @@ public class VacationServiceTest {
         LocalDate start = LocalDate.of(2021, 1, 1);
         LocalDate end = LocalDate.of(2021, 1, 2);
         Vacation vacation = Vacation.builder()
-                .id(1)
-                .start(start)
-                .end(end)
-                .teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build())
-                .build();
-        when(vacationDao.findByPeriodAndTeacher(start, end, vacation.getTeacher())).thenReturn(Optional.of(vacation));
+            .id(1)
+            .start(start)
+            .end(end)
+            .teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build())
+            .build();
+        when(vacationRepository.findByStartAndEndAndTeacher(start, end, vacation.getTeacher())).thenReturn(Optional.of(vacation));
         vacationService.save(vacation);
 
-        verify(vacationDao).save(vacation);
+        verify(vacationRepository).save(vacation);
     }
 
     @Test
@@ -124,28 +124,28 @@ public class VacationServiceTest {
         LocalDate start = LocalDate.of(2021, 1, 1);
         LocalDate end = LocalDate.of(2021, 1, 2);
         Vacation vacation1 = Vacation.builder()
-                .id(1)
-                .start(start)
-                .end(end)
-                .teacher(Teacher.builder().id(1).firstName("TestFirstName").lastName("TestLastName")
-                        .degree(Degree.ASSISTANT).build())
-                .build();
+            .id(1)
+            .start(start)
+            .end(end)
+            .teacher(Teacher.builder().id(1).firstName("TestFirstName").lastName("TestLastName")
+                .degree(Degree.ASSISTANT).build())
+            .build();
         Vacation vacation2 = Vacation.builder()
-                .id(11)
-                .start(start)
-                .end(end)
-                .teacher(Teacher.builder().id(1).firstName("TestFirstName").lastName("TestLastName")
-                        .degree(Degree.ASSISTANT).build())
-                .build();
-        when(vacationDao.findByPeriodAndTeacher(vacation1.getStart(), vacation1.getEnd(),
-                vacation1.getTeacher())).thenReturn(Optional.of(vacation2));
+            .id(11)
+            .start(start)
+            .end(end)
+            .teacher(Teacher.builder().id(1).firstName("TestFirstName").lastName("TestLastName")
+                .degree(Degree.ASSISTANT).build())
+            .build();
+        when(vacationRepository.findByStartAndEndAndTeacher(vacation1.getStart(), vacation1.getEnd(),
+            vacation1.getTeacher())).thenReturn(Optional.of(vacation2));
         Exception exception = assertThrows(EntityNotUniqueException.class, () -> {
             vacationService.save(vacation1);
         });
 
         assertEquals(
-                "Vacation with start(2021-01-01), end(2021-01-02) and teacher(TestFirstName TestLastName) id is already exists!",
-                exception.getMessage());
+            "Vacation with start(2021-01-01), end(2021-01-02) and teacher(TestFirstName TestLastName) id is already exists!",
+            exception.getMessage());
     }
 
     @Test
@@ -158,7 +158,7 @@ public class VacationServiceTest {
         });
 
         assertEquals("Vacation can`t be less than 1 day! Vacation start is: 2021-01-01. Vacation end is: 2021-01-01",
-                exception.getMessage());
+            exception.getMessage());
     }
 
     @Test
@@ -166,17 +166,17 @@ public class VacationServiceTest {
         LocalDate start = LocalDate.of(2021, 1, 1);
         LocalDate end = LocalDate.of(2020, 1, 1);
         Vacation vacation = Vacation.builder()
-                .id(1)
-                .start(start)
-                .end(end)
-                .build();
+            .id(1)
+            .start(start)
+            .end(end)
+            .build();
         Exception exception = assertThrows(DurationException.class, () -> {
             vacationService.save(vacation);
         });
 
         assertEquals(
-                "Vacation start date can`t be after vacation end date! Vacation start is: 2021-01-01. Vacation end is: 2020-01-01",
-                exception.getMessage());
+            "Vacation start date can`t be after vacation end date! Vacation start is: 2021-01-01. Vacation end is: 2020-01-01",
+            exception.getMessage());
     }
 
     @Test
@@ -184,19 +184,19 @@ public class VacationServiceTest {
         LocalDate start = LocalDate.of(2021, 1, 1);
         LocalDate end = LocalDate.of(2021, 1, 10);
         Vacation vacation = Vacation.builder()
-                .id(1)
-                .start(start)
-                .end(end)
-                .teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build())
-                .build();
-        when(vacationDao.findByTeacherIdAndYear(vacation.getTeacher().getId(), vacation.getStart().getYear()))
-                .thenReturn(Arrays.asList(vacation));
+            .id(1)
+            .start(start)
+            .end(end)
+            .teacher(Teacher.builder().id(1).degree(Degree.ASSISTANT).build())
+            .build();
+        when(vacationRepository.findByTeacherAndYear(vacation.getTeacher(), vacation.getStart().getYear()))
+            .thenReturn(Arrays.asList(vacation));
         Exception exception = assertThrows(ChosenDurationException.class, () -> {
             vacationService.save(vacation);
         });
 
         assertEquals("Vacations duration(existing 9 plus appointed 9) can`t be more than max(16) for degree ASSISTANT!",
-                exception.getMessage());
+            exception.getMessage());
     }
 
     @Test
@@ -204,7 +204,7 @@ public class VacationServiceTest {
         Vacation vacation = Vacation.builder().id(1).build();
         vacationService.delete(vacation);
 
-        verify(vacationDao).delete(vacation);
+        verify(vacationRepository).delete(vacation);
     }
 
     @Test
@@ -212,7 +212,7 @@ public class VacationServiceTest {
         Vacation vacation1 = Vacation.builder().id(1).build();
         Vacation vacation2 = Vacation.builder().id(1).build();
         List<Vacation> expected = Arrays.asList(vacation1, vacation2);
-        when(vacationDao.findByTeacherId(2)).thenReturn(expected);
+        when(vacationRepository.findByTeacherId(2)).thenReturn(expected);
         List<Vacation> actual = vacationService.findByTeacherId(2);
 
         assertEquals(expected, actual);

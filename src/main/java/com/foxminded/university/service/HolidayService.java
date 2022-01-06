@@ -1,6 +1,6 @@
 package com.foxminded.university.service;
 
-import com.foxminded.university.dao.HolidayDao;
+import com.foxminded.university.dao.HolidayRepository;
 import com.foxminded.university.exception.EntityNotFoundException;
 import com.foxminded.university.exception.EntityNotUniqueException;
 import com.foxminded.university.model.Holiday;
@@ -18,42 +18,42 @@ public class HolidayService {
 
     private static final Logger logger = LoggerFactory.getLogger(HolidayService.class);
 
-    private final HolidayDao holidayDao;
+    private final HolidayRepository holidayRepository;
 
-    public HolidayService(HolidayDao holidayDao) {
-        this.holidayDao = holidayDao;
+    public HolidayService(HolidayRepository holidayRepository) {
+        this.holidayRepository = holidayRepository;
     }
 
     public List<Holiday> findAll() {
         logger.debug("Find all holidays");
-        return holidayDao.findAll();
+        return holidayRepository.findAll();
     }
 
     public Page<Holiday> findAll(final Pageable pageable) {
         logger.debug("Find all holidays paginated");
-        return holidayDao.findPaginatedHolidays(pageable);
+        return holidayRepository.findAll(pageable);
     }
 
     public Holiday findById(int id) {
         logger.debug("Find holiday by id {}", id);
-        return holidayDao.findById(id)
+        return holidayRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Can`t find any holiday with id: " + id));
     }
 
     public void save(Holiday holiday) {
         logger.debug("Save holiday");
         uniqueCheck(holiday);
-        holidayDao.save(holiday);
+        holidayRepository.save(holiday);
     }
 
     public void delete(Holiday holiday) {
         logger.debug("Delete holiday with id: {}", holiday.getId());
-        holidayDao.delete(holiday);
+        holidayRepository.delete(holiday);
     }
 
     private void uniqueCheck(Holiday holiday) {
         logger.debug("Check holiday is unique");
-        Optional<Holiday> existingHoliday = holidayDao.findByNameAndDate(holiday.getName(), holiday.getDate());
+        Optional<Holiday> existingHoliday = holidayRepository.findByNameAndDate(holiday.getName(), holiday.getDate());
 
         if (existingHoliday.isPresent() && (existingHoliday.get().getId() != holiday.getId())) {
             throw new EntityNotUniqueException("Holiday with name " + holiday.getName() + " and date "

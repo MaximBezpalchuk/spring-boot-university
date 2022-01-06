@@ -8,42 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@NamedQueries(
-    {
-        @NamedQuery(
-            name = "findAllLectures",
-            query = "FROM Lecture"
-        ),
-        @NamedQuery(
-            name = "countAllLectures",
-            query = "SELECT COUNT(l) FROM Lecture l"
-        ),
-        @NamedQuery(
-            name = "findLectureByAudienceDateAndLectureTime",
-            query = "FROM Lecture WHERE audience.id=:audience_id AND date=:date AND time.id=:time_id"
-        ),
-        @NamedQuery(
-            name = "findLectureByTeacherAudienceDateAndLectureTime",
-            query = "FROM Lecture WHERE teacher.id=:teacher_id AND audience.id=:audience_id AND date=:date AND time.id=:time_id"
-        ),
-        @NamedQuery(
-            name = "findLecturesByTeacherDateAndTime",
-            query = "FROM Lecture WHERE teacher.id=:teacher_id AND date=:date AND time.id=:time_id"
-        ),
-        @NamedQuery(
-            name = "findLecturesByTeacherAndPeriod",
-            query = "FROM Lecture WHERE teacher=:teacher AND date>=:start AND date<=:end"
-        )
-
-    })
-@NamedNativeQueries({
-    @NamedNativeQuery(
-        name = "findLecturesByStudentAndPeriod",
-        query = "SELECT lec.*, lg.group_id FROM lectures AS lec LEFT JOIN lectures_groups AS lg ON lg.lecture_id = lec.id WHERE group_id = (SELECT group_id FROM students WHERE id =:student_id) AND date >=:start AND date <=:end"
-    )
-})
-
-
 @Entity
 @Table(name = "lectures")
 public class Lecture {

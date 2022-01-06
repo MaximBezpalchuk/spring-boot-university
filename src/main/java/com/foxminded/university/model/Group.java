@@ -3,18 +3,6 @@ package com.foxminded.university.model;
 import javax.persistence.*;
 import java.util.Objects;
 
-@NamedQueries(
-    {
-        @NamedQuery(
-            name = "findAllGroups",
-            query = "FROM Group"
-        ),
-        @NamedQuery(
-            name = "findGroupByName",
-            query = "FROM Group WHERE name=:name"
-        )
-    })
-
 @Entity
 @Table(name = "groups")
 public class Group {

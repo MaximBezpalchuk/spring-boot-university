@@ -1,10 +1,10 @@
 package com.foxminded.university.service;
 
 import com.foxminded.university.config.UniversityConfigProperties;
-import com.foxminded.university.dao.HolidayDao;
-import com.foxminded.university.dao.LectureDao;
-import com.foxminded.university.dao.StudentDao;
-import com.foxminded.university.dao.VacationDao;
+import com.foxminded.university.dao.HolidayRepository;
+import com.foxminded.university.dao.LectureRepository;
+import com.foxminded.university.dao.StudentRepository;
+import com.foxminded.university.dao.VacationRepository;
 import com.foxminded.university.exception.*;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Lecture;
@@ -27,20 +27,20 @@ public class LectureService {
 
     private static final Logger logger = LoggerFactory.getLogger(LectureService.class);
 
-    private final LectureDao lectureDao;
-    private final VacationDao vacationDao;
-    private final HolidayDao holidayDao;
-    private final StudentDao studentDao;
+    private final LectureRepository lectureRepository;
+    private final VacationRepository vacationRepository;
+    private final HolidayRepository holidayRepository;
+    private final StudentRepository studentRepository;
     private final StudentService studentService;
     private final TeacherService teacherService;
     private UniversityConfigProperties universityConfig;
 
-    public LectureService(LectureDao lectureDao, VacationDao vacationDao, HolidayDao holidayDao,
-                          StudentDao studentDao, StudentService studentService, TeacherService teacherService, UniversityConfigProperties universityConfig) {
-        this.lectureDao = lectureDao;
-        this.vacationDao = vacationDao;
-        this.holidayDao = holidayDao;
-        this.studentDao = studentDao;
+    public LectureService(LectureRepository lectureRepository, VacationRepository vacationRepository, HolidayRepository holidayRepository,
+                          StudentRepository studentRepository, StudentService studentService, TeacherService teacherService, UniversityConfigProperties universityConfig) {
+        this.lectureRepository = lectureRepository;
+        this.vacationRepository = vacationRepository;
+        this.holidayRepository = holidayRepository;
+        this.studentRepository = studentRepository;
         this.studentService = studentService;
         this.teacherService = teacherService;
         this.universityConfig = universityConfig;
@@ -48,17 +48,17 @@ public class LectureService {
 
     public List<Lecture> findAll() {
         logger.debug("Find all lectures");
-        return lectureDao.findAll();
+        return lectureRepository.findAll();
     }
 
     public Page<Lecture> findAll(final Pageable pageable) {
         logger.debug("Find all lectures paginated");
-        return lectureDao.findPaginatedLectures(pageable);
+        return lectureRepository.findAll(pageable);
     }
 
     public Lecture findById(int id) {
         logger.debug("Find lecture by id {}", id);
-        return lectureDao.findById(id)
+        return lectureRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Can`t find any lecture with id: " + id));
     }
 
@@ -73,17 +73,17 @@ public class LectureService {
         teacherCompetentWithSubjectCheck(lecture);
         enoughAudienceCapacityCheck(lecture);
         audienceOccupiedCheck(lecture);
-        lectureDao.save(lecture);
+        lectureRepository.save(lecture);
     }
 
     public void delete(Lecture lecture) {
         logger.debug("Delete lecture with id: {}", lecture.getId());
-        lectureDao.delete(lecture);
+        lectureRepository.delete(lecture);
     }
 
     private void uniqueCheck(Lecture lecture) {
         logger.debug("Check lecture is unique");
-        Optional<Lecture> existingLecture = lectureDao.findByTeacherAudienceDateAndLectureTime(lecture.getTeacher(),
+        Optional<Lecture> existingLecture = lectureRepository.findByTeacherAndAudienceAndDateAndTime(lecture.getTeacher(),
             lecture.getAudience(), lecture.getDate(), lecture.getTime());
         if (existingLecture.isPresent() && (existingLecture.get().getId() != lecture.getId())) {
             throw new EntityNotUniqueException("Lecture with audience number " + lecture.getAudience().getRoom()
@@ -110,7 +110,7 @@ public class LectureService {
 
     private void teacherBusyCheck(Lecture lecture) {
         logger.debug("Check teacher for this lecture is busy");
-        if (lectureDao.findLecturesByTeacherDateAndTime(lecture.getTeacher(), lecture.getDate(), lecture.getTime())
+        if (lectureRepository.findLecturesByTeacherAndDateAndTime(lecture.getTeacher(), lecture.getDate(), lecture.getTime())
             .stream().filter(lec -> lec.getId() != lecture.getId()).findAny().isPresent()) {
             throw new BusyTeacherException("Teacher is on another lecture this time! Teacher is: "
                 + lecture.getTeacher().getFirstName() + " " + lecture.getTeacher().getLastName());
@@ -119,14 +119,14 @@ public class LectureService {
 
     private void teacherInVacationCheck(Lecture lecture) {
         logger.debug("Check teacher for this lecture is in vacation");
-        if (!vacationDao.findByDateInPeriodAndTeacher(lecture.getDate(), lecture.getTeacher()).isEmpty()) {
+        if (!vacationRepository.findByTeacherAndStartGreaterThanEqualAndEndLessThanEqual(lecture.getTeacher(), lecture.getDate(), lecture.getDate()).isEmpty()) {
             throw new TeacherInVacationException("Teacher is in vacation this date! Date is: " + lecture.getDate());
         }
     }
 
     private void holidayCheck(Lecture lecture) {
         logger.debug("Check lecture is in holiday time");
-        if (!holidayDao.findByDate(lecture.getDate()).isEmpty()) {
+        if (!holidayRepository.findByDate(lecture.getDate()).isEmpty()) {
             throw new HolidayException("Lecture can`t be on holiday! Date is: " + lecture.getDate());
         }
     }
@@ -141,7 +141,7 @@ public class LectureService {
 
     private void enoughAudienceCapacityCheck(Lecture lecture) {
         logger.debug("Check audience size");
-        Integer studentsOnLectureCount = lecture.getGroups().stream().map(Group::getId).map(studentDao::findByGroupId)
+        Integer studentsOnLectureCount = lecture.getGroups().stream().map(Group::getId).map(studentRepository::findByGroupId)
             .mapToInt(List::size).sum();
         if (studentsOnLectureCount >= lecture.getAudience().getCapacity()) {
             throw new AudienceOverflowException("Student count (" + studentsOnLectureCount
@@ -151,7 +151,7 @@ public class LectureService {
 
     private void audienceOccupiedCheck(Lecture lecture) {
         logger.debug("Check audience is occupied");
-        Optional<Lecture> existingLecture = lectureDao.findByAudienceDateAndLectureTime(lecture.getAudience(),
+        Optional<Lecture> existingLecture = lectureRepository.findByAudienceAndDateAndTime(lecture.getAudience(),
             lecture.getDate(), lecture.getTime());
         if (existingLecture.isPresent() && existingLecture.get().getId() != lecture.getId()) {
             throw new OccupiedAudienceException(
@@ -161,11 +161,11 @@ public class LectureService {
 
     public List<Lecture> findByStudentIdAndPeriod(int id, LocalDate start, LocalDate end) {
         logger.debug("Find all lectures by student id and period");
-        return lectureDao.findLecturesByStudentAndPeriod(studentService.findById(id), start, end);
+        return lectureRepository.findByGroupsContainingAndDateGreaterThanEqualAndDateLessThanEqual(studentService.findById(id).getGroup(), start, end);
     }
 
     public List<Lecture> findByTeacherIdAndPeriod(int id, LocalDate start, LocalDate end) {
         logger.debug("Find all lectures by teacher and period");
-        return lectureDao.findLecturesByTeacherAndPeriod(teacherService.findById(id), start, end);
+        return lectureRepository.findByTeacherAndDateGreaterThanEqualAndDateLessThanEqual(teacherService.findById(id), start, end);
     }
 }

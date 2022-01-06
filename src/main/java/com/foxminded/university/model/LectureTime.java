@@ -6,22 +6,6 @@ import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.Objects;
 
-@NamedQueries(
-    {
-        @NamedQuery(
-            name = "findAllLectureTimes",
-            query = "FROM LectureTime"
-        )
-    })
-@NamedNativeQueries(
-    {
-        @NamedNativeQuery(
-            name = "findLectureTimeByPeriod",
-            query = "SELECT * FROM lecture_times WHERE start=:start AND finish=:end"
-        )
-
-    })
-
 @Entity
 @Table(name = "lecture_times")
 public class LectureTime {

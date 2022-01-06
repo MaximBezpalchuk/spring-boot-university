@@ -1,9 +1,7 @@
-package com.foxminded.university.dao.hibernate;
+package com.foxminded.university.dao;
 
-import com.foxminded.university.dao.VacationDao;
 import com.foxminded.university.model.Teacher;
 import com.foxminded.university.model.Vacation;
-import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -24,24 +23,24 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @Transactional
-public class HibernateVacationDaoTest {
+public class VacationRepositoryTest {
 
     @Autowired
-    private SessionFactory sessionFactory;
+    private EntityManager entityManager;
     @Autowired
-    private VacationDao vacationDao;
+    private VacationRepository vacationRepository;
 
     @Test
     void whenFindAll_thenAllExistingVacationsFound() {
-        int expected = (int) (long) sessionFactory.getCurrentSession().createQuery("SELECT COUNT(v) FROM Vacation v").getSingleResult();
-        List<Vacation> actual = vacationDao.findAll();
+        int expected = (int) (long) entityManager.createQuery("SELECT COUNT(v) FROM Vacation v").getSingleResult();
+        List<Vacation> actual = vacationRepository.findAll();
 
         assertEquals(actual.size(), expected);
     }
 
     @Test
     void givenPageable_whenFindPaginatedVacations_thenVacationsFound() {
-        Teacher teacher = sessionFactory.getCurrentSession().get(Teacher.class, 1);
+        Teacher teacher = entityManager.find(Teacher.class, 1);
         List<Vacation> vacations = Arrays.asList(Vacation.builder()
             .id(1)
             .start(LocalDate.of(2021, 1, 15))
@@ -49,28 +48,28 @@ public class HibernateVacationDaoTest {
             .teacher(teacher)
             .build());
         Page<Vacation> expected = new PageImpl<>(vacations, PageRequest.of(0, 1), 2);
-        Page<Vacation> actual = vacationDao.findPaginatedVacationsByTeacherId(PageRequest.of(0, 1), 1);
+        Page<Vacation> actual = vacationRepository.findAllByTeacherId(PageRequest.of(0, 1), 1);
 
         assertEquals(expected, actual);
     }
 
     @Test
     void givenExistingVacation_whenFindById_thenVacationFound() {
-        Teacher teacher = sessionFactory.getCurrentSession().get(Teacher.class, 1);
+        Teacher teacher = entityManager.find(Teacher.class, 1);
         Optional<Vacation> expected = Optional.of(Vacation.builder()
             .id(1)
             .start(LocalDate.of(2021, 1, 15))
             .end(LocalDate.of(2021, 1, 29))
             .teacher(teacher)
             .build());
-        Optional<Vacation> actual = vacationDao.findById(1);
+        Optional<Vacation> actual = vacationRepository.findById(1);
 
         assertEquals(expected, actual);
     }
 
     @Test
     void givenNotExistingVacation_whenFindById_thenReturnEmptyOptional() {
-        assertEquals(vacationDao.findById(100), Optional.empty());
+        assertEquals(vacationRepository.findById(100), Optional.empty());
     }
 
     @Test
@@ -78,10 +77,10 @@ public class HibernateVacationDaoTest {
         Vacation expected = Vacation.builder()
             .start(LocalDate.of(2021, 1, 31))
             .end(LocalDate.of(2021, 3, 29))
-            .teacher(sessionFactory.getCurrentSession().get(Teacher.class, 1))
+            .teacher(entityManager.find(Teacher.class, 1))
             .build();
-        vacationDao.save(expected);
-        Vacation actual = sessionFactory.getCurrentSession().get(Vacation.class, 5);
+        vacationRepository.save(expected);
+        Vacation actual = entityManager.find(Vacation.class, 5);
 
         assertEquals(expected, actual);
     }
@@ -92,18 +91,18 @@ public class HibernateVacationDaoTest {
             .id(1)
             .start(LocalDate.of(2021, 1, 1))
             .end(LocalDate.of(2021, 1, 1))
-            .teacher(sessionFactory.getCurrentSession().get(Teacher.class, 2))
+            .teacher(entityManager.find(Teacher.class, 2))
             .build();
-        vacationDao.save(expected);
-        Vacation actual = sessionFactory.getCurrentSession().get(Vacation.class, 1);
+        vacationRepository.save(expected);
+        Vacation actual = entityManager.find(Vacation.class, 1);
 
         assertEquals(expected, actual);
     }
 
     @Test
     void whenDeleteExistingVacation_thenVacationDeleted() {
-        vacationDao.delete(Vacation.builder().id(2).build());
-        Vacation actual = sessionFactory.getCurrentSession().get(Vacation.class, 2);
+        vacationRepository.delete(Vacation.builder().id(2).build());
+        Vacation actual = entityManager.find(Vacation.class, 2);
 
         assertNull(actual);
     }
@@ -114,30 +113,30 @@ public class HibernateVacationDaoTest {
             .id(1)
             .start(LocalDate.of(2021, 1, 15))
             .end(LocalDate.of(2021, 1, 29))
-            .teacher(sessionFactory.getCurrentSession().get(Teacher.class, 1))
+            .teacher(entityManager.find(Teacher.class, 1))
             .build();
         Vacation vacation2 = Vacation.builder()
             .id(2)
             .start(LocalDate.of(2021, 6, 15))
             .end(LocalDate.of(2021, 6, 29))
-            .teacher(sessionFactory.getCurrentSession().get(Teacher.class, 1))
+            .teacher(entityManager.find(Teacher.class, 1))
             .build();
         List<Vacation> expected = Arrays.asList(vacation1, vacation2);
-        List<Vacation> actual = vacationDao.findByTeacherId(1);
+        List<Vacation> actual = vacationRepository.findByTeacherId(1);
 
         assertEquals(expected, actual);
     }
 
     @Test
     void givenStartAndEndAndTeacher_whenFindByPeriodAndTeacher_thenVacationFound() {
-        Teacher teacher = sessionFactory.getCurrentSession().get(Teacher.class, 1);
+        Teacher teacher = entityManager.find(Teacher.class, 1);
         Optional<Vacation> expected = Optional.of(Vacation.builder()
             .id(1)
             .start(LocalDate.of(2021, 1, 15))
             .end(LocalDate.of(2021, 1, 29))
             .teacher(teacher)
             .build());
-        Optional<Vacation> actual = vacationDao.findByPeriodAndTeacher(expected.get().getStart(),
+        Optional<Vacation> actual = vacationRepository.findByStartAndEndAndTeacher(expected.get().getStart(),
             expected.get().getEnd(), teacher);
 
         assertEquals(expected, actual);
@@ -145,7 +144,7 @@ public class HibernateVacationDaoTest {
 
     @Test
     void givenTeacherAndYear_whenFindByTeacherAndYear_thenVacationFound() {
-        Teacher teacher = sessionFactory.getCurrentSession().get(Teacher.class, 1);
+        Teacher teacher = entityManager.find(Teacher.class, 1);
         Vacation vacation1 = Vacation.builder()
             .id(1)
             .start(LocalDate.of(2021, 1, 15))
@@ -158,7 +157,7 @@ public class HibernateVacationDaoTest {
             .end(LocalDate.of(2021, 6, 29))
             .teacher(teacher)
             .build();
-        List<Vacation> actual = vacationDao.findByTeacherIdAndYear(1, 2021);
+        List<Vacation> actual = vacationRepository.findByTeacherAndYear(teacher, 2021);
 
         assertEquals(Arrays.asList(vacation1, vacation2), actual);
     }

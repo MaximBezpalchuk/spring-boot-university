@@ -1,15 +1,14 @@
-package com.foxminded.university.dao.hibernate;
+package com.foxminded.university.dao;
 
-import com.foxminded.university.dao.GroupDao;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Group;
-import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,17 +18,17 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @Transactional
-public class HibernateGroupDaoTest {
+public class GroupRepositoryTest {
 
     @Autowired
-    private SessionFactory sessionFactory;
+    private EntityManager entityManager;
     @Autowired
-    private GroupDao groupDao;
+    private GroupRepository groupRepository;
 
     @Test
     void whenFindAll_thenAllExistingGroupsFound() {
-        int expected = (int) (long) sessionFactory.getCurrentSession().createQuery("SELECT COUNT(g) FROM Group g").getSingleResult();
-        List<Group> actual = groupDao.findAll();
+        int expected = (int) (long) entityManager.createQuery("SELECT COUNT(g) FROM Group g").getSingleResult();
+        List<Group> actual = groupRepository.findAll();
 
         assertEquals(actual.size(), expected);
     }
@@ -39,9 +38,9 @@ public class HibernateGroupDaoTest {
         Optional<Group> expected = Optional.of(Group.builder()
             .id(1)
             .name("Killers")
-            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .cathedra(entityManager.find(Cathedra.class, 1))
             .build());
-        Optional<Group> actual = groupDao.findById(1);
+        Optional<Group> actual = groupRepository.findById(1);
 
         assertEquals(expected, actual);
 
@@ -49,35 +48,35 @@ public class HibernateGroupDaoTest {
 
     @Test
     void givenNotExistingGroup_whenFindById_thenReturnEmptyOptional() {
-        assertEquals(groupDao.findById(100), Optional.empty());
+        assertEquals(groupRepository.findById(100), Optional.empty());
     }
 
     @Test
     void givenNewGroup_whenSaveGroup_thenAllExistingGroupsFound() {
         Group expected = Group.builder()
             .name("Test Name")
-            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .cathedra(entityManager.find(Cathedra.class, 1))
             .build();
-        groupDao.save(expected);
-        Group actual = sessionFactory.getCurrentSession().get(Group.class, 3);
+        groupRepository.save(expected);
+        Group actual = entityManager.find(Group.class, 3);
 
         assertEquals(expected, actual);
     }
 
     @Test
     void givenExistingGroup_whenSaveWithChanges_thenChangesApplied() {
-        Group expected = sessionFactory.getCurrentSession().get(Group.class, 1);
+        Group expected = entityManager.find(Group.class, 1);
         expected.setName("Test Name");
-        groupDao.save(expected);
-        Group actual = sessionFactory.getCurrentSession().get(Group.class, 1);
+        groupRepository.save(expected);
+        Group actual = entityManager.find(Group.class, 1);
 
         assertEquals(expected, actual);
     }
 
     @Test
     void whenDeleteExistingGroup_thenGroupDeleted() {
-        groupDao.delete(Group.builder().id(2).build());
-        Group actual = sessionFactory.getCurrentSession().get(Group.class, 2);
+        groupRepository.delete(Group.builder().id(2).build());
+        Group actual = entityManager.find(Group.class, 2);
 
         assertNull(actual);
     }
@@ -87,9 +86,9 @@ public class HibernateGroupDaoTest {
         Optional<Group> expected = Optional.of(Group.builder()
             .id(1)
             .name("Killers")
-            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .cathedra(entityManager.find(Cathedra.class, 1))
             .build());
-        Optional<Group> actual = groupDao.findByName("Killers");
+        Optional<Group> actual = groupRepository.findByName("Killers");
 
         assertEquals(expected, actual);
     }

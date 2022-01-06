@@ -1,15 +1,14 @@
-package com.foxminded.university.dao.hibernate;
+package com.foxminded.university.dao;
 
-import com.foxminded.university.dao.AudienceDao;
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Cathedra;
-import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,17 +18,17 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @Transactional
-public class HibernateAudienceDaoTest {
+public class AudienceRepositoryTest {
 
     @Autowired
-    private SessionFactory sessionFactory;
+    private EntityManager entityManager;
     @Autowired
-    private AudienceDao audienceDao;
+    private AudienceRepository audienceRepository;
 
     @Test
     void whenFindAll_thenAllExistingAudiencesFound() {
-        int expected = (int) (long) sessionFactory.getCurrentSession().createQuery("SELECT COUNT(a) FROM Audience a").getSingleResult();
-        List<Audience> actual = audienceDao.findAll();
+        int expected = (int) (long) entityManager.createQuery("SELECT COUNT(a) FROM Audience a").getSingleResult();
+        List<Audience> actual = audienceRepository.findAll();
 
         assertEquals(actual.size(), expected);
     }
@@ -40,9 +39,9 @@ public class HibernateAudienceDaoTest {
             .id(1)
             .room(1)
             .capacity(10)
-            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .cathedra(entityManager.find(Cathedra.class, 1))
             .build());
-        Optional<Audience> actual = audienceDao.findById(1);
+        Optional<Audience> actual = audienceRepository.findById(1);
 
         assertEquals(expected, actual);
 
@@ -50,7 +49,7 @@ public class HibernateAudienceDaoTest {
 
     @Test
     void givenNotExistingAudience_whenFindById_thenReturnEmptyOptional() {
-        assertEquals(audienceDao.findById(100), Optional.empty());
+        assertEquals(audienceRepository.findById(100), Optional.empty());
     }
 
     @Test
@@ -58,28 +57,28 @@ public class HibernateAudienceDaoTest {
         Audience expected = Audience.builder()
             .room(100)
             .capacity(100)
-            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .cathedra(entityManager.find(Cathedra.class, 1))
             .build();
-        audienceDao.save(expected);
-        Audience actual = sessionFactory.getCurrentSession().get(Audience.class, 4);
+        audienceRepository.save(expected);
+        Audience actual = entityManager.find(Audience.class, 4);
 
         assertEquals(expected, actual);
     }
 
     @Test
     void givenExistingAudience_whenSaveWithChanges_thenChangesApplied() {
-        Audience expected = sessionFactory.getCurrentSession().get(Audience.class, 1);
+        Audience expected = entityManager.find(Audience.class, 1);
         expected.setRoom(12345);
-        audienceDao.save(expected);
-        Audience actual = sessionFactory.getCurrentSession().get(Audience.class, 1);
+        audienceRepository.save(expected);
+        Audience actual = entityManager.find(Audience.class, 1);
 
         assertEquals(expected, actual);
     }
 
     @Test
     void whenDeleteExistingAudience_thenAudienceDeleted() {
-        audienceDao.delete(Audience.builder().id(2).build());
-        Audience actual = sessionFactory.getCurrentSession().get(Audience.class, 2);
+        audienceRepository.delete(Audience.builder().id(2).build());
+        Audience actual = entityManager.find(Audience.class, 2);
 
         assertNull(actual);
     }
@@ -90,11 +89,10 @@ public class HibernateAudienceDaoTest {
             .id(1)
             .room(1)
             .capacity(10)
-            .cathedra(sessionFactory.getCurrentSession().get(Cathedra.class, 1))
+            .cathedra(entityManager.find(Cathedra.class, 1))
             .build());
-        Optional<Audience> actual = audienceDao.findByRoom(1);
+        Optional<Audience> actual = audienceRepository.findByRoom(1);
 
         assertEquals(expected, actual);
-
     }
 }
