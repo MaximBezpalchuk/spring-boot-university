@@ -1,6 +1,7 @@
 package com.foxminded.university.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.Objects;
 
 @Entity
@@ -10,11 +11,16 @@ public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Cathedra cathedra;
+
     @Column
+    @NotBlank(message = "Subject name can`t be blank")
     private String name;
+
     @Column
+    @NotBlank(message = "Subject description can`t be blank")
     private String description;
 
     private Subject(Builder builder) {

@@ -3,6 +3,7 @@ package com.foxminded.university.model;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -13,12 +14,17 @@ public class Vacation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @NotNull(message = "Vacation start time should be entered")
     private LocalDate start;
+
     @Column(name = "finish")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @NotNull(message = "Vacation end time should be entered")
     private LocalDate end;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Teacher teacher;
 

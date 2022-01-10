@@ -1,6 +1,7 @@
 package com.foxminded.university.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
@@ -10,10 +11,15 @@ public class Audience {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column
+    @NotNull(message = "Audience room number should be entered")
     private int room;
+
     @Column
+    @NotNull(message = "Audience capacity should be entered")
     private int capacity;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Cathedra cathedra;
 

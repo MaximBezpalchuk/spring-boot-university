@@ -96,7 +96,7 @@ public class StudentRepositoryTest {
             .address("Empty Street 8")
             .gender(Gender.MALE)
             .birthDate(LocalDate.of(1994, 3, 3))
-            .phone("888005353535")
+            .phone("88005353535")
             .email("1@owl.com")
             .postalCode("999")
             .education("General secondary education")

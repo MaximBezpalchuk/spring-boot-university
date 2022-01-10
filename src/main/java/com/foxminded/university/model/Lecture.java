@@ -3,6 +3,7 @@ package com.foxminded.university.model;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,23 +16,31 @@ public class Lecture {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cathedra_id", referencedColumnName = "id")
     private Cathedra cathedra;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "lectures_groups", joinColumns = @JoinColumn(name = "lecture_id"), inverseJoinColumns = @JoinColumn(name = "group_id"))
     private List<Group> groups = new ArrayList<>();
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Teacher teacher;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "audience_id", referencedColumnName = "id")
     private Audience audience;
+
     @Column
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @NotNull(message = "Lecture date should be entered")
     private LocalDate date;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id", referencedColumnName = "id")
     private Subject subject;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_time_id", referencedColumnName = "id")
     private LectureTime time;
@@ -134,9 +143,9 @@ public class Lecture {
             return false;
         Lecture other = (Lecture) obj;
         return Objects.equals(audience, other.audience) && Objects.equals(cathedra, other.cathedra)
-            && Objects.equals(date, other.date) && Objects.equals(groups, other.groups) && id == other.id
-            && Objects.equals(subject, other.subject) && Objects.equals(teacher, other.teacher)
-            && Objects.equals(time, other.time);
+                && Objects.equals(date, other.date) && Objects.equals(groups, other.groups) && id == other.id
+                && Objects.equals(subject, other.subject) && Objects.equals(teacher, other.teacher)
+                && Objects.equals(time, other.time);
     }
 
     public static class Builder {

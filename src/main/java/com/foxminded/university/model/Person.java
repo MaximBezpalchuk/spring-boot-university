@@ -3,6 +3,10 @@ package com.foxminded.university.model;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -12,25 +16,43 @@ public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column(name = "first_name")
+    @NotBlank(message = "Person first name can`t be blank")
     private String firstName;
+
     @Column(name = "last_name")
+    @NotBlank(message = "Person last name can`t be blank")
     private String lastName;
+
     @Column
+    @Pattern(regexp = "^[0-9]{1,11}$", message="Phone number should contain only (1-11) digits!")
+    @NotBlank(message = "Phone number can`t be blank")
     private String phone;
+
     @Column
+    @NotBlank(message = "Person home address can`t be blank")
     private String address;
+
     @Column
+    @Email
     private String email;
+
     @Column
     @Enumerated(EnumType.STRING)
     private Gender gender;
+
     @Column(name = "postal_code")
+    @NotBlank(message = "Person postal code can`t be blank")
     private String postalCode;
+
     @Column
+    @NotBlank(message = "Person education should be entered")
     private String education;
+
     @Column(name = "birth_date")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @NotNull(message = "Person birth date should be entered")
     private LocalDate birthDate;
 
     protected Person(int id, String firstName, String lastName, String phone, String address, String email,

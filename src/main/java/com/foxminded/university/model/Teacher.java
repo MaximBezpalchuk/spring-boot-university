@@ -12,9 +12,11 @@ public class Teacher extends Person {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Cathedra cathedra;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "subjects_teachers", joinColumns = @JoinColumn(name = "teacher_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
     private List<Subject> subjects = new ArrayList<>();
+
     @Column
     @Enumerated(EnumType.STRING)
     private Degree degree;
