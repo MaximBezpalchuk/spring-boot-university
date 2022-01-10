@@ -5,13 +5,13 @@ import javax.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = {StudentAgeValidator.class})
-@Target({ElementType.METHOD, ElementType.FIELD})
+@Constraint(validatedBy = {AgeValidator.class})
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 
-public @interface StudentAge {
+public @interface Age {
 
-    String message() default "{Age should be more than 14!}";
+    String message() default "{Wrong age entry!}";
 
     Class<?>[] groups() default {};
 

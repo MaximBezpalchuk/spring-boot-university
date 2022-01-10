@@ -1,7 +1,6 @@
 package com.foxminded.university.model;
 
-import com.foxminded.university.validation.StudentAge;
-import com.foxminded.university.validation.TeacherAge;
+import com.foxminded.university.validation.Age;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -13,6 +12,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 @MappedSuperclass
+@Age
 public class Person {
 
     @Id
@@ -55,8 +55,6 @@ public class Person {
     @Column(name = "birth_date")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "Person birth date should be entered")
-    @StudentAge(groups = Student.class)
-    @TeacherAge(groups = Teacher.class)
     private LocalDate birthDate;
 
     protected Person(int id, String firstName, String lastName, String phone, String address, String email,
