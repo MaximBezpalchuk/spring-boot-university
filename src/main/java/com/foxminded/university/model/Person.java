@@ -1,5 +1,7 @@
 package com.foxminded.university.model;
 
+import com.foxminded.university.validation.StudentAge;
+import com.foxminded.university.validation.TeacherAge;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -26,7 +28,7 @@ public class Person {
     private String lastName;
 
     @Column
-    @Pattern(regexp = "^[0-9]{1,11}$", message="Phone number should contain only (1-11) digits!")
+    @Pattern(regexp = "^[0-9]{1,11}$", message = "Phone number should contain only (1-11) digits!")
     @NotBlank(message = "Phone number can`t be blank")
     private String phone;
 
@@ -53,6 +55,8 @@ public class Person {
     @Column(name = "birth_date")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "Person birth date should be entered")
+    @StudentAge(groups = Student.class)
+    @TeacherAge(groups = Teacher.class)
     private LocalDate birthDate;
 
     protected Person(int id, String firstName, String lastName, String phone, String address, String email,
