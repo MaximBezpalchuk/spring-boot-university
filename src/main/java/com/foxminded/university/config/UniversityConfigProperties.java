@@ -3,16 +3,30 @@ package com.foxminded.university.config;
 import com.foxminded.university.model.Degree;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import javax.validation.constraints.*;
 import java.util.Map;
 
 @ConfigurationProperties(prefix = "university")
 public class UniversityConfigProperties {
 
+    @NotNull
+    @Positive
     private int minLectureDurationInMinutes;
+
+    @NotNull
+    @Positive
     private int maxGroupSize;
+
+    @Min(value = 0)
+    @Max(value = 23)
     private int startWorkingDay;
+
+    @Min(value = 0)
+    @Max(value = 23)
     private int endWorkingDay;
-    private Map<Degree, Integer> maxVacation;
+
+    @NotEmpty
+    private Map<Degree, @Positive Integer> maxVacation;
 
     public int getMinLectureDurationInMinutes() {
         return minLectureDurationInMinutes;
