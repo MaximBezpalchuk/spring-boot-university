@@ -19,17 +19,18 @@ public class Holiday {
     private int id;
 
     @Column
-    @NotBlank(message = "Holiday name can`t be blank")
+    @NotBlank(message = "{Name.holiday.notBlank}")
     private String name;
 
     @Column
     @JsonSerialize(as = LocalDate.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @NotNull(message = "Holiday date should be entered")
+    @NotNull(message = "{Date.notNull}")
     private LocalDate date;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull(message = "{Cathedra.notNull}")
     private Cathedra cathedra;
 
     private Holiday(int id, String name, LocalDate date, Cathedra cathedra) {

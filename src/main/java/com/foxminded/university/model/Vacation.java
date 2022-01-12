@@ -1,5 +1,6 @@
 package com.foxminded.university.model;
 
+import com.foxminded.university.validation.CorrectPeriod;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "vacations")
+@CorrectPeriod
 public class Vacation {
 
     @Id
@@ -17,15 +19,16 @@ public class Vacation {
 
     @Column
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @NotNull(message = "Vacation start time should be entered")
+    @NotNull(message = "{Start.vacation.notNull}")
     private LocalDate start;
 
     @Column(name = "finish")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @NotNull(message = "Vacation end time should be entered")
+    @NotNull(message = "{End.vacation.notNull}")
     private LocalDate end;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull(message = "{Teacher.notNull}")
     private Teacher teacher;
 
     private Vacation(int id, LocalDate start, LocalDate end, Teacher teacher) {

@@ -1,7 +1,11 @@
 package com.foxminded.university.model;
 
+import org.hibernate.validator.constraints.Range;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 @Entity
@@ -13,14 +17,15 @@ public class Audience {
     private int id;
 
     @Column
-    @NotNull(message = "Audience room number should be entered")
+    @Range(min = 1, message = "{Room.audience.range}")
     private int room;
 
     @Column
-    @NotNull(message = "Audience capacity should be entered")
+    @Range(min = 1, message = "{Capacity.audience.range}")
     private int capacity;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull(message = "{Cathedra.notNull}")
     private Cathedra cathedra;
 
     private Audience(int id, int room, int capacity, Cathedra cathedra) {

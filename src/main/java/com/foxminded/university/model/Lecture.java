@@ -3,6 +3,7 @@ package com.foxminded.university.model;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -19,30 +20,36 @@ public class Lecture {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cathedra_id", referencedColumnName = "id")
+    @NotNull(message = "{Cathedra.notNull}")
     private Cathedra cathedra;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "lectures_groups", joinColumns = @JoinColumn(name = "lecture_id"), inverseJoinColumns = @JoinColumn(name = "group_id"))
+    @NotEmpty(message = "{Groups.lecture.notEmpty}")
     private List<Group> groups = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull(message = "{Teacher.notNull}")
     private Teacher teacher;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "audience_id", referencedColumnName = "id")
+    @NotNull(message = "{Audience.notNull}")
     private Audience audience;
 
     @Column
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @NotNull(message = "Lecture date should be entered")
+    @NotNull(message = "{Date.notNull}")
     private LocalDate date;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id", referencedColumnName = "id")
+    @NotNull(message = "{Subject.notNull}")
     private Subject subject;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_time_id", referencedColumnName = "id")
+    @NotNull(message = "{LectureTime.notNull}")
     private LectureTime time;
 
     private Lecture(int id, Cathedra cathedra, List<Group> groups, Teacher teacher, Audience audience, LocalDate date,

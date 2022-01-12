@@ -5,16 +5,14 @@ import javax.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = {AgeValidator.class})
+@Constraint(validatedBy = {CorrectPeriodValidator.class})
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
+public @interface CorrectPeriod {
 
-public @interface Age {
-
-    String message() default "{Wrong age entry!}";
+    String message() default "{End date can`t be before start date!}";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
-
 }
