@@ -1,8 +1,13 @@
 package com.foxminded.university.model;
 
+import com.foxminded.university.validation.PhoneNumber;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -12,25 +17,44 @@ public class Person {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column(name = "first_name")
+    @NotBlank(message = "{FirstName.person.notBlank}")
     private String firstName;
+
     @Column(name = "last_name")
+    @NotBlank(message = "{LastName.person.notBlank}")
     private String lastName;
+
     @Column
+    @PhoneNumber
+    @NotBlank(message = "{Phone.person.notBlank}")
     private String phone;
+
     @Column
+    @NotBlank(message = "{Address.person.notBlank}")
     private String address;
+
     @Column
+    @NotBlank(message = "{Email.person.notBlank}")
+    @Email
     private String email;
+
     @Column
     @Enumerated(EnumType.STRING)
     private Gender gender;
+
     @Column(name = "postal_code")
+    @NotBlank(message = "{PostalCode.person.notBlank}")
     private String postalCode;
+
     @Column
+    @NotBlank(message = "{Education.person.notBlank}")
     private String education;
+
     @Column(name = "birth_date")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @NotNull(message = "{BirthDate.person.notNull}")
     private LocalDate birthDate;
 
     protected Person(int id, String firstName, String lastName, String phone, String address, String email,

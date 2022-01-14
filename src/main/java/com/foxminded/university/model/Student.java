@@ -1,11 +1,14 @@
 package com.foxminded.university.model;
 
+import com.foxminded.university.validation.MinAge;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
 @Table(name = "students")
+@MinAge(14)
 public class Student extends Person {
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -69,7 +72,7 @@ public class Student extends Person {
 
         public Student build() {
             return new Student(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate,
-                group);
+                    group);
         }
     }
 

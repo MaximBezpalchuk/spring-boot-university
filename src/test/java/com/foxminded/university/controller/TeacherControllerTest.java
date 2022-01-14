@@ -1,9 +1,7 @@
 package com.foxminded.university.controller;
 
 import com.foxminded.university.dao.mapper.LectureToEventMapper;
-import com.foxminded.university.model.Cathedra;
-import com.foxminded.university.model.Subject;
-import com.foxminded.university.model.Teacher;
+import com.foxminded.university.model.*;
 import com.foxminded.university.service.CathedraService;
 import com.foxminded.university.service.LectureService;
 import com.foxminded.university.service.SubjectService;
@@ -22,11 +20,19 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -36,6 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class TeacherControllerTest {
 
     private MockMvc mockMvc;
+    private Validator validator;
     private final LectureToEventMapper lectureToEventMapper = LectureToEventMapper.INSTANCE;
     @Mock
     private TeacherService teacherService;
@@ -53,6 +60,8 @@ public class TeacherControllerTest {
         PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
         resolver.setFallbackPageable(PageRequest.of(0, 2));
         mockMvc = MockMvcBuilders.standaloneSetup(teacherController).setCustomArgumentResolvers(resolver).build();
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
     }
 
     @Test
@@ -166,5 +175,48 @@ public class TeacherControllerTest {
             .andExpect(redirectedUrl("/teachers"));
 
         verify(teacherService).delete(Teacher.builder().id(1).build());
+    }
+
+    @Test
+    void whenGivenIncorrectPhoneTeacher_thenValidationPhoneNumberFailed() {
+        Teacher teacher = Teacher.builder()
+                .firstName("Daniel")
+                .lastName("Morpheus")
+                .address("Virtual Reality Capsule no 1")
+                .gender(Gender.MALE)
+                .birthDate(LocalDate.of(1970, 1, 1))
+                .cathedra(Cathedra.builder().id(1).build())
+                .degree(Degree.PROFESSOR)
+                .phone("1132123123123123123123321123123")
+                .email("1@bigowl.com")
+                .postalCode("12345")
+                .education("Higher education")
+                .id(1)
+                .subjects(Arrays.asList(Subject.builder().id(1).build()))
+                .build();
+        Set<ConstraintViolation<Teacher>> violations = validator.validate(teacher);
+        assertFalse(violations.isEmpty());
+    }
+
+    @Test
+    void whenGivenIncorrectAgeTeacher_thenValidationMinAgeFailed() {
+        Teacher teacher = Teacher.builder()
+                .firstName("Daniel")
+                .lastName("Morpheus")
+                .address("Virtual Reality Capsule no 1")
+                .gender(Gender.MALE)
+                .birthDate(LocalDate.now().minus(19, ChronoUnit.YEARS))
+                .cathedra(Cathedra.builder().id(1).build())
+                .degree(Degree.PROFESSOR)
+                .phone("113")
+                .email("1@bigowl.com")
+                .postalCode("12345")
+                .education("Higher education")
+                .id(1)
+                .subjects(Arrays.asList(Subject.builder().id(1).build()))
+                .build();
+        Set<ConstraintViolation<Teacher>> violations = validator.validate(teacher);
+
+        assertFalse(violations.isEmpty());
     }
 }

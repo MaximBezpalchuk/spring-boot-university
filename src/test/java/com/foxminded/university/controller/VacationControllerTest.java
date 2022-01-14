@@ -20,12 +20,18 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -34,6 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class VacationControllerTest {
 
     private MockMvc mockMvc;
+    private Validator validator;
     @Mock
     private VacationService vacationService;
     @Mock
@@ -48,6 +55,8 @@ public class VacationControllerTest {
         PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
         resolver.setFallbackPageable(PageRequest.of(0, 1));
         mockMvc = MockMvcBuilders.standaloneSetup(vacationController).setCustomArgumentResolvers(resolver).build();
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
     }
 
     @Test
@@ -173,5 +182,18 @@ public class VacationControllerTest {
             .andExpect(model().attribute("lectures", is(Arrays.asList(lecture))))
             .andExpect(model().attribute("start", is(LocalDate.of(2021, 4, 4))))
             .andExpect(model().attribute("end", is(LocalDate.of(2021, 4, 5))));
+    }
+
+    @Test
+    void whenGivenIncorrectStartDateVacation_thenValidationCorrectPeriodFailed() {
+        Vacation vacation = Vacation.builder()
+                .id(1)
+                .start(LocalDate.of(2021, 1, 15))
+                .end(LocalDate.of(2020, 1, 29))
+                .teacher(Teacher.builder().id(1).build())
+                .build();
+        Set<ConstraintViolation<Vacation>> violations = validator.validate(vacation);
+
+        assertFalse(violations.isEmpty());
     }
 }

@@ -1,6 +1,8 @@
 package com.foxminded.university.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
@@ -10,9 +12,13 @@ public class Group {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column
+    @NotBlank(message = "{Name.group.notBlank}")
     private String name;
+
     @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull(message = "{Cathedra.notNull}")
     private Cathedra cathedra;
 
     private Group(int id, String name, Cathedra cathedra) {

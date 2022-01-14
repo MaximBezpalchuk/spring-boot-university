@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -15,14 +17,20 @@ public class Holiday {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column
+    @NotBlank(message = "{Name.holiday.notBlank}")
     private String name;
+
     @Column
     @JsonSerialize(as = LocalDate.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @NotNull(message = "{Date.notNull}")
     private LocalDate date;
+
     @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull(message = "{Cathedra.notNull}")
     private Cathedra cathedra;
 
     private Holiday(int id, String name, LocalDate date, Cathedra cathedra) {
@@ -86,7 +94,7 @@ public class Holiday {
             return false;
         Holiday other = (Holiday) obj;
         return Objects.equals(cathedra, other.cathedra) && Objects.equals(date, other.date) && id == other.id
-            && Objects.equals(name, other.name);
+                && Objects.equals(name, other.name);
     }
 
     public static class Builder {

@@ -1,6 +1,10 @@
 package com.foxminded.university.model;
 
+import com.foxminded.university.validation.MinAge;
+
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,13 +12,18 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "teachers")
+@MinAge(20)
 public class Teacher extends Person {
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull(message = "{Cathedra.notNull}")
     private Cathedra cathedra;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "subjects_teachers", joinColumns = @JoinColumn(name = "teacher_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
+    @NotEmpty(message = "{Subjects.teacher.notEmpty}")
     private List<Subject> subjects = new ArrayList<>();
+
     @Column
     @Enumerated(EnumType.STRING)
     private Degree degree;
@@ -77,7 +86,7 @@ public class Teacher extends Person {
             return false;
         Teacher other = (Teacher) obj;
         return Objects.equals(cathedra, other.cathedra) && degree == other.degree
-            && Objects.equals(subjects, other.subjects);
+                && Objects.equals(subjects, other.subjects);
     }
 
     public static class Builder extends Person.Builder<Builder> {
@@ -108,7 +117,7 @@ public class Teacher extends Person {
 
         public Teacher build() {
             return new Teacher(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate,
-                cathedra, subjects, degree);
+                    cathedra, subjects, degree);
         }
 
     }

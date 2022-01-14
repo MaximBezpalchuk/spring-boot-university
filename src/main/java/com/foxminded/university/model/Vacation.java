@@ -1,25 +1,34 @@
 package com.foxminded.university.model;
 
+import com.foxminded.university.validation.CorrectPeriod;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity
 @Table(name = "vacations")
+@CorrectPeriod
 public class Vacation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @NotNull(message = "{Start.vacation.notNull}")
     private LocalDate start;
+
     @Column(name = "finish")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @NotNull(message = "{End.vacation.notNull}")
     private LocalDate end;
+
     @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull(message = "{Teacher.notNull}")
     private Teacher teacher;
 
     private Vacation(int id, LocalDate start, LocalDate end, Teacher teacher) {
