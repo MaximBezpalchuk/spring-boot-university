@@ -2,6 +2,8 @@ package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foxminded.university.model.*;
+import com.foxminded.university.service.LectureService;
+import com.foxminded.university.service.TeacherService;
 import com.foxminded.university.service.VacationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,6 +34,8 @@ public class RestVacationControllerTest {
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
+    @Mock
+    private LectureService lectureService;
     @Mock
     private VacationService vacationService;
     @InjectMocks
@@ -135,7 +139,7 @@ public class RestVacationControllerTest {
             .id(1)
             .firstName("Daniel")
             .lastName("Morpheus")
-            .phone("1")
+            .phone("88005553535")
             .address("Virtual Reality Capsule no 1")
             .email("1@bigowl.com")
             .gender(Gender.MALE)
@@ -153,8 +157,10 @@ public class RestVacationControllerTest {
             .end(LocalDate.of(2021, 1, 16))
             .build();
 
+        String string = objectMapper.writeValueAsString(vacation);
+
          mockMvc.perform(patch("/api/teachers/{id}/vacations/{vacId}", teacher.getId(), 1)
-            .content(objectMapper.writeValueAsString(vacation))
+            .content(string)
             .contentType(APPLICATION_JSON))
             .andExpect(status().isOk());
     }
