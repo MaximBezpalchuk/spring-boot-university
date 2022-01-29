@@ -124,13 +124,33 @@ public class RestVacationControllerTest {
 
     @Test
     void whenEditVacation_thenVacationFound() throws Exception {
-        Teacher teacher = Teacher.builder().id(1).firstName("Name").lastName("Last name").degree(Degree.ASSISTANT).gender(Gender.MALE)
+        Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+        Subject subject = Subject.builder()
+            .id(1)
+            .name("Weapon Tactics")
+            .description("Learning how to use heavy weapon and guerrilla tactics")
+            .cathedra(cathedra)
+            .build();
+        Teacher teacher = Teacher.builder()
+            .id(1)
+            .firstName("Daniel")
+            .lastName("Morpheus")
+            .phone("1")
+            .address("Virtual Reality Capsule no 1")
+            .email("1@bigowl.com")
+            .gender(Gender.MALE)
+            .postalCode("12345")
+            .education("Higher education")
+            .cathedra(cathedra)
+            .degree(Degree.PROFESSOR)
+            .birthDate(LocalDate.of(1970,1,1))
+            .subjects(Arrays.asList(subject))
             .build();
         Vacation vacation = Vacation.builder()
             .id(1)
             .teacher(teacher)
-            .start(LocalDate.of(2021, 1, 1))
-            .end(LocalDate.of(2021, 1, 2))
+            .start(LocalDate.of(2021, 1, 15))
+            .end(LocalDate.of(2021, 1, 16))
             .build();
 
          mockMvc.perform(patch("/api/teachers/{id}/vacations/{vacId}", teacher.getId(), 1)
