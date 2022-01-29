@@ -3,7 +3,6 @@ package com.foxminded.university.controller.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foxminded.university.model.*;
 import com.foxminded.university.service.LectureService;
-import com.foxminded.university.service.TeacherService;
 import com.foxminded.university.service.VacationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -147,7 +146,7 @@ public class RestVacationControllerTest {
             .education("Higher education")
             .cathedra(cathedra)
             .degree(Degree.PROFESSOR)
-            .birthDate(LocalDate.of(1970,1,1))
+            .birthDate(LocalDate.of(1970, 1, 1))
             .subjects(Arrays.asList(subject))
             .build();
         Vacation vacation = Vacation.builder()
@@ -159,7 +158,7 @@ public class RestVacationControllerTest {
 
         String string = objectMapper.writeValueAsString(vacation);
 
-         mockMvc.perform(patch("/api/teachers/{id}/vacations/{vacId}", teacher.getId(), 1)
+        mockMvc.perform(patch("/api/teachers/{id}/vacations/{vacId}", teacher.getId(), 1)
             .content(string)
             .contentType(APPLICATION_JSON))
             .andExpect(status().isOk());
