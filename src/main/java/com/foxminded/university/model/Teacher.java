@@ -1,5 +1,6 @@
 package com.foxminded.university.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.foxminded.university.validation.MinAge;
 
 import javax.persistence.*;
@@ -17,11 +18,13 @@ public class Teacher extends Person {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull(message = "{Cathedra.notNull}")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Cathedra cathedra;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "subjects_teachers", joinColumns = @JoinColumn(name = "teacher_id"), inverseJoinColumns = @JoinColumn(name = "subject_id"))
     @NotEmpty(message = "{Subjects.teacher.notEmpty}")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private List<Subject> subjects = new ArrayList<>();
 
     @Column

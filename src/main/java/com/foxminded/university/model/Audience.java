@@ -1,5 +1,6 @@
 package com.foxminded.university.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
@@ -26,6 +27,7 @@ public class Audience {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull(message = "{Cathedra.notNull}")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Cathedra cathedra;
 
     private Audience(int id, int room, int capacity, Cathedra cathedra) {

@@ -1,6 +1,7 @@
 package com.foxminded.university.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -31,6 +32,7 @@ public class Holiday {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull(message = "{Cathedra.notNull}")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Cathedra cathedra;
 
     private Holiday(int id, String name, LocalDate date, Cathedra cathedra) {

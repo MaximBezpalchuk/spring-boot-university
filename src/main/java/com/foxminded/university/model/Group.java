@@ -1,5 +1,7 @@
 package com.foxminded.university.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -19,6 +21,7 @@ public class Group {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull(message = "{Cathedra.notNull}")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Cathedra cathedra;
 
     private Group(int id, String name, Cathedra cathedra) {

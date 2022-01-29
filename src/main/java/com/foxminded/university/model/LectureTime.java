@@ -1,5 +1,6 @@
 package com.foxminded.university.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -18,11 +19,13 @@ public class LectureTime {
     @Column
     @DateTimeFormat(pattern = "HH:mm")
     @NotNull(message = "Lecture start time should be entered")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalTime start;
 
     @Column(name = "finish")
     @DateTimeFormat(pattern = "HH:mm")
     @NotNull(message = "Lecture end time should be entered")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private LocalTime end;
 
     private LectureTime(int id, LocalTime start, LocalTime end) {
