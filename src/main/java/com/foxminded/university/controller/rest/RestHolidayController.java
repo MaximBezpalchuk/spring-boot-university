@@ -1,7 +1,8 @@
 package com.foxminded.university.controller.rest;
 
 import com.foxminded.university.controller.HolidayController;
-import com.foxminded.university.model.Holiday;
+import com.foxminded.university.dao.mapper.HolidayDtoMapper;
+import com.foxminded.university.model.dto.HolidayDto;
 import com.foxminded.university.service.HolidayService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,43 +17,45 @@ public class RestHolidayController {
     private static final Logger logger = LoggerFactory.getLogger(HolidayController.class);
 
     private final HolidayService holidayService;
+    private final HolidayDtoMapper holidayDtoMapper;
 
-    public RestHolidayController(HolidayService holidayService) {
+    public RestHolidayController(HolidayService holidayService, HolidayDtoMapper holidayDtoMapper) {
         this.holidayService = holidayService;
+        this.holidayDtoMapper = holidayDtoMapper;
     }
 
     @GetMapping
-    public Page<Holiday> getAllHolidays(Pageable pageable) {
+    public Page<HolidayDto> getAllHolidays(Pageable pageable) {
         logger.debug("Show all holidays");
 
-        return holidayService.findAll(pageable);
+        return holidayService.findAll(pageable).map(holidayDtoMapper::holidayToDto);
     }
 
     @GetMapping("/{id}")
-    public Holiday showHoliday(@PathVariable int id) {
+    public HolidayDto showHoliday(@PathVariable int id) {
         logger.debug("Show holiday with id {}", id);
 
-        return holidayService.findById(id);
+        return holidayDtoMapper.holidayToDto(holidayService.findById(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody Holiday holiday) {
-        logger.debug("Create new holiday. Id {}", holiday.getId());
-        holidayService.save(holiday);
+    public void create(@RequestBody HolidayDto holidayDto) {
+        //logger.debug("Create new holiday. Id {}", holiday.getId());
+        holidayService.save(holidayDtoMapper.dtoToHoliday(holidayDto));
     }
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void update(@RequestBody Holiday holiday, @PathVariable int id) {
-        logger.debug("Update holiday with id {}", id);
-        holidayService.save(holiday);
+    public void update(@RequestBody HolidayDto holidayDto, @PathVariable int id) {
+        //logger.debug("Update holiday with id {}", id);
+        holidayService.save(holidayDtoMapper.dtoToHoliday(holidayDto));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void delete(@RequestBody Holiday holiday) {
-        logger.debug("Delete holiday with id {}", holiday.getId());
-        holidayService.delete(holiday);
+    public void delete(@RequestBody HolidayDto holidayDto) {
+        //logger.debug("Delete holiday with id {}", holiday.getId());
+        holidayService.delete(holidayDtoMapper.dtoToHoliday(holidayDto));
     }
 }

@@ -33,6 +33,12 @@ public class GroupService {
             .orElseThrow(() -> new EntityNotFoundException("Can`t find any group with id: " + id));
     }
 
+    public Group findByName(String name) {
+        logger.debug("Find group by name {}", name);
+        return groupRepository.findByName(name)
+                .orElseThrow(() -> new EntityNotFoundException("Can`t find any group with name: " + name));
+    }
+
     public void save(Group group) {
         logger.debug("Save group");
         uniqueCheck(group);

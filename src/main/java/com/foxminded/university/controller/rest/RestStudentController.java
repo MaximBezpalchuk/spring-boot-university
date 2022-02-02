@@ -1,7 +1,9 @@
 package com.foxminded.university.controller.rest;
 
 import com.foxminded.university.controller.StudentController;
+import com.foxminded.university.dao.mapper.StudentDtoMapper;
 import com.foxminded.university.model.Student;
+import com.foxminded.university.model.dto.StudentDto;
 import com.foxminded.university.service.StudentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,43 +19,48 @@ public class RestStudentController {
     private static final Logger logger = LoggerFactory.getLogger(StudentController.class);
 
     private final StudentService studentService;
+    private final StudentDtoMapper studentDtoMapper;
 
-    public RestStudentController(StudentService studentService) {
+    public RestStudentController(StudentService studentService, StudentDtoMapper studentDtoMapper) {
         this.studentService = studentService;
+        this.studentDtoMapper = studentDtoMapper;
     }
 
     @GetMapping
-    public Page<Student> getAllStudents(Pageable pageable) {
+    public Page<StudentDto> getAllStudents(Pageable pageable) {
         logger.debug("Show all students");
 
-        return studentService.findAll(pageable);
+        return studentService.findAll(pageable).map(studentDtoMapper::studentToDto);
     }
 
     @GetMapping("/{id}")
-    public Student showStudent(@PathVariable int id) {
+    public StudentDto showStudent(@PathVariable int id) {
         logger.debug("Show student page with id {}", id);
+        Student student = studentService.findById(id);
 
-        return studentService.findById(id);
+        return studentDtoMapper.studentToDto(student);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody Student student) {
-        logger.debug("Create new student. Id {}", student.getId());
+    public void create(@RequestBody StudentDto studentDto) {
+        //logger.debug("Create new student. Id {}", student.getId());
+        //TODO: it is not working now: cannot save
+        Student student = studentDtoMapper.dtoToStudent(studentDto);
         studentService.save(student);
     }
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void update(@RequestBody Student student, @PathVariable int id) {
-        logger.debug("Update student with id {}", id);
-        studentService.save(student);
+    public void update(@RequestBody StudentDto studentDto, @PathVariable int id) {
+        //logger.debug("Update student with id {}", id);
+        studentService.save(studentDtoMapper.dtoToStudent(studentDto));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void delete(@RequestBody Student student) {
-        logger.debug("Delete student with id {}", student.getId());
-        studentService.delete(student);
+    public void delete(@RequestBody StudentDto studentDto) {
+        //logger.debug("Delete student with id {}", student.getId());
+        studentService.delete(studentDtoMapper.dtoToStudent(studentDto));
     }
 }
