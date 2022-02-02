@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,6 +47,12 @@ public class TeacherService {
         logger.debug("Find teacher by id {}", id);
         return teacherRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Can`t find any teacher with id: " + id));
+    }
+
+    public Teacher findByFirstNameAndLastNameAndBirthDate(String firstName, String lastName, LocalDate birthDate) {
+        logger.debug("Find teacher by firstName: {}, lastName: {} and birthDate: {}", firstName, lastName, birthDate);
+        return teacherRepository.findByFirstNameAndLastNameAndBirthDate(firstName, lastName, birthDate)
+            .orElseThrow(() -> new EntityNotFoundException("Can`t find any teacher with firstName: " + firstName + ", lastName: " + lastName + " and birthDate: " + birthDate));
     }
 
     public void save(Teacher teacher) {

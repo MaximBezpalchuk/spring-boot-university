@@ -2,7 +2,7 @@ package com.foxminded.university.controller.rest;
 
 import com.foxminded.university.controller.GroupController;
 import com.foxminded.university.dao.mapper.GroupDtoMapper;
-import com.foxminded.university.model.dto.GroupDto;
+import com.foxminded.university.dto.GroupDto;
 import com.foxminded.university.service.GroupService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

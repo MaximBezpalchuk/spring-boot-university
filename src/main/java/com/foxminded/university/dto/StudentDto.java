@@ -1,4 +1,4 @@
-package com.foxminded.university.model.dto;
+package com.foxminded.university.dto;
 
 import com.foxminded.university.model.Gender;
 

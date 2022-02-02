@@ -1,7 +1,7 @@
 package com.foxminded.university.dao.mapper;
 
 import com.foxminded.university.model.Cathedra;
-import com.foxminded.university.model.dto.CathedraDto;
+import com.foxminded.university.dto.CathedraDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;

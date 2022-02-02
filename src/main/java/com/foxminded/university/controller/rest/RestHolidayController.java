@@ -2,7 +2,7 @@ package com.foxminded.university.controller.rest;
 
 import com.foxminded.university.controller.HolidayController;
 import com.foxminded.university.dao.mapper.HolidayDtoMapper;
-import com.foxminded.university.model.dto.HolidayDto;
+import com.foxminded.university.dto.HolidayDto;
 import com.foxminded.university.service.HolidayService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -5,7 +5,7 @@ import javax.validation.Payload;
 import javax.validation.constraints.Pattern;
 import java.lang.annotation.*;
 
-@Pattern(regexp = "^[0-9]{1,11}$")
+@Pattern(regexp = "^[0-9]{1,13}$")
 @Documented
 @Constraint(validatedBy = {})
 @Target({ElementType.FIELD})

@@ -1,6 +1,8 @@
 package com.foxminded.university.controller.rest;
 
 import com.foxminded.university.controller.TeacherController;
+import com.foxminded.university.dao.mapper.TeacherDtoMapper;
+import com.foxminded.university.dto.TeacherDto;
 import com.foxminded.university.model.Teacher;
 import com.foxminded.university.service.TeacherService;
 import org.slf4j.Logger;
@@ -16,43 +18,45 @@ public class RestTeacherController {
 
     private static final Logger logger = LoggerFactory.getLogger(TeacherController.class);
     private final TeacherService teacherService;
+    private final TeacherDtoMapper teacherDtoMapper;
 
-    public RestTeacherController(TeacherService teacherService) {
+    public RestTeacherController(TeacherService teacherService, TeacherDtoMapper teacherDtoMapper) {
         this.teacherService = teacherService;
+        this.teacherDtoMapper = teacherDtoMapper;
     }
 
     @GetMapping
-    public Page<Teacher> all(Pageable pageable) {
+    public Page<TeacherDto> all(Pageable pageable) {
         logger.debug("Show all teachers");
 
-        return teacherService.findAll(pageable);
+        return teacherService.findAll(pageable).map(teacherDtoMapper::teacherToDto);
     }
 
     @GetMapping("/{id}")
-    public Teacher showTeacher(@PathVariable int id) {
+    public TeacherDto showTeacher(@PathVariable int id) {
         logger.debug("Show teacher with id {}", id);
 
-        return teacherService.findById(id);
+        return teacherDtoMapper.teacherToDto(teacherService.findById(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody Teacher teacher) {
-        logger.debug("Create new teacher. Id {}", teacher.getId());
-        teacherService.save(teacher);
+    public void create(@RequestBody TeacherDto teacherDto) {
+        //logger.debug("Create new teacher. Id {}", teacher.getId());
+        teacherService.save(teacherDtoMapper.dtoToTeacher(teacherDto));
     }
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void update(@RequestBody Teacher teacher, @PathVariable int id) {
-        logger.debug("Update teacher with id {}", id);
-        teacherService.save(teacher);
+    public void update(@RequestBody TeacherDto teacherDto, @PathVariable int id) {
+        //logger.debug("Update teacher with id {}", id);
+        teacherService.save(teacherDtoMapper.dtoToTeacher(teacherDto));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void delete(@RequestBody Teacher teacher) {
-        logger.debug("Delete teacher with id {}", teacher.getId());
-        teacherService.delete(teacher);
+    public void delete(@RequestBody TeacherDto teacherDto) {
+        //logger.debug("Delete teacher with id {}", teacher.getId());
+        teacherService.delete(teacherDtoMapper.dtoToTeacher(teacherDto));
     }
 }

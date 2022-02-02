@@ -2,8 +2,7 @@ package com.foxminded.university.controller.rest;
 
 import com.foxminded.university.controller.StudentController;
 import com.foxminded.university.dao.mapper.StudentDtoMapper;
-import com.foxminded.university.model.Student;
-import com.foxminded.university.model.dto.StudentDto;
+import com.foxminded.university.dto.StudentDto;
 import com.foxminded.university.service.StudentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,18 +35,15 @@ public class RestStudentController {
     @GetMapping("/{id}")
     public StudentDto showStudent(@PathVariable int id) {
         logger.debug("Show student page with id {}", id);
-        Student student = studentService.findById(id);
 
-        return studentDtoMapper.studentToDto(student);
+        return studentDtoMapper.studentToDto(studentService.findById(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void create(@RequestBody StudentDto studentDto) {
         //logger.debug("Create new student. Id {}", student.getId());
-        //TODO: it is not working now: cannot save
-        Student student = studentDtoMapper.dtoToStudent(studentDto);
-        studentService.save(student);
+        studentService.save(studentDtoMapper.dtoToStudent(studentDto));
     }
 
     @PatchMapping("/{id}")

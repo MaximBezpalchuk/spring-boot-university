@@ -1,22 +1,18 @@
-package com.foxminded.university.model.dto;
+package com.foxminded.university.dto;
 
-import java.time.LocalDate;
-
-public class HolidayDto {
+public class GroupDto {
 
     private Integer id;
     private String name;
-    private LocalDate date;
     private String cathedraName;
 
-    public HolidayDto(Integer id, String name, LocalDate date, String cathedraName) {
+    public GroupDto(Integer id, String name, String cathedraName) {
         this.id = id;
         this.name = name;
-        this.date = date;
         this.cathedraName = cathedraName;
     }
 
-    public HolidayDto() {
+    public GroupDto() {
     }
 
     public Integer getId() {
@@ -33,14 +29,6 @@ public class HolidayDto {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
     }
 
     public String getCathedraName() {

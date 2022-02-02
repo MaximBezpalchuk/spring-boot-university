@@ -2,7 +2,7 @@ package com.foxminded.university.controller.rest;
 
 import com.foxminded.university.controller.AudienceController;
 import com.foxminded.university.dao.mapper.AudienceDtoMapper;
-import com.foxminded.university.model.dto.AudienceDto;
+import com.foxminded.university.dto.AudienceDto;
 import com.foxminded.university.service.AudienceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
