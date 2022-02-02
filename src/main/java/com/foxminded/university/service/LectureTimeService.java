@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +38,12 @@ public class LectureTimeService {
         logger.debug("Find lecture time by id {}", id);
         return lectureTimeRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Can`t find any lecture time with id: " + id));
+    }
+
+    public LectureTime findByStartAndEnd(LocalTime start, LocalTime end) {
+        logger.debug("Find lecture time by start {} and end {}", start, end);
+        return lectureTimeRepository.findByStartAndEnd(start, end)
+            .orElseThrow(() -> new EntityNotFoundException("Can`t find any lecture time with start: " + start + " and end: " + end));
     }
 
     public void save(LectureTime lectureTime) {

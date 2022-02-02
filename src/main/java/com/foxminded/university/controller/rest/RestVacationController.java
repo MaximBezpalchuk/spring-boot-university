@@ -1,7 +1,9 @@
 package com.foxminded.university.controller.rest;
 
 import com.foxminded.university.controller.VacationController;
+import com.foxminded.university.dao.mapper.LectureDtoMapper;
 import com.foxminded.university.dao.mapper.VacationDtoMapper;
+import com.foxminded.university.dto.LectureDto;
 import com.foxminded.university.dto.VacationDto;
 import com.foxminded.university.exception.BusyTeacherException;
 import com.foxminded.university.model.Lecture;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/teachers/{teacherId}/vacations")
@@ -32,13 +35,16 @@ public class RestVacationController {
     private final VacationService vacationService;
     private final LectureService lectureService;
     private final VacationDtoMapper vacationDtoMapper;
+    private final LectureDtoMapper lectureDtoMapper;
 
     public RestVacationController(TeacherService teacherService, VacationService vacationService,
-                                  LectureService lectureService, VacationDtoMapper vacationDtoMapper) {
+                                  LectureService lectureService, VacationDtoMapper vacationDtoMapper,
+                                  LectureDtoMapper lectureDtoMapper) {
         this.teacherService = teacherService;
         this.vacationService = vacationService;
         this.lectureService = lectureService;
         this.vacationDtoMapper = vacationDtoMapper;
+        this.lectureDtoMapper = lectureDtoMapper;
     }
 
     @GetMapping
@@ -72,17 +78,15 @@ public class RestVacationController {
 
     }
 
-    //TODO: complete it after making dto for lectures
     @GetMapping("/lectures")
-    public List<Lecture> changeTeacherOnLectures(@PathVariable int teacherId,
-                                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
-                                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
+    public List<LectureDto> changeTeacherOnLectures(@PathVariable int teacherId,
+                                                    @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+                                                    @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
         logger.debug("Change teacher on lectures - teacher with id {}", teacherId);
 
-        return lectureService.findByTeacherIdAndPeriod(teacherId, start, end);
+        return lectureService.findByTeacherIdAndPeriod(teacherId, start, end).stream().map(lectureDtoMapper::lectureToDto).collect(Collectors.toList());
     }
 
-    //TODO: complete it after making dto for lectures
     @PatchMapping("/lectures")
     @ResponseStatus(HttpStatus.OK)
     public void autofillTeachersOnLectures(@PathVariable int teacherId,

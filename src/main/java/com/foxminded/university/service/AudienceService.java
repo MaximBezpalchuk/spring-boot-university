@@ -33,6 +33,12 @@ public class AudienceService {
             .orElseThrow(() -> new EntityNotFoundException("Can`t find any audience with id: " + id));
     }
 
+    public Audience findByRoom(int room) {
+        logger.debug("Find audience by room {}", room);
+        return audienceRepository.findByRoom(room)
+            .orElseThrow(() -> new EntityNotFoundException("Can`t find any audience with room: " + room));
+    }
+
     public void save(Audience audience) {
         logger.debug("Save audience");
         uniqueCheck(audience);

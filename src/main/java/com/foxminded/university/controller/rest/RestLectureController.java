@@ -1,6 +1,8 @@
 package com.foxminded.university.controller.rest;
 
 import com.foxminded.university.controller.LectureController;
+import com.foxminded.university.dao.mapper.LectureDtoMapper;
+import com.foxminded.university.dto.LectureDto;
 import com.foxminded.university.model.Lecture;
 import com.foxminded.university.service.LectureService;
 import org.slf4j.Logger;
@@ -16,50 +18,53 @@ public class RestLectureController {
     private static final Logger logger = LoggerFactory.getLogger(LectureController.class);
 
     private final LectureService lectureService;
+    private final LectureDtoMapper lectureDtoMapper;
 
-    public RestLectureController(LectureService lectureService) {
+    public RestLectureController(LectureService lectureService, LectureDtoMapper lectureDtoMapper) {
         this.lectureService = lectureService;
+        this.lectureDtoMapper = lectureDtoMapper;
     }
 
     @GetMapping
-    public Page<Lecture> getAllLectures(Pageable pageable) {
+    public Page<LectureDto> getAllLectures(Pageable pageable) {
         logger.debug("Show all lectures");
 
-        return lectureService.findAll(pageable);
+        return lectureService.findAll(pageable).map(lectureDtoMapper::lectureToDto);
     }
 
     @GetMapping("{id}")
-    public Lecture showLecture(@PathVariable int id) {
+    public LectureDto showLecture(@PathVariable int id) {
         logger.debug("Show lecture with id {}", id);
 
-        return lectureService.findById(id);
+        return lectureDtoMapper.lectureToDto(lectureService.findById(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody Lecture lecture) {
-        logger.debug("Create new lecture. Id {}", lecture.getId());
+    public void create(@RequestBody LectureDto lectureDto) {
+        //logger.debug("Create new lecture. Id {}", lecture.getId());
+        Lecture lecture= lectureDtoMapper.dtoToLecture(lectureDto);
         lectureService.save(lecture);
     }
 
     @PatchMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void update(@RequestBody Lecture lecture, @PathVariable int id) {
-        logger.debug("Update lecture with id {}", id);
-        lectureService.save(lecture);
+    public void update(@RequestBody LectureDto lectureDto, @PathVariable int id) {
+        //logger.debug("Update lecture with id {}", id);
+        lectureService.save(lectureDtoMapper.dtoToLecture(lectureDto));
     }
 
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void delete(@RequestBody Lecture lecture) {
-        logger.debug("Delete lecture with id {}", lecture.getId());
-        lectureService.delete(lecture);
+    public void delete(@RequestBody LectureDto lectureDto) {
+        //logger.debug("Delete lecture with id {}", lecture.getId());
+        lectureService.delete(lectureDtoMapper.dtoToLecture(lectureDto));
     }
 
     @PatchMapping("{id}/edit/teacher")
     @ResponseStatus(HttpStatus.OK)
-    public void updateTeacher(@RequestBody Lecture lecture, @PathVariable int id) {
-        logger.debug("Update lecture with id {}", id);
-        lectureService.save(lecture);
+    public void updateTeacher(@RequestBody LectureDto lectureDto, @PathVariable int id) {
+        //logger.debug("Update lecture with id {}", id);
+        lectureService.save(lectureDtoMapper.dtoToLecture(lectureDto));
     }
 }
