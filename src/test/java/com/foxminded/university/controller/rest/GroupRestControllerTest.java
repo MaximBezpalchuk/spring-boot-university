@@ -25,18 +25,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-public class RestGroupControllerTest {
+public class GroupRestControllerTest {
 
     private MockMvc mockMvc;
 
     @Mock
     private GroupService groupService;
     @InjectMocks
-    private RestGroupController restGroupController;
+    private GroupRestController groupRestController;
 
     @BeforeEach
     public void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(restGroupController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(groupRestController).build();
     }
 
     @Test

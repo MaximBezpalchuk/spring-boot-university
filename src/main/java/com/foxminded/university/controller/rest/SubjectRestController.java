@@ -10,18 +10,22 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("api/subjects")
-public class RestSubjectController {
+public class SubjectRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(SubjectController.class);
 
     private final SubjectService subjectService;
     private final SubjectDtoMapper subjectDtoMapper;
 
-    public RestSubjectController(SubjectService subjectService, SubjectDtoMapper subjectDtoMapper) {
+    public SubjectRestController(SubjectService subjectService, SubjectDtoMapper subjectDtoMapper) {
         this.subjectService = subjectService;
         this.subjectDtoMapper = subjectDtoMapper;
     }
@@ -42,22 +46,22 @@ public class RestSubjectController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody SubjectDto subjectDto) {
-        //logger.debug("Create new subject. Id {}", subject.getId());
-        subjectService.save(subjectDtoMapper.dtoToSubject(subjectDto));
+    public ResponseEntity create(@RequestBody SubjectDto subjectDto) {
+        Subject subject = subjectService.save(subjectDtoMapper.dtoToSubject(subjectDto));
+        logger.debug("Create new subject. Id {}", subject.getId());
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+            .buildAndExpand(subject.getId()).toUri();
+
+        return ResponseEntity.created(location).build();
     }
 
     @PatchMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void update(@RequestBody SubjectDto subjectDto, @PathVariable int id) {
-        //logger.debug("Update subject with id {}", id);
+    public void update(@RequestBody SubjectDto subjectDto) {
         subjectService.save(subjectDtoMapper.dtoToSubject(subjectDto));
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public void delete(@RequestBody SubjectDto subjectDto) {
-        //logger.debug("Delete subject with id {}", subject.getId());
         subjectService.delete(subjectDtoMapper.dtoToSubject(subjectDto));
     }
 }

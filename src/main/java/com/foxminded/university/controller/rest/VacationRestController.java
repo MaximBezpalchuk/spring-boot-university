@@ -3,7 +3,7 @@ package com.foxminded.university.controller.rest;
 import com.foxminded.university.controller.VacationController;
 import com.foxminded.university.dao.mapper.LectureDtoMapper;
 import com.foxminded.university.dao.mapper.VacationDtoMapper;
-import com.foxminded.university.dto.LectureDto;
+import com.foxminded.university.dto.ObjectListDto;
 import com.foxminded.university.dto.VacationDto;
 import com.foxminded.university.exception.BusyTeacherException;
 import com.foxminded.university.model.Lecture;
@@ -18,8 +18,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
@@ -27,7 +30,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/teachers/{teacherId}/vacations")
-public class RestVacationController {
+public class VacationRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(VacationController.class);
 
@@ -37,7 +40,7 @@ public class RestVacationController {
     private final VacationDtoMapper vacationDtoMapper;
     private final LectureDtoMapper lectureDtoMapper;
 
-    public RestVacationController(TeacherService teacherService, VacationService vacationService,
+    public VacationRestController(TeacherService teacherService, VacationService vacationService,
                                   LectureService lectureService, VacationDtoMapper vacationDtoMapper,
                                   LectureDtoMapper lectureDtoMapper) {
         this.teacherService = teacherService;
@@ -63,32 +66,35 @@ public class RestVacationController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createVacation(@PathVariable int teacherId, @RequestBody VacationDto vacationDto) {
-        Vacation vacation = vacationDtoMapper.dtoToVacation(vacationDto);
-        List<Lecture> lectures = lectureService.findByTeacherIdAndPeriod(teacherId, vacation.getStart(),
-            vacation.getEnd());
+    public ResponseEntity createVacation(@PathVariable int teacherId, @RequestBody VacationDto vacationDto) {
+        Vacation vacation;
+        Vacation vacationFromDto = vacationDtoMapper.dtoToVacation(vacationDto);
+        List<Lecture> lectures = lectureService.findByTeacherIdAndPeriod(teacherId, vacationFromDto.getStart(),
+            vacationFromDto.getEnd());
         if (lectures.isEmpty()) {
-            //logger.debug("Create new vacation. Id {}", vacation.getId());
-            vacationService.save(vacation);
+            vacation = vacationService.save(vacationFromDto);
+            logger.debug("Create new vacation. Id {}", vacation.getId());
         } else {
             logger.debug("Vacation wasn`t created! Need to change teacher in some lectures");
             throw new BusyTeacherException("Teacher is on another lecture this time! Teacher is: " +
-                vacation.getTeacher().getFirstName() + " " + vacation.getTeacher().getLastName());
+                vacationFromDto.getTeacher().getFirstName() + " " + vacationFromDto.getTeacher().getLastName());
         }
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+            .buildAndExpand(vacation.getId()).toUri();
 
+        return ResponseEntity.created(location).build();
     }
 
     @GetMapping("/lectures")
-    public List<LectureDto> changeTeacherOnLectures(@PathVariable int teacherId,
-                                                    @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
-                                                    @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
+    public ObjectListDto changeTeacherOnLectures(@PathVariable int teacherId,
+                                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+                                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
         logger.debug("Change teacher on lectures - teacher with id {}", teacherId);
 
-        return lectureService.findByTeacherIdAndPeriod(teacherId, start, end).stream().map(lectureDtoMapper::lectureToDto).collect(Collectors.toList());
+        return new ObjectListDto(lectureService.findByTeacherIdAndPeriod(teacherId, start, end).stream().map(lectureDtoMapper::lectureToDto).collect(Collectors.toList()));
     }
 
     @PatchMapping("/lectures")
-    @ResponseStatus(HttpStatus.OK)
     public void autofillTeachersOnLectures(@PathVariable int teacherId,
                                            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
                                            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
@@ -103,13 +109,11 @@ public class RestVacationController {
     }
 
     @PatchMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void update(@RequestBody VacationDto vacationDto, @PathVariable int teacherId, @PathVariable int id) {
+    public void update(@RequestBody VacationDto vacationDto, @PathVariable int teacherId) {
         Vacation vacation = vacationDtoMapper.dtoToVacation(vacationDto);
         List<Lecture> lectures = lectureService.findByTeacherIdAndPeriod(teacherId, vacation.getStart(),
             vacation.getEnd());
         if (lectures.isEmpty()) {
-            //logger.debug("Update vacation with id {}", id);
             vacationService.save(vacation);
         } else {
             logger.debug("Vacation wasn`t created! Need to change teacher in some lectures");
@@ -119,9 +123,7 @@ public class RestVacationController {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public void delete(@RequestBody VacationDto vacationDto) {
-        //logger.debug("Delete vacation with id {}", vacation.getId());
         vacationService.delete(vacationDtoMapper.dtoToVacation(vacationDto));
     }
 }

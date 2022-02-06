@@ -39,10 +39,11 @@ public class GroupService {
                 .orElseThrow(() -> new EntityNotFoundException("Can`t find any group with name: " + name));
     }
 
-    public void save(Group group) {
+    public Group save(Group group) {
         logger.debug("Save group");
         uniqueCheck(group);
-        groupRepository.save(group);
+
+        return groupRepository.save(group);
     }
 
     public void delete(Group group) {

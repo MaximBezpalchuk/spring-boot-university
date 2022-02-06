@@ -3,35 +3,39 @@ package com.foxminded.university.controller.rest;
 import com.foxminded.university.controller.LectureTimeController;
 import com.foxminded.university.dao.mapper.LectureTimeDtoMapper;
 import com.foxminded.university.dto.LectureTimeDto;
+import com.foxminded.university.dto.ObjectListDto;
 import com.foxminded.university.model.LectureTime;
 import com.foxminded.university.service.LectureTimeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("api/lecturetimes")
-public class RestLectureTimeController {
+public class LectureTimeRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(LectureTimeController.class);
 
     private final LectureTimeService lectureTimeService;
     private final LectureTimeDtoMapper lectureTimeDtoMapper;
 
-    public RestLectureTimeController(LectureTimeService lectureTimeService, LectureTimeDtoMapper lectureTimeDtoMapper) {
+    public LectureTimeRestController(LectureTimeService lectureTimeService, LectureTimeDtoMapper lectureTimeDtoMapper) {
         this.lectureTimeService = lectureTimeService;
         this.lectureTimeDtoMapper = lectureTimeDtoMapper;
     }
 
     @GetMapping
-    public List<LectureTimeDto> getAllLectureTimes() {
+    public ObjectListDto getAllLectureTimes() {
         logger.debug("Show all lecture times");
 
-        return lectureTimeService.findAll().stream().map(lectureTimeDtoMapper::lectureTimeToDto).collect(Collectors.toList());
+        return new ObjectListDto(lectureTimeService.findAll().stream().map(lectureTimeDtoMapper::lectureTimeToDto).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
@@ -43,22 +47,22 @@ public class RestLectureTimeController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody LectureTimeDto lectureTimeDto) {
-        //logger.debug("Create new lecture time. Id {}", lectureTime.getId());
-        lectureTimeService.save(lectureTimeDtoMapper.dtoToLectureTime(lectureTimeDto));
+    public ResponseEntity create(@RequestBody LectureTimeDto lectureTimeDto) {
+        LectureTime lectureTime = lectureTimeService.save(lectureTimeDtoMapper.dtoToLectureTime(lectureTimeDto));
+        logger.debug("Create new lecture time. Id {}", lectureTime.getId());
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+            .buildAndExpand(lectureTime.getId()).toUri();
+
+        return ResponseEntity.created(location).build();
     }
 
     @PatchMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void update(@RequestBody LectureTimeDto lectureTimeDto, @PathVariable int id) {
-        //logger.debug("Update lecture time with id {}", id);
+    public void update(@RequestBody LectureTimeDto lectureTimeDto) {
         lectureTimeService.save(lectureTimeDtoMapper.dtoToLectureTime(lectureTimeDto));
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public void delete(@RequestBody LectureTimeDto lectureTimeDto) {
-        //logger.debug("Delete lecture time with id {}", lectureTime.getId());
         lectureTimeService.delete(lectureTimeDtoMapper.dtoToLectureTime(lectureTimeDto));
     }
 }

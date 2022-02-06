@@ -19,8 +19,6 @@ import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,20 +31,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-public class RestStudentControllerTest {
+public class StudentRestControllerTest {
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
     @Mock
     private StudentService studentService;
     @InjectMocks
-    private RestStudentController restStudentController;
+    private StudentRestController studentRestController;
 
     @BeforeEach
     public void setUp() {
         PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
         resolver.setFallbackPageable(PageRequest.of(0, 1));
-        mockMvc = MockMvcBuilders.standaloneSetup(restStudentController).setCustomArgumentResolvers(resolver).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(studentRestController).setCustomArgumentResolvers(resolver).build();
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
     }

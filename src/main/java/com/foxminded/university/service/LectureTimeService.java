@@ -46,12 +46,13 @@ public class LectureTimeService {
             .orElseThrow(() -> new EntityNotFoundException("Can`t find any lecture time with start: " + start + " and end: " + end));
     }
 
-    public void save(LectureTime lectureTime) {
+    public LectureTime save(LectureTime lectureTime) {
         logger.debug("Save lecture time");
         uniqueCheck(lectureTime);
         timeCorrectCheck(lectureTime);
         durationMoreThanChosenTimeCheck(lectureTime);
-        lectureTimeRepository.save(lectureTime);
+
+        return lectureTimeRepository.save(lectureTime);
 
     }
 

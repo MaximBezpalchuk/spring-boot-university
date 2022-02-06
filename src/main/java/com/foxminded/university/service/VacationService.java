@@ -41,13 +41,14 @@ public class VacationService {
             .orElseThrow(() -> new EntityNotFoundException("Can`t find any vacation with id: " + id));
     }
 
-    public void save(Vacation vacation) {
+    public Vacation save(Vacation vacation) {
         logger.debug("Save vacation");
         uniqueCheck(vacation);
         dateCorrectCheck(vacation);
         dateMoreThenOneDayCheck(vacation);
         vacationDurationLessOrEqualsThanMaxCheck(vacation);
-        vacationRepository.save(vacation);
+
+        return vacationRepository.save(vacation);
     }
 
     public void delete(Vacation vacation) {

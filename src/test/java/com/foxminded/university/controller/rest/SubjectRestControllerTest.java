@@ -30,20 +30,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-public class RestSubjectControllerTest {
+public class SubjectRestControllerTest {
 
     private MockMvc mockMvc;
 
     @Mock
     private SubjectService subjectService;
     @InjectMocks
-    private RestSubjectController restSubjectController;
+    private SubjectRestController subjectRestController;
 
     @BeforeEach
     public void setUp() {
         PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
         resolver.setFallbackPageable(PageRequest.of(0, 1));
-        mockMvc = MockMvcBuilders.standaloneSetup(restSubjectController).setCustomArgumentResolvers(resolver).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(subjectRestController).setCustomArgumentResolvers(resolver).build();
     }
 
     @Test

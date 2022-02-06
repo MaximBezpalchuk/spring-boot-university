@@ -27,7 +27,6 @@ public class Audience {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull(message = "{Cathedra.notNull}")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Cathedra cathedra;
 
     private Audience(int id, int room, int capacity, Cathedra cathedra) {

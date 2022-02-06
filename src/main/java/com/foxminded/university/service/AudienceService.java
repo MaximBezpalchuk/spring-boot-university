@@ -39,10 +39,11 @@ public class AudienceService {
             .orElseThrow(() -> new EntityNotFoundException("Can`t find any audience with room: " + room));
     }
 
-    public void save(Audience audience) {
+    public Audience save(Audience audience) {
         logger.debug("Save audience");
         uniqueCheck(audience);
-        audienceRepository.save(audience);
+
+        return audienceRepository.save(audience);
     }
 
     public void delete(Audience audience) {

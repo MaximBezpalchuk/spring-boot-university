@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-public class RestHolidayControllerTest {
+public class HolidayRestControllerTest {
 
 
     private MockMvc mockMvc;
@@ -38,7 +38,7 @@ public class RestHolidayControllerTest {
     @Mock
     private HolidayService holidayService;
     @InjectMocks
-    private RestHolidayController restHolidayController;
+    private HolidayRestController holidayRestController;
 
     private ObjectMapper objectMapper;
 
@@ -46,7 +46,7 @@ public class RestHolidayControllerTest {
     public void setUp() {
         PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
         resolver.setFallbackPageable(PageRequest.of(0, 1));
-        mockMvc = MockMvcBuilders.standaloneSetup(restHolidayController).setCustomArgumentResolvers(resolver).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(holidayRestController).setCustomArgumentResolvers(resolver).build();
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
     }

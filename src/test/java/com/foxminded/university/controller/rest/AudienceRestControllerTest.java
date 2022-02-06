@@ -25,18 +25,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-public class RestAudienceControllerTest {
+public class AudienceRestControllerTest {
 
     private MockMvc mockMvc;
 
     @Mock
     private AudienceService audienceService;
     @InjectMocks
-    private RestAudienceController restAudienceController;
+    private AudienceRestController audienceRestController;
 
     @BeforeEach
     public void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(restAudienceController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(audienceRestController).build();
     }
 
     @Test

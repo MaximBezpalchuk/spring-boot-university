@@ -1,6 +1,5 @@
 package com.foxminded.university.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.foxminded.university.validation.MinAge;
 
 import javax.persistence.*;
@@ -14,7 +13,6 @@ public class Student extends Person {
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
-    //@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Group group;
 
     public Student(int id, String firstName, String lastName, String phone, String address, String email,
@@ -74,7 +72,7 @@ public class Student extends Person {
 
         public Student build() {
             return new Student(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate,
-                    group);
+                group);
         }
     }
 

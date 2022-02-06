@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
-public class RestLectureTimeControllerTest {
+public class LectureTimeRestControllerTest {
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
@@ -33,11 +33,11 @@ public class RestLectureTimeControllerTest {
     @Mock
     private LectureTimeService lectureTimeService;
     @InjectMocks
-    private RestLectureTimeController restLectureTimeController;
+    private LectureTimeRestController lectureTimeRestController;
 
     @BeforeEach
     public void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(restLectureTimeController).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(lectureTimeRestController).build();
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
     }

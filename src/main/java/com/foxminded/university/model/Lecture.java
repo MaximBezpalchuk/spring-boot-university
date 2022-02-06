@@ -1,7 +1,6 @@
 package com.foxminded.university.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -23,24 +22,20 @@ public class Lecture {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cathedra_id", referencedColumnName = "id")
     @NotNull(message = "{Cathedra.notNull}")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Cathedra cathedra;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "lectures_groups", joinColumns = @JoinColumn(name = "lecture_id"), inverseJoinColumns = @JoinColumn(name = "group_id"))
     @NotEmpty(message = "{Groups.lecture.notEmpty}")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private List<Group> groups = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull(message = "{Teacher.notNull}")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Teacher teacher;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "audience_id", referencedColumnName = "id")
     @NotNull(message = "{Audience.notNull}")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Audience audience;
 
     @Column
@@ -52,13 +47,11 @@ public class Lecture {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subject_id", referencedColumnName = "id")
     @NotNull(message = "{Subject.notNull}")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Subject subject;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "lecture_time_id", referencedColumnName = "id")
     @NotNull(message = "{LectureTime.notNull}")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private LectureTime time;
 
     private Lecture(int id, Cathedra cathedra, List<Group> groups, Teacher teacher, Audience audience, LocalDate date,
@@ -159,9 +152,9 @@ public class Lecture {
             return false;
         Lecture other = (Lecture) obj;
         return Objects.equals(audience, other.audience) && Objects.equals(cathedra, other.cathedra)
-                && Objects.equals(date, other.date) && Objects.equals(groups, other.groups) && id == other.id
-                && Objects.equals(subject, other.subject) && Objects.equals(teacher, other.teacher)
-                && Objects.equals(time, other.time);
+            && Objects.equals(date, other.date) && Objects.equals(groups, other.groups) && id == other.id
+            && Objects.equals(subject, other.subject) && Objects.equals(teacher, other.teacher)
+            && Objects.equals(time, other.time);
     }
 
     public static class Builder {

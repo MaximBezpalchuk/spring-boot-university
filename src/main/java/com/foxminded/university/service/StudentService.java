@@ -44,11 +44,12 @@ public class StudentService {
             .orElseThrow(() -> new EntityNotFoundException("Can`t find any student with id: " + id));
     }
 
-    public void save(Student student) {
+    public Student save(Student student) {
         logger.debug("Save student");
         uniqueCheck(student);
         groupOverflowCheck(student);
-        studentRepository.save(student);
+
+        return studentRepository.save(student);
     }
 
     public void delete(Student student) {

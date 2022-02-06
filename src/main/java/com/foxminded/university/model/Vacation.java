@@ -1,7 +1,6 @@
 package com.foxminded.university.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.foxminded.university.validation.CorrectPeriod;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -33,7 +32,6 @@ public class Vacation {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @NotNull(message = "{Teacher.notNull}")
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Teacher teacher;
 
     private Vacation(int id, LocalDate start, LocalDate end, Teacher teacher) {

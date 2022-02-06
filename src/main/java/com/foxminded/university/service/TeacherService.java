@@ -55,10 +55,11 @@ public class TeacherService {
             .orElseThrow(() -> new EntityNotFoundException("Can`t find any teacher with firstName: " + firstName + ", lastName: " + lastName + " and birthDate: " + birthDate));
     }
 
-    public void save(Teacher teacher) {
+    public Teacher save(Teacher teacher) {
         logger.debug("Save teacher");
         uniqueCheck(teacher);
-        teacherRepository.save(teacher);
+
+        return teacherRepository.save(teacher);
     }
 
     public void delete(Teacher teacher) {

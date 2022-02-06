@@ -10,17 +10,21 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("api/teachers")
-public class RestTeacherController {
+public class TeacherRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(TeacherController.class);
     private final TeacherService teacherService;
     private final TeacherDtoMapper teacherDtoMapper;
 
-    public RestTeacherController(TeacherService teacherService, TeacherDtoMapper teacherDtoMapper) {
+    public TeacherRestController(TeacherService teacherService, TeacherDtoMapper teacherDtoMapper) {
         this.teacherService = teacherService;
         this.teacherDtoMapper = teacherDtoMapper;
     }
@@ -41,22 +45,22 @@ public class RestTeacherController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestBody TeacherDto teacherDto) {
-        //logger.debug("Create new teacher. Id {}", teacher.getId());
-        teacherService.save(teacherDtoMapper.dtoToTeacher(teacherDto));
+    public ResponseEntity create(@RequestBody TeacherDto teacherDto) {
+        Teacher teacher = teacherService.save(teacherDtoMapper.dtoToTeacher(teacherDto));
+        logger.debug("Create new teacher. Id {}", teacher.getId());
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+            .buildAndExpand(teacher.getId()).toUri();
+
+        return ResponseEntity.created(location).build();
     }
 
     @PatchMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void update(@RequestBody TeacherDto teacherDto, @PathVariable int id) {
-        //logger.debug("Update teacher with id {}", id);
+    public void update(@RequestBody TeacherDto teacherDto) {
         teacherService.save(teacherDtoMapper.dtoToTeacher(teacherDto));
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
     public void delete(@RequestBody TeacherDto teacherDto) {
-        //logger.debug("Delete teacher with id {}", teacher.getId());
         teacherService.delete(teacherDtoMapper.dtoToTeacher(teacherDto));
     }
 }

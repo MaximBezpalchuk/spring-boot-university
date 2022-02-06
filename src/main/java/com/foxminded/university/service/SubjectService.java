@@ -46,10 +46,11 @@ public class SubjectService {
             .orElseThrow(() -> new EntityNotFoundException("Can`t find any subject with name: " + name));
     }
 
-    public void save(Subject subject) {
+    public Subject save(Subject subject) {
         logger.debug("Save subject");
         uniqueCheck(subject);
-        subjectRepository.save(subject);
+
+        return subjectRepository.save(subject);
     }
 
     public void delete(Subject subject) {
