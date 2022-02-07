@@ -1,6 +1,9 @@
 package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.foxminded.university.dao.mapper.LectureTimeDtoMapper;
+import com.foxminded.university.dto.LectureTimeDto;
+import com.foxminded.university.dto.ObjectListDto;
 import com.foxminded.university.model.LectureTime;
 import com.foxminded.university.service.LectureTimeService;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,6 +12,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -16,12 +22,10 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,7 +33,7 @@ public class LectureTimeRestControllerTest {
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
-
+    private final LectureTimeDtoMapper lectureTimeDtoMapper = LectureTimeDtoMapper.INSTANCE;
     @Mock
     private LectureTimeService lectureTimeService;
     @InjectMocks
@@ -40,90 +44,85 @@ public class LectureTimeRestControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(lectureTimeRestController).build();
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
+        ReflectionTestUtils.setField(lectureTimeRestController, "lectureTimeDtoMapper", lectureTimeDtoMapper);
     }
 
     @Test
     public void whenGetAllLectureTimes_thenAllLectureTimesReturned() throws Exception {
-        LectureTime lectureTime1 = LectureTime.builder()
-            .id(1)
-            .start(LocalTime.of(8, 0))
-            .end(LocalTime.of(9, 45))
-            .build();
-        LectureTime lectureTime2 = LectureTime.builder()
-            .id(2)
-            .start(LocalTime.of(10, 0))
-            .end(LocalTime.of(12, 45))
-            .build();
+        LectureTime lectureTime1 = createLectureTimeNoId();
+        lectureTime1.setId(1);
+        LectureTime lectureTime2 = createLectureTimeNoId();
+        lectureTime2.setId(2);
         List<LectureTime> lectureTimes = Arrays.asList(lectureTime1, lectureTime2);
         when(lectureTimeService.findAll()).thenReturn(lectureTimes);
 
-        mockMvc.perform(get("/api/lecturetimes"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(2)))
-            .andExpect(jsonPath("$[0].id", is(1)))
-            .andExpect(jsonPath("$[0].start", is("08:00")))
-            .andExpect(jsonPath("$[0].end", is("09:45")));
+        mockMvc.perform(get("/api/lecturetimes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new ObjectListDto(lectureTimes))))
+                .andExpect(status().isOk());
 
         verifyNoMoreInteractions(lectureTimeService);
     }
 
     @Test
     public void whenGetOneLectureTime_thenOneLectureTimeReturned() throws Exception {
-        LectureTime lectureTime = LectureTime.builder()
-            .id(1)
-            .start(LocalTime.of(8, 0))
-            .end(LocalTime.of(9, 45))
-            .build();
+        LectureTime lectureTime = createLectureTimeNoId();
+        lectureTime.setId(1);
         when(lectureTimeService.findById(lectureTime.getId())).thenReturn(lectureTime);
 
-        mockMvc.perform(get("/api/lecturetimes/{id}", lectureTime.getId()))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id", is(1)))
-            .andExpect(jsonPath("$.start", is("08:00")))
-            .andExpect(jsonPath("$.end", is("09:45")));
-        ;
+        mockMvc.perform(get("/api/lecturetimes/{id}", lectureTime.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(lectureTimeDtoMapper.lectureTimeToDto(lectureTime))))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void whenSaveLectureTime_thenLectureTimeSaved() throws Exception {
-        LectureTime lectureTime = LectureTime.builder()
-            .start(LocalTime.of(8, 0))
-            .end(LocalTime.of(9, 45))
-            .build();
+    public void whenSaveLectureTime_thenLectureTimeSaved() throws Exception {
+        LectureTime lectureTime1 = createLectureTimeNoId();
+        LectureTime lectureTime2 = createLectureTimeNoId();
+        lectureTime2.setId(2);
+        LectureTimeDto lectureTimeDto = lectureTimeDtoMapper.lectureTimeToDto(lectureTime1);
+        when(lectureTimeService.save(lectureTime1)).thenReturn(lectureTime2);
         mockMvc.perform(post("/api/lecturetimes")
-            .content(objectMapper.writeValueAsString(lectureTime))
-            .contentType(APPLICATION_JSON))
-            .andExpect(status().isCreated());
+                .content(objectMapper.writeValueAsString(lectureTimeDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/api/lecturetimes/2"))
+                .andExpect(status().isCreated());
 
-        verify(lectureTimeService).save(lectureTime);
+        verify(lectureTimeService).save(lectureTime1);
     }
 
     @Test
-    void whenEditLectureTime_thenLectureTimeFound() throws Exception {
-        LectureTime lectureTime = LectureTime.builder()
-            .id(1)
-            .start(LocalTime.of(8, 0))
-            .end(LocalTime.of(9, 45))
-            .build();
+    public void whenEditLectureTime_thenLectureTimeFound() throws Exception {
+        LectureTime lectureTime = createLectureTimeNoId();
+        lectureTime.setId(1);
+        LectureTimeDto lectureTimeDto = lectureTimeDtoMapper.lectureTimeToDto(lectureTime);
+        when(lectureTimeService.save(lectureTime)).thenReturn(lectureTime);
 
         mockMvc.perform(patch("/api/lecturetimes/{id}", 1)
-            .content(objectMapper.writeValueAsString(lectureTime))
-            .contentType(APPLICATION_JSON))
-            .andExpect(status().isOk());
+                .content(objectMapper.writeValueAsString(lectureTimeDto))
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void whenDeleteLectureTime_thenLectureTimeDeleted() throws Exception {
-        LectureTime lectureTime = LectureTime.builder()
-            .id(1)
-            .start(LocalTime.of(8, 0))
-            .end(LocalTime.of(9, 45))
-            .build();
+    public void whenDeleteLectureTime_thenLectureTimeDeleted() throws Exception {
+        LectureTime lectureTime = createLectureTimeNoId();
+        lectureTime.setId(1);
+        LectureTimeDto lectureTimeDto = lectureTimeDtoMapper.lectureTimeToDto(lectureTime);
+
         mockMvc.perform(delete("/api/lecturetimes/{id}", 1)
-            .content(objectMapper.writeValueAsString(lectureTime))
-            .contentType(APPLICATION_JSON))
-            .andExpect(status().isOk());
+                .content(objectMapper.writeValueAsString(lectureTimeDto))
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk());
 
         verify(lectureTimeService).delete(lectureTime);
+    }
+
+    private LectureTime createLectureTimeNoId() {
+        return LectureTime.builder()
+                .start(LocalTime.of(8, 0))
+                .end(LocalTime.of(9, 45))
+                .build();
     }
 }

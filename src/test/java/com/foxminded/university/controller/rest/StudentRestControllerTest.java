@@ -1,9 +1,13 @@
 package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.foxminded.university.dao.mapper.StudentDtoMapper;
+import com.foxminded.university.dto.ObjectListDto;
+import com.foxminded.university.dto.StudentDto;
 import com.foxminded.university.model.Gender;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Student;
+import com.foxminded.university.service.GroupService;
 import com.foxminded.university.service.StudentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,27 +20,32 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 public class StudentRestControllerTest {
 
     private MockMvc mockMvc;
+    private final StudentDtoMapper studentDtoMapper = StudentDtoMapper.INSTANCE;
     private ObjectMapper objectMapper;
     @Mock
     private StudentService studentService;
+    @Mock
+    private GroupService groupService;
     @InjectMocks
     private StudentRestController studentRestController;
 
@@ -47,117 +56,94 @@ public class StudentRestControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(studentRestController).setCustomArgumentResolvers(resolver).build();
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
+        ReflectionTestUtils.setField(studentRestController, "studentDtoMapper", studentDtoMapper);
+        ReflectionTestUtils.setField(studentDtoMapper, "groupService", groupService);
     }
 
     @Test
     public void whenGetAllStudents_thenAllStudentsReturned() throws Exception {
-        Group group = Group.builder().id(1).name("Killers").build();
-        Student student1 = Student.builder()
-            .id(1)
-            .firstName("Name")
-            .lastName("Last name")
-            .group(group)
-            .gender(Gender.MALE)
-            .build();
-        Student student2 = Student.builder()
-            .id(2)
-            .firstName("Name2")
-            .lastName("Last name")
-            .group(group)
-            .gender(Gender.MALE)
-            .build();
+        Student student1 = createStudentNoId();
+        student1.setId(1);
+        Student student2 = createStudentNoId();
+        student2.setId(2);
         List<Student> students = Arrays.asList(student1, student2);
         Page<Student> page = new PageImpl<>(students, PageRequest.of(0, 1), 2);
         when(studentService.findAll(isA(Pageable.class))).thenReturn(page);
 
-        mockMvc.perform(get("/api/students"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.content[0].id", is(1)))
-            .andExpect(jsonPath("$.content[0].firstName", is("Name")))
-            .andExpect(jsonPath("$.content[0].lastName", is("Last name")))
-            .andExpect(jsonPath("$.content[0].group.id", is(1)))
-            .andExpect(jsonPath("$.content[0].group.name", is("Killers")))
-            .andExpect(jsonPath("$.content[1].id", is(2)))
-            .andExpect(jsonPath("$.content[1].firstName", is("Name2")))
-            .andExpect(jsonPath("$.content[1].lastName", is("Last name")))
-            .andExpect(jsonPath("$.content[1].group.id", is(1)))
-            .andExpect(jsonPath("$.content[1].group.name", is("Killers")))
-            .andExpect(jsonPath("$.totalElements", is(2)))
-            .andExpect(jsonPath("$.pageable.paged", is(true)));
+        mockMvc.perform(get("/api/students")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new ObjectListDto(students))))
+                .andExpect(status().isOk());
 
         verifyNoMoreInteractions(studentService);
     }
 
     @Test
     public void whenGetOneStudent_thenOneStudentReturned() throws Exception {
-        Group group = Group.builder().id(1).name("Killers").build();
-        Student student = Student.builder()
-            .id(1)
-            .firstName("Name")
-            .lastName("Last name")
-            .group(group)
-            .gender(Gender.MALE)
-            .build();
+        Student student = createStudentNoId();
+        student.setId(1);
         when(studentService.findById(student.getId())).thenReturn(student);
 
-        mockMvc.perform(get("/api/students/{id}", student.getId()))
-            .andExpect(jsonPath("$.id", is(1)))
-            .andExpect(jsonPath("$.firstName", is("Name")))
-            .andExpect(jsonPath("$.lastName", is("Last name")))
-            .andExpect(jsonPath("$.group.id", is(1)))
-            .andExpect(jsonPath("$.group.name", is("Killers")));
+        mockMvc.perform(get("/api/students/{id}", student.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(studentDtoMapper.studentToDto(student))))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void whenSaveStudent_thenStudentSaved() throws Exception {
-        Group group = Group.builder().id(1).name("Killers").build();
-        Student student = Student.builder()
-            .firstName("Name")
-            .lastName("Last name")
-            .group(group)
-            .gender(Gender.MALE)
-            .build();
+    public void whenSaveStudent_thenStudentSaved() throws Exception {
+        Student student1 = createStudentNoId();
+        Student student2 = createStudentNoId();
+        student2.setId(2);
+        StudentDto studentDto = studentDtoMapper.studentToDto(student1);
+        when(groupService.findByName(studentDto.getGroupName())).thenReturn(student1.getGroup());
+        when(studentService.save(student1)).thenReturn(student2);
+
         mockMvc.perform(post("/api/students")
-            .content(objectMapper.writeValueAsString(student))
-            .contentType(APPLICATION_JSON))
-            .andExpect(status().isCreated());
+                .content(objectMapper.writeValueAsString(studentDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/api/students/2"))
+                .andExpect(status().isCreated());
 
-        verify(studentService).save(student);
+        verify(studentService).save(student1);
     }
 
     @Test
-    void whenEditStudent_thenStudentFound() throws Exception {
-        Group group = Group.builder().id(1).name("Killers").build();
-        Student student = Student.builder()
-            .id(1)
-            .firstName("Name")
-            .lastName("Last name")
-            .group(group)
-            .gender(Gender.MALE)
-            .build();
+    public void whenEditStudent_thenStudentFound() throws Exception {
+        Student student = createStudentNoId();
+        student.setId(1);
+        StudentDto studentDto = studentDtoMapper.studentToDto(student);
+        when(groupService.findByName(studentDto.getGroupName())).thenReturn(student.getGroup());
+        when(studentService.save(student)).thenReturn(student);
 
         mockMvc.perform(patch("/api/students/{id}", 1)
-            .content(objectMapper.writeValueAsString(student))
-            .contentType(APPLICATION_JSON))
-            .andExpect(status().isOk());
+                .content(objectMapper.writeValueAsString(studentDto))
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void whenDeleteStudent_thenStudentDeleted() throws Exception {
-        Group group = Group.builder().id(1).name("Killers").build();
-        Student student = Student.builder()
-            .id(1)
-            .firstName("Name")
-            .lastName("Last name")
-            .group(group)
-            .gender(Gender.MALE)
-            .build();
+    public void whenDeleteStudent_thenStudentDeleted() throws Exception {
+        Student student = createStudentNoId();
+        student.setId(1);
+        StudentDto studentDto = studentDtoMapper.studentToDto(student);
+        when(groupService.findByName(studentDto.getGroupName())).thenReturn(student.getGroup());
 
         mockMvc.perform(delete("/api/students/{id}", 1)
-            .content(objectMapper.writeValueAsString(student))
-            .contentType(APPLICATION_JSON))
-            .andExpect(status().isOk());
+                .content(objectMapper.writeValueAsString(studentDto))
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk());
 
         verify(studentService).delete(student);
+    }
+
+    private Student createStudentNoId() {
+        Group group = Group.builder().id(1).name("Killers").build();
+        return Student.builder()
+                .firstName("Name")
+                .lastName("Last name")
+                .group(group)
+                .gender(Gender.MALE)
+                .build();
     }
 }

@@ -1,8 +1,14 @@
 package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.foxminded.university.dao.mapper.LectureDtoMapper;
+import com.foxminded.university.dao.mapper.TeacherDtoMapper;
+import com.foxminded.university.dao.mapper.VacationDtoMapper;
+import com.foxminded.university.dto.ObjectListDto;
+import com.foxminded.university.dto.VacationDto;
 import com.foxminded.university.model.*;
 import com.foxminded.university.service.LectureService;
+import com.foxminded.university.service.TeacherService;
 import com.foxminded.university.service.VacationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,27 +20,35 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 public class VacationRestControllerTest {
 
     private MockMvc mockMvc;
+    private final VacationDtoMapper vacationDtoMapper = VacationDtoMapper.INSTANCE;
+    private final TeacherDtoMapper teacherDtoMapper = TeacherDtoMapper.INSTANCE;
+    private final LectureDtoMapper lectureDtoMapper = LectureDtoMapper.INSTANCE;
     private ObjectMapper objectMapper;
     @Mock
     private LectureService lectureService;
+    @Mock
+    private TeacherService teacherService;
     @Mock
     private VacationService vacationService;
     @InjectMocks
@@ -47,151 +61,115 @@ public class VacationRestControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(vacationRestController).setCustomArgumentResolvers(resolver).build();
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
+        ReflectionTestUtils.setField(vacationRestController, "vacationDtoMapper", vacationDtoMapper);
+        ReflectionTestUtils.setField(vacationRestController, "lectureDtoMapper", lectureDtoMapper);
+        ReflectionTestUtils.setField(vacationDtoMapper, "teacherService", teacherService);
+        ReflectionTestUtils.setField(vacationDtoMapper, "teacherDtoMapper", teacherDtoMapper);
+        ReflectionTestUtils.setField(lectureDtoMapper, "teacherDtoMapper", teacherDtoMapper);
     }
 
     @Test
     public void whenGetAllVacations_thenAllVacationsReturned() throws Exception {
-        Teacher teacher = Teacher.builder().id(1).firstName("Name").lastName("Last name").degree(Degree.ASSISTANT).gender(Gender.MALE)
-            .build();
-        Vacation vacation1 = Vacation.builder()
-            .id(1)
-            .teacher(teacher)
-            .start(LocalDate.of(2021, 1, 1))
-            .end(LocalDate.of(2021, 1, 2))
-            .build();
-        Vacation vacation2 = Vacation.builder()
-            .id(1)
-            .teacher(teacher)
-            .start(LocalDate.of(2020, 1, 1))
-            .end(LocalDate.of(2020, 1, 2))
-            .build();
+        Vacation vacation1 = createVacationNoId();
+        vacation1.setId(1);
+        Vacation vacation2 = createVacationNoId();
+        vacation2.setId(2);
         List<Vacation> vacations = Arrays.asList(vacation1, vacation2);
         Page<Vacation> page = new PageImpl<>(vacations, PageRequest.of(0, 1), 2);
-        when(vacationService.findByTeacherId(PageRequest.of(0, 1), teacher.getId())).thenReturn(page);
+        when(vacationService.findByTeacherId(PageRequest.of(0, 1), vacation1.getTeacher().getId())).thenReturn(page);
 
-        mockMvc.perform(get("/api/teachers/{id}/vacations", teacher.getId()))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.content[0].id", is(1)))
-            .andExpect(jsonPath("$.content[0].start", is("2021-01-01")))
-            .andExpect(jsonPath("$.content[0].end", is("2021-01-02")))
-            .andExpect(jsonPath("$.content[0].teacher.firstName", is("Name")))
-            .andExpect(jsonPath("$.content[0].teacher.lastName", is("Last name")))
-            .andExpect(jsonPath("$.content[1].id", is(1)))
-            .andExpect(jsonPath("$.content[1].start", is("2020-01-01")))
-            .andExpect(jsonPath("$.content[1].end", is("2020-01-02")))
-            .andExpect(jsonPath("$.content[1].teacher.firstName", is("Name")))
-            .andExpect(jsonPath("$.content[1].teacher.lastName", is("Last name")))
-            .andExpect(jsonPath("$.totalElements", is(2)))
-            .andExpect(jsonPath("$.pageable.paged", is(true)));
+        mockMvc.perform(get("/api/teachers/{id}/vacations", vacation1.getTeacher().getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new ObjectListDto(vacations))))
+                .andExpect(status().isOk());
 
         verifyNoMoreInteractions(vacationService);
     }
 
     @Test
     public void whenGetOneVacation_thenOneVacationReturned() throws Exception {
-        Teacher teacher = Teacher.builder().id(1).firstName("Name").lastName("Last name").degree(Degree.ASSISTANT).gender(Gender.MALE)
-            .build();
-        Vacation vacation = Vacation.builder()
-            .id(1)
-            .teacher(teacher)
-            .start(LocalDate.of(2021, 1, 1))
-            .end(LocalDate.of(2021, 1, 2))
-            .build();
+        Vacation vacation = createVacationNoId();
+        vacation.setId(1);
         when(vacationService.findById(vacation.getId())).thenReturn(vacation);
 
-        mockMvc.perform(get("/api/teachers/{teacherId}/vacations/{id}", teacher.getId(), vacation.getId()))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id", is(1)))
-            .andExpect(jsonPath("$.start", is("2021-01-01")))
-            .andExpect(jsonPath("$.end", is("2021-01-02")))
-            .andExpect(jsonPath("$.teacher.firstName", is("Name")))
-            .andExpect(jsonPath("$.teacher.lastName", is("Last name")));
+        mockMvc.perform(get("/api/teachers/{teacherId}/vacations/{id}", vacation.getTeacher().getId(), vacation.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(vacationDtoMapper.vacationToDto(vacation))))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void whenSaveVacation_thenVacationSaved() throws Exception {
-        Teacher teacher = Teacher.builder().id(1).firstName("Name").lastName("Last name").degree(Degree.ASSISTANT).gender(Gender.MALE)
-            .build();
-        Vacation vacation = Vacation.builder()
-            .teacher(teacher)
-            .start(LocalDate.of(2021, 1, 1))
-            .end(LocalDate.of(2021, 1, 2))
-            .build();
-        mockMvc.perform(post("/api/teachers/{id}/vacations", teacher.getId())
-            .content(objectMapper.writeValueAsString(vacation))
-            .contentType(APPLICATION_JSON))
-            .andExpect(status().isCreated());
+    public void whenSaveVacation_thenVacationSaved() throws Exception {
+        Vacation vacation1 = createVacationNoId();
+        Vacation vacation2 = createVacationNoId();
+        vacation2.setId(2);
+        VacationDto vacationDto = vacationDtoMapper.vacationToDto(vacation1);
+        when(teacherService.findByFirstNameAndLastNameAndBirthDate(vacationDto.getTeacherDto().getFirstName(), vacationDto.getTeacherDto().getLastName(), vacationDto.getTeacherDto().getBirthDate())).thenReturn(vacation1.getTeacher());
+        when(lectureService.findByTeacherIdAndPeriod(vacation1.getTeacher().getId(), vacation1.getStart(), vacation1.getEnd())).thenReturn(new ArrayList<>());
+        when(vacationService.save(vacation1)).thenReturn(vacation2);
 
-        verify(vacationService).save(vacation);
+        mockMvc.perform(post("/api/teachers/{id}/vacations", vacation1.getTeacher().getId())
+                .content(objectMapper.writeValueAsString(vacationDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/api/teachers/1/vacations/2"))
+                .andExpect(status().isCreated());
+
+        verify(vacationService).save(vacation1);
     }
 
     @Test
-    void whenEditVacation_thenVacationFound() throws Exception {
-        Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
-        Subject subject = Subject.builder()
-            .id(1)
-            .name("Weapon Tactics")
-            .description("Learning how to use heavy weapon and guerrilla tactics")
-            .cathedra(cathedra)
-            .build();
-        Teacher teacher = Teacher.builder()
-            .id(1)
-            .firstName("Daniel")
-            .lastName("Morpheus")
-            .phone("88005553535")
-            .address("Virtual Reality Capsule no 1")
-            .email("1@bigowl.com")
-            .gender(Gender.MALE)
-            .postalCode("12345")
-            .education("Higher education")
-            .cathedra(cathedra)
-            .degree(Degree.PROFESSOR)
-            .birthDate(LocalDate.of(1970, 1, 1))
-            .subjects(Arrays.asList(subject))
-            .build();
-        Vacation vacation = Vacation.builder()
-            .id(1)
-            .teacher(teacher)
-            .start(LocalDate.of(2021, 1, 15))
-            .end(LocalDate.of(2021, 1, 16))
-            .build();
+    public void whenEditVacation_thenVacationFound() throws Exception {
+        Vacation vacation = createVacationNoId();
+        vacation.setId(1);
+        VacationDto vacationDto = vacationDtoMapper.vacationToDto(vacation);
+        when(teacherService.findByFirstNameAndLastNameAndBirthDate(vacationDto.getTeacherDto().getFirstName(), vacationDto.getTeacherDto().getLastName(), vacationDto.getTeacherDto().getBirthDate())).thenReturn(vacation.getTeacher());
+        when(lectureService.findByTeacherIdAndPeriod(vacation.getTeacher().getId(), vacation.getStart(), vacation.getEnd())).thenReturn(new ArrayList<>());
+        when(vacationService.save(vacation)).thenReturn(vacation);
 
-        String string = objectMapper.writeValueAsString(vacation);
-
-        mockMvc.perform(patch("/api/teachers/{id}/vacations/{vacId}", teacher.getId(), 1)
-            .content(string)
-            .contentType(APPLICATION_JSON))
-            .andExpect(status().isOk());
+        mockMvc.perform(patch("/api/teachers/{id}/vacations/{vacId}", vacation.getTeacher().getId(), 1)
+                .content(objectMapper.writeValueAsString(vacationDto))
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void whenDeleteVacation_thenVacationDeleted() throws Exception {
-        Teacher teacher = Teacher.builder().id(1).firstName("Name").lastName("Last name").degree(Degree.ASSISTANT).gender(Gender.MALE)
-            .build();
-        Vacation vacation = Vacation.builder()
-            .id(1)
-            .teacher(teacher)
-            .start(LocalDate.of(2021, 1, 1))
-            .end(LocalDate.of(2021, 1, 2))
-            .build();
+    public void whenDeleteVacation_thenVacationDeleted() throws Exception {
+        Vacation vacation = createVacationNoId();
+        vacation.setId(1);
+        VacationDto vacationDto = vacationDtoMapper.vacationToDto(vacation);
+        when(teacherService.findByFirstNameAndLastNameAndBirthDate(vacationDto.getTeacherDto().getFirstName(), vacationDto.getTeacherDto().getLastName(), vacationDto.getTeacherDto().getBirthDate())).thenReturn(vacation.getTeacher());
 
         mockMvc.perform(delete("/api/teachers/{id}/vacations/{vacId}", 1, 1)
-            .content(objectMapper.writeValueAsString(vacation))
-            .contentType(APPLICATION_JSON))
-            .andExpect(status().isOk());
+                .content(objectMapper.writeValueAsString(vacationDto))
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk());
 
         verify(vacationService).delete(vacation);
     }
 
     @Test
-    void whenChangeTeacherOnLectures_thenTeachersFound() throws Exception {
+    public void whenChangeTeacherOnLectures_thenTeachersFound() throws Exception {
         Teacher teacher = Teacher.builder().id(1).firstName("Name").lastName("Last name").degree(Degree.ASSISTANT).gender(Gender.MALE)
-            .build();
+                .build();
         Lecture lecture = Lecture.builder().id(1).teacher(teacher).build();
 
+        when(lectureService.findByTeacherIdAndPeriod(1, LocalDate.of(2021, 4, 4), LocalDate.of(2021, 4, 5)))
+                .thenReturn(Arrays.asList(lecture));
+
         mockMvc.perform(get("/api/teachers/{id}/vacations/lectures?start=2021-04-04&end=2021-04-05", teacher.getId())
-            .content(objectMapper.writeValueAsString(lecture))
-            .contentType(APPLICATION_JSON))
-            .andExpect(status().isOk());
+                .content(objectMapper.writeValueAsString(new ObjectListDto(Arrays.asList(lectureDtoMapper.lectureToDto(lecture)))))
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    private Vacation createVacationNoId() {
+        Teacher teacher = Teacher.builder().id(1).firstName("Name").lastName("Last name").degree(Degree.ASSISTANT).gender(Gender.MALE)
+                .build();
+
+        return Vacation.builder()
+                .teacher(teacher)
+                .start(LocalDate.of(2021, 1, 1))
+                .end(LocalDate.of(2021, 1, 2))
+                .build();
     }
 }

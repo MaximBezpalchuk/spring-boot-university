@@ -1,8 +1,14 @@
 package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.foxminded.university.dao.mapper.HolidayDtoMapper;
+import com.foxminded.university.dao.mapper.SubjectDtoMapper;
+import com.foxminded.university.dto.ObjectListDto;
+import com.foxminded.university.dto.SubjectDto;
 import com.foxminded.university.model.Cathedra;
+import com.foxminded.university.model.Holiday;
 import com.foxminded.university.model.Subject;
+import com.foxminded.university.service.CathedraService;
 import com.foxminded.university.service.SubjectService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,9 +21,13 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,16 +36,18 @@ import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 public class SubjectRestControllerTest {
 
     private MockMvc mockMvc;
-
+    private final SubjectDtoMapper subjectDtoMapper = SubjectDtoMapper.INSTANCE;
+    ObjectMapper objectMapper;
     @Mock
     private SubjectService subjectService;
+    @Mock
+    private CathedraService cathedraService;
     @InjectMocks
     private SubjectRestController subjectRestController;
 
@@ -44,119 +56,97 @@ public class SubjectRestControllerTest {
         PageableHandlerMethodArgumentResolver resolver = new PageableHandlerMethodArgumentResolver();
         resolver.setFallbackPageable(PageRequest.of(0, 1));
         mockMvc = MockMvcBuilders.standaloneSetup(subjectRestController).setCustomArgumentResolvers(resolver).build();
+        objectMapper = new ObjectMapper();
+        objectMapper.findAndRegisterModules();
+        ReflectionTestUtils.setField(subjectRestController, "subjectDtoMapper", subjectDtoMapper);
+        ReflectionTestUtils.setField(subjectDtoMapper, "cathedraService", cathedraService);
     }
 
     @Test
     public void whenGetAllSubjects_thenAllSubjectsReturned() throws Exception {
-        Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
-        Subject subject1 = Subject.builder()
-            .id(1)
-            .name("Subject Name")
-            .description("Subject desc")
-            .cathedra(cathedra)
-            .build();
-        Subject subject2 = Subject.builder()
-            .id(2)
-            .name("Subject2 Name")
-            .description("Subject2 desc")
-            .cathedra(cathedra)
-            .build();
+        Subject subject1 = createSubjectNoId();
+        subject1.setId(1);
+        Subject subject2 = createSubjectNoId();
+        subject2.setId(2);
         List<Subject> subjects = Arrays.asList(subject1, subject2);
         Page<Subject> page = new PageImpl<>(subjects, PageRequest.of(0, 1), 2);
         when(subjectService.findAll(isA(Pageable.class))).thenReturn(page);
 
-        mockMvc.perform(get("/api/subjects"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.content[0].id", is(1)))
-            .andExpect(jsonPath("$.content[0].name", is("Subject Name")))
-            .andExpect(jsonPath("$.content[0].description", is("Subject desc")))
-            .andExpect(jsonPath("$.content[0].cathedra.id", is(1)))
-            .andExpect(jsonPath("$.content[0].cathedra.name", is("Fantastic Cathedra")))
-            .andExpect(jsonPath("$.content[1].id", is(2)))
-            .andExpect(jsonPath("$.content[1].name", is("Subject2 Name")))
-            .andExpect(jsonPath("$.content[1].description", is("Subject2 desc")))
-            .andExpect(jsonPath("$.content[1].cathedra.id", is(1)))
-            .andExpect(jsonPath("$.content[1].cathedra.name", is("Fantastic Cathedra")))
-            .andExpect(jsonPath("$.totalElements", is(2)))
-            .andExpect(jsonPath("$.pageable.paged", is(true)));
+        mockMvc.perform(get("/api/subjects")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new ObjectListDto(subjects))))
+                .andExpect(status().isOk());
+
         verifyNoMoreInteractions(subjectService);
     }
 
     @Test
     public void whenGetOneSubject_thenOneSubjectReturned() throws Exception {
-        Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
-        Subject subject = Subject.builder()
-            .id(1)
-            .name("Subject Name")
-            .description("Subject desc")
-            .cathedra(cathedra)
-            .build();
+        Subject subject = createSubjectNoId();
+        subject.setId(1);
         when(subjectService.findById(subject.getId())).thenReturn(subject);
 
-        mockMvc.perform(get("/api/subjects/{id}", subject.getId()))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id", is(1)))
-            .andExpect(jsonPath("$.name", is("Subject Name")))
-            .andExpect(jsonPath("$.description", is("Subject desc")))
-            .andExpect(jsonPath("$.cathedra.id", is(1)))
-            .andExpect(jsonPath("$.cathedra.name", is("Fantastic Cathedra")));
+        mockMvc.perform(get("/api/subjects/{id}", subject.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(subjectDtoMapper.subjectToDto(subject))))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void whenSaveSubject_thenSubjectSaved() throws Exception {
-        Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
-        Subject subject = Subject.builder()
-            .name("Subject Name")
-            .description("Subject desc")
-            .cathedra(cathedra)
-            .build();
+    public void whenSaveSubject_thenSubjectSaved() throws Exception {
+        Subject subject1 = createSubjectNoId();
+        Subject subject2 = createSubjectNoId();
+        subject2.setId(2);
+        SubjectDto subjectDto = subjectDtoMapper.subjectToDto(subject1);
+        when(cathedraService.findByName(subjectDto.getCathedraName())).thenReturn(subject1.getCathedra());
+        when(subjectService.save(subject1)).thenReturn(subject2);
 
         mockMvc.perform(post("/api/subjects")
-            .content(new ObjectMapper().writeValueAsBytes(subject))
-            .contentType(APPLICATION_JSON))
-            .andExpect(status().isCreated());
+                .content(objectMapper.writeValueAsString(subjectDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/api/subjects/2"))
+                .andExpect(status().isCreated());
 
-        verify(subjectService).save(subject);
+        verify(subjectService).save(subject1);
     }
 
     @Test
-    void whenEditSubject_thenSubjectFound() throws Exception {
-        Cathedra cathedra = Cathedra.builder()
-            .id(1)
-            .name("Fantastic Cathedra")
-            .build();
-        Subject subject = Subject.builder()
-            .id(1)
-            .name("Subject Name")
-            .description("Subject desc")
-            .cathedra(cathedra)
-            .build();
+    public void whenEditSubject_thenSubjectFound() throws Exception {
+        Subject subject = createSubjectNoId();
+        subject.setId(2);
+        SubjectDto subjectDto = subjectDtoMapper.subjectToDto(subject);
+        when(cathedraService.findByName(subjectDto.getCathedraName())).thenReturn(subject.getCathedra());
+        when(subjectService.save(subject)).thenReturn(subject);
 
         mockMvc.perform(patch("/api/subjects/{id}", 1)
-            .content(new ObjectMapper().writeValueAsBytes(subject))
-            .contentType(APPLICATION_JSON))
-            .andExpect(status().isOk());
+                .content(objectMapper.writeValueAsString(subjectDto))
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk());
         ;
     }
 
     @Test
-    void whenDeleteSubject_thenSubjectDeleted() throws Exception {
-        Cathedra cathedra = Cathedra.builder()
-            .id(1)
-            .name("Fantastic Cathedra")
-            .build();
-        Subject subject = Subject.builder()
-            .id(1)
-            .name("Subject Name")
-            .description("Subject desc")
-            .cathedra(cathedra)
-            .build();
+    public void whenDeleteSubject_thenSubjectDeleted() throws Exception {
+        Subject subject = createSubjectNoId();
+        subject.setId(2);
+        SubjectDto subjectDto = subjectDtoMapper.subjectToDto(subject);
+        when(cathedraService.findByName(subjectDto.getCathedraName())).thenReturn(subject.getCathedra());
+
         mockMvc.perform(delete("/api/subjects/{id}", 1)
-            .content(new ObjectMapper().writeValueAsBytes(subject))
-            .contentType(APPLICATION_JSON))
-            .andExpect(status().isOk());
-        ;
+                .content(objectMapper.writeValueAsString(subjectDto))
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk());
 
         verify(subjectService).delete(subject);
+    }
+
+    private Subject createSubjectNoId() {
+        Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+
+        return Subject.builder()
+                .name("Subject Name")
+                .description("Subject desc")
+                .cathedra(cathedra)
+                .build();
     }
 }

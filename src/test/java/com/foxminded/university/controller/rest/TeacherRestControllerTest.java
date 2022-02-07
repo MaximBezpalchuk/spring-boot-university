@@ -1,7 +1,12 @@
 package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.foxminded.university.dao.mapper.TeacherDtoMapper;
+import com.foxminded.university.dto.ObjectListDto;
+import com.foxminded.university.dto.TeacherDto;
 import com.foxminded.university.model.*;
+import com.foxminded.university.service.CathedraService;
+import com.foxminded.university.service.SubjectService;
 import com.foxminded.university.service.TeacherService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,27 +19,34 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 public class TeacherRestControllerTest {
 
     private MockMvc mockMvc;
+    private final TeacherDtoMapper teacherDtoMapper = TeacherDtoMapper.INSTANCE;
     private ObjectMapper objectMapper;
     @Mock
     private TeacherService teacherService;
+    @Mock
+    private CathedraService cathedraService;
+    @Mock
+    private SubjectService subjectService;
     @InjectMocks
     private TeacherRestController teacherRestController;
 
@@ -45,140 +57,104 @@ public class TeacherRestControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(teacherRestController).setCustomArgumentResolvers(resolver).build();
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
+        ReflectionTestUtils.setField(teacherRestController, "teacherDtoMapper", teacherDtoMapper);
+        ReflectionTestUtils.setField(teacherDtoMapper, "cathedraService", cathedraService);
+        ReflectionTestUtils.setField(teacherDtoMapper, "subjectService", subjectService);
     }
 
     @Test
     public void whenGetAllTeachers_thenAllTeachersReturned() throws Exception {
-        Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
-        Subject subject = Subject.builder().id(1).name("Subject name").build();
-        Teacher teacher1 = Teacher.builder()
-            .id(1)
-            .firstName("Name")
-            .lastName("Last name")
-            .cathedra(cathedra)
-            .subjects(Arrays.asList(subject))
-            .gender(Gender.MALE)
-            .degree(Degree.PROFESSOR)
-            .build();
-        Teacher teacher2 = Teacher.builder()
-            .id(2)
-            .firstName("Name2")
-            .lastName("Last name")
-            .cathedra(cathedra)
-            .subjects(Arrays.asList(subject))
-            .gender(Gender.MALE)
-            .degree(Degree.PROFESSOR)
-            .build();
+        Teacher teacher1 = createTeacherNoId();
+        teacher1.setId(1);
+        Teacher teacher2 = createTeacherNoId();
+        teacher2.setId(2);
         List<Teacher> teachers = Arrays.asList(teacher1, teacher2);
         Page<Teacher> page = new PageImpl<>(teachers, PageRequest.of(0, 2), 1);
         when(teacherService.findAll(isA(Pageable.class))).thenReturn(page);
 
-        mockMvc.perform(get("/api/teachers"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.content[0].id", is(1)))
-            .andExpect(jsonPath("$.content[0].firstName", is("Name")))
-            .andExpect(jsonPath("$.content[0].lastName", is("Last name")))
-            .andExpect(jsonPath("$.content[0].subjects[0].id", is(1)))
-            .andExpect(jsonPath("$.content[0].subjects[0].name", is("Subject name")))
-            .andExpect(jsonPath("$.content[0].cathedra.id", is(1)))
-            .andExpect(jsonPath("$.content[0].cathedra.name", is("Fantastic Cathedra")))
-            .andExpect(jsonPath("$.content[1].id", is(2)))
-            .andExpect(jsonPath("$.content[1].firstName", is("Name2")))
-            .andExpect(jsonPath("$.content[1].lastName", is("Last name")))
-            .andExpect(jsonPath("$.content[1].subjects[0].id", is(1)))
-            .andExpect(jsonPath("$.content[1].subjects[0].name", is("Subject name")))
-            .andExpect(jsonPath("$.content[1].cathedra.id", is(1)))
-            .andExpect(jsonPath("$.content[1].cathedra.name", is("Fantastic Cathedra")))
-            .andExpect(jsonPath("$.totalElements", is(2)))
-            .andExpect(jsonPath("$.pageable.paged", is(true)));
+        mockMvc.perform(get("/api/teachers")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new ObjectListDto(teachers))))
+                .andExpect(status().isOk());
+
         verifyNoMoreInteractions(teacherService);
     }
 
     @Test
     public void whenGetOneTeacher_thenOneTeacherReturned() throws Exception {
-        Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
-        Subject subject = Subject.builder().id(1).name("Subject name").build();
-        Teacher teacher = Teacher.builder()
-            .id(1)
-            .firstName("Name")
-            .lastName("Last name")
-            .cathedra(cathedra)
-            .subjects(Arrays.asList(subject))
-            .gender(Gender.MALE)
-            .degree(Degree.PROFESSOR)
-            .build();
+        Teacher teacher = createTeacherNoId();
+        teacher.setId(1);
         when(teacherService.findById(teacher.getId())).thenReturn(teacher);
 
-        mockMvc.perform(get("/api/teachers/{id}", teacher.getId()))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id", is(1)))
-            .andExpect(jsonPath("$.firstName", is("Name")))
-            .andExpect(jsonPath("$.lastName", is("Last name")))
-            .andExpect(jsonPath("$.subjects[0].id", is(1)))
-            .andExpect(jsonPath("$.subjects[0].name", is("Subject name")))
-            .andExpect(jsonPath("$.cathedra.id", is(1)))
-            .andExpect(jsonPath("$.cathedra.name", is("Fantastic Cathedra")));
+        mockMvc.perform(get("/api/teachers/{id}", teacher.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(teacherDtoMapper.teacherToDto(teacher))))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void whenSaveTeacher_thenTeacherSaved() throws Exception {
-        Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
-        Subject subject = Subject.builder().id(1).name("Subject name").build();
-        Teacher teacher = Teacher.builder()
-            .firstName("Name")
-            .lastName("Last name")
-            .cathedra(cathedra)
-            .subjects(Arrays.asList(subject))
-            .gender(Gender.MALE)
-            .degree(Degree.PROFESSOR)
-            .build();
+    public void whenSaveTeacher_thenTeacherSaved() throws Exception {
+        Teacher teacher1 = createTeacherNoId();
+        Teacher teacher2 = createTeacherNoId();
+        teacher2.setId(2);
+        TeacherDto teacherDto = teacherDtoMapper.teacherToDto(teacher1);
+        when(cathedraService.findByName(teacherDto.getCathedraName())).thenReturn(teacher1.getCathedra());
+        when(subjectService.findByName(teacher1.getSubjects().get(0).getName())).thenReturn(teacher1.getSubjects().get(0));
+        when(teacherService.save(teacher1)).thenReturn(teacher2);
 
         mockMvc.perform(post("/api/teachers")
-            .content(objectMapper.writeValueAsString(teacher))
-            .contentType(APPLICATION_JSON))
-            .andExpect(status().isCreated());
+                .content(objectMapper.writeValueAsString(teacherDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/api/teachers/2"))
+                .andExpect(status().isCreated());
+
+        verify(teacherService).save(teacher1);
+    }
+
+    @Test
+    public void whenEditTeacher_thenTeacherFound() throws Exception {
+        Teacher teacher = createTeacherNoId();
+        teacher.setId(1);
+        TeacherDto teacherDto = teacherDtoMapper.teacherToDto(teacher);
+        when(cathedraService.findByName(teacherDto.getCathedraName())).thenReturn(teacher.getCathedra());
+        when(subjectService.findByName(teacher.getSubjects().get(0).getName())).thenReturn(teacher.getSubjects().get(0));
+        when(teacherService.save(teacher)).thenReturn(teacher);
+
+        mockMvc.perform(patch("/api/teachers/{id}", 1)
+                .content(objectMapper.writeValueAsString(teacherDto))
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk());
 
         verify(teacherService).save(teacher);
     }
 
     @Test
-    void whenEditTeacher_thenTeacherFound() throws Exception {
-        Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
-        Subject subject = Subject.builder().id(1).name("Subject name").build();
-        Teacher teacher = Teacher.builder()
-            .id(1)
-            .firstName("Name")
-            .lastName("Last name")
-            .cathedra(cathedra)
-            .subjects(Arrays.asList(subject))
-            .gender(Gender.MALE)
-            .degree(Degree.PROFESSOR)
-            .build();
+    public void whenDeleteTeacher_thenTeacherDeleted() throws Exception {
+        Teacher teacher = createTeacherNoId();
+        teacher.setId(1);
+        TeacherDto teacherDto = teacherDtoMapper.teacherToDto(teacher);
+        when(cathedraService.findByName(teacherDto.getCathedraName())).thenReturn(teacher.getCathedra());
+        when(subjectService.findByName(teacher.getSubjects().get(0).getName())).thenReturn(teacher.getSubjects().get(0));
 
-        mockMvc.perform(patch("/api/teachers/{id}", 1)
-            .content(objectMapper.writeValueAsString(teacher))
-            .contentType(APPLICATION_JSON))
-            .andExpect(status().isOk());
-    }
-
-    @Test
-    void whenDeleteTeacher_thenTeacherDeleted() throws Exception {
-        Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
-        Subject subject = Subject.builder().id(1).name("Subject name").build();
-        Teacher teacher = Teacher.builder()
-            .id(1)
-            .firstName("Name")
-            .lastName("Last name")
-            .cathedra(cathedra)
-            .subjects(Arrays.asList(subject))
-            .gender(Gender.MALE)
-            .degree(Degree.PROFESSOR)
-            .build();
         mockMvc.perform(delete("/api/teachers/{id}", 1)
-            .content(objectMapper.writeValueAsString(teacher))
-            .contentType(APPLICATION_JSON))
-            .andExpect(status().isOk());
+                .content(objectMapper.writeValueAsString(teacherDto))
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk());
 
         verify(teacherService).delete(teacher);
+    }
+
+    private Teacher createTeacherNoId() {
+        Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+        Subject subject = Subject.builder().id(1).name("Subject name").build();
+
+        return Teacher.builder()
+                .firstName("Name")
+                .lastName("Last name")
+                .cathedra(cathedra)
+                .subjects(Arrays.asList(subject))
+                .gender(Gender.MALE)
+                .degree(Degree.PROFESSOR)
+                .build();
     }
 }

@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring", imports = {Arrays.class, Collectors.class})
 public abstract class TeacherDtoMapper {
 
-    public static StudentDtoMapper INSTANCE = Mappers.getMapper(StudentDtoMapper.class);
+    public static TeacherDtoMapper INSTANCE = Mappers.getMapper(TeacherDtoMapper.class);
     @Autowired
     protected SubjectService subjectService;
     @Autowired

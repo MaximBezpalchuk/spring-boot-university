@@ -90,8 +90,9 @@ public class VacationRestController {
                                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
                                                  @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
         logger.debug("Change teacher on lectures - teacher with id {}", teacherId);
+        List<Lecture> lectures = lectureService.findByTeacherIdAndPeriod(teacherId, start, end);
 
-        return new ObjectListDto(lectureService.findByTeacherIdAndPeriod(teacherId, start, end).stream().map(lectureDtoMapper::lectureToDto).collect(Collectors.toList()));
+        return new ObjectListDto(lectures.stream().map(lectureDtoMapper::lectureToDto).collect(Collectors.toList()));
     }
 
     @PatchMapping("/lectures")

@@ -1,8 +1,12 @@
 package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.foxminded.university.dao.mapper.LectureDtoMapper;
+import com.foxminded.university.dao.mapper.TeacherDtoMapper;
+import com.foxminded.university.dto.LectureDto;
+import com.foxminded.university.dto.ObjectListDto;
 import com.foxminded.university.model.*;
-import com.foxminded.university.service.LectureService;
+import com.foxminded.university.service.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,6 +17,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -21,11 +28,10 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -33,9 +39,22 @@ public class LectureRestControllerTest {
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
-
+    private final LectureDtoMapper lectureDtoMapper = LectureDtoMapper.INSTANCE;
+    private final TeacherDtoMapper teacherDtoMapper = TeacherDtoMapper.INSTANCE;
     @Mock
     private LectureService lectureService;
+    @Mock
+    private LectureTimeService lectureTimeService;
+    @Mock
+    private SubjectService subjectService;
+    @Mock
+    private AudienceService audienceService;
+    @Mock
+    private TeacherService teacherService;
+    @Mock
+    private CathedraService cathedraService;
+    @Mock
+    private GroupService groupService;
     @InjectMocks
     private LectureRestController lectureRestController;
 
@@ -46,209 +65,126 @@ public class LectureRestControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(lectureRestController).setCustomArgumentResolvers(resolver).build();
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
+        ReflectionTestUtils.setField(lectureRestController, "lectureDtoMapper", lectureDtoMapper);
+        ReflectionTestUtils.setField(lectureDtoMapper, "cathedraService", cathedraService);
+        ReflectionTestUtils.setField(lectureDtoMapper, "lectureTimeService", lectureTimeService);
+        ReflectionTestUtils.setField(lectureDtoMapper, "subjectService", subjectService);
+        ReflectionTestUtils.setField(lectureDtoMapper, "audienceService", audienceService);
+        ReflectionTestUtils.setField(lectureDtoMapper, "teacherService", teacherService);
+        ReflectionTestUtils.setField(lectureDtoMapper, "teacherDtoMapper", teacherDtoMapper);
+        ReflectionTestUtils.setField(lectureDtoMapper, "groupService", groupService);
     }
 
     @Test
     public void whenGetAllLectures_thenAllLecturesReturned() throws Exception {
-        Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
-        Audience audience = Audience.builder().id(1).room(1).capacity(10).build();
-        Group group = Group.builder().id(1).name("Group Name").cathedra(cathedra).build();
-        Subject subject = Subject.builder()
-            .id(1)
-            .name("Subject name")
-            .description("Subject desc")
-            .cathedra(cathedra)
-            .build();
-        Teacher teacher = Teacher.builder().id(1).firstName("Test Name").lastName("Last Name").cathedra(cathedra).gender(Gender.MALE)
-            .subjects(Arrays.asList(subject)).build();
-        LectureTime time = LectureTime.builder().id(1).start(LocalTime.of(8, 0)).end(LocalTime.of(9, 45)).build();
-
-        Lecture lecture1 = Lecture.builder()
-            .id(1)
-            .audience(audience)
-            .cathedra(cathedra)
-            .date(LocalDate.of(2021, 1, 1))
-            .group(Arrays.asList(group))
-            .subject(subject)
-            .teacher(teacher)
-            .time(time)
-            .build();
-        Lecture lecture2 = Lecture.builder()
-            .id(2)
-            .audience(audience)
-            .cathedra(cathedra)
-            .date(LocalDate.of(2021, 1, 2))
-            .group(Arrays.asList(group))
-            .subject(subject)
-            .teacher(teacher)
-            .time(time)
-            .build();
+        Lecture lecture1 = createLectureNoId();
+        lecture1.setId(1);
+        Lecture lecture2 = createLectureNoId();
+        lecture2.setId(2);
         List<Lecture> lectures = Arrays.asList(lecture1, lecture2);
         Page<Lecture> page = new PageImpl<>(lectures, PageRequest.of(0, 1), 2);
         when(lectureService.findAll(PageRequest.of(0, 1))).thenReturn(page);
 
-        mockMvc.perform(get("/api/lectures"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.content[0].id", is(1)))
-            .andExpect(jsonPath("$.content[0].cathedra.id", is(1)))
-            .andExpect(jsonPath("$.content[0].cathedra.name", is("Fantastic Cathedra")))
-            .andExpect(jsonPath("$.content[0].groups[0].id", is(1)))
-            .andExpect(jsonPath("$.content[0].groups[0].name", is("Group Name")))
-            .andExpect(jsonPath("$.content[0].teacher.id", is(1)))
-            .andExpect(jsonPath("$.content[0].teacher.firstName", is("Test Name")))
-            .andExpect(jsonPath("$.content[0].teacher.lastName", is("Last Name")))
-            .andExpect(jsonPath("$.content[0].audience.id", is(1)))
-            .andExpect(jsonPath("$.content[0].audience.room", is(1)))
-            .andExpect(jsonPath("$.content[0].date", is("2021-01-01")))
-            .andExpect(jsonPath("$.content[0].subject.id", is(1)))
-            .andExpect(jsonPath("$.content[0].subject.name", is("Subject name")))
-            .andExpect(jsonPath("$.content[0].time.id", is(1)))
-            .andExpect(jsonPath("$.content[1].id", is(2)))
-            .andExpect(jsonPath("$.content[1].cathedra.id", is(1)))
-            .andExpect(jsonPath("$.content[1].cathedra.name", is("Fantastic Cathedra")))
-            .andExpect(jsonPath("$.content[1].groups[0].id", is(1)))
-            .andExpect(jsonPath("$.content[1].groups[0].name", is("Group Name")))
-            .andExpect(jsonPath("$.content[1].teacher.id", is(1)))
-            .andExpect(jsonPath("$.content[1].teacher.firstName", is("Test Name")))
-            .andExpect(jsonPath("$.content[1].teacher.lastName", is("Last Name")))
-            .andExpect(jsonPath("$.content[1].audience.id", is(1)))
-            .andExpect(jsonPath("$.content[1].audience.room", is(1)))
-            .andExpect(jsonPath("$.content[1].date", is("2021-01-02")))
-            .andExpect(jsonPath("$.content[1].subject.id", is(1)))
-            .andExpect(jsonPath("$.content[1].subject.name", is("Subject name")))
-            .andExpect(jsonPath("$.content[1].time.id", is(1)))
-            .andExpect(jsonPath("$.totalElements", is(2)))
-            .andExpect(jsonPath("$.pageable.paged", is(true)));
+        mockMvc.perform(get("/api/lectures")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(new ObjectListDto(lectures))))
+                .andExpect(status().isOk());
+
         verifyNoMoreInteractions(lectureService);
     }
 
     @Test
     public void whenGetOneLecture_thenOneLectureReturned() throws Exception {
-        Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
-        Audience audience = Audience.builder().id(1).room(1).capacity(10).build();
-        Group group = Group.builder().id(1).name("Group Name").cathedra(cathedra).build();
-        Subject subject = Subject.builder()
-            .id(1)
-            .name("Subject name")
-            .description("Subject desc")
-            .cathedra(cathedra)
-            .build();
-        Teacher teacher = Teacher.builder().id(1).firstName("Test Name").lastName("Last Name").cathedra(cathedra).gender(Gender.MALE)
-            .subjects(Arrays.asList(subject)).build();
-        LectureTime time = LectureTime.builder().id(1).start(LocalTime.of(8, 0)).end(LocalTime.of(9, 45)).build();
-        Lecture lecture = Lecture.builder()
-            .id(1)
-            .audience(audience)
-            .cathedra(cathedra)
-            .date(LocalDate.of(2021, 1, 1))
-            .group(Arrays.asList(group))
-            .subject(subject)
-            .teacher(teacher)
-            .time(time)
-            .build();
+        Lecture lecture = createLectureNoId();
+        lecture.setId(1);
         when(lectureService.findById(lecture.getId())).thenReturn(lecture);
 
-        mockMvc.perform(get("/api/lectures/{id}", lecture.getId()))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.id", is(1)))
-            .andExpect(jsonPath("$.cathedra.id", is(1)))
-            .andExpect(jsonPath("$.cathedra.name", is("Fantastic Cathedra")))
-            .andExpect(jsonPath("$.groups[0].id", is(1)))
-            .andExpect(jsonPath("$.groups[0].name", is("Group Name")))
-            .andExpect(jsonPath("$.teacher.id", is(1)))
-            .andExpect(jsonPath("$.teacher.firstName", is("Test Name")))
-            .andExpect(jsonPath("$.teacher.lastName", is("Last Name")))
-            .andExpect(jsonPath("$.audience.id", is(1)))
-            .andExpect(jsonPath("$.audience.room", is(1)))
-            .andExpect(jsonPath("$.date", is("2021-01-01")))
-            .andExpect(jsonPath("$.subject.id", is(1)))
-            .andExpect(jsonPath("$.subject.name", is("Subject name")))
-            .andExpect(jsonPath("$.time.id", is(1)));
+        mockMvc.perform(get("/api/lectures/{id}", lecture.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(lectureDtoMapper.lectureToDto(lecture))))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void whenSaveLecture_thenLectureSaved() throws Exception {
-        Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
-        Audience audience = Audience.builder().id(1).room(1).capacity(10).build();
-        Group group = Group.builder().id(1).name("Group Name").cathedra(cathedra).build();
-        Subject subject = Subject.builder().id(1).name("Subject name").description("Subject desc").cathedra(cathedra)
-            .build();
-        Teacher teacher = Teacher.builder().id(1).firstName("Test Name").lastName("Last Name").cathedra(cathedra).gender(Gender.MALE)
-            .subjects(Arrays.asList(subject)).build();
-        LectureTime time = LectureTime.builder().id(1).start(LocalTime.of(8, 0)).end(LocalTime.of(9, 45)).build();
-
-        Lecture lecture = Lecture.builder()
-            .audience(audience)
-            .cathedra(cathedra)
-            .date(LocalDate.of(2021, 1, 1))
-            .group(Arrays.asList(group))
-            .subject(subject)
-            .teacher(teacher)
-            .time(time)
-            .build();
+    public void whenSaveLecture_thenLectureSaved() throws Exception {
+        Lecture lecture1 = createLectureNoId();
+        Lecture lecture2 = createLectureNoId();
+        lecture2.setId(2);
+        LectureDto lectureDto = lectureDtoMapper.lectureToDto(lecture1);
+        when(cathedraService.findByName(lectureDto.getCathedraName())).thenReturn(lecture1.getCathedra());
+        when(teacherService.findByFirstNameAndLastNameAndBirthDate(lectureDto.getTeacherDto().getFirstName(), lectureDto.getTeacherDto().getLastName(), lectureDto.getTeacherDto().getBirthDate())).thenReturn(lecture1.getTeacher());
+        when(audienceService.findByRoom(lectureDto.getAudienceRoom())).thenReturn(lecture1.getAudience());
+        when(subjectService.findByName(lectureDto.getSubjectName())).thenReturn(lecture1.getSubject());
+        when(lectureTimeService.findByStartAndEnd(lectureDto.getStart(), lectureDto.getEnd())).thenReturn(lecture1.getTime());
+        when(lectureService.save(lecture1)).thenReturn(lecture2);
+        when(groupService.findByName(lecture1.getGroups().get(0).getName())).thenReturn(lecture1.getGroups().get(0));
 
         mockMvc.perform(post("/api/lectures")
-            .content(objectMapper.writeValueAsString(lecture))
-            .contentType(APPLICATION_JSON))
-            .andExpect(status().isCreated());
+                .content(objectMapper.writeValueAsString(lectureDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/api/lectures/2"))
+                .andExpect(status().isCreated());
 
-        verify(lectureService).save(lecture);
+        verify(lectureService).save(lecture1);
     }
 
     @Test
-    void whenEditLecture_thenLectureFound() throws Exception {
-        Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
-        Audience audience = Audience.builder().id(1).room(1).capacity(10).build();
-        Group group = Group.builder().id(1).name("Group Name").cathedra(cathedra).build();
-        Subject subject = Subject.builder().id(1).name("Subject name").description("Subject desc").cathedra(cathedra)
-            .build();
-        Teacher teacher = Teacher.builder().id(1).firstName("Test Name").lastName("Last Name").cathedra(cathedra).gender(Gender.MALE)
-            .subjects(Arrays.asList(subject)).build();
-        LectureTime time = LectureTime.builder().id(1).start(LocalTime.of(8, 0)).end(LocalTime.of(9, 45)).build();
-
-        Lecture lecture = Lecture.builder()
-            .id(1)
-            .audience(audience)
-            .cathedra(cathedra)
-            .date(LocalDate.of(2021, 1, 1))
-            .group(Arrays.asList(group))
-            .subject(subject)
-            .teacher(teacher)
-            .time(time)
-            .build();
+    public void whenEditLecture_thenLectureFound() throws Exception {
+        Lecture lecture = createLectureNoId();
+        lecture.setId(1);
+        LectureDto lectureDto = lectureDtoMapper.lectureToDto(lecture);
+        when(cathedraService.findByName(lectureDto.getCathedraName())).thenReturn(lecture.getCathedra());
+        when(teacherService.findByFirstNameAndLastNameAndBirthDate(lectureDto.getTeacherDto().getFirstName(), lectureDto.getTeacherDto().getLastName(), lectureDto.getTeacherDto().getBirthDate())).thenReturn(lecture.getTeacher());
+        when(audienceService.findByRoom(lectureDto.getAudienceRoom())).thenReturn(lecture.getAudience());
+        when(subjectService.findByName(lectureDto.getSubjectName())).thenReturn(lecture.getSubject());
+        when(lectureTimeService.findByStartAndEnd(lectureDto.getStart(), lectureDto.getEnd())).thenReturn(lecture.getTime());
+        when(lectureService.save(lecture)).thenReturn(lecture);
+        when(groupService.findByName(lecture.getGroups().get(0).getName())).thenReturn(lecture.getGroups().get(0));
 
         mockMvc.perform(patch("/api/lectures/{id}", 1)
-            .content(objectMapper.writeValueAsString(lecture))
-            .contentType(APPLICATION_JSON))
-            .andExpect(status().isOk());
+                .content(objectMapper.writeValueAsString(lectureDto))
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     @Test
-    void whenDeleteLecture_thenLectureDeleted() throws Exception {
+    public void whenDeleteLecture_thenLectureDeleted() throws Exception {
+        Lecture lecture = createLectureNoId();
+        lecture.setId(1);
+        LectureDto lectureDto = lectureDtoMapper.lectureToDto(lecture);
+        when(cathedraService.findByName(lectureDto.getCathedraName())).thenReturn(lecture.getCathedra());
+        when(teacherService.findByFirstNameAndLastNameAndBirthDate(lectureDto.getTeacherDto().getFirstName(), lectureDto.getTeacherDto().getLastName(), lectureDto.getTeacherDto().getBirthDate())).thenReturn(lecture.getTeacher());
+        when(audienceService.findByRoom(lectureDto.getAudienceRoom())).thenReturn(lecture.getAudience());
+        when(subjectService.findByName(lectureDto.getSubjectName())).thenReturn(lecture.getSubject());
+        when(lectureTimeService.findByStartAndEnd(lectureDto.getStart(), lectureDto.getEnd())).thenReturn(lecture.getTime());
+        when(groupService.findByName(lecture.getGroups().get(0).getName())).thenReturn(lecture.getGroups().get(0));
+
+        mockMvc.perform(delete("/api/lectures/{id}", 1)
+                .content(objectMapper.writeValueAsString(lectureDto))
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(lectureService).delete(lecture);
+    }
+
+    private Lecture createLectureNoId() {
         Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Audience audience = Audience.builder().id(1).room(1).capacity(10).build();
         Group group = Group.builder().id(1).name("Group Name").cathedra(cathedra).build();
         Subject subject = Subject.builder().id(1).name("Subject name").description("Subject desc").cathedra(cathedra)
-            .build();
+                .build();
         Teacher teacher = Teacher.builder().id(1).firstName("Test Name").lastName("Last Name").cathedra(cathedra).gender(Gender.MALE)
-            .subjects(Arrays.asList(subject)).build();
+                .subjects(Arrays.asList(subject)).build();
         LectureTime time = LectureTime.builder().id(1).start(LocalTime.of(8, 0)).end(LocalTime.of(9, 45)).build();
-        Lecture lecture = Lecture.builder()
-            .id(1)
-            .audience(audience)
-            .cathedra(cathedra)
-            .date(LocalDate.of(2021, 1, 1))
-            .group(Arrays.asList(group))
-            .subject(subject)
-            .teacher(teacher)
-            .time(time)
-            .build();
 
-        mockMvc.perform(delete("/api/lectures/{id}", 1)
-            .content(objectMapper.writeValueAsString(lecture))
-            .contentType(APPLICATION_JSON))
-            .andExpect(status().isOk());
-
-        verify(lectureService).delete(lecture);
+        return Lecture.builder()
+                .audience(audience)
+                .cathedra(cathedra)
+                .date(LocalDate.of(2021, 1, 1))
+                .group(Arrays.asList(group))
+                .subject(subject)
+                .teacher(teacher)
+                .time(time)
+                .build();
     }
 }
