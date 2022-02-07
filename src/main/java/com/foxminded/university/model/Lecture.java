@@ -41,7 +41,6 @@ public class Lecture {
     @Column
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "{Date.notNull}")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate date;
 
     @ManyToOne(fetch = FetchType.LAZY)

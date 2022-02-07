@@ -24,7 +24,6 @@ public class Holiday {
 
     @Column
     @JsonSerialize(as = LocalDate.class)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "{Date.notNull}")
     private LocalDate date;

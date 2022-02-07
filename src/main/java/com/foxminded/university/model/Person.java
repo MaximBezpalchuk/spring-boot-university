@@ -55,7 +55,6 @@ public class Person {
     @Column(name = "birth_date")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "{BirthDate.person.notNull}")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
 
     protected Person(int id, String firstName, String lastName, String phone, String address, String email,
