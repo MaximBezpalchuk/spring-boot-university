@@ -1,6 +1,7 @@
 package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.foxminded.university.dao.mapper.CathedraMapper;
 import com.foxminded.university.dao.mapper.GroupMapper;
 import com.foxminded.university.dto.GroupDto;
 import com.foxminded.university.dto.Slice;
@@ -35,6 +36,7 @@ public class GroupRestControllerTest {
 
     private MockMvc mockMvc;
     private final GroupMapper groupMapper = Mappers.getMapper(GroupMapper.class);
+    private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper .class);
     ObjectMapper objectMapper;
     @Mock
     private GroupService groupService;
@@ -49,6 +51,7 @@ public class GroupRestControllerTest {
         objectMapper = new ObjectMapper();
         ReflectionTestUtils.setField(groupRestController, "groupMapper", groupMapper);
         ReflectionTestUtils.setField(groupMapper, "cathedraService", cathedraService);
+        ReflectionTestUtils.setField(groupMapper, "cathedraMapper", cathedraMapper);
     }
 
     @Test
@@ -88,7 +91,7 @@ public class GroupRestControllerTest {
         Group group2 = createGroupNoId();
         group2.setId(3);
         GroupDto groupDto = groupMapper.groupToDto(group1);
-        when(cathedraService.findByName(groupDto.getCathedraName())).thenReturn(group1.getCathedra());
+        when(cathedraService.findById(groupDto.getCathedraDto().getId())).thenReturn(group1.getCathedra());
         when(groupService.save(group1)).thenReturn(group2);
         mockMvc.perform(post("/api/groups")
                 .content(objectMapper.writeValueAsString(groupDto))
@@ -104,7 +107,7 @@ public class GroupRestControllerTest {
         Group group = createGroupNoId();
         group.setId(1);
         GroupDto groupDto = groupMapper.groupToDto(group);
-        when(cathedraService.findByName(groupDto.getCathedraName())).thenReturn(group.getCathedra());
+        when(cathedraService.findById(groupDto.getCathedraDto().getId())).thenReturn(group.getCathedra());
         when(groupService.save(group)).thenReturn(group);
 
         mockMvc.perform(patch("/api/groups/{id}", 1)
@@ -118,7 +121,7 @@ public class GroupRestControllerTest {
         Group group = createGroupNoId();
         group.setId(1);
         GroupDto groupDto = groupMapper.groupToDto(group);
-        when(cathedraService.findByName(groupDto.getCathedraName())).thenReturn(group.getCathedra());
+        when(cathedraService.findById(groupDto.getCathedraDto().getId())).thenReturn(group.getCathedra());
         mockMvc.perform(delete("/api/groups/{id}", 1)
                 .content(objectMapper.writeValueAsString(groupDto))
                 .contentType(APPLICATION_JSON))

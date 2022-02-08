@@ -12,10 +12,12 @@ public abstract class SubjectMapper {
 
     @Autowired
     protected CathedraService cathedraService;
+    @Autowired
+    protected CathedraMapper cathedraMapper;
 
-    @Mapping(target = "cathedraName", source = "subject.cathedra.name")
+    @Mapping(target = "cathedraDto", expression = "java(cathedraMapper.cathedraToDto(subject.getCathedra()))")
     public abstract SubjectDto subjectToDto(Subject subject);
 
-    @Mapping(target = "cathedra", expression = "java(cathedraService.findByName(subjectDto.getCathedraName()))")
+    @Mapping(target = "cathedra", expression = "java(cathedraService.findById(subjectDto.getCathedraDto().getId()))")
     public abstract Subject dtoToSubject(SubjectDto subjectDto);
 }

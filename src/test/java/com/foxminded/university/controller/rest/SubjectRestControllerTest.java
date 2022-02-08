@@ -1,6 +1,7 @@
 package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.foxminded.university.dao.mapper.CathedraMapper;
 import com.foxminded.university.dao.mapper.SubjectMapper;
 import com.foxminded.university.dto.Slice;
 import com.foxminded.university.dto.SubjectDto;
@@ -41,6 +42,7 @@ public class SubjectRestControllerTest {
 
     private MockMvc mockMvc;
     private final SubjectMapper subjectMapper = Mappers.getMapper(SubjectMapper.class);
+    private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper .class);
     ObjectMapper objectMapper;
     @Mock
     private SubjectService subjectService;
@@ -58,6 +60,7 @@ public class SubjectRestControllerTest {
         objectMapper.findAndRegisterModules();
         ReflectionTestUtils.setField(subjectRestController, "subjectMapper", subjectMapper);
         ReflectionTestUtils.setField(subjectMapper, "cathedraService", cathedraService);
+        ReflectionTestUtils.setField(subjectMapper, "cathedraMapper", cathedraMapper);
     }
 
     @Test
@@ -96,7 +99,7 @@ public class SubjectRestControllerTest {
         Subject subject2 = createSubjectNoId();
         subject2.setId(2);
         SubjectDto subjectDto = subjectMapper.subjectToDto(subject1);
-        when(cathedraService.findByName(subjectDto.getCathedraName())).thenReturn(subject1.getCathedra());
+        when(cathedraService.findById(subjectDto.getCathedraDto().getId())).thenReturn(subject1.getCathedra());
         when(subjectService.save(subject1)).thenReturn(subject2);
 
         mockMvc.perform(post("/api/subjects")
@@ -113,7 +116,7 @@ public class SubjectRestControllerTest {
         Subject subject = createSubjectNoId();
         subject.setId(2);
         SubjectDto subjectDto = subjectMapper.subjectToDto(subject);
-        when(cathedraService.findByName(subjectDto.getCathedraName())).thenReturn(subject.getCathedra());
+        when(cathedraService.findById(subjectDto.getCathedraDto().getId())).thenReturn(subject.getCathedra());
         when(subjectService.save(subject)).thenReturn(subject);
 
         mockMvc.perform(patch("/api/subjects/{id}", 1)
@@ -128,7 +131,7 @@ public class SubjectRestControllerTest {
         Subject subject = createSubjectNoId();
         subject.setId(2);
         SubjectDto subjectDto = subjectMapper.subjectToDto(subject);
-        when(cathedraService.findByName(subjectDto.getCathedraName())).thenReturn(subject.getCathedra());
+        when(cathedraService.findById(subjectDto.getCathedraDto().getId())).thenReturn(subject.getCathedra());
 
         mockMvc.perform(delete("/api/subjects/{id}", 1)
                 .content(objectMapper.writeValueAsString(subjectDto))

@@ -2,6 +2,7 @@ package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foxminded.university.dao.mapper.AudienceMapper;
+import com.foxminded.university.dao.mapper.CathedraMapper;
 import com.foxminded.university.dto.AudienceDto;
 import com.foxminded.university.dto.Slice;
 import com.foxminded.university.model.Audience;
@@ -35,7 +36,7 @@ public class AudienceRestControllerTest {
 
     private MockMvc mockMvc;
     private AudienceMapper audienceMapper = Mappers.getMapper(AudienceMapper.class);
-
+    private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper .class);
     ObjectMapper objectMapper;
     @Mock
     private AudienceService audienceService;
@@ -50,6 +51,7 @@ public class AudienceRestControllerTest {
         objectMapper = new ObjectMapper();
         ReflectionTestUtils.setField(audienceRestController, "audienceMapper", audienceMapper);
         ReflectionTestUtils.setField(audienceMapper, "cathedraService", cathedraService);
+        ReflectionTestUtils.setField(audienceMapper, "cathedraMapper", cathedraMapper);
     }
 
     @Test
@@ -87,7 +89,7 @@ public class AudienceRestControllerTest {
         Audience audience2 = createAudienceNoId();
         audience2.setId(4);
         AudienceDto audienceDto = audienceMapper.audienceToDto(audience1);
-        when(cathedraService.findByName(audienceDto.getCathedraName())).thenReturn(audience1.getCathedra());
+        when(cathedraService.findById(audienceDto.getCathedraDto().getId())).thenReturn(audience1.getCathedra());
         when(audienceService.save(audience1)).thenReturn(audience2);
         mockMvc.perform(post("/api/audiences")
                 .content(objectMapper.writeValueAsString(audienceDto))
@@ -103,7 +105,7 @@ public class AudienceRestControllerTest {
         Audience audience = createAudienceNoId();
         audience.setId(1);
         AudienceDto audienceDto = audienceMapper.audienceToDto(audience);
-        when(cathedraService.findByName(audienceDto.getCathedraName())).thenReturn(audience.getCathedra());
+        when(cathedraService.findById(audienceDto.getCathedraDto().getId())).thenReturn(audience.getCathedra());
         when(audienceService.save(audience)).thenReturn(audience);
 
         mockMvc.perform(patch("/api/audiences/{id}", 1)
@@ -119,7 +121,7 @@ public class AudienceRestControllerTest {
         Audience audience = createAudienceNoId();
         audience.setId(1);
         AudienceDto audienceDto = audienceMapper.audienceToDto(audience);
-        when(cathedraService.findByName(audienceDto.getCathedraName())).thenReturn(audience.getCathedra());
+        when(cathedraService.findById(audienceDto.getCathedraDto().getId())).thenReturn(audience.getCathedra());
 
         mockMvc.perform(delete("/api/audiences/{id}", 1)
                 .content(objectMapper.writeValueAsString(audienceDto))

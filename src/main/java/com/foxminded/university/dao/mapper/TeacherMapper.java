@@ -21,12 +21,14 @@ public abstract class TeacherMapper {
     protected SubjectService subjectService;
     @Autowired
     protected CathedraService cathedraService;
+    @Autowired
+    protected CathedraMapper cathedraMapper;
 
-    @Mapping(target = "cathedraName", source = "teacher.cathedra.name")
+    @Mapping(target = "cathedraDto", expression = "java(cathedraMapper.cathedraToDto(teacher.getCathedra()))")
     @Mapping(target = "subjectNames", expression = "java(teacher.getSubjects().stream().map(Subject::getName).collect(Collectors.toList()))")
     public abstract TeacherDto teacherToDto(Teacher teacher);
 
-    @Mapping(target = "cathedra", expression = "java(cathedraService.findByName(teacherDto.getCathedraName()))")
+    @Mapping(target = "cathedra", expression = "java(cathedraService.findById(teacherDto.getCathedraDto().getId()))")
     @Mapping(target = "subjects", expression = "java(teacherDto.getSubjectNames().stream().map(subjectService::findByName).collect(Collectors.toList()))")
     public abstract Teacher dtoToTeacher(TeacherDto teacherDto);
 

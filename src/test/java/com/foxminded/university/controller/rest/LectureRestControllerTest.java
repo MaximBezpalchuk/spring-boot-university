@@ -1,6 +1,7 @@
 package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.foxminded.university.dao.mapper.CathedraMapper;
 import com.foxminded.university.dao.mapper.LectureMapper;
 import com.foxminded.university.dao.mapper.TeacherMapper;
 import com.foxminded.university.dto.LectureDto;
@@ -42,6 +43,7 @@ public class LectureRestControllerTest {
     private ObjectMapper objectMapper;
     private final LectureMapper lectureMapper = Mappers.getMapper(LectureMapper.class);
     private final TeacherMapper teacherMapper = Mappers.getMapper(TeacherMapper .class);
+    private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper .class);
     @Mock
     private LectureService lectureService;
     @Mock
@@ -74,6 +76,7 @@ public class LectureRestControllerTest {
         ReflectionTestUtils.setField(lectureMapper, "teacherService", teacherService);
         ReflectionTestUtils.setField(lectureMapper, "teacherMapper", teacherMapper);
         ReflectionTestUtils.setField(lectureMapper, "groupService", groupService);
+        ReflectionTestUtils.setField(lectureMapper, "cathedraMapper", cathedraMapper);
     }
 
     @Test
@@ -112,7 +115,7 @@ public class LectureRestControllerTest {
         Lecture lecture2 = createLectureNoId();
         lecture2.setId(2);
         LectureDto lectureDto = lectureMapper.lectureToDto(lecture1);
-        when(cathedraService.findByName(lectureDto.getCathedraName())).thenReturn(lecture1.getCathedra());
+        when(cathedraService.findById(lectureDto.getCathedraDto().getId())).thenReturn(lecture1.getCathedra());
         when(teacherService.findByFirstNameAndLastNameAndBirthDate(lectureDto.getTeacherDto().getFirstName(), lectureDto.getTeacherDto().getLastName(), lectureDto.getTeacherDto().getBirthDate())).thenReturn(lecture1.getTeacher());
         when(audienceService.findByRoom(lectureDto.getAudienceRoom())).thenReturn(lecture1.getAudience());
         when(subjectService.findByName(lectureDto.getSubjectName())).thenReturn(lecture1.getSubject());
@@ -134,7 +137,7 @@ public class LectureRestControllerTest {
         Lecture lecture = createLectureNoId();
         lecture.setId(1);
         LectureDto lectureDto = lectureMapper.lectureToDto(lecture);
-        when(cathedraService.findByName(lectureDto.getCathedraName())).thenReturn(lecture.getCathedra());
+        when(cathedraService.findById(lectureDto.getCathedraDto().getId())).thenReturn(lecture.getCathedra());
         when(teacherService.findByFirstNameAndLastNameAndBirthDate(lectureDto.getTeacherDto().getFirstName(), lectureDto.getTeacherDto().getLastName(), lectureDto.getTeacherDto().getBirthDate())).thenReturn(lecture.getTeacher());
         when(audienceService.findByRoom(lectureDto.getAudienceRoom())).thenReturn(lecture.getAudience());
         when(subjectService.findByName(lectureDto.getSubjectName())).thenReturn(lecture.getSubject());
@@ -153,7 +156,7 @@ public class LectureRestControllerTest {
         Lecture lecture = createLectureNoId();
         lecture.setId(1);
         LectureDto lectureDto = lectureMapper.lectureToDto(lecture);
-        when(cathedraService.findByName(lectureDto.getCathedraName())).thenReturn(lecture.getCathedra());
+        when(cathedraService.findById(lectureDto.getCathedraDto().getId())).thenReturn(lecture.getCathedra());
         when(teacherService.findByFirstNameAndLastNameAndBirthDate(lectureDto.getTeacherDto().getFirstName(), lectureDto.getTeacherDto().getLastName(), lectureDto.getTeacherDto().getBirthDate())).thenReturn(lecture.getTeacher());
         when(audienceService.findByRoom(lectureDto.getAudienceRoom())).thenReturn(lecture.getAudience());
         when(subjectService.findByName(lectureDto.getSubjectName())).thenReturn(lecture.getSubject());

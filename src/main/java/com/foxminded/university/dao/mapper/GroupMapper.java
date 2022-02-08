@@ -12,10 +12,12 @@ public abstract class GroupMapper {
 
     @Autowired
     protected CathedraService cathedraService;
+    @Autowired
+    protected CathedraMapper cathedraMapper;
 
-    @Mapping(target = "cathedraName", source = "group.cathedra.name")
+    @Mapping(target = "cathedraDto", expression = "java(cathedraMapper.cathedraToDto(group.getCathedra()))")
     public abstract GroupDto groupToDto(Group group);
 
-    @Mapping(target = "cathedra", expression = "java(cathedraService.findByName(groupDto.getCathedraName()))")
+    @Mapping(target = "cathedra", expression = "java(cathedraService.findById(groupDto.getCathedraDto().getId()))")
     public abstract Group dtoToGroup(GroupDto groupDto);
 }

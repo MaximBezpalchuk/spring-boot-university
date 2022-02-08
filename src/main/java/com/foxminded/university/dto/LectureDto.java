@@ -7,7 +7,7 @@ import java.util.List;
 public class LectureDto {
 
     private Integer id;
-    private String cathedraName;
+    private CathedraDto cathedraDto;
     private List<String> groupNames;
     private TeacherDto teacherDto;
     private Integer audienceRoom;
@@ -16,9 +16,9 @@ public class LectureDto {
     private LocalTime start;
     private LocalTime end;
 
-    public LectureDto(Integer id, String cathedraName, List<String> groupNames, TeacherDto teacherDto, Integer audienceRoom, LocalDate date, String subjectName, LocalTime start, LocalTime end) {
+    public LectureDto(Integer id, CathedraDto cathedraDto, List<String> groupNames, TeacherDto teacherDto, Integer audienceRoom, LocalDate date, String subjectName, LocalTime start, LocalTime end) {
         this.id = id;
-        this.cathedraName = cathedraName;
+        this.cathedraDto = cathedraDto;
         this.groupNames = groupNames;
         this.teacherDto = teacherDto;
         this.audienceRoom = audienceRoom;
@@ -39,12 +39,12 @@ public class LectureDto {
         this.id = id;
     }
 
-    public String getCathedraName() {
-        return cathedraName;
+    public CathedraDto getCathedraDto() {
+        return cathedraDto;
     }
 
-    public void setCathedraName(String cathedraName) {
-        this.cathedraName = cathedraName;
+    public void setCathedraDto(CathedraDto cathedraDto) {
+        this.cathedraDto = cathedraDto;
     }
 
     public List<String> getGroupNames() {

@@ -5,13 +5,13 @@ public class AudienceDto {
     private Integer id;
     private Integer room;
     private Integer capacity;
-    private String cathedraName;
+    private CathedraDto cathedraDto;
 
-    public AudienceDto(Integer id, Integer room, Integer capacity, String cathedraName) {
+    public AudienceDto(Integer id, Integer room, Integer capacity, CathedraDto cathedraDto) {
         this.id = id;
         this.room = room;
         this.capacity = capacity;
-        this.cathedraName = cathedraName;
+        this.cathedraDto = cathedraDto;
     }
 
     public AudienceDto() {
@@ -41,11 +41,11 @@ public class AudienceDto {
         this.capacity = capacity;
     }
 
-    public String getCathedraName() {
-        return cathedraName;
+    public CathedraDto getCathedraDto() {
+        return cathedraDto;
     }
 
-    public void setCathedraName(String cathedraName) {
-        this.cathedraName = cathedraName;
+    public void setCathedraDto(CathedraDto cathedraDto) {
+        this.cathedraDto = cathedraDto;
     }
 }

@@ -7,13 +7,13 @@ public class HolidayDto {
     private Integer id;
     private String name;
     private LocalDate date;
-    private String cathedraName;
+    private CathedraDto cathedraDto;
 
-    public HolidayDto(Integer id, String name, LocalDate date, String cathedraName) {
+    public HolidayDto(Integer id, String name, LocalDate date, CathedraDto cathedraDto) {
         this.id = id;
         this.name = name;
         this.date = date;
-        this.cathedraName = cathedraName;
+        this.cathedraDto = cathedraDto;
     }
 
     public HolidayDto() {
@@ -43,11 +43,11 @@ public class HolidayDto {
         this.date = date;
     }
 
-    public String getCathedraName() {
-        return cathedraName;
+    public CathedraDto getCathedraDto() {
+        return cathedraDto;
     }
 
-    public void setCathedraName(String cathedraName) {
-        this.cathedraName = cathedraName;
+    public void setCathedraDto(CathedraDto cathedraDto) {
+        this.cathedraDto = cathedraDto;
     }
 }

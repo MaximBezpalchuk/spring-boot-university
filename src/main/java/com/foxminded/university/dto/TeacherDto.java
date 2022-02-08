@@ -19,11 +19,11 @@ public class TeacherDto {
     private String postalCode;
     private String education;
     private LocalDate birthDate;
-    private String cathedraName;
+    private CathedraDto cathedraDto;
     private Degree degree;
     private List<String> subjectNames = new ArrayList<>();
 
-    public TeacherDto(Integer id, String firstName, String lastName, String phone, String address, String email, Gender gender, String postalCode, String education, LocalDate birthDate, String cathedraName, Degree degree, List<String> subjectNames) {
+    public TeacherDto(Integer id, String firstName, String lastName, String phone, String address, String email, Gender gender, String postalCode, String education, LocalDate birthDate, CathedraDto cathedraDto, Degree degree, List<String> subjectNames) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -34,7 +34,7 @@ public class TeacherDto {
         this.postalCode = postalCode;
         this.education = education;
         this.birthDate = birthDate;
-        this.cathedraName = cathedraName;
+        this.cathedraDto = cathedraDto;
         this.degree = degree;
         this.subjectNames = subjectNames;
     }
@@ -122,12 +122,12 @@ public class TeacherDto {
         this.birthDate = birthDate;
     }
 
-    public String getCathedraName() {
-        return cathedraName;
+    public CathedraDto getCathedraDto() {
+        return cathedraDto;
     }
 
-    public void setCathedraName(String cathedraName) {
-        this.cathedraName = cathedraName;
+    public void setCathedraDto(CathedraDto cathedraDto) {
+        this.cathedraDto = cathedraDto;
     }
 
     public Degree getDegree() {

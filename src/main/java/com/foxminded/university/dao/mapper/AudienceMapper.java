@@ -12,10 +12,12 @@ public abstract class AudienceMapper {
 
     @Autowired
     protected CathedraService cathedraService;
+    @Autowired
+    protected CathedraMapper cathedraMapper;
 
-    @Mapping(target = "cathedraName", source = "audience.cathedra.name")
+    @Mapping(target = "cathedraDto", expression = "java(cathedraMapper.cathedraToDto(audience.getCathedra()))")
     public abstract AudienceDto audienceToDto(Audience audience);
 
-    @Mapping(target = "cathedra", expression = "java(cathedraService.findByName(audienceDto.getCathedraName()))")
+    @Mapping(target = "cathedra", expression = "java(cathedraService.findById(audienceDto.getCathedraDto().getId()))")
     public abstract Audience dtoToAudience(AudienceDto audienceDto);
 }

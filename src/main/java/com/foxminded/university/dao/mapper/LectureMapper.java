@@ -30,8 +30,10 @@ public abstract class LectureMapper {
     protected SubjectService subjectService;
     @Autowired
     protected LectureTimeService lectureTimeService;
+    @Autowired
+    protected CathedraMapper cathedraMapper;
 
-    @Mapping(target = "cathedraName", source = "lecture.cathedra.name")
+    @Mapping(target = "cathedraDto", expression = "java(cathedraMapper.cathedraToDto(lecture.getCathedra()))")
     @Mapping(target = "groupNames", expression = "java(lecture.getGroups().stream().map(Group::getName).collect(Collectors.toList()))")
     @Mapping(target = "teacherDto", expression = "java(teacherMapper.teacherToDto(lecture.getTeacher()))")
     @Mapping(target = "audienceRoom", source = "lecture.audience.room")
@@ -40,7 +42,7 @@ public abstract class LectureMapper {
     @Mapping(target = "end", source = "lecture.time.end")
     public abstract LectureDto lectureToDto(Lecture lecture);
 
-    @Mapping(target = "cathedra", expression = "java(cathedraService.findByName(lectureDto.getCathedraName()))")
+    @Mapping(target = "cathedra", expression = "java(cathedraService.findById(lectureDto.getCathedraDto().getId()))")
     @Mapping(target = "group", expression = "java(lectureDto.getGroupNames().stream().map(groupService::findByName).collect(Collectors.toList()))")
     @Mapping(target = "teacher", expression = "java(teacherService.findByFirstNameAndLastNameAndBirthDate(lectureDto.getTeacherDto().getFirstName(), lectureDto.getTeacherDto().getLastName(), lectureDto.getTeacherDto().getBirthDate()))")
     @Mapping(target = "audience", expression = "java(audienceService.findByRoom(lectureDto.getAudienceRoom()))")

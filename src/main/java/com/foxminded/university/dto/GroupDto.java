@@ -4,12 +4,12 @@ public class GroupDto {
 
     private Integer id;
     private String name;
-    private String cathedraName;
+    private CathedraDto cathedraDto;
 
-    public GroupDto(Integer id, String name, String cathedraName) {
+    public GroupDto(Integer id, String name, CathedraDto cathedraDto) {
         this.id = id;
         this.name = name;
-        this.cathedraName = cathedraName;
+        this.cathedraDto = cathedraDto;
     }
 
     public GroupDto() {
@@ -31,11 +31,11 @@ public class GroupDto {
         this.name = name;
     }
 
-    public String getCathedraName() {
-        return cathedraName;
+    public CathedraDto getCathedraDto() {
+        return cathedraDto;
     }
 
-    public void setCathedraName(String cathedraName) {
-        this.cathedraName = cathedraName;
+    public void setCathedraDto(CathedraDto cathedraDto) {
+        this.cathedraDto = cathedraDto;
     }
 }

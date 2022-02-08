@@ -5,13 +5,13 @@ public class SubjectDto {
     private Integer id;
     private String name;
     private String description;
-    private String cathedraName;
+    private CathedraDto cathedraDto;
 
-    public SubjectDto(Integer id, String name, String description, String cathedraName) {
+    public SubjectDto(Integer id, String name, String description, CathedraDto cathedraDto) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.cathedraName = cathedraName;
+        this.cathedraDto = cathedraDto;
     }
 
     public SubjectDto() {
@@ -41,11 +41,11 @@ public class SubjectDto {
         this.description = description;
     }
 
-    public String getCathedraName() {
-        return cathedraName;
+    public CathedraDto getCathedraDto() {
+        return cathedraDto;
     }
 
-    public void setCathedraName(String cathedraName) {
-        this.cathedraName = cathedraName;
+    public void setCathedraDto(CathedraDto cathedraDto) {
+        this.cathedraDto = cathedraDto;
     }
 }
