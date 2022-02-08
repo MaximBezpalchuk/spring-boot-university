@@ -1,7 +1,7 @@
 package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.foxminded.university.dao.mapper.StudentDtoMapper;
+import com.foxminded.university.dao.mapper.StudentMapper;
 import com.foxminded.university.dto.ObjectListDto;
 import com.foxminded.university.dto.StudentDto;
 import com.foxminded.university.model.Gender;
@@ -40,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class StudentRestControllerTest {
 
     private MockMvc mockMvc;
-    private final StudentDtoMapper studentDtoMapper = StudentDtoMapper.INSTANCE;
+    private final StudentMapper studentMapper = StudentMapper.INSTANCE;
     private ObjectMapper objectMapper;
     @Mock
     private StudentService studentService;
@@ -56,8 +56,8 @@ public class StudentRestControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(studentRestController).setCustomArgumentResolvers(resolver).build();
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
-        ReflectionTestUtils.setField(studentRestController, "studentDtoMapper", studentDtoMapper);
-        ReflectionTestUtils.setField(studentDtoMapper, "groupService", groupService);
+        ReflectionTestUtils.setField(studentRestController, "studentMapper", studentMapper);
+        ReflectionTestUtils.setField(studentMapper, "groupService", groupService);
     }
 
     @Test
@@ -86,7 +86,7 @@ public class StudentRestControllerTest {
 
         mockMvc.perform(get("/api/students/{id}", student.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(studentDtoMapper.studentToDto(student))))
+                .content(objectMapper.writeValueAsString(studentMapper.studentToDto(student))))
                 .andExpect(status().isOk());
     }
 
@@ -95,7 +95,7 @@ public class StudentRestControllerTest {
         Student student1 = createStudentNoId();
         Student student2 = createStudentNoId();
         student2.setId(2);
-        StudentDto studentDto = studentDtoMapper.studentToDto(student1);
+        StudentDto studentDto = studentMapper.studentToDto(student1);
         when(groupService.findByName(studentDto.getGroupName())).thenReturn(student1.getGroup());
         when(studentService.save(student1)).thenReturn(student2);
 
@@ -112,7 +112,7 @@ public class StudentRestControllerTest {
     public void whenEditStudent_thenStudentFound() throws Exception {
         Student student = createStudentNoId();
         student.setId(1);
-        StudentDto studentDto = studentDtoMapper.studentToDto(student);
+        StudentDto studentDto = studentMapper.studentToDto(student);
         when(groupService.findByName(studentDto.getGroupName())).thenReturn(student.getGroup());
         when(studentService.save(student)).thenReturn(student);
 
@@ -126,7 +126,7 @@ public class StudentRestControllerTest {
     public void whenDeleteStudent_thenStudentDeleted() throws Exception {
         Student student = createStudentNoId();
         student.setId(1);
-        StudentDto studentDto = studentDtoMapper.studentToDto(student);
+        StudentDto studentDto = studentMapper.studentToDto(student);
         when(groupService.findByName(studentDto.getGroupName())).thenReturn(student.getGroup());
 
         mockMvc.perform(delete("/api/students/{id}", 1)

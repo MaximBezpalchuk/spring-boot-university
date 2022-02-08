@@ -1,7 +1,7 @@
 package com.foxminded.university.controller.rest;
 
 import com.foxminded.university.controller.LectureController;
-import com.foxminded.university.dao.mapper.LectureDtoMapper;
+import com.foxminded.university.dao.mapper.LectureMapper;
 import com.foxminded.university.dto.LectureDto;
 import com.foxminded.university.model.Lecture;
 import com.foxminded.university.service.LectureService;
@@ -22,31 +22,31 @@ public class LectureRestController {
     private static final Logger logger = LoggerFactory.getLogger(LectureController.class);
 
     private final LectureService lectureService;
-    private final LectureDtoMapper lectureDtoMapper;
+    private final LectureMapper lectureMapper;
 
-    public LectureRestController(LectureService lectureService, LectureDtoMapper lectureDtoMapper) {
+    public LectureRestController(LectureService lectureService, LectureMapper lectureMapper) {
         this.lectureService = lectureService;
-        this.lectureDtoMapper = lectureDtoMapper;
+        this.lectureMapper = lectureMapper;
     }
 
     @GetMapping
     public Page<LectureDto> getAllLectures(Pageable pageable) {
         logger.debug("Show all lectures");
 
-        return lectureService.findAll(pageable).map(lectureDtoMapper::lectureToDto);
+        return lectureService.findAll(pageable).map(lectureMapper::lectureToDto);
     }
 
     @GetMapping("{id}")
     public LectureDto showLecture(@PathVariable int id) {
         logger.debug("Show lecture with id {}", id);
 
-        return lectureDtoMapper.lectureToDto(lectureService.findById(id));
+        return lectureMapper.lectureToDto(lectureService.findById(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity create(@RequestBody LectureDto lectureDto) {
-        Lecture lecture = lectureService.save(lectureDtoMapper.dtoToLecture(lectureDto));
+        Lecture lecture = lectureService.save(lectureMapper.dtoToLecture(lectureDto));
         logger.debug("Create new lecture. Id {}", lecture.getId());
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
             .buildAndExpand(lecture.getId()).toUri();
@@ -56,16 +56,16 @@ public class LectureRestController {
 
     @PatchMapping("{id}")
     public void update(@RequestBody LectureDto lectureDto) {
-        lectureService.save(lectureDtoMapper.dtoToLecture(lectureDto));
+        lectureService.save(lectureMapper.dtoToLecture(lectureDto));
     }
 
     @DeleteMapping("{id}")
     public void delete(@RequestBody LectureDto lectureDto) {
-        lectureService.delete(lectureDtoMapper.dtoToLecture(lectureDto));
+        lectureService.delete(lectureMapper.dtoToLecture(lectureDto));
     }
 
     @PatchMapping("{id}/edit/teacher")
     public void updateTeacher(@RequestBody LectureDto lectureDto) {
-        lectureService.save(lectureDtoMapper.dtoToLecture(lectureDto));
+        lectureService.save(lectureMapper.dtoToLecture(lectureDto));
     }
 }

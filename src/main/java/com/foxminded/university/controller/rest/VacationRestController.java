@@ -1,8 +1,8 @@
 package com.foxminded.university.controller.rest;
 
 import com.foxminded.university.controller.VacationController;
-import com.foxminded.university.dao.mapper.LectureDtoMapper;
-import com.foxminded.university.dao.mapper.VacationDtoMapper;
+import com.foxminded.university.dao.mapper.LectureMapper;
+import com.foxminded.university.dao.mapper.VacationMapper;
 import com.foxminded.university.dto.ObjectListDto;
 import com.foxminded.university.dto.VacationDto;
 import com.foxminded.university.exception.BusyTeacherException;
@@ -37,38 +37,38 @@ public class VacationRestController {
     private final TeacherService teacherService;
     private final VacationService vacationService;
     private final LectureService lectureService;
-    private final VacationDtoMapper vacationDtoMapper;
-    private final LectureDtoMapper lectureDtoMapper;
+    private final VacationMapper vacationMapper;
+    private final LectureMapper lectureMapper;
 
     public VacationRestController(TeacherService teacherService, VacationService vacationService,
-                                  LectureService lectureService, VacationDtoMapper vacationDtoMapper,
-                                  LectureDtoMapper lectureDtoMapper) {
+                                  LectureService lectureService, VacationMapper vacationMapper,
+                                  LectureMapper lectureMapper) {
         this.teacherService = teacherService;
         this.vacationService = vacationService;
         this.lectureService = lectureService;
-        this.vacationDtoMapper = vacationDtoMapper;
-        this.lectureDtoMapper = lectureDtoMapper;
+        this.vacationMapper = vacationMapper;
+        this.lectureMapper = lectureMapper;
     }
 
     @GetMapping
     public Page<VacationDto> getAllVacationsByTeacherId(@PathVariable int teacherId, Pageable pageable) {
         logger.debug("Show all vacations by teacher id {}", teacherId);
 
-        return vacationService.findByTeacherId(pageable, teacherId).map(vacationDtoMapper::vacationToDto);
+        return vacationService.findByTeacherId(pageable, teacherId).map(vacationMapper::vacationToDto);
     }
 
     @GetMapping("/{id}")
     public VacationDto showVacation(@PathVariable int id) {
         logger.debug("Show vacation with id {}", id);
 
-        return vacationDtoMapper.vacationToDto(vacationService.findById(id));
+        return vacationMapper.vacationToDto(vacationService.findById(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity createVacation(@PathVariable int teacherId, @RequestBody VacationDto vacationDto) {
         Vacation vacation;
-        Vacation vacationFromDto = vacationDtoMapper.dtoToVacation(vacationDto);
+        Vacation vacationFromDto = vacationMapper.dtoToVacation(vacationDto);
         List<Lecture> lectures = lectureService.findByTeacherIdAndPeriod(teacherId, vacationFromDto.getStart(),
             vacationFromDto.getEnd());
         if (lectures.isEmpty()) {
@@ -92,7 +92,7 @@ public class VacationRestController {
         logger.debug("Change teacher on lectures - teacher with id {}", teacherId);
         List<Lecture> lectures = lectureService.findByTeacherIdAndPeriod(teacherId, start, end);
 
-        return new ObjectListDto(lectures.stream().map(lectureDtoMapper::lectureToDto).collect(Collectors.toList()));
+        return new ObjectListDto(lectures.stream().map(lectureMapper::lectureToDto).collect(Collectors.toList()));
     }
 
     @PatchMapping("/lectures")
@@ -111,7 +111,7 @@ public class VacationRestController {
 
     @PatchMapping("/{id}")
     public void update(@RequestBody VacationDto vacationDto, @PathVariable int teacherId) {
-        Vacation vacation = vacationDtoMapper.dtoToVacation(vacationDto);
+        Vacation vacation = vacationMapper.dtoToVacation(vacationDto);
         List<Lecture> lectures = lectureService.findByTeacherIdAndPeriod(teacherId, vacation.getStart(),
             vacation.getEnd());
         if (lectures.isEmpty()) {
@@ -125,6 +125,6 @@ public class VacationRestController {
 
     @DeleteMapping("/{id}")
     public void delete(@RequestBody VacationDto vacationDto) {
-        vacationService.delete(vacationDtoMapper.dtoToVacation(vacationDto));
+        vacationService.delete(vacationMapper.dtoToVacation(vacationDto));
     }
 }

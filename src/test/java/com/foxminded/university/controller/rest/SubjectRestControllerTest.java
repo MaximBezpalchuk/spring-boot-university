@@ -1,12 +1,10 @@
 package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.foxminded.university.dao.mapper.HolidayDtoMapper;
-import com.foxminded.university.dao.mapper.SubjectDtoMapper;
+import com.foxminded.university.dao.mapper.SubjectMapper;
 import com.foxminded.university.dto.ObjectListDto;
 import com.foxminded.university.dto.SubjectDto;
 import com.foxminded.university.model.Cathedra;
-import com.foxminded.university.model.Holiday;
 import com.foxminded.university.model.Subject;
 import com.foxminded.university.service.CathedraService;
 import com.foxminded.university.service.SubjectService;
@@ -27,7 +25,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class SubjectRestControllerTest {
 
     private MockMvc mockMvc;
-    private final SubjectDtoMapper subjectDtoMapper = SubjectDtoMapper.INSTANCE;
+    private final SubjectMapper subjectMapper = SubjectMapper.INSTANCE;
     ObjectMapper objectMapper;
     @Mock
     private SubjectService subjectService;
@@ -58,8 +55,8 @@ public class SubjectRestControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(subjectRestController).setCustomArgumentResolvers(resolver).build();
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
-        ReflectionTestUtils.setField(subjectRestController, "subjectDtoMapper", subjectDtoMapper);
-        ReflectionTestUtils.setField(subjectDtoMapper, "cathedraService", cathedraService);
+        ReflectionTestUtils.setField(subjectRestController, "subjectMapper", subjectMapper);
+        ReflectionTestUtils.setField(subjectMapper, "cathedraService", cathedraService);
     }
 
     @Test
@@ -88,7 +85,7 @@ public class SubjectRestControllerTest {
 
         mockMvc.perform(get("/api/subjects/{id}", subject.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(subjectDtoMapper.subjectToDto(subject))))
+                .content(objectMapper.writeValueAsString(subjectMapper.subjectToDto(subject))))
                 .andExpect(status().isOk());
     }
 
@@ -97,7 +94,7 @@ public class SubjectRestControllerTest {
         Subject subject1 = createSubjectNoId();
         Subject subject2 = createSubjectNoId();
         subject2.setId(2);
-        SubjectDto subjectDto = subjectDtoMapper.subjectToDto(subject1);
+        SubjectDto subjectDto = subjectMapper.subjectToDto(subject1);
         when(cathedraService.findByName(subjectDto.getCathedraName())).thenReturn(subject1.getCathedra());
         when(subjectService.save(subject1)).thenReturn(subject2);
 
@@ -114,7 +111,7 @@ public class SubjectRestControllerTest {
     public void whenEditSubject_thenSubjectFound() throws Exception {
         Subject subject = createSubjectNoId();
         subject.setId(2);
-        SubjectDto subjectDto = subjectDtoMapper.subjectToDto(subject);
+        SubjectDto subjectDto = subjectMapper.subjectToDto(subject);
         when(cathedraService.findByName(subjectDto.getCathedraName())).thenReturn(subject.getCathedra());
         when(subjectService.save(subject)).thenReturn(subject);
 
@@ -129,7 +126,7 @@ public class SubjectRestControllerTest {
     public void whenDeleteSubject_thenSubjectDeleted() throws Exception {
         Subject subject = createSubjectNoId();
         subject.setId(2);
-        SubjectDto subjectDto = subjectDtoMapper.subjectToDto(subject);
+        SubjectDto subjectDto = subjectMapper.subjectToDto(subject);
         when(cathedraService.findByName(subjectDto.getCathedraName())).thenReturn(subject.getCathedra());
 
         mockMvc.perform(delete("/api/subjects/{id}", 1)

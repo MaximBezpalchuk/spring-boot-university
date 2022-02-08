@@ -1,7 +1,7 @@
 package com.foxminded.university.controller.rest;
 
 import com.foxminded.university.controller.TeacherController;
-import com.foxminded.university.dao.mapper.TeacherDtoMapper;
+import com.foxminded.university.dao.mapper.TeacherMapper;
 import com.foxminded.university.dto.TeacherDto;
 import com.foxminded.university.model.Teacher;
 import com.foxminded.university.service.TeacherService;
@@ -22,31 +22,31 @@ public class TeacherRestController {
 
     private static final Logger logger = LoggerFactory.getLogger(TeacherController.class);
     private final TeacherService teacherService;
-    private final TeacherDtoMapper teacherDtoMapper;
+    private final TeacherMapper teacherMapper;
 
-    public TeacherRestController(TeacherService teacherService, TeacherDtoMapper teacherDtoMapper) {
+    public TeacherRestController(TeacherService teacherService, TeacherMapper teacherMapper) {
         this.teacherService = teacherService;
-        this.teacherDtoMapper = teacherDtoMapper;
+        this.teacherMapper = teacherMapper;
     }
 
     @GetMapping
     public Page<TeacherDto> all(Pageable pageable) {
         logger.debug("Show all teachers");
 
-        return teacherService.findAll(pageable).map(teacherDtoMapper::teacherToDto);
+        return teacherService.findAll(pageable).map(teacherMapper::teacherToDto);
     }
 
     @GetMapping("/{id}")
     public TeacherDto showTeacher(@PathVariable int id) {
         logger.debug("Show teacher with id {}", id);
 
-        return teacherDtoMapper.teacherToDto(teacherService.findById(id));
+        return teacherMapper.teacherToDto(teacherService.findById(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity create(@RequestBody TeacherDto teacherDto) {
-        Teacher teacher = teacherService.save(teacherDtoMapper.dtoToTeacher(teacherDto));
+        Teacher teacher = teacherService.save(teacherMapper.dtoToTeacher(teacherDto));
         logger.debug("Create new teacher. Id {}", teacher.getId());
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
             .buildAndExpand(teacher.getId()).toUri();
@@ -56,11 +56,11 @@ public class TeacherRestController {
 
     @PatchMapping("/{id}")
     public void update(@RequestBody TeacherDto teacherDto) {
-        teacherService.save(teacherDtoMapper.dtoToTeacher(teacherDto));
+        teacherService.save(teacherMapper.dtoToTeacher(teacherDto));
     }
 
     @DeleteMapping("/{id}")
     public void delete(@RequestBody TeacherDto teacherDto) {
-        teacherService.delete(teacherDtoMapper.dtoToTeacher(teacherDto));
+        teacherService.delete(teacherMapper.dtoToTeacher(teacherDto));
     }
 }

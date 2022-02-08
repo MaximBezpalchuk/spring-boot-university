@@ -1,7 +1,7 @@
 package com.foxminded.university.controller.rest;
 
 import com.foxminded.university.controller.SubjectController;
-import com.foxminded.university.dao.mapper.SubjectDtoMapper;
+import com.foxminded.university.dao.mapper.SubjectMapper;
 import com.foxminded.university.dto.SubjectDto;
 import com.foxminded.university.model.Subject;
 import com.foxminded.university.service.SubjectService;
@@ -23,31 +23,31 @@ public class SubjectRestController {
     private static final Logger logger = LoggerFactory.getLogger(SubjectController.class);
 
     private final SubjectService subjectService;
-    private final SubjectDtoMapper subjectDtoMapper;
+    private final SubjectMapper subjectMapper;
 
-    public SubjectRestController(SubjectService subjectService, SubjectDtoMapper subjectDtoMapper) {
+    public SubjectRestController(SubjectService subjectService, SubjectMapper subjectMapper) {
         this.subjectService = subjectService;
-        this.subjectDtoMapper = subjectDtoMapper;
+        this.subjectMapper = subjectMapper;
     }
 
     @GetMapping
     public Page<SubjectDto> getAllSubjects(Pageable pageable) {
         logger.debug("Show all subjects");
 
-        return subjectService.findAll(pageable).map(subjectDtoMapper::subjectToDto);
+        return subjectService.findAll(pageable).map(subjectMapper::subjectToDto);
     }
 
     @GetMapping("/{id}")
     public SubjectDto showSubject(@PathVariable int id) {
         logger.debug("Show subject page with id {}", id);
 
-        return subjectDtoMapper.subjectToDto(subjectService.findById(id));
+        return subjectMapper.subjectToDto(subjectService.findById(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity create(@RequestBody SubjectDto subjectDto) {
-        Subject subject = subjectService.save(subjectDtoMapper.dtoToSubject(subjectDto));
+        Subject subject = subjectService.save(subjectMapper.dtoToSubject(subjectDto));
         logger.debug("Create new subject. Id {}", subject.getId());
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
             .buildAndExpand(subject.getId()).toUri();
@@ -57,11 +57,11 @@ public class SubjectRestController {
 
     @PatchMapping("/{id}")
     public void update(@RequestBody SubjectDto subjectDto) {
-        subjectService.save(subjectDtoMapper.dtoToSubject(subjectDto));
+        subjectService.save(subjectMapper.dtoToSubject(subjectDto));
     }
 
     @DeleteMapping("/{id}")
     public void delete(@RequestBody SubjectDto subjectDto) {
-        subjectService.delete(subjectDtoMapper.dtoToSubject(subjectDto));
+        subjectService.delete(subjectMapper.dtoToSubject(subjectDto));
     }
 }

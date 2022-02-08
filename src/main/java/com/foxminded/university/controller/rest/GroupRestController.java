@@ -1,7 +1,7 @@
 package com.foxminded.university.controller.rest;
 
 import com.foxminded.university.controller.GroupController;
-import com.foxminded.university.dao.mapper.GroupDtoMapper;
+import com.foxminded.university.dao.mapper.GroupMapper;
 import com.foxminded.university.dto.GroupDto;
 import com.foxminded.university.dto.ObjectListDto;
 import com.foxminded.university.model.Group;
@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
@@ -23,31 +22,31 @@ public class GroupRestController {
     private static final Logger logger = LoggerFactory.getLogger(GroupController.class);
 
     private final GroupService groupService;
-    private final GroupDtoMapper groupDtoMapper;
+    private final GroupMapper groupMapper;
 
-    public GroupRestController(GroupService groupService, GroupDtoMapper groupDtoMapper) {
+    public GroupRestController(GroupService groupService, GroupMapper groupMapper) {
         this.groupService = groupService;
-        this.groupDtoMapper = groupDtoMapper;
+        this.groupMapper = groupMapper;
     }
 
     @GetMapping
     public ObjectListDto getAllGroups() {
         logger.debug("Show all groups");
 
-        return new ObjectListDto(groupService.findAll().stream().map(groupDtoMapper::groupToDto).collect(Collectors.toList()));
+        return new ObjectListDto(groupService.findAll().stream().map(groupMapper::groupToDto).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
     public GroupDto showGroup(@PathVariable int id) {
         logger.debug("Show group with id {}", id);
 
-        return groupDtoMapper.groupToDto(groupService.findById(id));
+        return groupMapper.groupToDto(groupService.findById(id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity create(@RequestBody GroupDto groupDto) {
-        Group group = groupService.save(groupDtoMapper.dtoToGroup(groupDto));
+        Group group = groupService.save(groupMapper.dtoToGroup(groupDto));
         logger.debug("Create new group. Id {}", group.getId());
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
             .buildAndExpand(group.getId()).toUri();
@@ -57,11 +56,11 @@ public class GroupRestController {
 
     @PatchMapping("/{id}")
     public void update(@RequestBody GroupDto groupDto) {
-        groupService.save(groupDtoMapper.dtoToGroup(groupDto));
+        groupService.save(groupMapper.dtoToGroup(groupDto));
     }
 
     @DeleteMapping("/{id}")
     public void delete(@RequestBody GroupDto groupDto) {
-        groupService.delete(groupDtoMapper.dtoToGroup(groupDto));
+        groupService.delete(groupMapper.dtoToGroup(groupDto));
     }
 }

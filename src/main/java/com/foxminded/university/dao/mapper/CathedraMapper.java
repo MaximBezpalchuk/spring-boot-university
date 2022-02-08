@@ -7,9 +7,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
-public abstract class CathedraDtoMapper {
+public abstract class CathedraMapper {
 
-    public static CathedraDtoMapper INSTANCE = Mappers.getMapper(CathedraDtoMapper.class);
+    public static CathedraMapper INSTANCE = Mappers.getMapper(CathedraMapper.class);
 
     @Mapping(target = "id", source = "cathedra.id")
     @Mapping(target = "name", source = "cathedra.name")

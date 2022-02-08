@@ -1,7 +1,7 @@
 package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.foxminded.university.dao.mapper.TeacherDtoMapper;
+import com.foxminded.university.dao.mapper.TeacherMapper;
 import com.foxminded.university.dto.ObjectListDto;
 import com.foxminded.university.dto.TeacherDto;
 import com.foxminded.university.model.*;
@@ -39,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class TeacherRestControllerTest {
 
     private MockMvc mockMvc;
-    private final TeacherDtoMapper teacherDtoMapper = TeacherDtoMapper.INSTANCE;
+    private final TeacherMapper teacherMapper = TeacherMapper.INSTANCE;
     private ObjectMapper objectMapper;
     @Mock
     private TeacherService teacherService;
@@ -57,9 +57,9 @@ public class TeacherRestControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(teacherRestController).setCustomArgumentResolvers(resolver).build();
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
-        ReflectionTestUtils.setField(teacherRestController, "teacherDtoMapper", teacherDtoMapper);
-        ReflectionTestUtils.setField(teacherDtoMapper, "cathedraService", cathedraService);
-        ReflectionTestUtils.setField(teacherDtoMapper, "subjectService", subjectService);
+        ReflectionTestUtils.setField(teacherRestController, "teacherMapper", teacherMapper);
+        ReflectionTestUtils.setField(teacherMapper, "cathedraService", cathedraService);
+        ReflectionTestUtils.setField(teacherMapper, "subjectService", subjectService);
     }
 
     @Test
@@ -88,7 +88,7 @@ public class TeacherRestControllerTest {
 
         mockMvc.perform(get("/api/teachers/{id}", teacher.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(teacherDtoMapper.teacherToDto(teacher))))
+                .content(objectMapper.writeValueAsString(teacherMapper.teacherToDto(teacher))))
                 .andExpect(status().isOk());
     }
 
@@ -97,7 +97,7 @@ public class TeacherRestControllerTest {
         Teacher teacher1 = createTeacherNoId();
         Teacher teacher2 = createTeacherNoId();
         teacher2.setId(2);
-        TeacherDto teacherDto = teacherDtoMapper.teacherToDto(teacher1);
+        TeacherDto teacherDto = teacherMapper.teacherToDto(teacher1);
         when(cathedraService.findByName(teacherDto.getCathedraName())).thenReturn(teacher1.getCathedra());
         when(subjectService.findByName(teacher1.getSubjects().get(0).getName())).thenReturn(teacher1.getSubjects().get(0));
         when(teacherService.save(teacher1)).thenReturn(teacher2);
@@ -115,7 +115,7 @@ public class TeacherRestControllerTest {
     public void whenEditTeacher_thenTeacherFound() throws Exception {
         Teacher teacher = createTeacherNoId();
         teacher.setId(1);
-        TeacherDto teacherDto = teacherDtoMapper.teacherToDto(teacher);
+        TeacherDto teacherDto = teacherMapper.teacherToDto(teacher);
         when(cathedraService.findByName(teacherDto.getCathedraName())).thenReturn(teacher.getCathedra());
         when(subjectService.findByName(teacher.getSubjects().get(0).getName())).thenReturn(teacher.getSubjects().get(0));
         when(teacherService.save(teacher)).thenReturn(teacher);
@@ -132,7 +132,7 @@ public class TeacherRestControllerTest {
     public void whenDeleteTeacher_thenTeacherDeleted() throws Exception {
         Teacher teacher = createTeacherNoId();
         teacher.setId(1);
-        TeacherDto teacherDto = teacherDtoMapper.teacherToDto(teacher);
+        TeacherDto teacherDto = teacherMapper.teacherToDto(teacher);
         when(cathedraService.findByName(teacherDto.getCathedraName())).thenReturn(teacher.getCathedra());
         when(subjectService.findByName(teacher.getSubjects().get(0).getName())).thenReturn(teacher.getSubjects().get(0));
 

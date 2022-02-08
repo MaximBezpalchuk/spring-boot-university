@@ -7,9 +7,9 @@ import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
-public abstract class LectureTimeDtoMapper {
+public abstract class LectureTimeMapper {
 
-    public static LectureTimeDtoMapper INSTANCE = Mappers.getMapper(LectureTimeDtoMapper.class);
+    public static LectureTimeMapper INSTANCE = Mappers.getMapper(LectureTimeMapper.class);
 
     @Mapping(target = "id", source = "lectureTime.id")
     @Mapping(target = "start", source = "lectureTime.start")

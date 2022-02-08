@@ -9,18 +9,18 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring")
-public abstract class VacationDtoMapper {
+public abstract class VacationMapper {
 
-    public static VacationDtoMapper INSTANCE = Mappers.getMapper(VacationDtoMapper.class);
+    public static VacationMapper INSTANCE = Mappers.getMapper(VacationMapper.class);
     @Autowired
     protected TeacherService teacherService;
     @Autowired
-    protected TeacherDtoMapper teacherDtoMapper;
+    protected TeacherMapper teacherMapper;
 
     @Mapping(target = "id", source = "vacation.id")
     @Mapping(target = "start", source = "vacation.start")
     @Mapping(target = "end", source = "vacation.end")
-    @Mapping(target = "teacherDto", expression = "java(teacherDtoMapper.teacherToDto(vacation.getTeacher()))")
+    @Mapping(target = "teacherDto", expression = "java(teacherMapper.teacherToDto(vacation.getTeacher()))")
     public abstract VacationDto vacationToDto(Vacation vacation);
 
     @Mapping(target = "id", source = "vacationDto.id")

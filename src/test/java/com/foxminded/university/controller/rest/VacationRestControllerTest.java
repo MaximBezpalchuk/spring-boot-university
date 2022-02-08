@@ -1,9 +1,9 @@
 package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.foxminded.university.dao.mapper.LectureDtoMapper;
-import com.foxminded.university.dao.mapper.TeacherDtoMapper;
-import com.foxminded.university.dao.mapper.VacationDtoMapper;
+import com.foxminded.university.dao.mapper.LectureMapper;
+import com.foxminded.university.dao.mapper.TeacherMapper;
+import com.foxminded.university.dao.mapper.VacationMapper;
 import com.foxminded.university.dto.ObjectListDto;
 import com.foxminded.university.dto.VacationDto;
 import com.foxminded.university.model.*;
@@ -41,9 +41,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class VacationRestControllerTest {
 
     private MockMvc mockMvc;
-    private final VacationDtoMapper vacationDtoMapper = VacationDtoMapper.INSTANCE;
-    private final TeacherDtoMapper teacherDtoMapper = TeacherDtoMapper.INSTANCE;
-    private final LectureDtoMapper lectureDtoMapper = LectureDtoMapper.INSTANCE;
+    private final VacationMapper vacationMapper = VacationMapper.INSTANCE;
+    private final TeacherMapper teacherMapper = TeacherMapper.INSTANCE;
+    private final LectureMapper lectureMapper = LectureMapper.INSTANCE;
     private ObjectMapper objectMapper;
     @Mock
     private LectureService lectureService;
@@ -61,11 +61,11 @@ public class VacationRestControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(vacationRestController).setCustomArgumentResolvers(resolver).build();
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
-        ReflectionTestUtils.setField(vacationRestController, "vacationDtoMapper", vacationDtoMapper);
-        ReflectionTestUtils.setField(vacationRestController, "lectureDtoMapper", lectureDtoMapper);
-        ReflectionTestUtils.setField(vacationDtoMapper, "teacherService", teacherService);
-        ReflectionTestUtils.setField(vacationDtoMapper, "teacherDtoMapper", teacherDtoMapper);
-        ReflectionTestUtils.setField(lectureDtoMapper, "teacherDtoMapper", teacherDtoMapper);
+        ReflectionTestUtils.setField(vacationRestController, "vacationMapper", vacationMapper);
+        ReflectionTestUtils.setField(vacationRestController, "lectureMapper", lectureMapper);
+        ReflectionTestUtils.setField(vacationMapper, "teacherService", teacherService);
+        ReflectionTestUtils.setField(vacationMapper, "teacherMapper", teacherMapper);
+        ReflectionTestUtils.setField(lectureMapper, "teacherMapper", teacherMapper);
     }
 
     @Test
@@ -94,7 +94,7 @@ public class VacationRestControllerTest {
 
         mockMvc.perform(get("/api/teachers/{teacherId}/vacations/{id}", vacation.getTeacher().getId(), vacation.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(vacationDtoMapper.vacationToDto(vacation))))
+                .content(objectMapper.writeValueAsString(vacationMapper.vacationToDto(vacation))))
                 .andExpect(status().isOk());
     }
 
@@ -103,7 +103,7 @@ public class VacationRestControllerTest {
         Vacation vacation1 = createVacationNoId();
         Vacation vacation2 = createVacationNoId();
         vacation2.setId(2);
-        VacationDto vacationDto = vacationDtoMapper.vacationToDto(vacation1);
+        VacationDto vacationDto = vacationMapper.vacationToDto(vacation1);
         when(teacherService.findByFirstNameAndLastNameAndBirthDate(vacationDto.getTeacherDto().getFirstName(), vacationDto.getTeacherDto().getLastName(), vacationDto.getTeacherDto().getBirthDate())).thenReturn(vacation1.getTeacher());
         when(lectureService.findByTeacherIdAndPeriod(vacation1.getTeacher().getId(), vacation1.getStart(), vacation1.getEnd())).thenReturn(new ArrayList<>());
         when(vacationService.save(vacation1)).thenReturn(vacation2);
@@ -121,7 +121,7 @@ public class VacationRestControllerTest {
     public void whenEditVacation_thenVacationFound() throws Exception {
         Vacation vacation = createVacationNoId();
         vacation.setId(1);
-        VacationDto vacationDto = vacationDtoMapper.vacationToDto(vacation);
+        VacationDto vacationDto = vacationMapper.vacationToDto(vacation);
         when(teacherService.findByFirstNameAndLastNameAndBirthDate(vacationDto.getTeacherDto().getFirstName(), vacationDto.getTeacherDto().getLastName(), vacationDto.getTeacherDto().getBirthDate())).thenReturn(vacation.getTeacher());
         when(lectureService.findByTeacherIdAndPeriod(vacation.getTeacher().getId(), vacation.getStart(), vacation.getEnd())).thenReturn(new ArrayList<>());
         when(vacationService.save(vacation)).thenReturn(vacation);
@@ -136,7 +136,7 @@ public class VacationRestControllerTest {
     public void whenDeleteVacation_thenVacationDeleted() throws Exception {
         Vacation vacation = createVacationNoId();
         vacation.setId(1);
-        VacationDto vacationDto = vacationDtoMapper.vacationToDto(vacation);
+        VacationDto vacationDto = vacationMapper.vacationToDto(vacation);
         when(teacherService.findByFirstNameAndLastNameAndBirthDate(vacationDto.getTeacherDto().getFirstName(), vacationDto.getTeacherDto().getLastName(), vacationDto.getTeacherDto().getBirthDate())).thenReturn(vacation.getTeacher());
 
         mockMvc.perform(delete("/api/teachers/{id}/vacations/{vacId}", 1, 1)
@@ -157,7 +157,7 @@ public class VacationRestControllerTest {
                 .thenReturn(Arrays.asList(lecture));
 
         mockMvc.perform(get("/api/teachers/{id}/vacations/lectures?start=2021-04-04&end=2021-04-05", teacher.getId())
-                .content(objectMapper.writeValueAsString(new ObjectListDto(Arrays.asList(lectureDtoMapper.lectureToDto(lecture)))))
+                .content(objectMapper.writeValueAsString(new ObjectListDto(Arrays.asList(lectureMapper.lectureToDto(lecture)))))
                 .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

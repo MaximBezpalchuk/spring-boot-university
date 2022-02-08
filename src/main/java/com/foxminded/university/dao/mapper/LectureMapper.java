@@ -15,13 +15,13 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring", imports = {Arrays.class, Collectors.class})
-public abstract class LectureDtoMapper {
+public abstract class LectureMapper {
 
-    public static LectureDtoMapper INSTANCE = Mappers.getMapper(LectureDtoMapper.class);
+    public static LectureMapper INSTANCE = Mappers.getMapper(LectureMapper.class);
     @Autowired
     protected TeacherService teacherService;
     @Autowired
-    protected TeacherDtoMapper teacherDtoMapper;
+    protected TeacherMapper teacherMapper;
     @Autowired
     protected CathedraService cathedraService;
     @Autowired
@@ -36,7 +36,7 @@ public abstract class LectureDtoMapper {
     @Mapping(target = "id", source = "lecture.id")
     @Mapping(target = "cathedraName", source = "lecture.cathedra.name")
     @Mapping(target = "groupNames", expression = "java(lecture.getGroups().stream().map(Group::getName).collect(Collectors.toList()))")
-    @Mapping(target = "teacherDto", expression = "java(teacherDtoMapper.teacherToDto(lecture.getTeacher()))")
+    @Mapping(target = "teacherDto", expression = "java(teacherMapper.teacherToDto(lecture.getTeacher()))")
     @Mapping(target = "audienceRoom", source = "lecture.audience.room")
     @Mapping(target = "date", source = "lecture.date")
     @Mapping(target = "subjectName", source = "lecture.subject.name")

@@ -1,7 +1,7 @@
 package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.foxminded.university.dao.mapper.HolidayDtoMapper;
+import com.foxminded.university.dao.mapper.HolidayMapper;
 import com.foxminded.university.dto.HolidayDto;
 import com.foxminded.university.dto.ObjectListDto;
 import com.foxminded.university.model.Cathedra;
@@ -39,7 +39,7 @@ public class HolidayRestControllerTest {
 
 
     private MockMvc mockMvc;
-    private final HolidayDtoMapper holidayDtoMapper = HolidayDtoMapper.INSTANCE;
+    private final HolidayMapper holidayMapper = HolidayMapper.INSTANCE;
     ObjectMapper objectMapper;
     @Mock
     private HolidayService holidayService;
@@ -55,8 +55,8 @@ public class HolidayRestControllerTest {
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
         mockMvc = MockMvcBuilders.standaloneSetup(holidayRestController).setCustomArgumentResolvers(resolver).build();
-        ReflectionTestUtils.setField(holidayRestController, "holidayDtoMapper", holidayDtoMapper);
-        ReflectionTestUtils.setField(holidayDtoMapper, "cathedraService", cathedraService);
+        ReflectionTestUtils.setField(holidayRestController, "holidayMapper", holidayMapper);
+        ReflectionTestUtils.setField(holidayMapper, "cathedraService", cathedraService);
     }
 
     @Test
@@ -85,7 +85,7 @@ public class HolidayRestControllerTest {
 
         mockMvc.perform(get("/api/holidays/{id}", holiday.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(holidayDtoMapper.holidayToDto(holiday))))
+                .content(objectMapper.writeValueAsString(holidayMapper.holidayToDto(holiday))))
                 .andExpect(status().isOk());
     }
 
@@ -94,7 +94,7 @@ public class HolidayRestControllerTest {
         Holiday holiday1 = createHolidayNoId();
         Holiday holiday2 = createHolidayNoId();
         holiday2.setId(7);
-        HolidayDto holidayDto = holidayDtoMapper.holidayToDto(holiday1);
+        HolidayDto holidayDto = holidayMapper.holidayToDto(holiday1);
         when(cathedraService.findByName(holidayDto.getCathedraName())).thenReturn(holiday1.getCathedra());
         when(holidayService.save(holiday1)).thenReturn(holiday2);
 
@@ -111,7 +111,7 @@ public class HolidayRestControllerTest {
     public void whenEditHoliday_thenHolidayFound() throws Exception {
         Holiday holiday = createHolidayNoId();
         holiday.setId(1);
-        HolidayDto holidayDto = holidayDtoMapper.holidayToDto(holiday);
+        HolidayDto holidayDto = holidayMapper.holidayToDto(holiday);
         when(cathedraService.findByName(holidayDto.getCathedraName())).thenReturn(holiday.getCathedra());
         when(holidayService.save(holiday)).thenReturn(holiday);
 
@@ -125,7 +125,7 @@ public class HolidayRestControllerTest {
     public void whenDeleteHoliday_thenHolidayDeleted() throws Exception {
         Holiday holiday = createHolidayNoId();
         holiday.setId(1);
-        HolidayDto holidayDto = holidayDtoMapper.holidayToDto(holiday);
+        HolidayDto holidayDto = holidayMapper.holidayToDto(holiday);
         when(cathedraService.findByName(holidayDto.getCathedraName())).thenReturn(holiday.getCathedra());
         mockMvc.perform(delete("/api/holidays/{id}", 1)
                 .content(objectMapper.writeValueAsString(holidayDto))

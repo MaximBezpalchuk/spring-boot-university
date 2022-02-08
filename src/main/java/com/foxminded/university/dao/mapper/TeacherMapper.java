@@ -11,13 +11,12 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring", imports = {Arrays.class, Collectors.class})
-public abstract class TeacherDtoMapper {
+public abstract class TeacherMapper {
 
-    public static TeacherDtoMapper INSTANCE = Mappers.getMapper(TeacherDtoMapper.class);
+    public static TeacherMapper INSTANCE = Mappers.getMapper(TeacherMapper.class);
     @Autowired
     protected SubjectService subjectService;
     @Autowired

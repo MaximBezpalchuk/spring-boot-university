@@ -1,8 +1,8 @@
 package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.foxminded.university.dao.mapper.LectureDtoMapper;
-import com.foxminded.university.dao.mapper.TeacherDtoMapper;
+import com.foxminded.university.dao.mapper.LectureMapper;
+import com.foxminded.university.dao.mapper.TeacherMapper;
 import com.foxminded.university.dto.LectureDto;
 import com.foxminded.university.dto.ObjectListDto;
 import com.foxminded.university.model.*;
@@ -39,8 +39,8 @@ public class LectureRestControllerTest {
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
-    private final LectureDtoMapper lectureDtoMapper = LectureDtoMapper.INSTANCE;
-    private final TeacherDtoMapper teacherDtoMapper = TeacherDtoMapper.INSTANCE;
+    private final LectureMapper lectureMapper = LectureMapper.INSTANCE;
+    private final TeacherMapper teacherMapper = TeacherMapper.INSTANCE;
     @Mock
     private LectureService lectureService;
     @Mock
@@ -65,14 +65,14 @@ public class LectureRestControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(lectureRestController).setCustomArgumentResolvers(resolver).build();
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
-        ReflectionTestUtils.setField(lectureRestController, "lectureDtoMapper", lectureDtoMapper);
-        ReflectionTestUtils.setField(lectureDtoMapper, "cathedraService", cathedraService);
-        ReflectionTestUtils.setField(lectureDtoMapper, "lectureTimeService", lectureTimeService);
-        ReflectionTestUtils.setField(lectureDtoMapper, "subjectService", subjectService);
-        ReflectionTestUtils.setField(lectureDtoMapper, "audienceService", audienceService);
-        ReflectionTestUtils.setField(lectureDtoMapper, "teacherService", teacherService);
-        ReflectionTestUtils.setField(lectureDtoMapper, "teacherDtoMapper", teacherDtoMapper);
-        ReflectionTestUtils.setField(lectureDtoMapper, "groupService", groupService);
+        ReflectionTestUtils.setField(lectureRestController, "lectureMapper", lectureMapper);
+        ReflectionTestUtils.setField(lectureMapper, "cathedraService", cathedraService);
+        ReflectionTestUtils.setField(lectureMapper, "lectureTimeService", lectureTimeService);
+        ReflectionTestUtils.setField(lectureMapper, "subjectService", subjectService);
+        ReflectionTestUtils.setField(lectureMapper, "audienceService", audienceService);
+        ReflectionTestUtils.setField(lectureMapper, "teacherService", teacherService);
+        ReflectionTestUtils.setField(lectureMapper, "teacherMapper", teacherMapper);
+        ReflectionTestUtils.setField(lectureMapper, "groupService", groupService);
     }
 
     @Test
@@ -101,7 +101,7 @@ public class LectureRestControllerTest {
 
         mockMvc.perform(get("/api/lectures/{id}", lecture.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(lectureDtoMapper.lectureToDto(lecture))))
+                .content(objectMapper.writeValueAsString(lectureMapper.lectureToDto(lecture))))
                 .andExpect(status().isOk());
     }
 
@@ -110,7 +110,7 @@ public class LectureRestControllerTest {
         Lecture lecture1 = createLectureNoId();
         Lecture lecture2 = createLectureNoId();
         lecture2.setId(2);
-        LectureDto lectureDto = lectureDtoMapper.lectureToDto(lecture1);
+        LectureDto lectureDto = lectureMapper.lectureToDto(lecture1);
         when(cathedraService.findByName(lectureDto.getCathedraName())).thenReturn(lecture1.getCathedra());
         when(teacherService.findByFirstNameAndLastNameAndBirthDate(lectureDto.getTeacherDto().getFirstName(), lectureDto.getTeacherDto().getLastName(), lectureDto.getTeacherDto().getBirthDate())).thenReturn(lecture1.getTeacher());
         when(audienceService.findByRoom(lectureDto.getAudienceRoom())).thenReturn(lecture1.getAudience());
@@ -132,7 +132,7 @@ public class LectureRestControllerTest {
     public void whenEditLecture_thenLectureFound() throws Exception {
         Lecture lecture = createLectureNoId();
         lecture.setId(1);
-        LectureDto lectureDto = lectureDtoMapper.lectureToDto(lecture);
+        LectureDto lectureDto = lectureMapper.lectureToDto(lecture);
         when(cathedraService.findByName(lectureDto.getCathedraName())).thenReturn(lecture.getCathedra());
         when(teacherService.findByFirstNameAndLastNameAndBirthDate(lectureDto.getTeacherDto().getFirstName(), lectureDto.getTeacherDto().getLastName(), lectureDto.getTeacherDto().getBirthDate())).thenReturn(lecture.getTeacher());
         when(audienceService.findByRoom(lectureDto.getAudienceRoom())).thenReturn(lecture.getAudience());
@@ -151,7 +151,7 @@ public class LectureRestControllerTest {
     public void whenDeleteLecture_thenLectureDeleted() throws Exception {
         Lecture lecture = createLectureNoId();
         lecture.setId(1);
-        LectureDto lectureDto = lectureDtoMapper.lectureToDto(lecture);
+        LectureDto lectureDto = lectureMapper.lectureToDto(lecture);
         when(cathedraService.findByName(lectureDto.getCathedraName())).thenReturn(lecture.getCathedra());
         when(teacherService.findByFirstNameAndLastNameAndBirthDate(lectureDto.getTeacherDto().getFirstName(), lectureDto.getTeacherDto().getLastName(), lectureDto.getTeacherDto().getBirthDate())).thenReturn(lecture.getTeacher());
         when(audienceService.findByRoom(lectureDto.getAudienceRoom())).thenReturn(lecture.getAudience());

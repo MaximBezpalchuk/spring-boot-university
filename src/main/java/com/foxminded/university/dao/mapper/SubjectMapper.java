@@ -9,9 +9,9 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring")
-public abstract class SubjectDtoMapper {
+public abstract class SubjectMapper {
 
-    public static SubjectDtoMapper INSTANCE = Mappers.getMapper(SubjectDtoMapper.class);
+    public static SubjectMapper INSTANCE = Mappers.getMapper(SubjectMapper.class);
     @Autowired
     protected CathedraService cathedraService;
 
