@@ -11,11 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class StudentMapper {
 
     @Autowired
-    protected GroupService groupService;
+    protected GroupMapper groupMapper;
 
-    @Mapping(target = "groupName", source = "student.group.name")
+    @Mapping(target = "groupDto", expression = "java(groupMapper.groupToDto(student.getGroup()))")
     public abstract StudentDto studentToDto(Student student);
 
-    @Mapping(target = "group", expression = "java(groupService.findByName(studentDto.getGroupName()))")
+    @Mapping(target = "group", expression = "java(groupMapper.dtoToGroup(studentDto.getGroupDto()))")
     public abstract Student dtoToStudent(StudentDto studentDto);
 }

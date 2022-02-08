@@ -1,6 +1,8 @@
 package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.foxminded.university.dao.mapper.CathedraMapper;
+import com.foxminded.university.dao.mapper.GroupMapper;
 import com.foxminded.university.dao.mapper.StudentMapper;
 import com.foxminded.university.dto.Slice;
 import com.foxminded.university.dto.StudentDto;
@@ -42,11 +44,11 @@ public class StudentRestControllerTest {
 
     private MockMvc mockMvc;
     private final StudentMapper studentMapper = Mappers.getMapper(StudentMapper.class);
+    private final GroupMapper groupMapper = Mappers.getMapper(GroupMapper.class);
+    private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper .class);
     private ObjectMapper objectMapper;
     @Mock
     private StudentService studentService;
-    @Mock
-    private GroupService groupService;
     @InjectMocks
     private StudentRestController studentRestController;
 
@@ -58,7 +60,8 @@ public class StudentRestControllerTest {
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
         ReflectionTestUtils.setField(studentRestController, "studentMapper", studentMapper);
-        ReflectionTestUtils.setField(studentMapper, "groupService", groupService);
+        ReflectionTestUtils.setField(studentMapper, "groupMapper", groupMapper);
+        ReflectionTestUtils.setField(groupMapper, "cathedraMapper", cathedraMapper);
     }
 
     @Test
@@ -100,7 +103,6 @@ public class StudentRestControllerTest {
         Student student2 = createStudentNoId();
         student2.setId(2);
         StudentDto studentDto = studentMapper.studentToDto(student1);
-        when(groupService.findByName(studentDto.getGroupName())).thenReturn(student1.getGroup());
         when(studentService.save(student1)).thenReturn(student2);
 
         mockMvc.perform(post("/api/students")
@@ -117,7 +119,6 @@ public class StudentRestControllerTest {
         Student student = createStudentNoId();
         student.setId(1);
         StudentDto studentDto = studentMapper.studentToDto(student);
-        when(groupService.findByName(studentDto.getGroupName())).thenReturn(student.getGroup());
         when(studentService.save(student)).thenReturn(student);
 
         mockMvc.perform(patch("/api/students/{id}", 1)
@@ -131,7 +132,6 @@ public class StudentRestControllerTest {
         Student student = createStudentNoId();
         student.setId(1);
         StudentDto studentDto = studentMapper.studentToDto(student);
-        when(groupService.findByName(studentDto.getGroupName())).thenReturn(student.getGroup());
 
         mockMvc.perform(delete("/api/students/{id}", 1)
                 .content(objectMapper.writeValueAsString(studentDto))

@@ -16,9 +16,9 @@ public class StudentDto {
     private String postalCode;
     private String education;
     private LocalDate birthDate;
-    private String groupName;
+    private GroupDto groupDto;
 
-    public StudentDto(Integer id, String firstName, String lastName, String phone, String address, String email, Gender gender, String postalCode, String education, LocalDate birthDate, String groupName) {
+    public StudentDto(Integer id, String firstName, String lastName, String phone, String address, String email, Gender gender, String postalCode, String education, LocalDate birthDate, GroupDto groupDto) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -29,7 +29,7 @@ public class StudentDto {
         this.postalCode = postalCode;
         this.education = education;
         this.birthDate = birthDate;
-        this.groupName = groupName;
+        this.groupDto = groupDto;
     }
 
     public StudentDto() {
@@ -115,11 +115,11 @@ public class StudentDto {
         this.birthDate = birthDate;
     }
 
-    public String getGroupName() {
-        return groupName;
+    public GroupDto getGroupDto() {
+        return groupDto;
     }
 
-    public void setGroupName(String groupName) {
-        this.groupName = groupName;
+    public void setGroupDto(GroupDto groupDto) {
+        this.groupDto = groupDto;
     }
 }
