@@ -18,18 +18,16 @@ import java.util.stream.Collectors;
 public abstract class TeacherMapper {
 
     @Autowired
-    protected SubjectService subjectService;
-    @Autowired
-    protected CathedraService cathedraService;
-    @Autowired
     protected CathedraMapper cathedraMapper;
+    @Autowired
+    protected SubjectMapper subjectMapper;
 
     @Mapping(target = "cathedraDto", expression = "java(cathedraMapper.cathedraToDto(teacher.getCathedra()))")
-    @Mapping(target = "subjectNames", expression = "java(teacher.getSubjects().stream().map(Subject::getName).collect(Collectors.toList()))")
+    @Mapping(target = "subjectDtos", expression = "java(teacher.getSubjects().stream().map(subjectMapper::subjectToDto).collect(Collectors.toList()))")
     public abstract TeacherDto teacherToDto(Teacher teacher);
 
     @Mapping(target = "cathedra", expression = "java(cathedraMapper.dtoToCathedra(teacherDto.getCathedraDto()))")
-    @Mapping(target = "subjects", expression = "java(teacherDto.getSubjectNames().stream().map(subjectService::findByName).collect(Collectors.toList()))")
+    @Mapping(target = "subjects", expression = "java(teacherDto.getSubjectDtos().stream().map(subjectMapper::dtoToSubject).collect(Collectors.toList()))")
     public abstract Teacher dtoToTeacher(TeacherDto teacherDto);
 
     public abstract SubjectDto map(Subject subject);

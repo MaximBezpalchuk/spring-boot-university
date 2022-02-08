@@ -1,10 +1,7 @@
 package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.foxminded.university.dao.mapper.CathedraMapper;
-import com.foxminded.university.dao.mapper.LectureMapper;
-import com.foxminded.university.dao.mapper.TeacherMapper;
-import com.foxminded.university.dao.mapper.VacationMapper;
+import com.foxminded.university.dao.mapper.*;
 import com.foxminded.university.dto.LectureDto;
 import com.foxminded.university.dto.Slice;
 import com.foxminded.university.dto.VacationDto;
@@ -48,6 +45,7 @@ public class VacationRestControllerTest {
     private final TeacherMapper teacherMapper = Mappers.getMapper(TeacherMapper.class);
     private final LectureMapper lectureMapper = Mappers.getMapper(LectureMapper.class);
     private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper .class);
+    private SubjectMapper subjectMapper = Mappers.getMapper(SubjectMapper .class);
     private ObjectMapper objectMapper;
     @Mock
     private LectureService lectureService;
@@ -72,6 +70,8 @@ public class VacationRestControllerTest {
         ReflectionTestUtils.setField(lectureMapper, "teacherMapper", teacherMapper);
         ReflectionTestUtils.setField(lectureMapper, "cathedraMapper", cathedraMapper);
         ReflectionTestUtils.setField(teacherMapper, "cathedraMapper", cathedraMapper);
+        ReflectionTestUtils.setField(teacherMapper, "subjectMapper", subjectMapper);
+        ReflectionTestUtils.setField(subjectMapper, "cathedraMapper", cathedraMapper);
     }
 
     @Test

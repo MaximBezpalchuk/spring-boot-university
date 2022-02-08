@@ -2,6 +2,7 @@ package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foxminded.university.dao.mapper.CathedraMapper;
+import com.foxminded.university.dao.mapper.SubjectMapper;
 import com.foxminded.university.dao.mapper.TeacherMapper;
 import com.foxminded.university.dto.Slice;
 import com.foxminded.university.dto.TeacherDto;
@@ -43,13 +44,10 @@ public class TeacherRestControllerTest {
     private MockMvc mockMvc;
     private final TeacherMapper teacherMapper = Mappers.getMapper(TeacherMapper.class);
     private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper .class);
+    private SubjectMapper subjectMapper = Mappers.getMapper(SubjectMapper .class);
     private ObjectMapper objectMapper;
     @Mock
     private TeacherService teacherService;
-    @Mock
-    private CathedraService cathedraService;
-    @Mock
-    private SubjectService subjectService;
     @InjectMocks
     private TeacherRestController teacherRestController;
 
@@ -61,9 +59,9 @@ public class TeacherRestControllerTest {
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
         ReflectionTestUtils.setField(teacherRestController, "teacherMapper", teacherMapper);
-        ReflectionTestUtils.setField(teacherMapper, "cathedraService", cathedraService);
-        ReflectionTestUtils.setField(teacherMapper, "subjectService", subjectService);
         ReflectionTestUtils.setField(teacherMapper, "cathedraMapper", cathedraMapper);
+        ReflectionTestUtils.setField(teacherMapper, "subjectMapper", subjectMapper);
+        ReflectionTestUtils.setField(subjectMapper, "cathedraMapper", cathedraMapper);
     }
 
     @Test
@@ -105,7 +103,6 @@ public class TeacherRestControllerTest {
         Teacher teacher2 = createTeacherNoId();
         teacher2.setId(2);
         TeacherDto teacherDto = teacherMapper.teacherToDto(teacher1);
-        when(subjectService.findByName(teacher1.getSubjects().get(0).getName())).thenReturn(teacher1.getSubjects().get(0));
         when(teacherService.save(teacher1)).thenReturn(teacher2);
 
         mockMvc.perform(post("/api/teachers")
@@ -122,7 +119,6 @@ public class TeacherRestControllerTest {
         Teacher teacher = createTeacherNoId();
         teacher.setId(1);
         TeacherDto teacherDto = teacherMapper.teacherToDto(teacher);
-        when(subjectService.findByName(teacher.getSubjects().get(0).getName())).thenReturn(teacher.getSubjects().get(0));
         when(teacherService.save(teacher)).thenReturn(teacher);
 
         mockMvc.perform(patch("/api/teachers/{id}", 1)
@@ -138,7 +134,6 @@ public class TeacherRestControllerTest {
         Teacher teacher = createTeacherNoId();
         teacher.setId(1);
         TeacherDto teacherDto = teacherMapper.teacherToDto(teacher);
-        when(subjectService.findByName(teacher.getSubjects().get(0).getName())).thenReturn(teacher.getSubjects().get(0));
 
         mockMvc.perform(delete("/api/teachers/{id}", 1)
                 .content(objectMapper.writeValueAsString(teacherDto))
