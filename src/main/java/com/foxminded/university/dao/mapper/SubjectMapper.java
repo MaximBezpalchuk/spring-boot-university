@@ -18,6 +18,6 @@ public abstract class SubjectMapper {
     @Mapping(target = "cathedraDto", expression = "java(cathedraMapper.cathedraToDto(subject.getCathedra()))")
     public abstract SubjectDto subjectToDto(Subject subject);
 
-    @Mapping(target = "cathedra", expression = "java(cathedraService.findById(subjectDto.getCathedraDto().getId()))")
+    @Mapping(target = "cathedra", expression = "java(cathedraMapper.dtoToCathedra(subjectDto.getCathedraDto()))")
     public abstract Subject dtoToSubject(SubjectDto subjectDto);
 }

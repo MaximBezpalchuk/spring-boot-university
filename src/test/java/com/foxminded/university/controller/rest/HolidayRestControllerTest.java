@@ -29,12 +29,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 public class HolidayRestControllerTest {
@@ -71,11 +71,13 @@ public class HolidayRestControllerTest {
         holiday2.setId(2);
         List<Holiday> holidays = Arrays.asList(holiday1, holiday2);
         Page<Holiday> page = new PageImpl<>(holidays, PageRequest.of(0, 1), 2);
+        List<HolidayDto> holidayDtos = holidays.stream().map(holidayMapper::holidayToDto).collect(Collectors.toList());
+        Page<HolidayDto> pageDtos = new PageImpl<>(holidayDtos, PageRequest.of(0, 1), 2);
         when(holidayService.findAll(PageRequest.of(0, 1))).thenReturn(page);
 
         mockMvc.perform(get("/api/holidays")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new Slice(holidays))))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(objectMapper.writeValueAsString(pageDtos)))
                 .andExpect(status().isOk());
 
         verifyNoMoreInteractions(holidayService);
@@ -85,11 +87,12 @@ public class HolidayRestControllerTest {
     public void whenGetOneHoliday_thenOneHolidayReturned() throws Exception {
         Holiday holiday = createHolidayNoId();
         holiday.setId(1);
+        HolidayDto holidayDto = holidayMapper.holidayToDto(holiday);
         when(holidayService.findById(holiday.getId())).thenReturn(holiday);
 
         mockMvc.perform(get("/api/holidays/{id}", holiday.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(holidayMapper.holidayToDto(holiday))))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(objectMapper.writeValueAsString(holidayDto)))
                 .andExpect(status().isOk());
     }
 
@@ -99,7 +102,6 @@ public class HolidayRestControllerTest {
         Holiday holiday2 = createHolidayNoId();
         holiday2.setId(7);
         HolidayDto holidayDto = holidayMapper.holidayToDto(holiday1);
-        when(cathedraService.findById(holidayDto.getCathedraDto().getId())).thenReturn(holiday1.getCathedra());
         when(holidayService.save(holiday1)).thenReturn(holiday2);
 
         mockMvc.perform(post("/api/holidays")
@@ -116,7 +118,6 @@ public class HolidayRestControllerTest {
         Holiday holiday = createHolidayNoId();
         holiday.setId(1);
         HolidayDto holidayDto = holidayMapper.holidayToDto(holiday);
-        when(cathedraService.findById(holidayDto.getCathedraDto().getId())).thenReturn(holiday.getCathedra());
         when(holidayService.save(holiday)).thenReturn(holiday);
 
         mockMvc.perform(patch("/api/holidays/{id}", 1)
@@ -130,7 +131,6 @@ public class HolidayRestControllerTest {
         Holiday holiday = createHolidayNoId();
         holiday.setId(1);
         HolidayDto holidayDto = holidayMapper.holidayToDto(holiday);
-        when(cathedraService.findById(holidayDto.getCathedraDto().getId())).thenReturn(holiday.getCathedra());
         mockMvc.perform(delete("/api/holidays/{id}", 1)
                 .content(objectMapper.writeValueAsString(holidayDto))
                 .contentType(APPLICATION_JSON))

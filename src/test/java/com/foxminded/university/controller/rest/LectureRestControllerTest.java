@@ -29,12 +29,12 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 public class LectureRestControllerTest {
@@ -88,11 +88,13 @@ public class LectureRestControllerTest {
         lecture2.setId(2);
         List<Lecture> lectures = Arrays.asList(lecture1, lecture2);
         Page<Lecture> page = new PageImpl<>(lectures, PageRequest.of(0, 1), 2);
+        List<LectureDto> lectureDtos = lectures.stream().map(lectureMapper::lectureToDto).collect(Collectors.toList());
+        Page<LectureDto> pageDtos = new PageImpl<>(lectureDtos, PageRequest.of(0, 1), 2);
         when(lectureService.findAll(PageRequest.of(0, 1))).thenReturn(page);
 
         mockMvc.perform(get("/api/lectures")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new Slice(lectures))))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(objectMapper.writeValueAsString(pageDtos)))
                 .andExpect(status().isOk());
 
         verifyNoMoreInteractions(lectureService);
@@ -102,11 +104,12 @@ public class LectureRestControllerTest {
     public void whenGetOneLecture_thenOneLectureReturned() throws Exception {
         Lecture lecture = createLectureNoId();
         lecture.setId(1);
+        LectureDto lectureDto = lectureMapper.lectureToDto(lecture);
         when(lectureService.findById(lecture.getId())).thenReturn(lecture);
 
         mockMvc.perform(get("/api/lectures/{id}", lecture.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(lectureMapper.lectureToDto(lecture))))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(objectMapper.writeValueAsString(lectureDto)))
                 .andExpect(status().isOk());
     }
 
@@ -116,7 +119,6 @@ public class LectureRestControllerTest {
         Lecture lecture2 = createLectureNoId();
         lecture2.setId(2);
         LectureDto lectureDto = lectureMapper.lectureToDto(lecture1);
-        when(cathedraService.findById(lectureDto.getCathedraDto().getId())).thenReturn(lecture1.getCathedra());
         when(teacherService.findByFirstNameAndLastNameAndBirthDate(lectureDto.getTeacherDto().getFirstName(), lectureDto.getTeacherDto().getLastName(), lectureDto.getTeacherDto().getBirthDate())).thenReturn(lecture1.getTeacher());
         when(audienceService.findByRoom(lectureDto.getAudienceRoom())).thenReturn(lecture1.getAudience());
         when(subjectService.findByName(lectureDto.getSubjectName())).thenReturn(lecture1.getSubject());
@@ -138,7 +140,6 @@ public class LectureRestControllerTest {
         Lecture lecture = createLectureNoId();
         lecture.setId(1);
         LectureDto lectureDto = lectureMapper.lectureToDto(lecture);
-        when(cathedraService.findById(lectureDto.getCathedraDto().getId())).thenReturn(lecture.getCathedra());
         when(teacherService.findByFirstNameAndLastNameAndBirthDate(lectureDto.getTeacherDto().getFirstName(), lectureDto.getTeacherDto().getLastName(), lectureDto.getTeacherDto().getBirthDate())).thenReturn(lecture.getTeacher());
         when(audienceService.findByRoom(lectureDto.getAudienceRoom())).thenReturn(lecture.getAudience());
         when(subjectService.findByName(lectureDto.getSubjectName())).thenReturn(lecture.getSubject());
@@ -157,7 +158,6 @@ public class LectureRestControllerTest {
         Lecture lecture = createLectureNoId();
         lecture.setId(1);
         LectureDto lectureDto = lectureMapper.lectureToDto(lecture);
-        when(cathedraService.findById(lectureDto.getCathedraDto().getId())).thenReturn(lecture.getCathedra());
         when(teacherService.findByFirstNameAndLastNameAndBirthDate(lectureDto.getTeacherDto().getFirstName(), lectureDto.getTeacherDto().getLastName(), lectureDto.getTeacherDto().getBirthDate())).thenReturn(lecture.getTeacher());
         when(audienceService.findByRoom(lectureDto.getAudienceRoom())).thenReturn(lecture.getAudience());
         when(subjectService.findByName(lectureDto.getSubjectName())).thenReturn(lecture.getSubject());

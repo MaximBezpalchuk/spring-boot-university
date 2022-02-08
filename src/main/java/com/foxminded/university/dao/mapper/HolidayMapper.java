@@ -18,6 +18,6 @@ public abstract class HolidayMapper {
     @Mapping(target = "cathedraDto", expression = "java(cathedraMapper.cathedraToDto(holiday.getCathedra()))")
     public abstract HolidayDto holidayToDto(Holiday holiday);
 
-    @Mapping(target = "cathedra", expression = "java(cathedraService.findById(holidayDto.getCathedraDto().getId()))")
+    @Mapping(target = "cathedra", expression = "java(cathedraMapper.dtoToCathedra(holidayDto.getCathedraDto()))")
     public abstract Holiday dtoToHoliday(HolidayDto holidayDto);
 }

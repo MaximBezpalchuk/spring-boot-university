@@ -42,7 +42,7 @@ public abstract class LectureMapper {
     @Mapping(target = "end", source = "lecture.time.end")
     public abstract LectureDto lectureToDto(Lecture lecture);
 
-    @Mapping(target = "cathedra", expression = "java(cathedraService.findById(lectureDto.getCathedraDto().getId()))")
+    @Mapping(target = "cathedra", expression = "java(cathedraMapper.dtoToCathedra(lectureDto.getCathedraDto()))")
     @Mapping(target = "group", expression = "java(lectureDto.getGroupNames().stream().map(groupService::findByName).collect(Collectors.toList()))")
     @Mapping(target = "teacher", expression = "java(teacherService.findByFirstNameAndLastNameAndBirthDate(lectureDto.getTeacherDto().getFirstName(), lectureDto.getTeacherDto().getLastName(), lectureDto.getTeacherDto().getBirthDate()))")
     @Mapping(target = "audience", expression = "java(audienceService.findByRoom(lectureDto.getAudienceRoom()))")

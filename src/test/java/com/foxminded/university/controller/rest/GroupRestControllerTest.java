@@ -24,12 +24,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 public class GroupRestControllerTest {
@@ -61,12 +61,13 @@ public class GroupRestControllerTest {
         Group group2 = createGroupNoId();
         group2.setId(2);
         List<Group> groups = Arrays.asList(group1, group2);
+        List<GroupDto> groupDtos = groups.stream().map(groupMapper::groupToDto).collect(Collectors.toList());
 
         when(groupService.findAll()).thenReturn(groups);
 
         mockMvc.perform(get("/api/groups")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new Slice(groups))))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(objectMapper.writeValueAsString(new Slice(groupDtos))))
                 .andExpect(status().isOk());
 
         verifyNoMoreInteractions(groupService);
@@ -76,12 +77,13 @@ public class GroupRestControllerTest {
     public void whenGetOneGroup_thenOneGroupReturned() throws Exception {
         Group group = createGroupNoId();
         group.setId(1);
+        GroupDto groupDto = groupMapper.groupToDto(group);
 
         when(groupService.findById(group.getId())).thenReturn(group);
 
         mockMvc.perform(get("/api/groups/{id}", group.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(groupMapper.groupToDto(group))))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(objectMapper.writeValueAsString(groupDto)))
                 .andExpect(status().isOk());
     }
 
@@ -91,7 +93,6 @@ public class GroupRestControllerTest {
         Group group2 = createGroupNoId();
         group2.setId(3);
         GroupDto groupDto = groupMapper.groupToDto(group1);
-        when(cathedraService.findById(groupDto.getCathedraDto().getId())).thenReturn(group1.getCathedra());
         when(groupService.save(group1)).thenReturn(group2);
         mockMvc.perform(post("/api/groups")
                 .content(objectMapper.writeValueAsString(groupDto))
@@ -107,7 +108,6 @@ public class GroupRestControllerTest {
         Group group = createGroupNoId();
         group.setId(1);
         GroupDto groupDto = groupMapper.groupToDto(group);
-        when(cathedraService.findById(groupDto.getCathedraDto().getId())).thenReturn(group.getCathedra());
         when(groupService.save(group)).thenReturn(group);
 
         mockMvc.perform(patch("/api/groups/{id}", 1)
@@ -121,7 +121,6 @@ public class GroupRestControllerTest {
         Group group = createGroupNoId();
         group.setId(1);
         GroupDto groupDto = groupMapper.groupToDto(group);
-        when(cathedraService.findById(groupDto.getCathedraDto().getId())).thenReturn(group.getCathedra());
         mockMvc.perform(delete("/api/groups/{id}", 1)
                 .content(objectMapper.writeValueAsString(groupDto))
                 .contentType(APPLICATION_JSON))

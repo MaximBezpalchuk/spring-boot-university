@@ -29,13 +29,13 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 public class TeacherRestControllerTest {
@@ -74,11 +74,13 @@ public class TeacherRestControllerTest {
         teacher2.setId(2);
         List<Teacher> teachers = Arrays.asList(teacher1, teacher2);
         Page<Teacher> page = new PageImpl<>(teachers, PageRequest.of(0, 2), 1);
+        List<TeacherDto> teacherDtos = teachers.stream().map(teacherMapper::teacherToDto).collect(Collectors.toList());
+        Page<TeacherDto> pageDtos = new PageImpl<>(teacherDtos, PageRequest.of(0, 2), 1);
         when(teacherService.findAll(isA(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/api/teachers")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new Slice(teachers))))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(objectMapper.writeValueAsString(pageDtos)))
                 .andExpect(status().isOk());
 
         verifyNoMoreInteractions(teacherService);
@@ -88,11 +90,12 @@ public class TeacherRestControllerTest {
     public void whenGetOneTeacher_thenOneTeacherReturned() throws Exception {
         Teacher teacher = createTeacherNoId();
         teacher.setId(1);
+        TeacherDto teacherDto = teacherMapper.teacherToDto(teacher);
         when(teacherService.findById(teacher.getId())).thenReturn(teacher);
 
         mockMvc.perform(get("/api/teachers/{id}", teacher.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(teacherMapper.teacherToDto(teacher))))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(objectMapper.writeValueAsString(teacherDto)))
                 .andExpect(status().isOk());
     }
 
@@ -102,7 +105,6 @@ public class TeacherRestControllerTest {
         Teacher teacher2 = createTeacherNoId();
         teacher2.setId(2);
         TeacherDto teacherDto = teacherMapper.teacherToDto(teacher1);
-        when(cathedraService.findById(teacherDto.getCathedraDto().getId())).thenReturn(teacher1.getCathedra());
         when(subjectService.findByName(teacher1.getSubjects().get(0).getName())).thenReturn(teacher1.getSubjects().get(0));
         when(teacherService.save(teacher1)).thenReturn(teacher2);
 
@@ -120,7 +122,6 @@ public class TeacherRestControllerTest {
         Teacher teacher = createTeacherNoId();
         teacher.setId(1);
         TeacherDto teacherDto = teacherMapper.teacherToDto(teacher);
-        when(cathedraService.findById(teacherDto.getCathedraDto().getId())).thenReturn(teacher.getCathedra());
         when(subjectService.findByName(teacher.getSubjects().get(0).getName())).thenReturn(teacher.getSubjects().get(0));
         when(teacherService.save(teacher)).thenReturn(teacher);
 
@@ -137,7 +138,6 @@ public class TeacherRestControllerTest {
         Teacher teacher = createTeacherNoId();
         teacher.setId(1);
         TeacherDto teacherDto = teacherMapper.teacherToDto(teacher);
-        when(cathedraService.findById(teacherDto.getCathedraDto().getId())).thenReturn(teacher.getCathedra());
         when(subjectService.findByName(teacher.getSubjects().get(0).getName())).thenReturn(teacher.getSubjects().get(0));
 
         mockMvc.perform(delete("/api/teachers/{id}", 1)

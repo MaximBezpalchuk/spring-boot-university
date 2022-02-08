@@ -22,12 +22,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 public class LectureTimeRestControllerTest {
@@ -55,11 +55,12 @@ public class LectureTimeRestControllerTest {
         LectureTime lectureTime2 = createLectureTimeNoId();
         lectureTime2.setId(2);
         List<LectureTime> lectureTimes = Arrays.asList(lectureTime1, lectureTime2);
+        List<LectureTimeDto> lectureTimeDtos = lectureTimes.stream().map(lectureTimeMapper::lectureTimeToDto).collect(Collectors.toList());
         when(lectureTimeService.findAll()).thenReturn(lectureTimes);
 
         mockMvc.perform(get("/api/lecturetimes")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new Slice(lectureTimes))))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(objectMapper.writeValueAsString(new Slice(lectureTimeDtos))))
                 .andExpect(status().isOk());
 
         verifyNoMoreInteractions(lectureTimeService);
@@ -69,11 +70,12 @@ public class LectureTimeRestControllerTest {
     public void whenGetOneLectureTime_thenOneLectureTimeReturned() throws Exception {
         LectureTime lectureTime = createLectureTimeNoId();
         lectureTime.setId(1);
+        LectureTimeDto lectureTimeDto = lectureTimeMapper.lectureTimeToDto(lectureTime);
         when(lectureTimeService.findById(lectureTime.getId())).thenReturn(lectureTime);
 
         mockMvc.perform(get("/api/lecturetimes/{id}", lectureTime.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(lectureTimeMapper.lectureTimeToDto(lectureTime))))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(objectMapper.writeValueAsString(lectureTimeDto)))
                 .andExpect(status().isOk());
     }
 

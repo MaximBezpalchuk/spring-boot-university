@@ -18,6 +18,6 @@ public abstract class GroupMapper {
     @Mapping(target = "cathedraDto", expression = "java(cathedraMapper.cathedraToDto(group.getCathedra()))")
     public abstract GroupDto groupToDto(Group group);
 
-    @Mapping(target = "cathedra", expression = "java(cathedraService.findById(groupDto.getCathedraDto().getId()))")
+    @Mapping(target = "cathedra", expression = "java(cathedraMapper.dtoToCathedra(groupDto.getCathedraDto()))")
     public abstract Group dtoToGroup(GroupDto groupDto);
 }

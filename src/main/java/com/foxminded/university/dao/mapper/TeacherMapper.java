@@ -28,7 +28,7 @@ public abstract class TeacherMapper {
     @Mapping(target = "subjectNames", expression = "java(teacher.getSubjects().stream().map(Subject::getName).collect(Collectors.toList()))")
     public abstract TeacherDto teacherToDto(Teacher teacher);
 
-    @Mapping(target = "cathedra", expression = "java(cathedraService.findById(teacherDto.getCathedraDto().getId()))")
+    @Mapping(target = "cathedra", expression = "java(cathedraMapper.dtoToCathedra(teacherDto.getCathedraDto()))")
     @Mapping(target = "subjects", expression = "java(teacherDto.getSubjectNames().stream().map(subjectService::findByName).collect(Collectors.toList()))")
     public abstract Teacher dtoToTeacher(TeacherDto teacherDto);
 

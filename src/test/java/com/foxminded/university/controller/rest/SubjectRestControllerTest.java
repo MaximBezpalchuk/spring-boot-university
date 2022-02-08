@@ -29,6 +29,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.isA;
@@ -71,11 +72,13 @@ public class SubjectRestControllerTest {
         subject2.setId(2);
         List<Subject> subjects = Arrays.asList(subject1, subject2);
         Page<Subject> page = new PageImpl<>(subjects, PageRequest.of(0, 1), 2);
+        List<SubjectDto> subjectDtos = subjects.stream().map(subjectMapper::subjectToDto).collect(Collectors.toList());
+        Page<SubjectDto> pageDtos = new PageImpl<>(subjectDtos, PageRequest.of(0, 1), 2);
         when(subjectService.findAll(isA(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/api/subjects")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new Slice(subjects))))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(objectMapper.writeValueAsString(pageDtos)))
                 .andExpect(status().isOk());
 
         verifyNoMoreInteractions(subjectService);
@@ -85,11 +88,12 @@ public class SubjectRestControllerTest {
     public void whenGetOneSubject_thenOneSubjectReturned() throws Exception {
         Subject subject = createSubjectNoId();
         subject.setId(1);
+        SubjectDto subjectDto = subjectMapper.subjectToDto(subject);
         when(subjectService.findById(subject.getId())).thenReturn(subject);
 
         mockMvc.perform(get("/api/subjects/{id}", subject.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(subjectMapper.subjectToDto(subject))))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(objectMapper.writeValueAsString(subjectDto)))
                 .andExpect(status().isOk());
     }
 
@@ -99,7 +103,6 @@ public class SubjectRestControllerTest {
         Subject subject2 = createSubjectNoId();
         subject2.setId(2);
         SubjectDto subjectDto = subjectMapper.subjectToDto(subject1);
-        when(cathedraService.findById(subjectDto.getCathedraDto().getId())).thenReturn(subject1.getCathedra());
         when(subjectService.save(subject1)).thenReturn(subject2);
 
         mockMvc.perform(post("/api/subjects")
@@ -116,7 +119,6 @@ public class SubjectRestControllerTest {
         Subject subject = createSubjectNoId();
         subject.setId(2);
         SubjectDto subjectDto = subjectMapper.subjectToDto(subject);
-        when(cathedraService.findById(subjectDto.getCathedraDto().getId())).thenReturn(subject.getCathedra());
         when(subjectService.save(subject)).thenReturn(subject);
 
         mockMvc.perform(patch("/api/subjects/{id}", 1)
@@ -131,7 +133,6 @@ public class SubjectRestControllerTest {
         Subject subject = createSubjectNoId();
         subject.setId(2);
         SubjectDto subjectDto = subjectMapper.subjectToDto(subject);
-        when(cathedraService.findById(subjectDto.getCathedraDto().getId())).thenReturn(subject.getCathedra());
 
         mockMvc.perform(delete("/api/subjects/{id}", 1)
                 .content(objectMapper.writeValueAsString(subjectDto))

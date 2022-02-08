@@ -24,12 +24,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 public class AudienceRestControllerTest {
@@ -61,11 +61,12 @@ public class AudienceRestControllerTest {
         Audience audience2 = createAudienceNoId();
         audience2.setId(2);
         List<Audience> audiences = Arrays.asList(audience1, audience2);
+        List<AudienceDto> audienceDtos = audiences.stream().map(audienceMapper::audienceToDto).collect(Collectors.toList());
         when(audienceService.findAll()).thenReturn(audiences);
 
         mockMvc.perform(get("/api/audiences")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new Slice(audiences))))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(objectMapper.writeValueAsString(new Slice(audienceDtos))))
                 .andExpect(status().isOk());
 
         verifyNoMoreInteractions(audienceService);
@@ -75,11 +76,12 @@ public class AudienceRestControllerTest {
     public void whenGetOneAudience_thenOneAudienceReturned() throws Exception {
         Audience audience = createAudienceNoId();
         audience.setId(1);
+        AudienceDto audienceDto = audienceMapper.audienceToDto(audience);
         when(audienceService.findById(audience.getId())).thenReturn(audience);
 
         mockMvc.perform(get("/api/audiences/{id}", audience.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(audienceMapper.audienceToDto(audience))))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(objectMapper.writeValueAsString(audienceDto)))
                 .andExpect(status().isOk());
     }
 
@@ -89,7 +91,6 @@ public class AudienceRestControllerTest {
         Audience audience2 = createAudienceNoId();
         audience2.setId(4);
         AudienceDto audienceDto = audienceMapper.audienceToDto(audience1);
-        when(cathedraService.findById(audienceDto.getCathedraDto().getId())).thenReturn(audience1.getCathedra());
         when(audienceService.save(audience1)).thenReturn(audience2);
         mockMvc.perform(post("/api/audiences")
                 .content(objectMapper.writeValueAsString(audienceDto))
@@ -105,7 +106,6 @@ public class AudienceRestControllerTest {
         Audience audience = createAudienceNoId();
         audience.setId(1);
         AudienceDto audienceDto = audienceMapper.audienceToDto(audience);
-        when(cathedraService.findById(audienceDto.getCathedraDto().getId())).thenReturn(audience.getCathedra());
         when(audienceService.save(audience)).thenReturn(audience);
 
         mockMvc.perform(patch("/api/audiences/{id}", 1)
@@ -121,7 +121,6 @@ public class AudienceRestControllerTest {
         Audience audience = createAudienceNoId();
         audience.setId(1);
         AudienceDto audienceDto = audienceMapper.audienceToDto(audience);
-        when(cathedraService.findById(audienceDto.getCathedraDto().getId())).thenReturn(audience.getCathedra());
 
         mockMvc.perform(delete("/api/audiences/{id}", 1)
                 .content(objectMapper.writeValueAsString(audienceDto))

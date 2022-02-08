@@ -5,6 +5,7 @@ import com.foxminded.university.dao.mapper.CathedraMapper;
 import com.foxminded.university.dao.mapper.LectureMapper;
 import com.foxminded.university.dao.mapper.TeacherMapper;
 import com.foxminded.university.dao.mapper.VacationMapper;
+import com.foxminded.university.dto.LectureDto;
 import com.foxminded.university.dto.Slice;
 import com.foxminded.university.dto.VacationDto;
 import com.foxminded.university.model.*;
@@ -32,12 +33,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 public class VacationRestControllerTest {
@@ -81,11 +82,13 @@ public class VacationRestControllerTest {
         vacation2.setId(2);
         List<Vacation> vacations = Arrays.asList(vacation1, vacation2);
         Page<Vacation> page = new PageImpl<>(vacations, PageRequest.of(0, 1), 2);
+        List<VacationDto> vacationDtos = vacations.stream().map(vacationMapper::vacationToDto).collect(Collectors.toList());
+        Page<VacationDto> pageDtos = new PageImpl<>(vacationDtos, PageRequest.of(0, 1), 2);
         when(vacationService.findByTeacherId(PageRequest.of(0, 1), vacation1.getTeacher().getId())).thenReturn(page);
 
         mockMvc.perform(get("/api/teachers/{id}/vacations", vacation1.getTeacher().getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new Slice(vacations))))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(objectMapper.writeValueAsString(pageDtos)))
                 .andExpect(status().isOk());
 
         verifyNoMoreInteractions(vacationService);
@@ -95,11 +98,12 @@ public class VacationRestControllerTest {
     public void whenGetOneVacation_thenOneVacationReturned() throws Exception {
         Vacation vacation = createVacationNoId();
         vacation.setId(1);
+        VacationDto vacationDto = vacationMapper.vacationToDto(vacation);
         when(vacationService.findById(vacation.getId())).thenReturn(vacation);
 
         mockMvc.perform(get("/api/teachers/{teacherId}/vacations/{id}", vacation.getTeacher().getId(), vacation.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(vacationMapper.vacationToDto(vacation))))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(objectMapper.writeValueAsString(vacationDto)))
                 .andExpect(status().isOk());
     }
 
@@ -156,14 +160,15 @@ public class VacationRestControllerTest {
     public void whenChangeTeacherOnLectures_thenTeachersFound() throws Exception {
         Teacher teacher = Teacher.builder().id(1).firstName("Name").lastName("Last name").degree(Degree.ASSISTANT).gender(Gender.MALE)
                 .build();
-        Lecture lecture = Lecture.builder().id(1).teacher(teacher).build();
+        List<Lecture> lectures = Arrays.asList(Lecture.builder().id(1).teacher(teacher).build());
+        List<LectureDto> lectureDtos = lectures.stream().map(lectureMapper::lectureToDto).collect(Collectors.toList());
 
         when(lectureService.findByTeacherIdAndPeriod(1, LocalDate.of(2021, 4, 4), LocalDate.of(2021, 4, 5)))
-                .thenReturn(Arrays.asList(lecture));
+                .thenReturn(lectures);
 
         mockMvc.perform(get("/api/teachers/{id}/vacations/lectures?start=2021-04-04&end=2021-04-05", teacher.getId())
-                .content(objectMapper.writeValueAsString(new Slice(Arrays.asList(lectureMapper.lectureToDto(lecture)))))
                 .contentType(APPLICATION_JSON))
+                .andExpect(content().string(objectMapper.writeValueAsString(new Slice(lectureDtos))))
                 .andExpect(status().isOk());
     }
 

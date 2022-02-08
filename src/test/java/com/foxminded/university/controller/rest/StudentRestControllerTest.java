@@ -29,13 +29,13 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 public class StudentRestControllerTest {
@@ -69,11 +69,13 @@ public class StudentRestControllerTest {
         student2.setId(2);
         List<Student> students = Arrays.asList(student1, student2);
         Page<Student> page = new PageImpl<>(students, PageRequest.of(0, 1), 2);
+        List<StudentDto> studentDtos = students.stream().map(studentMapper::studentToDto).collect(Collectors.toList());
+        Page<StudentDto> pageDtos = new PageImpl<>(studentDtos, PageRequest.of(0, 1), 2);
         when(studentService.findAll(isA(Pageable.class))).thenReturn(page);
 
         mockMvc.perform(get("/api/students")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new Slice(students))))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(objectMapper.writeValueAsString(pageDtos)))
                 .andExpect(status().isOk());
 
         verifyNoMoreInteractions(studentService);
@@ -83,11 +85,12 @@ public class StudentRestControllerTest {
     public void whenGetOneStudent_thenOneStudentReturned() throws Exception {
         Student student = createStudentNoId();
         student.setId(1);
+        StudentDto studentDto = studentMapper.studentToDto(student);
         when(studentService.findById(student.getId())).thenReturn(student);
 
         mockMvc.perform(get("/api/students/{id}", student.getId())
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(studentMapper.studentToDto(student))))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(objectMapper.writeValueAsString(studentDto)))
                 .andExpect(status().isOk());
     }
 
