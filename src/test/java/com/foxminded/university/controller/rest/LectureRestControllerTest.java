@@ -1,10 +1,7 @@
 package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.foxminded.university.dao.mapper.CathedraMapper;
-import com.foxminded.university.dao.mapper.LectureMapper;
-import com.foxminded.university.dao.mapper.SubjectMapper;
-import com.foxminded.university.dao.mapper.TeacherMapper;
+import com.foxminded.university.dao.mapper.*;
 import com.foxminded.university.dto.LectureDto;
 import com.foxminded.university.dto.Slice;
 import com.foxminded.university.model.*;
@@ -44,22 +41,15 @@ public class LectureRestControllerTest {
     private ObjectMapper objectMapper;
     private final LectureMapper lectureMapper = Mappers.getMapper(LectureMapper.class);
     private final TeacherMapper teacherMapper = Mappers.getMapper(TeacherMapper .class);
-    private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper .class);
-    private SubjectMapper subjectMapper = Mappers.getMapper(SubjectMapper .class);
+    private final CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper .class);
+    private final SubjectMapper subjectMapper = Mappers.getMapper(SubjectMapper .class);
+    private final GroupMapper groupMapper = Mappers.getMapper(GroupMapper .class);
+    private final AudienceMapper audienceMapper = Mappers.getMapper(AudienceMapper .class);
+    private final LectureTimeMapper lectureTimeMapper = Mappers.getMapper(LectureTimeMapper .class);
     @Mock
     private LectureService lectureService;
     @Mock
     private LectureTimeService lectureTimeService;
-    @Mock
-    private SubjectService subjectService;
-    @Mock
-    private AudienceService audienceService;
-    @Mock
-    private TeacherService teacherService;
-    @Mock
-    private CathedraService cathedraService;
-    @Mock
-    private GroupService groupService;
     @InjectMocks
     private LectureRestController lectureRestController;
 
@@ -71,17 +61,17 @@ public class LectureRestControllerTest {
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
         ReflectionTestUtils.setField(lectureRestController, "lectureMapper", lectureMapper);
-        ReflectionTestUtils.setField(lectureMapper, "cathedraService", cathedraService);
-        ReflectionTestUtils.setField(lectureMapper, "lectureTimeService", lectureTimeService);
-        ReflectionTestUtils.setField(lectureMapper, "subjectService", subjectService);
-        ReflectionTestUtils.setField(lectureMapper, "audienceService", audienceService);
-        ReflectionTestUtils.setField(lectureMapper, "teacherService", teacherService);
+        ReflectionTestUtils.setField(lectureMapper, "lectureTimeMapper", lectureTimeMapper);
+        ReflectionTestUtils.setField(lectureMapper, "subjectMapper", subjectMapper);
+        ReflectionTestUtils.setField(subjectMapper, "cathedraMapper", cathedraMapper);
+        ReflectionTestUtils.setField(lectureMapper, "audienceMapper", audienceMapper);
+        ReflectionTestUtils.setField(audienceMapper, "cathedraMapper", cathedraMapper);
         ReflectionTestUtils.setField(lectureMapper, "teacherMapper", teacherMapper);
-        ReflectionTestUtils.setField(lectureMapper, "groupService", groupService);
+        ReflectionTestUtils.setField(lectureMapper, "groupMapper", groupMapper);
+        ReflectionTestUtils.setField(groupMapper, "cathedraMapper", cathedraMapper);
         ReflectionTestUtils.setField(lectureMapper, "cathedraMapper", cathedraMapper);
         ReflectionTestUtils.setField(teacherMapper, "cathedraMapper", cathedraMapper);
         ReflectionTestUtils.setField(teacherMapper, "subjectMapper", subjectMapper);
-        ReflectionTestUtils.setField(subjectMapper, "cathedraMapper", cathedraMapper);
     }
 
     @Test
@@ -123,12 +113,7 @@ public class LectureRestControllerTest {
         Lecture lecture2 = createLectureNoId();
         lecture2.setId(2);
         LectureDto lectureDto = lectureMapper.lectureToDto(lecture1);
-        when(teacherService.findByFirstNameAndLastNameAndBirthDate(lectureDto.getTeacherDto().getFirstName(), lectureDto.getTeacherDto().getLastName(), lectureDto.getTeacherDto().getBirthDate())).thenReturn(lecture1.getTeacher());
-        when(audienceService.findByRoom(lectureDto.getAudienceRoom())).thenReturn(lecture1.getAudience());
-        when(subjectService.findByName(lectureDto.getSubjectName())).thenReturn(lecture1.getSubject());
-        when(lectureTimeService.findByStartAndEnd(lectureDto.getStart(), lectureDto.getEnd())).thenReturn(lecture1.getTime());
         when(lectureService.save(lecture1)).thenReturn(lecture2);
-        when(groupService.findByName(lecture1.getGroups().get(0).getName())).thenReturn(lecture1.getGroups().get(0));
 
         mockMvc.perform(post("/api/lectures")
                 .content(objectMapper.writeValueAsString(lectureDto))
@@ -144,12 +129,7 @@ public class LectureRestControllerTest {
         Lecture lecture = createLectureNoId();
         lecture.setId(1);
         LectureDto lectureDto = lectureMapper.lectureToDto(lecture);
-        when(teacherService.findByFirstNameAndLastNameAndBirthDate(lectureDto.getTeacherDto().getFirstName(), lectureDto.getTeacherDto().getLastName(), lectureDto.getTeacherDto().getBirthDate())).thenReturn(lecture.getTeacher());
-        when(audienceService.findByRoom(lectureDto.getAudienceRoom())).thenReturn(lecture.getAudience());
-        when(subjectService.findByName(lectureDto.getSubjectName())).thenReturn(lecture.getSubject());
-        when(lectureTimeService.findByStartAndEnd(lectureDto.getStart(), lectureDto.getEnd())).thenReturn(lecture.getTime());
         when(lectureService.save(lecture)).thenReturn(lecture);
-        when(groupService.findByName(lecture.getGroups().get(0).getName())).thenReturn(lecture.getGroups().get(0));
 
         mockMvc.perform(patch("/api/lectures/{id}", 1)
                 .content(objectMapper.writeValueAsString(lectureDto))
@@ -162,11 +142,6 @@ public class LectureRestControllerTest {
         Lecture lecture = createLectureNoId();
         lecture.setId(1);
         LectureDto lectureDto = lectureMapper.lectureToDto(lecture);
-        when(teacherService.findByFirstNameAndLastNameAndBirthDate(lectureDto.getTeacherDto().getFirstName(), lectureDto.getTeacherDto().getLastName(), lectureDto.getTeacherDto().getBirthDate())).thenReturn(lecture.getTeacher());
-        when(audienceService.findByRoom(lectureDto.getAudienceRoom())).thenReturn(lecture.getAudience());
-        when(subjectService.findByName(lectureDto.getSubjectName())).thenReturn(lecture.getSubject());
-        when(lectureTimeService.findByStartAndEnd(lectureDto.getStart(), lectureDto.getEnd())).thenReturn(lecture.getTime());
-        when(groupService.findByName(lecture.getGroups().get(0).getName())).thenReturn(lecture.getGroups().get(0));
 
         mockMvc.perform(delete("/api/lectures/{id}", 1)
                 .content(objectMapper.writeValueAsString(lectureDto))

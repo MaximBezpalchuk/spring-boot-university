@@ -8,24 +8,22 @@ public class LectureDto {
 
     private Integer id;
     private CathedraDto cathedraDto;
-    private List<String> groupNames;
+    private List<GroupDto> groupDtos;
     private TeacherDto teacherDto;
-    private Integer audienceRoom;
+    private AudienceDto audienceDto;
     private LocalDate date;
-    private String subjectName;
-    private LocalTime start;
-    private LocalTime end;
+    private SubjectDto subjectDto;
+    private LectureTimeDto lectureTimeDto;
 
-    public LectureDto(Integer id, CathedraDto cathedraDto, List<String> groupNames, TeacherDto teacherDto, Integer audienceRoom, LocalDate date, String subjectName, LocalTime start, LocalTime end) {
+    public LectureDto(Integer id, CathedraDto cathedraDto, List<GroupDto> groupDtos, TeacherDto teacherDto, AudienceDto audienceDto, LocalDate date, SubjectDto subjectDto, LectureTimeDto lectureTimeDto) {
         this.id = id;
         this.cathedraDto = cathedraDto;
-        this.groupNames = groupNames;
+        this.groupDtos = groupDtos;
         this.teacherDto = teacherDto;
-        this.audienceRoom = audienceRoom;
+        this.audienceDto = audienceDto;
         this.date = date;
-        this.subjectName = subjectName;
-        this.start = start;
-        this.end = end;
+        this.subjectDto = subjectDto;
+        this.lectureTimeDto = lectureTimeDto;
     }
 
     public LectureDto() {
@@ -47,12 +45,12 @@ public class LectureDto {
         this.cathedraDto = cathedraDto;
     }
 
-    public List<String> getGroupNames() {
-        return groupNames;
+    public List<GroupDto> getGroupDtos() {
+        return groupDtos;
     }
 
-    public void setGroupNames(List<String> groupNames) {
-        this.groupNames = groupNames;
+    public void setGroupDtos(List<GroupDto> groupDtos) {
+        this.groupDtos = groupDtos;
     }
 
     public TeacherDto getTeacherDto() {
@@ -63,12 +61,12 @@ public class LectureDto {
         this.teacherDto = teacherDto;
     }
 
-    public Integer getAudienceRoom() {
-        return audienceRoom;
+    public AudienceDto getAudienceDto() {
+        return audienceDto;
     }
 
-    public void setAudienceRoom(Integer audienceRoom) {
-        this.audienceRoom = audienceRoom;
+    public void setAudienceDto(AudienceDto audienceDto) {
+        this.audienceDto = audienceDto;
     }
 
     public LocalDate getDate() {
@@ -79,27 +77,19 @@ public class LectureDto {
         this.date = date;
     }
 
-    public String getSubjectName() {
-        return subjectName;
+    public SubjectDto getSubjectDto() {
+        return subjectDto;
     }
 
-    public void setSubjectName(String subjectName) {
-        this.subjectName = subjectName;
+    public void setSubjectDto(SubjectDto subjectDto) {
+        this.subjectDto = subjectDto;
     }
 
-    public LocalTime getStart() {
-        return start;
+    public LectureTimeDto getLectureTimeDto() {
+        return lectureTimeDto;
     }
 
-    public void setStart(LocalTime start) {
-        this.start = start;
-    }
-
-    public LocalTime getEnd() {
-        return end;
-    }
-
-    public void setEnd(LocalTime end) {
-        this.end = end;
+    public void setLectureTimeDto(LectureTimeDto lectureTimeDto) {
+        this.lectureTimeDto = lectureTimeDto;
     }
 }

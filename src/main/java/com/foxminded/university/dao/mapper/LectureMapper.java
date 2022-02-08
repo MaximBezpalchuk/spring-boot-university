@@ -4,7 +4,7 @@ import com.foxminded.university.dto.GroupDto;
 import com.foxminded.university.dto.LectureDto;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Lecture;
-import com.foxminded.university.service.*;
+import com.foxminded.university.service.LectureTimeService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -17,40 +17,31 @@ import java.util.stream.Collectors;
 public abstract class LectureMapper {
 
     @Autowired
-    protected TeacherService teacherService;
-    @Autowired
     protected TeacherMapper teacherMapper;
     @Autowired
-    protected CathedraService cathedraService;
+    protected AudienceMapper audienceMapper;
     @Autowired
-    protected GroupService groupService;
+    protected SubjectMapper subjectMapper;
     @Autowired
-    protected AudienceService audienceService;
-    @Autowired
-    protected SubjectService subjectService;
-    @Autowired
-    protected LectureTimeService lectureTimeService;
+    protected LectureTimeMapper lectureTimeMapper;
     @Autowired
     protected CathedraMapper cathedraMapper;
+    @Autowired
+    protected GroupMapper groupMapper;
 
     @Mapping(target = "cathedraDto", expression = "java(cathedraMapper.cathedraToDto(lecture.getCathedra()))")
-    @Mapping(target = "groupNames", expression = "java(lecture.getGroups().stream().map(Group::getName).collect(Collectors.toList()))")
+    @Mapping(target = "groupDtos", expression = "java(lecture.getGroups().stream().map(groupMapper::groupToDto).collect(Collectors.toList()))")
     @Mapping(target = "teacherDto", expression = "java(teacherMapper.teacherToDto(lecture.getTeacher()))")
-    @Mapping(target = "audienceRoom", source = "lecture.audience.room")
-    @Mapping(target = "subjectName", source = "lecture.subject.name")
-    @Mapping(target = "start", source = "lecture.time.start")
-    @Mapping(target = "end", source = "lecture.time.end")
+    @Mapping(target = "audienceDto", expression = "java(audienceMapper.audienceToDto(lecture.getAudience()))")
+    @Mapping(target = "subjectDto", expression = "java(subjectMapper.subjectToDto(lecture.getSubject()))")
+    @Mapping(target = "lectureTimeDto", expression = "java(lectureTimeMapper.lectureTimeToDto(lecture.getTime()))")
     public abstract LectureDto lectureToDto(Lecture lecture);
 
     @Mapping(target = "cathedra", expression = "java(cathedraMapper.dtoToCathedra(lectureDto.getCathedraDto()))")
-    @Mapping(target = "group", expression = "java(lectureDto.getGroupNames().stream().map(groupService::findByName).collect(Collectors.toList()))")
-    @Mapping(target = "teacher", expression = "java(teacherService.findByFirstNameAndLastNameAndBirthDate(lectureDto.getTeacherDto().getFirstName(), lectureDto.getTeacherDto().getLastName(), lectureDto.getTeacherDto().getBirthDate()))")
-    @Mapping(target = "audience", expression = "java(audienceService.findByRoom(lectureDto.getAudienceRoom()))")
-    @Mapping(target = "subject", expression = "java(subjectService.findByName(lectureDto.getSubjectName()))")
-    @Mapping(target = "time", expression = "java(lectureTimeService.findByStartAndEnd(lectureDto.getStart(), lectureDto.getEnd()))")
+    @Mapping(target = "group", expression = "java(lectureDto.getGroupDtos().stream().map(groupMapper::dtoToGroup).collect(Collectors.toList()))")
+    @Mapping(target = "teacher", expression = "java(teacherMapper.dtoToTeacher(lectureDto.getTeacherDto()))")
+    @Mapping(target = "audience", expression = "java(audienceMapper.dtoToAudience(lectureDto.getAudienceDto()))")
+    @Mapping(target = "subject", expression = "java(subjectMapper.dtoToSubject(lectureDto.getSubjectDto()))")
+    @Mapping(target = "time", expression = "java(lectureTimeMapper.dtoToLectureTime(lectureDto.getLectureTimeDto()))")
     public abstract Lecture dtoToLecture(LectureDto lectureDto);
-
-    public abstract GroupDto map(Group group);
-
-    public abstract Group map(GroupDto groupDto);
 }
