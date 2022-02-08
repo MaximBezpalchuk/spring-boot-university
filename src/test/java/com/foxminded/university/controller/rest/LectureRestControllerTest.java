@@ -77,6 +77,7 @@ public class LectureRestControllerTest {
         ReflectionTestUtils.setField(lectureMapper, "teacherMapper", teacherMapper);
         ReflectionTestUtils.setField(lectureMapper, "groupService", groupService);
         ReflectionTestUtils.setField(lectureMapper, "cathedraMapper", cathedraMapper);
+        ReflectionTestUtils.setField(teacherMapper, "cathedraMapper", cathedraMapper);
     }
 
     @Test
