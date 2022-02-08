@@ -47,11 +47,13 @@ public class VacationRestControllerTest {
     private final CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper .class);
     private final SubjectMapper subjectMapper = Mappers.getMapper(SubjectMapper .class);
 
+    private final GroupMapper groupMapper = Mappers.getMapper(GroupMapper .class);
+    private final AudienceMapper audienceMapper = Mappers.getMapper(AudienceMapper .class);
+    private final LectureTimeMapper lectureTimeMapper = Mappers.getMapper(LectureTimeMapper .class);
+
     private ObjectMapper objectMapper;
     @Mock
     private LectureService lectureService;
-    @Mock
-    private TeacherService teacherService;
     @Mock
     private VacationService vacationService;
     @InjectMocks
@@ -72,6 +74,12 @@ public class VacationRestControllerTest {
         ReflectionTestUtils.setField(teacherMapper, "cathedraMapper", cathedraMapper);
         ReflectionTestUtils.setField(teacherMapper, "subjectMapper", subjectMapper);
         ReflectionTestUtils.setField(subjectMapper, "cathedraMapper", cathedraMapper);
+        ReflectionTestUtils.setField(audienceMapper, "cathedraMapper", cathedraMapper);
+        ReflectionTestUtils.setField(groupMapper, "cathedraMapper", cathedraMapper);
+        ReflectionTestUtils.setField(lectureMapper, "lectureTimeMapper", lectureTimeMapper);
+        ReflectionTestUtils.setField(lectureMapper, "audienceMapper", audienceMapper);
+        ReflectionTestUtils.setField(lectureMapper, "subjectMapper", subjectMapper);
+        ReflectionTestUtils.setField(lectureMapper, "groupMapper", groupMapper);
     }
 
     @Test
