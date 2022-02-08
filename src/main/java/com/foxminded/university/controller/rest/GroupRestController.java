@@ -3,7 +3,7 @@ package com.foxminded.university.controller.rest;
 import com.foxminded.university.controller.GroupController;
 import com.foxminded.university.dao.mapper.GroupMapper;
 import com.foxminded.university.dto.GroupDto;
-import com.foxminded.university.dto.ObjectListDto;
+import com.foxminded.university.dto.Slice;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.service.GroupService;
 import org.slf4j.Logger;
@@ -30,10 +30,10 @@ public class GroupRestController {
     }
 
     @GetMapping
-    public ObjectListDto getAllGroups() {
+    public Slice getAllGroups() {
         logger.debug("Show all groups");
 
-        return new ObjectListDto(groupService.findAll().stream().map(groupMapper::groupToDto).collect(Collectors.toList()));
+        return new Slice(groupService.findAll().stream().map(groupMapper::groupToDto).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")

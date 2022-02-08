@@ -2,9 +2,8 @@ package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foxminded.university.dao.mapper.LectureTimeMapper;
-import com.foxminded.university.dao.mapper.TeacherMapper;
 import com.foxminded.university.dto.LectureTimeDto;
-import com.foxminded.university.dto.ObjectListDto;
+import com.foxminded.university.dto.Slice;
 import com.foxminded.university.model.LectureTime;
 import com.foxminded.university.service.LectureTimeService;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,7 +59,7 @@ public class LectureTimeRestControllerTest {
 
         mockMvc.perform(get("/api/lecturetimes")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new ObjectListDto(lectureTimes))))
+                .content(objectMapper.writeValueAsString(new Slice(lectureTimes))))
                 .andExpect(status().isOk());
 
         verifyNoMoreInteractions(lectureTimeService);

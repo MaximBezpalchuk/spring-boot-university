@@ -3,7 +3,7 @@ package com.foxminded.university.controller.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foxminded.university.dao.mapper.AudienceMapper;
 import com.foxminded.university.dto.AudienceDto;
-import com.foxminded.university.dto.ObjectListDto;
+import com.foxminded.university.dto.Slice;
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.service.AudienceService;
@@ -63,7 +63,7 @@ public class AudienceRestControllerTest {
 
         mockMvc.perform(get("/api/audiences")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new ObjectListDto(audiences))))
+                .content(objectMapper.writeValueAsString(new Slice(audiences))))
                 .andExpect(status().isOk());
 
         verifyNoMoreInteractions(audienceService);

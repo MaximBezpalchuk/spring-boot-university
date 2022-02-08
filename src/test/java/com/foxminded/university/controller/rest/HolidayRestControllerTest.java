@@ -1,10 +1,9 @@
 package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.foxminded.university.dao.mapper.GroupMapper;
 import com.foxminded.university.dao.mapper.HolidayMapper;
 import com.foxminded.university.dto.HolidayDto;
-import com.foxminded.university.dto.ObjectListDto;
+import com.foxminded.university.dto.Slice;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Holiday;
 import com.foxminded.university.service.CathedraService;
@@ -73,7 +72,7 @@ public class HolidayRestControllerTest {
 
         mockMvc.perform(get("/api/holidays")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new ObjectListDto(holidays))))
+                .content(objectMapper.writeValueAsString(new Slice(holidays))))
                 .andExpect(status().isOk());
 
         verifyNoMoreInteractions(holidayService);

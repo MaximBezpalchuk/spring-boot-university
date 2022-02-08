@@ -1,10 +1,9 @@
 package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.foxminded.university.dao.mapper.AudienceMapper;
 import com.foxminded.university.dao.mapper.GroupMapper;
 import com.foxminded.university.dto.GroupDto;
-import com.foxminded.university.dto.ObjectListDto;
+import com.foxminded.university.dto.Slice;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.service.CathedraService;
@@ -64,7 +63,7 @@ public class GroupRestControllerTest {
 
         mockMvc.perform(get("/api/groups")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new ObjectListDto(groups))))
+                .content(objectMapper.writeValueAsString(new Slice(groups))))
                 .andExpect(status().isOk());
 
         verifyNoMoreInteractions(groupService);

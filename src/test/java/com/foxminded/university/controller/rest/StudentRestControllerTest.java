@@ -1,9 +1,8 @@
 package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.foxminded.university.dao.mapper.LectureTimeMapper;
 import com.foxminded.university.dao.mapper.StudentMapper;
-import com.foxminded.university.dto.ObjectListDto;
+import com.foxminded.university.dto.Slice;
 import com.foxminded.university.dto.StudentDto;
 import com.foxminded.university.model.Gender;
 import com.foxminded.university.model.Group;
@@ -74,7 +73,7 @@ public class StudentRestControllerTest {
 
         mockMvc.perform(get("/api/students")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new ObjectListDto(students))))
+                .content(objectMapper.writeValueAsString(new Slice(students))))
                 .andExpect(status().isOk());
 
         verifyNoMoreInteractions(studentService);

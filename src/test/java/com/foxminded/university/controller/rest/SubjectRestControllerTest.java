@@ -1,9 +1,8 @@
 package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.foxminded.university.dao.mapper.StudentMapper;
 import com.foxminded.university.dao.mapper.SubjectMapper;
-import com.foxminded.university.dto.ObjectListDto;
+import com.foxminded.university.dto.Slice;
 import com.foxminded.university.dto.SubjectDto;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Subject;
@@ -73,7 +72,7 @@ public class SubjectRestControllerTest {
 
         mockMvc.perform(get("/api/subjects")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new ObjectListDto(subjects))))
+                .content(objectMapper.writeValueAsString(new Slice(subjects))))
                 .andExpect(status().isOk());
 
         verifyNoMoreInteractions(subjectService);

@@ -3,7 +3,7 @@ package com.foxminded.university.controller.rest;
 import com.foxminded.university.controller.LectureTimeController;
 import com.foxminded.university.dao.mapper.LectureTimeMapper;
 import com.foxminded.university.dto.LectureTimeDto;
-import com.foxminded.university.dto.ObjectListDto;
+import com.foxminded.university.dto.Slice;
 import com.foxminded.university.model.LectureTime;
 import com.foxminded.university.service.LectureTimeService;
 import org.slf4j.Logger;
@@ -31,10 +31,10 @@ public class LectureTimeRestController {
     }
 
     @GetMapping
-    public ObjectListDto getAllLectureTimes() {
+    public Slice getAllLectureTimes() {
         logger.debug("Show all lecture times");
 
-        return new ObjectListDto(lectureTimeService.findAll().stream().map(lectureTimeMapper::lectureTimeToDto).collect(Collectors.toList()));
+        return new Slice(lectureTimeService.findAll().stream().map(lectureTimeMapper::lectureTimeToDto).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")

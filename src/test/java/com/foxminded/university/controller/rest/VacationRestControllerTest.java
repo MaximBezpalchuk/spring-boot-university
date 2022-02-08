@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foxminded.university.dao.mapper.LectureMapper;
 import com.foxminded.university.dao.mapper.TeacherMapper;
 import com.foxminded.university.dao.mapper.VacationMapper;
-import com.foxminded.university.dto.ObjectListDto;
+import com.foxminded.university.dto.Slice;
 import com.foxminded.university.dto.VacationDto;
 import com.foxminded.university.model.*;
 import com.foxminded.university.service.LectureService;
@@ -81,7 +81,7 @@ public class VacationRestControllerTest {
 
         mockMvc.perform(get("/api/teachers/{id}/vacations", vacation1.getTeacher().getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new ObjectListDto(vacations))))
+                .content(objectMapper.writeValueAsString(new Slice(vacations))))
                 .andExpect(status().isOk());
 
         verifyNoMoreInteractions(vacationService);
@@ -158,7 +158,7 @@ public class VacationRestControllerTest {
                 .thenReturn(Arrays.asList(lecture));
 
         mockMvc.perform(get("/api/teachers/{id}/vacations/lectures?start=2021-04-04&end=2021-04-05", teacher.getId())
-                .content(objectMapper.writeValueAsString(new ObjectListDto(Arrays.asList(lectureMapper.lectureToDto(lecture)))))
+                .content(objectMapper.writeValueAsString(new Slice(Arrays.asList(lectureMapper.lectureToDto(lecture)))))
                 .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

@@ -3,7 +3,7 @@ package com.foxminded.university.controller.rest;
 import com.foxminded.university.controller.VacationController;
 import com.foxminded.university.dao.mapper.LectureMapper;
 import com.foxminded.university.dao.mapper.VacationMapper;
-import com.foxminded.university.dto.ObjectListDto;
+import com.foxminded.university.dto.Slice;
 import com.foxminded.university.dto.VacationDto;
 import com.foxminded.university.exception.BusyTeacherException;
 import com.foxminded.university.model.Lecture;
@@ -86,13 +86,13 @@ public class VacationRestController {
     }
 
     @GetMapping("/lectures")
-    public ObjectListDto changeTeacherOnLectures(@PathVariable int teacherId,
-                                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
-                                                 @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
+    public Slice changeTeacherOnLectures(@PathVariable int teacherId,
+                                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+                                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
         logger.debug("Change teacher on lectures - teacher with id {}", teacherId);
         List<Lecture> lectures = lectureService.findByTeacherIdAndPeriod(teacherId, start, end);
 
-        return new ObjectListDto(lectures.stream().map(lectureMapper::lectureToDto).collect(Collectors.toList()));
+        return new Slice(lectures.stream().map(lectureMapper::lectureToDto).collect(Collectors.toList()));
     }
 
     @PatchMapping("/lectures")

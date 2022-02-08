@@ -2,15 +2,15 @@ package com.foxminded.university.dto;
 
 import java.util.List;
 
-public class ObjectListDto {
+public class Slice {
 
     private List items;
 
-    public ObjectListDto(List items) {
+    public Slice(List items) {
         this.items = items;
     }
 
-    public ObjectListDto() {
+    public Slice() {
     }
 
     public List getItems() {

@@ -3,7 +3,7 @@ package com.foxminded.university.controller.rest;
 import com.foxminded.university.controller.AudienceController;
 import com.foxminded.university.dao.mapper.AudienceMapper;
 import com.foxminded.university.dto.AudienceDto;
-import com.foxminded.university.dto.ObjectListDto;
+import com.foxminded.university.dto.Slice;
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.service.AudienceService;
 import org.slf4j.Logger;
@@ -31,10 +31,10 @@ public class AudienceRestController {
     }
 
     @GetMapping
-    public ObjectListDto getAllAudiences() {
+    public Slice getAllAudiences() {
         logger.debug("Show all audiences");
 
-        return new ObjectListDto(audienceService.findAll().stream().map(audienceMapper::audienceToDto).collect(Collectors.toList()));
+        return new Slice(audienceService.findAll().stream().map(audienceMapper::audienceToDto).collect(Collectors.toList()));
     }
 
     @GetMapping("/{id}")
