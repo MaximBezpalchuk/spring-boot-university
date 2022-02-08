@@ -11,6 +11,7 @@ import com.foxminded.university.service.CathedraService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -33,7 +34,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AudienceRestControllerTest {
 
     private MockMvc mockMvc;
-    private final AudienceMapper audienceMapper = AudienceMapper.INSTANCE;
+    private AudienceMapper audienceMapper = Mappers.getMapper(AudienceMapper.class);
+
     ObjectMapper objectMapper;
     @Mock
     private AudienceService audienceService;

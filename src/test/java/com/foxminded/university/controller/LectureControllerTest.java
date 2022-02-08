@@ -1,11 +1,13 @@
 package com.foxminded.university.controller;
 
+import com.foxminded.university.dao.mapper.AudienceMapper;
 import com.foxminded.university.dao.mapper.LectureToEventMapper;
 import com.foxminded.university.model.*;
 import com.foxminded.university.service.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -36,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class LectureControllerTest {
 
     private MockMvc mockMvc;
-    private final LectureToEventMapper lectureToEventMapper = LectureToEventMapper.INSTANCE;
+    private final LectureToEventMapper lectureToEventMapper = Mappers.getMapper(LectureToEventMapper.class);
 
     @Mock
     private LectureService lectureService;

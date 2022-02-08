@@ -1,11 +1,9 @@
 package com.foxminded.university.controller;
 
-import com.foxminded.university.dao.mapper.LectureToEventMapper;
 import com.foxminded.university.model.Gender;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Student;
 import com.foxminded.university.service.GroupService;
-import com.foxminded.university.service.LectureService;
 import com.foxminded.university.service.StudentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,13 +42,10 @@ public class StudentControllerTest {
 
     private MockMvc mockMvc;
     private Validator validator;
-    private final LectureToEventMapper lectureToEventMapper = LectureToEventMapper.INSTANCE;
     @Mock
     private StudentService studentService;
     @Mock
     private GroupService groupService;
-    @Mock
-    private LectureService lectureService;
     @InjectMocks
     private StudentController studentController;
 

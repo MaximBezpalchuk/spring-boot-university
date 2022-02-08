@@ -1,9 +1,7 @@
 package com.foxminded.university.controller;
 
-import com.foxminded.university.dao.mapper.LectureToEventMapper;
 import com.foxminded.university.model.*;
 import com.foxminded.university.service.CathedraService;
-import com.foxminded.university.service.LectureService;
 import com.foxminded.university.service.SubjectService;
 import com.foxminded.university.service.TeacherService;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,15 +41,12 @@ public class TeacherControllerTest {
 
     private MockMvc mockMvc;
     private Validator validator;
-    private final LectureToEventMapper lectureToEventMapper = LectureToEventMapper.INSTANCE;
     @Mock
     private TeacherService teacherService;
     @Mock
     private SubjectService subjectService;
     @Mock
     private CathedraService cathedraService;
-    @Mock
-    private LectureService lectureService;
     @InjectMocks
     private TeacherController teacherController;
 

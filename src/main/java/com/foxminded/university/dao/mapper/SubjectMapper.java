@@ -5,13 +5,11 @@ import com.foxminded.university.model.Subject;
 import com.foxminded.university.service.CathedraService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring")
 public abstract class SubjectMapper {
 
-    public static SubjectMapper INSTANCE = Mappers.getMapper(SubjectMapper.class);
     @Autowired
     protected CathedraService cathedraService;
 

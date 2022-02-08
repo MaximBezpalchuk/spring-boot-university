@@ -1,17 +1,15 @@
 package com.foxminded.university.dao.mapper;
 
-import com.foxminded.university.model.Group;
 import com.foxminded.university.dto.GroupDto;
+import com.foxminded.university.model.Group;
 import com.foxminded.university.service.CathedraService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring")
 public abstract class GroupMapper {
 
-    public static GroupMapper INSTANCE = Mappers.getMapper(GroupMapper.class);
     @Autowired
     protected CathedraService cathedraService;
 

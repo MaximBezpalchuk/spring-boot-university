@@ -1,6 +1,7 @@
 package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.foxminded.university.dao.mapper.LectureTimeMapper;
 import com.foxminded.university.dao.mapper.StudentMapper;
 import com.foxminded.university.dto.ObjectListDto;
 import com.foxminded.university.dto.StudentDto;
@@ -12,6 +13,7 @@ import com.foxminded.university.service.StudentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -40,7 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class StudentRestControllerTest {
 
     private MockMvc mockMvc;
-    private final StudentMapper studentMapper = StudentMapper.INSTANCE;
+    private final StudentMapper studentMapper = Mappers.getMapper(StudentMapper.class);
     private ObjectMapper objectMapper;
     @Mock
     private StudentService studentService;

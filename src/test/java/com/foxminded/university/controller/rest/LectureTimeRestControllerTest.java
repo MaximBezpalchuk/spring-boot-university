@@ -2,6 +2,7 @@ package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foxminded.university.dao.mapper.LectureTimeMapper;
+import com.foxminded.university.dao.mapper.TeacherMapper;
 import com.foxminded.university.dto.LectureTimeDto;
 import com.foxminded.university.dto.ObjectListDto;
 import com.foxminded.university.model.LectureTime;
@@ -9,6 +10,7 @@ import com.foxminded.university.service.LectureTimeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -33,7 +35,7 @@ public class LectureTimeRestControllerTest {
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
-    private final LectureTimeMapper lectureTimeMapper = LectureTimeMapper.INSTANCE;
+    private final LectureTimeMapper lectureTimeMapper = Mappers.getMapper(LectureTimeMapper.class);
     @Mock
     private LectureTimeService lectureTimeService;
     @InjectMocks

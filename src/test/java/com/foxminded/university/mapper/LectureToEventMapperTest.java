@@ -7,6 +7,7 @@ import com.foxminded.university.model.LectureTime;
 import com.foxminded.university.model.Subject;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
@@ -34,7 +35,7 @@ public class LectureToEventMapperTest {
             .time(time)
             .build();
         // when
-        Event event = LectureToEventMapper.INSTANCE.lectureToEvent(lecture);
+        Event event = Mappers.getMapper(LectureToEventMapper.class).lectureToEvent(lecture);
 
         // then
         assertNotNull(event);

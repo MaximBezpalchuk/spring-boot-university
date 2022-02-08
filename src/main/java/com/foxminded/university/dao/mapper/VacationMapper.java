@@ -5,13 +5,11 @@ import com.foxminded.university.model.Vacation;
 import com.foxminded.university.service.TeacherService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring")
 public abstract class VacationMapper {
 
-    public static VacationMapper INSTANCE = Mappers.getMapper(VacationMapper.class);
     @Autowired
     protected TeacherService teacherService;
     @Autowired

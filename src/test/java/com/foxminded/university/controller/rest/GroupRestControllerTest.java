@@ -1,6 +1,7 @@
 package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.foxminded.university.dao.mapper.AudienceMapper;
 import com.foxminded.university.dao.mapper.GroupMapper;
 import com.foxminded.university.dto.GroupDto;
 import com.foxminded.university.dto.ObjectListDto;
@@ -11,6 +12,7 @@ import com.foxminded.university.service.GroupService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -33,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class GroupRestControllerTest {
 
     private MockMvc mockMvc;
-    private final GroupMapper groupMapper = GroupMapper.INSTANCE;
+    private final GroupMapper groupMapper = Mappers.getMapper(GroupMapper.class);
     ObjectMapper objectMapper;
     @Mock
     private GroupService groupService;

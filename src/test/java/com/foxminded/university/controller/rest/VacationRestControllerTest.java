@@ -13,6 +13,7 @@ import com.foxminded.university.service.VacationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -41,9 +42,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class VacationRestControllerTest {
 
     private MockMvc mockMvc;
-    private final VacationMapper vacationMapper = VacationMapper.INSTANCE;
-    private final TeacherMapper teacherMapper = TeacherMapper.INSTANCE;
-    private final LectureMapper lectureMapper = LectureMapper.INSTANCE;
+    private final VacationMapper vacationMapper = Mappers.getMapper(VacationMapper.class);
+    private final TeacherMapper teacherMapper = Mappers.getMapper(TeacherMapper.class);
+    private final LectureMapper lectureMapper = Mappers.getMapper(LectureMapper.class);
     private ObjectMapper objectMapper;
     @Mock
     private LectureService lectureService;

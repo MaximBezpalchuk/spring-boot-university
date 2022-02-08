@@ -6,8 +6,9 @@ import com.foxminded.university.model.Subject;
 import com.foxminded.university.model.Teacher;
 import com.foxminded.university.service.CathedraService;
 import com.foxminded.university.service.SubjectService;
-import org.mapstruct.*;
-import org.mapstruct.factory.Mappers;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;
@@ -16,7 +17,6 @@ import java.util.stream.Collectors;
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring", imports = {Arrays.class, Collectors.class})
 public abstract class TeacherMapper {
 
-    public static TeacherMapper INSTANCE = Mappers.getMapper(TeacherMapper.class);
     @Autowired
     protected SubjectService subjectService;
     @Autowired

@@ -1,17 +1,15 @@
 package com.foxminded.university.dao.mapper;
 
-import com.foxminded.university.model.Audience;
 import com.foxminded.university.dto.AudienceDto;
+import com.foxminded.university.model.Audience;
 import com.foxminded.university.service.CathedraService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring")
 public abstract class AudienceMapper {
 
-    public static AudienceMapper INSTANCE = Mappers.getMapper(AudienceMapper.class);
     @Autowired
     protected CathedraService cathedraService;
 

@@ -4,12 +4,9 @@ import com.foxminded.university.model.Event;
 import com.foxminded.university.model.Lecture;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring")
 public abstract class LectureToEventMapper {
-
-    public static LectureToEventMapper INSTANCE = Mappers.getMapper(LectureToEventMapper.class);
 
     @Mapping(target = "title", source = "lecture.subject.name")
     @Mapping(target = "start", expression = "java(lecture.getDate().atTime(lecture.getTime().getStart()))")

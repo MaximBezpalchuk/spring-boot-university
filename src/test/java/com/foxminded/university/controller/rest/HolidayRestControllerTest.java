@@ -1,6 +1,7 @@
 package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.foxminded.university.dao.mapper.GroupMapper;
 import com.foxminded.university.dao.mapper.HolidayMapper;
 import com.foxminded.university.dto.HolidayDto;
 import com.foxminded.university.dto.ObjectListDto;
@@ -11,6 +12,7 @@ import com.foxminded.university.service.HolidayService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -39,7 +41,7 @@ public class HolidayRestControllerTest {
 
 
     private MockMvc mockMvc;
-    private final HolidayMapper holidayMapper = HolidayMapper.INSTANCE;
+    private final HolidayMapper holidayMapper = Mappers.getMapper(HolidayMapper .class);
     ObjectMapper objectMapper;
     @Mock
     private HolidayService holidayService;
