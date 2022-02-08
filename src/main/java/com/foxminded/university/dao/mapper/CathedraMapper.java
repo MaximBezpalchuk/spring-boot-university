@@ -6,9 +6,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public abstract class CathedraMapper {
+public interface CathedraMapper {
 
-    public abstract CathedraDto cathedraToDto(Cathedra cathedra);
+    CathedraDto cathedraToDto(Cathedra cathedra);
 
-    public abstract Cathedra dtoToCathedra(CathedraDto cathedraDto);
+    Cathedra dtoToCathedra(CathedraDto cathedraDto);
 }
