@@ -44,8 +44,9 @@ public class VacationRestControllerTest {
     private final VacationMapper vacationMapper = Mappers.getMapper(VacationMapper.class);
     private final TeacherMapper teacherMapper = Mappers.getMapper(TeacherMapper.class);
     private final LectureMapper lectureMapper = Mappers.getMapper(LectureMapper.class);
-    private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper .class);
-    private SubjectMapper subjectMapper = Mappers.getMapper(SubjectMapper .class);
+    private final CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper .class);
+    private final SubjectMapper subjectMapper = Mappers.getMapper(SubjectMapper .class);
+
     private ObjectMapper objectMapper;
     @Mock
     private LectureService lectureService;
@@ -65,7 +66,6 @@ public class VacationRestControllerTest {
         objectMapper.findAndRegisterModules();
         ReflectionTestUtils.setField(vacationRestController, "vacationMapper", vacationMapper);
         ReflectionTestUtils.setField(vacationRestController, "lectureMapper", lectureMapper);
-        ReflectionTestUtils.setField(vacationMapper, "teacherService", teacherService);
         ReflectionTestUtils.setField(vacationMapper, "teacherMapper", teacherMapper);
         ReflectionTestUtils.setField(lectureMapper, "teacherMapper", teacherMapper);
         ReflectionTestUtils.setField(lectureMapper, "cathedraMapper", cathedraMapper);
@@ -113,7 +113,6 @@ public class VacationRestControllerTest {
         Vacation vacation2 = createVacationNoId();
         vacation2.setId(2);
         VacationDto vacationDto = vacationMapper.vacationToDto(vacation1);
-        when(teacherService.findByFirstNameAndLastNameAndBirthDate(vacationDto.getTeacherDto().getFirstName(), vacationDto.getTeacherDto().getLastName(), vacationDto.getTeacherDto().getBirthDate())).thenReturn(vacation1.getTeacher());
         when(lectureService.findByTeacherIdAndPeriod(vacation1.getTeacher().getId(), vacation1.getStart(), vacation1.getEnd())).thenReturn(new ArrayList<>());
         when(vacationService.save(vacation1)).thenReturn(vacation2);
 
@@ -131,7 +130,6 @@ public class VacationRestControllerTest {
         Vacation vacation = createVacationNoId();
         vacation.setId(1);
         VacationDto vacationDto = vacationMapper.vacationToDto(vacation);
-        when(teacherService.findByFirstNameAndLastNameAndBirthDate(vacationDto.getTeacherDto().getFirstName(), vacationDto.getTeacherDto().getLastName(), vacationDto.getTeacherDto().getBirthDate())).thenReturn(vacation.getTeacher());
         when(lectureService.findByTeacherIdAndPeriod(vacation.getTeacher().getId(), vacation.getStart(), vacation.getEnd())).thenReturn(new ArrayList<>());
         when(vacationService.save(vacation)).thenReturn(vacation);
 
@@ -146,7 +144,6 @@ public class VacationRestControllerTest {
         Vacation vacation = createVacationNoId();
         vacation.setId(1);
         VacationDto vacationDto = vacationMapper.vacationToDto(vacation);
-        when(teacherService.findByFirstNameAndLastNameAndBirthDate(vacationDto.getTeacherDto().getFirstName(), vacationDto.getTeacherDto().getLastName(), vacationDto.getTeacherDto().getBirthDate())).thenReturn(vacation.getTeacher());
 
         mockMvc.perform(delete("/api/teachers/{id}/vacations/{vacId}", 1, 1)
                 .content(objectMapper.writeValueAsString(vacationDto))

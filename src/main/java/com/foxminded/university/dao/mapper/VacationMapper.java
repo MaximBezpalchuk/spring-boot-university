@@ -11,13 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class VacationMapper {
 
     @Autowired
-    protected TeacherService teacherService;
-    @Autowired
     protected TeacherMapper teacherMapper;
 
     @Mapping(target = "teacherDto", expression = "java(teacherMapper.teacherToDto(vacation.getTeacher()))")
     public abstract VacationDto vacationToDto(Vacation vacation);
 
-    @Mapping(target = "teacher", expression = "java(teacherService.findByFirstNameAndLastNameAndBirthDate(vacationDto.getTeacherDto().getFirstName(), vacationDto.getTeacherDto().getLastName(), vacationDto.getTeacherDto().getBirthDate()))")
+    @Mapping(target = "teacher", expression = "java(teacherMapper.dtoToTeacher(vacationDto.getTeacherDto()))")
     public abstract Vacation dtoToVacation(VacationDto vacationDto);
 }
