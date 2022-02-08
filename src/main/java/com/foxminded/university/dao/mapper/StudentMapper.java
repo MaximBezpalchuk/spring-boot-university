@@ -13,29 +13,9 @@ public abstract class StudentMapper {
     @Autowired
     protected GroupService groupService;
 
-    @Mapping(target = "id", source = "student.id")
-    @Mapping(target = "firstName", source = "student.firstName")
-    @Mapping(target = "lastName", source = "student.lastName")
-    @Mapping(target = "phone", source = "student.phone")
-    @Mapping(target = "address", source = "student.address")
-    @Mapping(target = "email", source = "student.email")
-    @Mapping(target = "gender", source = "student.gender")
-    @Mapping(target = "postalCode", source = "student.postalCode")
-    @Mapping(target = "education", source = "student.education")
-    @Mapping(target = "birthDate", source = "student.birthDate")
     @Mapping(target = "groupName", source = "student.group.name")
     public abstract StudentDto studentToDto(Student student);
 
-    @Mapping(target = "id", source = "studentDto.id")
-    @Mapping(target = "firstName", source = "studentDto.firstName")
-    @Mapping(target = "lastName", source = "studentDto.lastName")
-    @Mapping(target = "phone", source = "studentDto.phone")
-    @Mapping(target = "address", source = "studentDto.address")
-    @Mapping(target = "email", source = "studentDto.email")
-    @Mapping(target = "gender", source = "studentDto.gender")
-    @Mapping(target = "postalCode", source = "studentDto.postalCode")
-    @Mapping(target = "education", source = "studentDto.education")
-    @Mapping(target = "birthDate", source = "studentDto.birthDate")
     @Mapping(target = "group", expression = "java(groupService.findByName(studentDto.getGroupName()))")
     public abstract Student dtoToStudent(StudentDto studentDto);
 }

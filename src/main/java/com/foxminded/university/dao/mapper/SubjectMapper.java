@@ -13,15 +13,9 @@ public abstract class SubjectMapper {
     @Autowired
     protected CathedraService cathedraService;
 
-    @Mapping(target = "id", source = "subject.id")
-    @Mapping(target = "name", source = "subject.name")
-    @Mapping(target = "description", source = "subject.description")
     @Mapping(target = "cathedraName", source = "subject.cathedra.name")
     public abstract SubjectDto subjectToDto(Subject subject);
 
-    @Mapping(target = "id", source = "subjectDto.id")
-    @Mapping(target = "name", source = "subjectDto.name")
-    @Mapping(target = "description", source = "subjectDto.description")
     @Mapping(target = "cathedra", expression = "java(cathedraService.findByName(subjectDto.getCathedraName()))")
     public abstract Subject dtoToSubject(SubjectDto subjectDto);
 }

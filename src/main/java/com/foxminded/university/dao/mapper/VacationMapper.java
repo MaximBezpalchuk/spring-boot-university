@@ -15,15 +15,9 @@ public abstract class VacationMapper {
     @Autowired
     protected TeacherMapper teacherMapper;
 
-    @Mapping(target = "id", source = "vacation.id")
-    @Mapping(target = "start", source = "vacation.start")
-    @Mapping(target = "end", source = "vacation.end")
     @Mapping(target = "teacherDto", expression = "java(teacherMapper.teacherToDto(vacation.getTeacher()))")
     public abstract VacationDto vacationToDto(Vacation vacation);
 
-    @Mapping(target = "id", source = "vacationDto.id")
-    @Mapping(target = "start", source = "vacationDto.start")
-    @Mapping(target = "end", source = "vacationDto.end")
     @Mapping(target = "teacher", expression = "java(teacherService.findByFirstNameAndLastNameAndBirthDate(vacationDto.getTeacherDto().getFirstName(), vacationDto.getTeacherDto().getLastName(), vacationDto.getTeacherDto().getBirthDate()))")
     public abstract Vacation dtoToVacation(VacationDto vacationDto);
 }

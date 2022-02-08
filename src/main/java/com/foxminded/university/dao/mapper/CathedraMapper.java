@@ -8,11 +8,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public abstract class CathedraMapper {
 
-    @Mapping(target = "id", source = "cathedra.id")
-    @Mapping(target = "name", source = "cathedra.name")
     public abstract CathedraDto cathedraToDto(Cathedra cathedra);
 
-    @Mapping(target = "id", source = "cathedraDto.id")
-    @Mapping(target = "name", source = "cathedraDto.name")
     public abstract Cathedra dtoToCathedra(CathedraDto cathedraDto);
 }

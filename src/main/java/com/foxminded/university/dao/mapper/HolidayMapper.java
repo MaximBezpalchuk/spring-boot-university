@@ -13,15 +13,9 @@ public abstract class HolidayMapper {
     @Autowired
     protected CathedraService cathedraService;
 
-    @Mapping(target = "id", source = "holiday.id")
-    @Mapping(target = "name", source = "holiday.name")
-    @Mapping(target = "date", source = "holiday.date")
     @Mapping(target = "cathedraName", source = "holiday.cathedra.name")
     public abstract HolidayDto holidayToDto(Holiday holiday);
 
-    @Mapping(target = "id", source = "holidayDto.id")
-    @Mapping(target = "name", source = "holidayDto.name")
-    @Mapping(target = "date", source = "holidayDto.date")
     @Mapping(target = "cathedra", expression = "java(cathedraService.findByName(holidayDto.getCathedraName()))")
     public abstract Holiday dtoToHoliday(HolidayDto holidayDto);
 }
