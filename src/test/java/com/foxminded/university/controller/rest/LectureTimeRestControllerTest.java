@@ -12,10 +12,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -34,7 +34,8 @@ public class LectureTimeRestControllerTest {
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
-    private final LectureTimeMapper lectureTimeMapper = Mappers.getMapper(LectureTimeMapper.class);
+    @Spy
+    private LectureTimeMapper lectureTimeMapper = Mappers.getMapper(LectureTimeMapper.class);
     @Mock
     private LectureTimeService lectureTimeService;
     @InjectMocks
@@ -45,7 +46,6 @@ public class LectureTimeRestControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(lectureTimeRestController).build();
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
-        ReflectionTestUtils.setField(lectureTimeRestController, "lectureTimeMapper", lectureTimeMapper);
     }
 
     @Test

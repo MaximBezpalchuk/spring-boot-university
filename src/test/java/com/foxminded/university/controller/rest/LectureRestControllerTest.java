@@ -12,6 +12,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -39,17 +40,16 @@ public class LectureRestControllerTest {
 
     private MockMvc mockMvc;
     private ObjectMapper objectMapper;
-    private final LectureMapper lectureMapper = Mappers.getMapper(LectureMapper.class);
-    private final TeacherMapper teacherMapper = Mappers.getMapper(TeacherMapper .class);
-    private final CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper .class);
-    private final SubjectMapper subjectMapper = Mappers.getMapper(SubjectMapper .class);
-    private final GroupMapper groupMapper = Mappers.getMapper(GroupMapper .class);
-    private final AudienceMapper audienceMapper = Mappers.getMapper(AudienceMapper .class);
-    private final LectureTimeMapper lectureTimeMapper = Mappers.getMapper(LectureTimeMapper .class);
+    private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper .class);
+    private GroupMapper groupMapper = new GroupMapperImpl(cathedraMapper);
+    private SubjectMapper subjectMapper = new SubjectMapperImpl(cathedraMapper);
+    private TeacherMapper teacherMapper = new TeacherMapperImpl(cathedraMapper, subjectMapper);
+    private AudienceMapper audienceMapper = new AudienceMapperImpl(cathedraMapper);
+    private LectureTimeMapper lectureTimeMapper = Mappers.getMapper(LectureTimeMapper .class);
+    @Spy
+    private LectureMapper lectureMapper = new LectureMapperImpl(cathedraMapper, groupMapper, teacherMapper, audienceMapper, subjectMapper, lectureTimeMapper);
     @Mock
     private LectureService lectureService;
-    @Mock
-    private LectureTimeService lectureTimeService;
     @InjectMocks
     private LectureRestController lectureRestController;
 
@@ -60,18 +60,6 @@ public class LectureRestControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(lectureRestController).setCustomArgumentResolvers(resolver).build();
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
-        ReflectionTestUtils.setField(lectureRestController, "lectureMapper", lectureMapper);
-        ReflectionTestUtils.setField(lectureMapper, "lectureTimeMapper", lectureTimeMapper);
-        ReflectionTestUtils.setField(lectureMapper, "subjectMapper", subjectMapper);
-        ReflectionTestUtils.setField(subjectMapper, "cathedraMapper", cathedraMapper);
-        ReflectionTestUtils.setField(lectureMapper, "audienceMapper", audienceMapper);
-        ReflectionTestUtils.setField(audienceMapper, "cathedraMapper", cathedraMapper);
-        ReflectionTestUtils.setField(lectureMapper, "teacherMapper", teacherMapper);
-        ReflectionTestUtils.setField(lectureMapper, "groupMapper", groupMapper);
-        ReflectionTestUtils.setField(groupMapper, "cathedraMapper", cathedraMapper);
-        ReflectionTestUtils.setField(lectureMapper, "cathedraMapper", cathedraMapper);
-        ReflectionTestUtils.setField(teacherMapper, "cathedraMapper", cathedraMapper);
-        ReflectionTestUtils.setField(teacherMapper, "subjectMapper", subjectMapper);
     }
 
     @Test

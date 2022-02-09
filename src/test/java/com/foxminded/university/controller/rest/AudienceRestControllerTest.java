@@ -2,23 +2,23 @@ package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foxminded.university.dao.mapper.AudienceMapper;
+import com.foxminded.university.dao.mapper.AudienceMapperImpl;
 import com.foxminded.university.dao.mapper.CathedraMapper;
 import com.foxminded.university.dto.AudienceDto;
 import com.foxminded.university.dto.Slice;
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.service.AudienceService;
-import com.foxminded.university.service.CathedraService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -35,13 +35,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AudienceRestControllerTest {
 
     private MockMvc mockMvc;
-    private AudienceMapper audienceMapper = Mappers.getMapper(AudienceMapper.class);
-    private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper .class);
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
+    private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper.class);
+    @Spy
+    private AudienceMapper audienceMapper = new AudienceMapperImpl(cathedraMapper);
     @Mock
     private AudienceService audienceService;
-    @Mock
-    private CathedraService cathedraService;
     @InjectMocks
     private AudienceRestController audienceRestController;
 
@@ -49,9 +48,6 @@ public class AudienceRestControllerTest {
     public void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(audienceRestController).build();
         objectMapper = new ObjectMapper();
-        ReflectionTestUtils.setField(audienceRestController, "audienceMapper", audienceMapper);
-        ReflectionTestUtils.setField(audienceMapper, "cathedraService", cathedraService);
-        ReflectionTestUtils.setField(audienceMapper, "cathedraMapper", cathedraMapper);
     }
 
     @Test

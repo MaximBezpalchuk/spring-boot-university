@@ -3,11 +3,10 @@ package com.foxminded.university.controller.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foxminded.university.dao.mapper.CathedraMapper;
 import com.foxminded.university.dao.mapper.HolidayMapper;
+import com.foxminded.university.dao.mapper.HolidayMapperImpl;
 import com.foxminded.university.dto.HolidayDto;
-import com.foxminded.university.dto.Slice;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Holiday;
-import com.foxminded.university.service.CathedraService;
 import com.foxminded.university.service.HolidayService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -22,7 +22,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -41,13 +40,12 @@ public class HolidayRestControllerTest {
 
 
     private MockMvc mockMvc;
-    private final HolidayMapper holidayMapper = Mappers.getMapper(HolidayMapper .class);
-    private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper .class);
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
+    private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper.class);
+    @Spy
+    private HolidayMapper holidayMapper = new HolidayMapperImpl(cathedraMapper);
     @Mock
     private HolidayService holidayService;
-    @Mock
-    private CathedraService cathedraService;
     @InjectMocks
     private HolidayRestController holidayRestController;
 
@@ -58,9 +56,6 @@ public class HolidayRestControllerTest {
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
         mockMvc = MockMvcBuilders.standaloneSetup(holidayRestController).setCustomArgumentResolvers(resolver).build();
-        ReflectionTestUtils.setField(holidayRestController, "holidayMapper", holidayMapper);
-        ReflectionTestUtils.setField(holidayMapper, "cathedraService", cathedraService);
-        ReflectionTestUtils.setField(holidayMapper, "cathedraMapper", cathedraMapper);
     }
 
     @Test

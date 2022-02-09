@@ -1,15 +1,12 @@
 package com.foxminded.university.controller.rest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.foxminded.university.dao.mapper.CathedraMapper;
-import com.foxminded.university.dao.mapper.GroupMapper;
-import com.foxminded.university.dao.mapper.StudentMapper;
-import com.foxminded.university.dto.Slice;
+import com.foxminded.university.dao.mapper.*;
 import com.foxminded.university.dto.StudentDto;
+import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Gender;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Student;
-import com.foxminded.university.service.GroupService;
 import com.foxminded.university.service.StudentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -25,7 +23,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -43,10 +40,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class StudentRestControllerTest {
 
     private MockMvc mockMvc;
-    private final StudentMapper studentMapper = Mappers.getMapper(StudentMapper.class);
-    private final GroupMapper groupMapper = Mappers.getMapper(GroupMapper.class);
-    private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper .class);
     private ObjectMapper objectMapper;
+    private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper.class);
+    private GroupMapper groupMapper = new GroupMapperImpl(cathedraMapper);
+    @Spy
+    private StudentMapper studentMapper = new StudentMapperImpl(groupMapper);
     @Mock
     private StudentService studentService;
     @InjectMocks
@@ -59,9 +57,6 @@ public class StudentRestControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(studentRestController).setCustomArgumentResolvers(resolver).build();
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
-        ReflectionTestUtils.setField(studentRestController, "studentMapper", studentMapper);
-        ReflectionTestUtils.setField(studentMapper, "groupMapper", groupMapper);
-        ReflectionTestUtils.setField(groupMapper, "cathedraMapper", cathedraMapper);
     }
 
     @Test
@@ -142,7 +137,9 @@ public class StudentRestControllerTest {
     }
 
     private Student createStudentNoId() {
-        Group group = Group.builder().id(1).name("Killers").build();
+        Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+        Group group = Group.builder().id(1).name("Killers").cathedra(cathedra).build();
+
         return Student.builder()
                 .firstName("Name")
                 .lastName("Last name")

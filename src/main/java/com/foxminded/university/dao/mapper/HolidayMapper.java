@@ -2,22 +2,16 @@ package com.foxminded.university.dao.mapper;
 
 import com.foxminded.university.dto.HolidayDto;
 import com.foxminded.university.model.Holiday;
-import com.foxminded.university.service.CathedraService;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.springframework.beans.factory.annotation.Autowired;
 
-@Mapper(componentModel = "spring")
-public abstract class HolidayMapper {
+@Mapper(componentModel = "spring", uses = {CathedraMapper.class}, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+public interface HolidayMapper {
 
-    @Autowired
-    protected CathedraService cathedraService;
-    @Autowired
-    protected CathedraMapper cathedraMapper;
+    @Mapping(target = "cathedraDto", source = "holiday.cathedra")
+    HolidayDto holidayToDto(Holiday holiday);
 
-    @Mapping(target = "cathedraDto", expression = "java(cathedraMapper.cathedraToDto(holiday.getCathedra()))")
-    public abstract HolidayDto holidayToDto(Holiday holiday);
-
-    @Mapping(target = "cathedra", expression = "java(cathedraMapper.dtoToCathedra(holidayDto.getCathedraDto()))")
-    public abstract Holiday dtoToHoliday(HolidayDto holidayDto);
+    @Mapping(target = "cathedra", source = "holidayDto.cathedraDto")
+    Holiday dtoToHoliday(HolidayDto holidayDto);
 }

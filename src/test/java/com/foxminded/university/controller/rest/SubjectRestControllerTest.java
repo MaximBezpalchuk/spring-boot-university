@@ -3,11 +3,10 @@ package com.foxminded.university.controller.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foxminded.university.dao.mapper.CathedraMapper;
 import com.foxminded.university.dao.mapper.SubjectMapper;
-import com.foxminded.university.dto.Slice;
+import com.foxminded.university.dao.mapper.SubjectMapperImpl;
 import com.foxminded.university.dto.SubjectDto;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Subject;
-import com.foxminded.university.service.CathedraService;
 import com.foxminded.university.service.SubjectService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -23,7 +23,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -31,7 +30,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -42,13 +40,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class SubjectRestControllerTest {
 
     private MockMvc mockMvc;
-    private final SubjectMapper subjectMapper = Mappers.getMapper(SubjectMapper.class);
-    private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper .class);
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
+    private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper.class);
+    @Spy
+    private SubjectMapper subjectMapper = new SubjectMapperImpl(cathedraMapper);
     @Mock
     private SubjectService subjectService;
-    @Mock
-    private CathedraService cathedraService;
     @InjectMocks
     private SubjectRestController subjectRestController;
 
@@ -59,9 +56,6 @@ public class SubjectRestControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(subjectRestController).setCustomArgumentResolvers(resolver).build();
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
-        ReflectionTestUtils.setField(subjectRestController, "subjectMapper", subjectMapper);
-        ReflectionTestUtils.setField(subjectMapper, "cathedraService", cathedraService);
-        ReflectionTestUtils.setField(subjectMapper, "cathedraMapper", cathedraMapper);
     }
 
     @Test

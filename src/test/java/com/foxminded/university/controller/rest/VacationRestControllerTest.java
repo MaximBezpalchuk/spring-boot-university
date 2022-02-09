@@ -7,7 +7,6 @@ import com.foxminded.university.dto.Slice;
 import com.foxminded.university.dto.VacationDto;
 import com.foxminded.university.model.*;
 import com.foxminded.university.service.LectureService;
-import com.foxminded.university.service.TeacherService;
 import com.foxminded.university.service.VacationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -22,7 +22,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -41,17 +40,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class VacationRestControllerTest {
 
     private MockMvc mockMvc;
-    private final VacationMapper vacationMapper = Mappers.getMapper(VacationMapper.class);
-    private final TeacherMapper teacherMapper = Mappers.getMapper(TeacherMapper.class);
-    private final LectureMapper lectureMapper = Mappers.getMapper(LectureMapper.class);
-    private final CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper .class);
-    private final SubjectMapper subjectMapper = Mappers.getMapper(SubjectMapper .class);
-
-    private final GroupMapper groupMapper = Mappers.getMapper(GroupMapper .class);
-    private final AudienceMapper audienceMapper = Mappers.getMapper(AudienceMapper .class);
-    private final LectureTimeMapper lectureTimeMapper = Mappers.getMapper(LectureTimeMapper .class);
-
     private ObjectMapper objectMapper;
+    private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper.class);
+    private GroupMapper groupMapper = new GroupMapperImpl(cathedraMapper);
+    private AudienceMapper audienceMapper = new AudienceMapperImpl(cathedraMapper);
+    private LectureTimeMapper lectureTimeMapper = Mappers.getMapper(LectureTimeMapper.class);
+    private SubjectMapper subjectMapper = new SubjectMapperImpl(cathedraMapper);
+    private TeacherMapper teacherMapper = new TeacherMapperImpl(cathedraMapper, subjectMapper);
+    @Spy
+    private VacationMapper vacationMapper = new VacationMapperImpl(teacherMapper);
+    @Spy
+    private LectureMapper lectureMapper = new LectureMapperImpl(cathedraMapper, groupMapper, teacherMapper, audienceMapper, subjectMapper, lectureTimeMapper);
     @Mock
     private LectureService lectureService;
     @Mock
@@ -66,20 +65,6 @@ public class VacationRestControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(vacationRestController).setCustomArgumentResolvers(resolver).build();
         objectMapper = new ObjectMapper();
         objectMapper.findAndRegisterModules();
-        ReflectionTestUtils.setField(vacationRestController, "vacationMapper", vacationMapper);
-        ReflectionTestUtils.setField(vacationRestController, "lectureMapper", lectureMapper);
-        ReflectionTestUtils.setField(vacationMapper, "teacherMapper", teacherMapper);
-        ReflectionTestUtils.setField(lectureMapper, "teacherMapper", teacherMapper);
-        ReflectionTestUtils.setField(lectureMapper, "cathedraMapper", cathedraMapper);
-        ReflectionTestUtils.setField(teacherMapper, "cathedraMapper", cathedraMapper);
-        ReflectionTestUtils.setField(teacherMapper, "subjectMapper", subjectMapper);
-        ReflectionTestUtils.setField(subjectMapper, "cathedraMapper", cathedraMapper);
-        ReflectionTestUtils.setField(audienceMapper, "cathedraMapper", cathedraMapper);
-        ReflectionTestUtils.setField(groupMapper, "cathedraMapper", cathedraMapper);
-        ReflectionTestUtils.setField(lectureMapper, "lectureTimeMapper", lectureTimeMapper);
-        ReflectionTestUtils.setField(lectureMapper, "audienceMapper", audienceMapper);
-        ReflectionTestUtils.setField(lectureMapper, "subjectMapper", subjectMapper);
-        ReflectionTestUtils.setField(lectureMapper, "groupMapper", groupMapper);
     }
 
     @Test

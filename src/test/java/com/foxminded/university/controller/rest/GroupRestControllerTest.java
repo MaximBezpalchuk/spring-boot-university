@@ -3,11 +3,11 @@ package com.foxminded.university.controller.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foxminded.university.dao.mapper.CathedraMapper;
 import com.foxminded.university.dao.mapper.GroupMapper;
+import com.foxminded.university.dao.mapper.GroupMapperImpl;
 import com.foxminded.university.dto.GroupDto;
 import com.foxminded.university.dto.Slice;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Group;
-import com.foxminded.university.service.CathedraService;
 import com.foxminded.university.service.GroupService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,10 +15,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -35,13 +35,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class GroupRestControllerTest {
 
     private MockMvc mockMvc;
-    private final GroupMapper groupMapper = Mappers.getMapper(GroupMapper.class);
-    private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper .class);
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
+    private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper.class);
+    @Spy
+    private GroupMapper groupMapper = new GroupMapperImpl(cathedraMapper);
     @Mock
     private GroupService groupService;
-    @Mock
-    private CathedraService cathedraService;
     @InjectMocks
     private GroupRestController groupRestController;
 
@@ -49,9 +48,6 @@ public class GroupRestControllerTest {
     public void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(groupRestController).build();
         objectMapper = new ObjectMapper();
-        ReflectionTestUtils.setField(groupRestController, "groupMapper", groupMapper);
-        ReflectionTestUtils.setField(groupMapper, "cathedraService", cathedraService);
-        ReflectionTestUtils.setField(groupMapper, "cathedraMapper", cathedraMapper);
     }
 
     @Test
