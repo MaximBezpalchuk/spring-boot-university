@@ -1,20 +1,18 @@
 package com.foxminded.university.mapper;
 
 import com.foxminded.university.dao.mapper.*;
-import com.foxminded.university.dto.LectureDto;
+import com.foxminded.university.dto.*;
 import com.foxminded.university.model.*;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@ExtendWith(MockitoExtension.class)
 public class LectureMapperTest {
 
     private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper.class);
@@ -39,7 +37,7 @@ public class LectureMapperTest {
                 .audience(audience)
                 .cathedra(cathedra)
                 .date(LocalDate.of(2021, 1, 1))
-                .group(Arrays.asList(group))
+                .groups(Arrays.asList(group))
                 .subject(subject)
                 .teacher(teacher)
                 .time(lectureTime)
@@ -62,5 +60,35 @@ public class LectureMapperTest {
         assertEquals(lectureDto.getTeacher().getSubjects().get(0).getId(), 1);
         assertEquals(lectureDto.getTeacher().getSubjects().get(0).getCathedra().getId(), 1);
         assertEquals(lectureDto.getTime().getId(), 1);
+    }
+
+    @Test
+    void shouldMapVacationDtoToVacation() {
+        // given
+        CathedraDto cathedraDto = new CathedraDto(1, "Fantastic Cathedra");
+        GroupDto groupDto = new GroupDto(1, "Killers", cathedraDto);
+        SubjectDto subjectDto = new SubjectDto(1, cathedraDto, "Subject Name", "Subject desc" );
+        TeacherDto teacherDto = new TeacherDto(1, "TestName", "TestLastName", "88005553535", "Address", "one@mail.com", Gender.MALE, "123", "Edu", LocalDate.of(2020,1,1), cathedraDto, Arrays.asList(subjectDto), Degree.PROFESSOR);
+        AudienceDto audienceDto = new AudienceDto(1, 1, 10, cathedraDto);
+        LectureTimeDto lectureTimeDto = new LectureTimeDto(1, LocalTime.of(8, 0), LocalTime.of(9, 45));
+        LectureDto lectureDto = new LectureDto(1, cathedraDto, Arrays.asList(groupDto), teacherDto, audienceDto, LocalDate.of(2021, 1, 1), subjectDto, lectureTimeDto);
+        // when
+        Lecture lecture = lectureMapper.dtoToLecture(lectureDto);
+        // then
+        assertNotNull(lecture);
+        assertEquals(lecture.getId(), 1);
+        assertEquals(lecture.getAudience().getId(), 1);
+        assertEquals(lecture.getAudience().getCathedra().getId(), 1);
+        assertEquals(lecture.getCathedra().getId(), 1);
+        assertEquals(lecture.getDate(), LocalDate.of(2021, 1, 1));
+        assertEquals(lecture.getGroups().get(0).getId(), 1);
+        assertEquals(lecture.getGroups().get(0).getCathedra().getId(), 1);
+        assertEquals(lecture.getSubject().getId(), 1);
+        assertEquals(lecture.getSubject().getCathedra().getId(), 1);
+        assertEquals(lecture.getTeacher().getId(), 1);
+        assertEquals(lecture.getTeacher().getCathedra().getId(), 1);
+        assertEquals(lecture.getTeacher().getSubjects().get(0).getId(), 1);
+        assertEquals(lecture.getTeacher().getSubjects().get(0).getCathedra().getId(), 1);
+        assertEquals(lecture.getTime().getId(), 1);
     }
 }

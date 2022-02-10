@@ -81,18 +81,17 @@ public class LectureTimeRestControllerTest {
 
     @Test
     public void whenSaveLectureTime_thenLectureTimeSaved() throws Exception {
-        LectureTime lectureTime1 = createLectureTimeNoId();
-        LectureTime lectureTime2 = createLectureTimeNoId();
-        lectureTime2.setId(2);
-        LectureTimeDto lectureTimeDto = lectureTimeMapper.lectureTimeToDto(lectureTime1);
-        when(lectureTimeService.save(lectureTime1)).thenReturn(lectureTime2);
+        LectureTime lectureTime = createLectureTimeNoId();
+        LectureTimeDto lectureTimeDto = lectureTimeMapper.lectureTimeToDto(lectureTime);
+        when(lectureTimeService.save(lectureTime)).thenAnswer(I -> {
+            lectureTime.setId(2);
+            return lectureTime;
+        });
         mockMvc.perform(post("/api/lecturetimes")
                 .content(objectMapper.writeValueAsString(lectureTimeDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/api/lecturetimes/2"))
                 .andExpect(status().isCreated());
-
-        verify(lectureTimeService).save(lectureTime1);
     }
 
     @Test
@@ -110,16 +109,11 @@ public class LectureTimeRestControllerTest {
 
     @Test
     public void whenDeleteLectureTime_thenLectureTimeDeleted() throws Exception {
-        LectureTime lectureTime = createLectureTimeNoId();
-        lectureTime.setId(1);
-        LectureTimeDto lectureTimeDto = lectureTimeMapper.lectureTimeToDto(lectureTime);
-
         mockMvc.perform(delete("/api/lecturetimes/{id}", 1)
-                .content(objectMapper.writeValueAsString(lectureTimeDto))
                 .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(lectureTimeService).delete(lectureTime);
+        verify(lectureTimeService).delete(1);
     }
 
     private LectureTime createLectureTimeNoId() {

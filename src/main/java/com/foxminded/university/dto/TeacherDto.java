@@ -36,11 +36,11 @@ public class TeacherDto {
     private LocalDate birthDate;
     @NotNull(message = "{Cathedra.notNull}")
     private CathedraDto cathedra;
-    private Degree degree;
     @NotEmpty(message = "{Subjects.teacher.notEmpty}")
     private List<SubjectDto> subjects = new ArrayList<>();
+    private Degree degree;
 
-    public TeacherDto(Integer id, String firstName, String lastName, String phone, String address, String email, Gender gender, String postalCode, String education, LocalDate birthDate, CathedraDto cathedra, Degree degree, List<SubjectDto> subjects) {
+    public TeacherDto(Integer id, String firstName, String lastName, String phone, String address, String email, Gender gender, String postalCode, String education, LocalDate birthDate, CathedraDto cathedra, List<SubjectDto> subjects, Degree degree) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -52,8 +52,8 @@ public class TeacherDto {
         this.education = education;
         this.birthDate = birthDate;
         this.cathedra = cathedra;
-        this.degree = degree;
         this.subjects = subjects;
+        this.degree = degree;
     }
 
     public TeacherDto() {
@@ -147,19 +147,19 @@ public class TeacherDto {
         this.cathedra = cathedra;
     }
 
-    public Degree getDegree() {
-        return degree;
-    }
-
-    public void setDegree(Degree degree) {
-        this.degree = degree;
-    }
-
     public List<SubjectDto> getSubjects() {
         return subjects;
     }
 
     public void setSubjects(List<SubjectDto> subjects) {
         this.subjects = subjects;
+    }
+
+    public Degree getDegree() {
+        return degree;
+    }
+
+    public void setDegree(Degree degree) {
+        this.degree = degree;
     }
 }

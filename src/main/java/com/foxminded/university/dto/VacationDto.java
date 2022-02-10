@@ -50,7 +50,7 @@ public class VacationDto {
         this.end = end;
     }
 
-    public TeacherDto getTeacherDto() {
+    public TeacherDto getTeacher() {
         return teacher;
     }
 

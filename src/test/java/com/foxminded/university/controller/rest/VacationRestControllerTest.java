@@ -102,20 +102,19 @@ public class VacationRestControllerTest {
 
     @Test
     public void whenSaveVacation_thenVacationSaved() throws Exception {
-        Vacation vacation1 = createVacationNoId();
-        Vacation vacation2 = createVacationNoId();
-        vacation2.setId(2);
-        VacationDto vacationDto = vacationMapper.vacationToDto(vacation1);
-        when(lectureService.findByTeacherIdAndPeriod(vacation1.getTeacher().getId(), vacation1.getStart(), vacation1.getEnd())).thenReturn(new ArrayList<>());
-        when(vacationService.save(vacation1)).thenReturn(vacation2);
+        Vacation vacation = createVacationNoId();
+        VacationDto vacationDto = vacationMapper.vacationToDto(vacation);
+        when(lectureService.findByTeacherIdAndPeriod(vacation.getTeacher().getId(), vacation.getStart(), vacation.getEnd())).thenReturn(new ArrayList<>());
+        when(vacationService.save(vacation)).thenAnswer(I -> {
+            vacation.setId(2);
+            return vacation;
+        });
 
-        mockMvc.perform(post("/api/teachers/{id}/vacations", vacation1.getTeacher().getId())
+        mockMvc.perform(post("/api/teachers/{id}/vacations", vacation.getTeacher().getId())
                 .content(objectMapper.writeValueAsString(vacationDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/api/teachers/1/vacations/2"))
                 .andExpect(status().isCreated());
-
-        verify(vacationService).save(vacation1);
     }
 
     @Test
@@ -134,16 +133,12 @@ public class VacationRestControllerTest {
 
     @Test
     public void whenDeleteVacation_thenVacationDeleted() throws Exception {
-        Vacation vacation = createVacationNoId();
-        vacation.setId(1);
-        VacationDto vacationDto = vacationMapper.vacationToDto(vacation);
 
         mockMvc.perform(delete("/api/teachers/{id}/vacations/{vacId}", 1, 1)
-                .content(objectMapper.writeValueAsString(vacationDto))
                 .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(vacationService).delete(vacation);
+        verify(vacationService).delete(1);
     }
 
     @Test
@@ -163,8 +158,13 @@ public class VacationRestControllerTest {
     }
 
     private Vacation createVacationNoId() {
-        Teacher teacher = Teacher.builder().id(1).firstName("Name").lastName("Last name").degree(Degree.ASSISTANT).gender(Gender.MALE)
+        Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
+        Subject subject = Subject.builder().id(1).cathedra(cathedra).name("Subject name").description("Subject desc")
                 .build();
+        Teacher teacher = Teacher.builder().id(1).firstName("TestName").lastName("TestLastName").phone("88005553535")
+                .address("Address").email("one@mail.com").gender(Gender.MALE).postalCode("123").education("Edu")
+                .birthDate(LocalDate.of(2020, 1, 1)).cathedra(cathedra).subjects(Arrays.asList(subject))
+                .degree(Degree.PROFESSOR).build();
 
         return Vacation.builder()
                 .teacher(teacher)

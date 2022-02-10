@@ -86,7 +86,7 @@ public class LectureControllerTest {
             .audience(audience)
             .cathedra(cathedra)
             .date(LocalDate.of(2021, 1, 1))
-            .group(Arrays.asList(group))
+            .groups(Arrays.asList(group))
             .subject(subject)
             .teacher(teacher)
             .time(time)
@@ -96,7 +96,7 @@ public class LectureControllerTest {
             .audience(audience)
             .cathedra(cathedra)
             .date(LocalDate.of(2021, 1, 2))
-            .group(Arrays.asList(group))
+            .groups(Arrays.asList(group))
             .subject(subject)
             .teacher(teacher)
             .time(time)
@@ -132,7 +132,7 @@ public class LectureControllerTest {
             .audience(audience)
             .cathedra(cathedra)
             .date(LocalDate.of(2021, 1, 1))
-            .group(Arrays.asList(group))
+            .groups(Arrays.asList(group))
             .subject(subject)
             .teacher(teacher)
             .time(time)
@@ -186,7 +186,7 @@ public class LectureControllerTest {
             .audience(audience)
             .cathedra(cathedra)
             .date(LocalDate.of(2021, 1, 1))
-            .group(Arrays.asList(group))
+            .groups(Arrays.asList(group))
             .subject(subject)
             .teacher(teacher)
             .time(time)
@@ -214,7 +214,7 @@ public class LectureControllerTest {
             .audience(audience)
             .cathedra(cathedra)
             .date(LocalDate.of(2021, 1, 1))
-            .group(Arrays.asList(group))
+            .groups(Arrays.asList(group))
             .subject(subject)
             .teacher(teacher)
             .time(time)
@@ -240,7 +240,7 @@ public class LectureControllerTest {
         mockMvc.perform(delete("/lectures/{id}", 1))
             .andExpect(redirectedUrl("/lectures"));
 
-        verify(lectureService).delete(Lecture.builder().id(1).build());
+        verify(lectureService).delete(1);
     }
 
     @Test
@@ -365,7 +365,7 @@ public class LectureControllerTest {
             .audience(audience)
             .cathedra(cathedra)
             .date(LocalDate.of(2021, 1, 1))
-            .group(Arrays.asList(group))
+            .groups(Arrays.asList(group))
             .subject(subject)
             .teacher(teacher)
             .time(time)

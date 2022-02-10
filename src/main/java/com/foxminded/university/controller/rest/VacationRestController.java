@@ -124,7 +124,7 @@ public class VacationRestController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@RequestBody VacationDto vacationDto) {
-        vacationService.delete(vacationMapper.dtoToVacation(vacationDto));
+    public void delete(@PathVariable int id) {
+        vacationService.delete(id);
     }
 }

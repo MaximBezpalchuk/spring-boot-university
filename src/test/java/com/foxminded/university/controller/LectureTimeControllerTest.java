@@ -118,6 +118,6 @@ public class LectureTimeControllerTest {
         mockMvc.perform(delete("/lecturetimes/{id}", 1))
             .andExpect(redirectedUrl("/lecturetimes"));
 
-        verify(lectureTimeService).delete(LectureTime.builder().id(1).build());
+        verify(lectureTimeService).delete(1);
     }
 }

@@ -62,9 +62,9 @@ public class TeacherService {
         return teacherRepository.save(teacher);
     }
 
-    public void delete(Teacher teacher) {
-        logger.debug("Delete teacher with id: {}", teacher.getId());
-        teacherRepository.delete(teacher);
+    public void delete(int id) {
+        logger.debug("Delete teacher with id: {}", id);
+        teacherRepository.deleteById(id);
     }
 
     private void uniqueCheck(Teacher teacher) {

@@ -6,18 +6,18 @@ import javax.validation.constraints.NotNull;
 public class SubjectDto {
 
     private Integer id;
+    @NotNull(message = "{Cathedra.notNull}")
+    private CathedraDto cathedra;
     @NotBlank(message = "{Name.subject.notBlank}")
     private String name;
     @NotBlank(message = "{Description.subject.notBlank}")
     private String description;
-    @NotNull(message = "{Cathedra.notNull}")
-    private CathedraDto cathedra;
 
-    public SubjectDto(Integer id, String name, String description, CathedraDto cathedra) {
+    public SubjectDto(Integer id, CathedraDto cathedra, String name, String description) {
         this.id = id;
+        this.cathedra = cathedra;
         this.name = name;
         this.description = description;
-        this.cathedra = cathedra;
     }
 
     public SubjectDto() {
@@ -29,6 +29,14 @@ public class SubjectDto {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public CathedraDto getCathedra() {
+        return cathedra;
+    }
+
+    public void setCathedra(CathedraDto cathedra) {
+        this.cathedra = cathedra;
     }
 
     public String getName() {
@@ -45,13 +53,5 @@ public class SubjectDto {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public CathedraDto getCathedra() {
-        return cathedra;
-    }
-
-    public void setCathedra(CathedraDto cathedra) {
-        this.cathedra = cathedra;
     }
 }

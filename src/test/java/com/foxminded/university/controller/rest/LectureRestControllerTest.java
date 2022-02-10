@@ -14,9 +14,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -78,8 +81,6 @@ public class LectureRestControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().string(objectMapper.writeValueAsString(pageDtos)))
                 .andExpect(status().isOk());
-
-        verifyNoMoreInteractions(lectureService);
     }
 
     @Test
@@ -97,19 +98,18 @@ public class LectureRestControllerTest {
 
     @Test
     public void whenSaveLecture_thenLectureSaved() throws Exception {
-        Lecture lecture1 = createLectureNoId();
-        Lecture lecture2 = createLectureNoId();
-        lecture2.setId(2);
-        LectureDto lectureDto = lectureMapper.lectureToDto(lecture1);
-        when(lectureService.save(lecture1)).thenReturn(lecture2);
+        Lecture lecture = createLectureNoId();
+        LectureDto lectureDto = lectureMapper.lectureToDto(lecture);
+        when(lectureService.save(lecture)).thenAnswer(I -> {
+            lecture.setId(2);
+            return lecture;
+        });
 
         mockMvc.perform(post("/api/lectures")
                 .content(objectMapper.writeValueAsString(lectureDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/api/lectures/2"))
                 .andExpect(status().isCreated());
-
-        verify(lectureService).save(lecture1);
     }
 
     @Test
@@ -127,23 +127,18 @@ public class LectureRestControllerTest {
 
     @Test
     public void whenDeleteLecture_thenLectureDeleted() throws Exception {
-        Lecture lecture = createLectureNoId();
-        lecture.setId(1);
-        LectureDto lectureDto = lectureMapper.lectureToDto(lecture);
-
         mockMvc.perform(delete("/api/lectures/{id}", 1)
-                .content(objectMapper.writeValueAsString(lectureDto))
                 .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(lectureService).delete(lecture);
+        verify(lectureService).delete(1);
     }
 
     private Lecture createLectureNoId() {
         Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
         Audience audience = Audience.builder().id(1).room(1).capacity(10).build();
         Group group = Group.builder().id(1).name("Group Name").cathedra(cathedra).build();
-        Subject subject = Subject.builder().id(1).name("Subject name").description("Subject desc").cathedra(cathedra)
+        Subject subject = Subject.builder().id(1).cathedra(cathedra).name("Subject name").description("Subject desc")
                 .build();
         Teacher teacher = Teacher.builder().id(1).firstName("TestName").lastName("TestLastName").phone("88005553535")
                 .address("Address").email("one@mail.com").gender(Gender.MALE).postalCode("123").education("Edu")
@@ -155,7 +150,7 @@ public class LectureRestControllerTest {
                 .audience(audience)
                 .cathedra(cathedra)
                 .date(LocalDate.of(2021, 1, 1))
-                .group(Arrays.asList(group))
+                .groups(Arrays.asList(group))
                 .subject(subject)
                 .teacher(teacher)
                 .time(time)

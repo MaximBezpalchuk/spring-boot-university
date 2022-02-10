@@ -1,12 +1,13 @@
 package com.foxminded.university.mapper;
 
 import com.foxminded.university.dao.mapper.*;
+import com.foxminded.university.dto.CathedraDto;
+import com.foxminded.university.dto.SubjectDto;
+import com.foxminded.university.dto.TeacherDto;
 import com.foxminded.university.dto.VacationDto;
 import com.foxminded.university.model.*;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -14,7 +15,6 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@ExtendWith(MockitoExtension.class)
 public class VacationMapperTest {
 
     private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper.class);
@@ -41,8 +41,27 @@ public class VacationMapperTest {
         assertEquals(vacationDto.getId(), 1);
         assertEquals(vacationDto.getStart(), LocalDate.of(2021, 1, 1));
         assertEquals(vacationDto.getEnd(), LocalDate.of(2021, 1, 2));
-        assertEquals(vacationDto.getTeacherDto().getCathedra().getId(), 1);
-        assertEquals(vacationDto.getTeacherDto().getSubjects().get(0).getId(), 1);
-        assertEquals(vacationDto.getTeacherDto().getSubjects().get(0).getCathedra().getId(), 1);
+        assertEquals(vacationDto.getTeacher().getCathedra().getId(), 1);
+        assertEquals(vacationDto.getTeacher().getSubjects().get(0).getId(), 1);
+        assertEquals(vacationDto.getTeacher().getSubjects().get(0).getCathedra().getId(), 1);
+    }
+
+    @Test
+    void shouldMapVacationDtoToVacation() {
+        // given
+        CathedraDto cathedraDto = new CathedraDto(1, "Fantastic Cathedra");
+        SubjectDto subjectDto = new SubjectDto(1, cathedraDto, "Subject Name", "Subject desc" );
+        TeacherDto teacherDto = new TeacherDto(1, "TestName", "TestLastName", "88005553535", "Address", "one@mail.com", Gender.MALE, "123", "Edu", LocalDate.of(2020,1,1), cathedraDto, Arrays.asList(subjectDto), Degree.PROFESSOR);
+        VacationDto vacationDto = new VacationDto(1, LocalDate.of(2021, 1, 1), LocalDate.of(2021, 1, 2), teacherDto);
+        // when
+        Vacation vacation = vacationMapper.dtoToVacation(vacationDto);
+        // then
+        assertNotNull(vacation);
+        assertEquals(vacation.getId(), 1);
+        assertEquals(vacation.getStart(), LocalDate.of(2021, 1, 1));
+        assertEquals(vacation.getEnd(), LocalDate.of(2021, 1, 2));
+        assertEquals(vacation.getTeacher().getCathedra().getId(), 1);
+        assertEquals(vacation.getTeacher().getSubjects().get(0).getId(), 1);
+        assertEquals(vacation.getTeacher().getSubjects().get(0).getCathedra().getId(), 1);
     }
 }

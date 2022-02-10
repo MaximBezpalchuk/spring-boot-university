@@ -47,9 +47,9 @@ public class HolidayService {
         return holidayRepository.save(holiday);
     }
 
-    public void delete(Holiday holiday) {
-        logger.debug("Delete holiday with id: {}", holiday.getId());
-        holidayRepository.delete(holiday);
+    public void delete(int id) {
+        logger.debug("Delete holiday with id: {}", id);
+        holidayRepository.deleteById(id);
     }
 
     private void uniqueCheck(Holiday holiday) {

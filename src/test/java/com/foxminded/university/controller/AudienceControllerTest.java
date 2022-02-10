@@ -141,6 +141,6 @@ public class AudienceControllerTest {
             .andExpect(redirectedUrl("/audiences"));
 
 
-        verify(audienceService).delete(Audience.builder().id(1).build());
+        verify(audienceService).delete(1);
     }
 }

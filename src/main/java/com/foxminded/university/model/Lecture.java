@@ -201,7 +201,7 @@ public class Lecture {
             return this;
         }
 
-        public Builder group(List<Group> groups) {
+        public Builder groups(List<Group> groups) {
             this.groups = groups;
             return this;
         }

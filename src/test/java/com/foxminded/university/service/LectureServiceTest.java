@@ -282,7 +282,7 @@ public class LectureServiceTest {
             .time(LectureTime.builder().id(1).start(LocalTime.of(9, 0)).end(LocalTime.of(10, 0)).build())
             .teacher(Teacher.builder().id(1).subjects(Arrays.asList(subject)).build())
             .subject(subject)
-            .group(Arrays.asList(group))
+            .groups(Arrays.asList(group))
             .audience(Audience.builder().capacity(1).build())
             .build();
         when(studentRepository.findByGroupId(1))
@@ -317,10 +317,9 @@ public class LectureServiceTest {
 
     @Test
     void givenExistingLectureId_whenDelete_thenDeleted() {
-        Lecture lecture = Lecture.builder().id(1).build();
-        lectureService.delete(lecture);
+        lectureService.delete(1);
 
-        verify(lectureRepository).delete(lecture);
+        verify(lectureRepository).deleteById(1);
     }
 
     @Test

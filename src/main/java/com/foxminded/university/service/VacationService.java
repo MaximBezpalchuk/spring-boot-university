@@ -51,9 +51,9 @@ public class VacationService {
         return vacationRepository.save(vacation);
     }
 
-    public void delete(Vacation vacation) {
-        logger.debug("Delete vacation with id: {}", vacation.getId());
-        vacationRepository.delete(vacation);
+    public void delete(int id) {
+        logger.debug("Delete vacation with id: {}", id);
+        vacationRepository.deleteById(id);
     }
 
     public List<Vacation> findByTeacherId(int id) {

@@ -53,9 +53,9 @@ public class SubjectService {
         return subjectRepository.save(subject);
     }
 
-    public void delete(Subject subject) {
-        logger.debug("Delete subject with id: {}", subject.getId());
-        subjectRepository.delete(subject);
+    public void delete(int id) {
+        logger.debug("Delete subject with id: {}", id);
+        subjectRepository.deleteById(id);
     }
 
     private void uniqueCheck(Subject subject) {

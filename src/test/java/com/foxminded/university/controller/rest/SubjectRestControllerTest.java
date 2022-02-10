@@ -93,19 +93,18 @@ public class SubjectRestControllerTest {
 
     @Test
     public void whenSaveSubject_thenSubjectSaved() throws Exception {
-        Subject subject1 = createSubjectNoId();
-        Subject subject2 = createSubjectNoId();
-        subject2.setId(2);
-        SubjectDto subjectDto = subjectMapper.subjectToDto(subject1);
-        when(subjectService.save(subject1)).thenReturn(subject2);
+        Subject subject = createSubjectNoId();
+        SubjectDto subjectDto = subjectMapper.subjectToDto(subject);
+        when(subjectService.save(subject)).thenAnswer(I -> {
+            subject.setId(2);
+            return subject;
+        });
 
         mockMvc.perform(post("/api/subjects")
                 .content(objectMapper.writeValueAsString(subjectDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/api/subjects/2"))
                 .andExpect(status().isCreated());
-
-        verify(subjectService).save(subject1);
     }
 
     @Test
@@ -124,16 +123,11 @@ public class SubjectRestControllerTest {
 
     @Test
     public void whenDeleteSubject_thenSubjectDeleted() throws Exception {
-        Subject subject = createSubjectNoId();
-        subject.setId(2);
-        SubjectDto subjectDto = subjectMapper.subjectToDto(subject);
-
         mockMvc.perform(delete("/api/subjects/{id}", 1)
-                .content(objectMapper.writeValueAsString(subjectDto))
                 .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(subjectService).delete(subject);
+        verify(subjectService).delete(1);
     }
 
     private Subject createSubjectNoId() {

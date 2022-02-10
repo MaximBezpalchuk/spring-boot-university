@@ -52,9 +52,9 @@ public class StudentService {
         return studentRepository.save(student);
     }
 
-    public void delete(Student student) {
-        logger.debug("Delete student with id: {}", student.getId());
-        studentRepository.delete(student);
+    public void delete(int id) {
+        logger.debug("Delete student with id: {}", id);
+        studentRepository.deleteById(id);
     }
 
     private void uniqueCheck(Student student) {

@@ -84,7 +84,7 @@ public class StudentController {
     @DeleteMapping("/{id}")
     public String delete(@ModelAttribute Student student) {
         logger.debug("Delete student with id {}", student.getId());
-        studentService.delete(student);
+        studentService.delete(student.getId());
 
         return "redirect:/students";
     }

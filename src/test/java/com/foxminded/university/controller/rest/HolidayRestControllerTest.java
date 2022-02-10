@@ -122,15 +122,11 @@ public class HolidayRestControllerTest {
 
     @Test
     public void whenDeleteHoliday_thenHolidayDeleted() throws Exception {
-        Holiday holiday = createHolidayNoId();
-        holiday.setId(1);
-        HolidayDto holidayDto = holidayMapper.holidayToDto(holiday);
         mockMvc.perform(delete("/api/holidays/{id}", 1)
-                .content(objectMapper.writeValueAsString(holidayDto))
                 .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(holidayService).delete(holiday);
+        verify(holidayService).delete(1);
     }
 
     private Holiday createHolidayNoId() {

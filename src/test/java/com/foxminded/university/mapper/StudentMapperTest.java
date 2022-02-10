@@ -1,21 +1,21 @@
 package com.foxminded.university.mapper;
 
 import com.foxminded.university.dao.mapper.*;
-import com.foxminded.university.dto.AudienceDto;
+import com.foxminded.university.dto.CathedraDto;
+import com.foxminded.university.dto.GroupDto;
 import com.foxminded.university.dto.StudentDto;
-import com.foxminded.university.model.*;
+import com.foxminded.university.model.Cathedra;
+import com.foxminded.university.model.Gender;
+import com.foxminded.university.model.Group;
+import com.foxminded.university.model.Student;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
-import org.mockito.Spy;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@ExtendWith(MockitoExtension.class)
 public class StudentMapperTest {
 
     private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper.class);
@@ -56,5 +56,29 @@ public class StudentMapperTest {
         assertEquals(studentDto.getBirthDate(), LocalDate.of(2020,1,1));
         assertEquals(studentDto.getGroup().getId(), 1);
         assertEquals(studentDto.getGroup().getCathedra().getId(), 1);
+    }
+
+    @Test
+    void shouldMapStudentDtoToStudent() {
+        // given
+        CathedraDto cathedraDto = new CathedraDto(1, "Fantastic Cathedra");
+        GroupDto groupDto = new GroupDto(1, "Killers", cathedraDto);
+        StudentDto studentDto = new StudentDto(1, "TestName", "TestLastName", "88005553535", "Address", "one@mail.com", Gender.MALE, "123", "Edu", LocalDate.of(2020,1,1), groupDto);
+        // when
+        Student student = studentMapper.dtoToStudent(studentDto);
+        // then
+        assertNotNull(student);
+        assertEquals(student.getId(), 1);
+        assertEquals(student.getFirstName(), "TestName");
+        assertEquals(student.getLastName(), "TestLastName");
+        assertEquals(student.getPhone(), "88005553535");
+        assertEquals(student.getAddress(), "Address");
+        assertEquals(student.getEmail(), "one@mail.com");
+        assertEquals(student.getGender(), Gender.MALE.toString());
+        assertEquals(student.getPostalCode(), "123");
+        assertEquals(student.getEducation(), "Edu");
+        assertEquals(student.getBirthDate(), LocalDate.of(2020,1,1));
+        assertEquals(student.getGroup().getId(), 1);
+        assertEquals(student.getGroup().getCathedra().getId(), 1);
     }
 }

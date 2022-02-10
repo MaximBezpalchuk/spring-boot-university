@@ -61,7 +61,7 @@ public class GroupRestController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@RequestBody GroupDto groupDto) {
-        groupService.delete(groupMapper.dtoToGroup(groupDto));
+    public void delete(@PathVariable int id) {
+        groupService.delete(id);
     }
 }

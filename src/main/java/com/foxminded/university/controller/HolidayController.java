@@ -80,7 +80,7 @@ public class HolidayController {
     @DeleteMapping("/{id}")
     public String delete(@ModelAttribute Holiday holiday) {
         logger.debug("Delete holiday with id {}", holiday.getId());
-        holidayService.delete(holiday);
+        holidayService.delete(holiday.getId());
 
         return "redirect:/holidays";
     }

@@ -113,15 +113,11 @@ public class GroupRestControllerTest {
 
     @Test
     public void whenDeleteGroup_thenGroupDeleted() throws Exception {
-        Group group = createGroupNoId();
-        group.setId(1);
-        GroupDto groupDto = groupMapper.groupToDto(group);
         mockMvc.perform(delete("/api/groups/{id}", 1)
-                .content(objectMapper.writeValueAsString(groupDto))
                 .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(groupService).delete(group);
+        verify(groupService).delete(1);
     }
 
     private Group createGroupNoId() {

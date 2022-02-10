@@ -4,17 +4,15 @@ import com.foxminded.university.dao.mapper.AudienceMapper;
 import com.foxminded.university.dao.mapper.AudienceMapperImpl;
 import com.foxminded.university.dao.mapper.CathedraMapper;
 import com.foxminded.university.dto.AudienceDto;
+import com.foxminded.university.dto.CathedraDto;
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Cathedra;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@ExtendWith(MockitoExtension.class)
 public class AudienceMapperTest {
 
     private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper.class);
@@ -33,5 +31,20 @@ public class AudienceMapperTest {
         assertEquals(audienceDto.getRoom(), 1);
         assertEquals(audienceDto.getCapacity(), 10);
         assertEquals(audienceDto.getCathedra().getId(), 1);
+    }
+
+    @Test
+    void shouldMapAudienceDtoToAudience() {
+        // given
+        CathedraDto cathedraDto = new CathedraDto(1, "Fantastic Cathedra");
+        AudienceDto audienceDto = new AudienceDto(1, 1, 10, cathedraDto);
+        // when
+        Audience audience = audienceMapper.dtoToAudience(audienceDto);
+        // then
+        assertNotNull(audience);
+        assertEquals(audience.getId(), 1);
+        assertEquals(audience.getRoom(), 1);
+        assertEquals(audience.getCapacity(), 10);
+        assertEquals(audience.getCathedra().getId(), 1);
     }
 }

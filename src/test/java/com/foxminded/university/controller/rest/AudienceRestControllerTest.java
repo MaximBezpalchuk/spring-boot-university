@@ -113,16 +113,11 @@ public class AudienceRestControllerTest {
 
     @Test
     public void whenDeleteAudience_thenAudienceDeleted() throws Exception {
-        Audience audience = createAudienceNoId();
-        audience.setId(1);
-        AudienceDto audienceDto = audienceMapper.audienceToDto(audience);
-
         mockMvc.perform(delete("/api/audiences/{id}", 1)
-                .content(objectMapper.writeValueAsString(audienceDto))
                 .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(audienceService).delete(audience);
+        verify(audienceService).delete(1);
     }
 
     private Audience createAudienceNoId() {

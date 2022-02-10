@@ -60,7 +60,7 @@ public class TeacherRestController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@RequestBody TeacherDto teacherDto) {
-        teacherService.delete(teacherMapper.dtoToTeacher(teacherDto));
+    public void delete(@PathVariable int id) {
+        teacherService.delete(id);
     }
 }

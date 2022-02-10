@@ -77,9 +77,9 @@ public class LectureService {
         return lectureRepository.save(lecture);
     }
 
-    public void delete(Lecture lecture) {
-        logger.debug("Delete lecture with id: {}", lecture.getId());
-        lectureRepository.delete(lecture);
+    public void delete(int id) {
+        logger.debug("Delete lecture with id: {}", id);
+        lectureRepository.deleteById(id);
     }
 
     private void uniqueCheck(Lecture lecture) {

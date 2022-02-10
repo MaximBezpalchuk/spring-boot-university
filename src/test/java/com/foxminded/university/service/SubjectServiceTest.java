@@ -88,10 +88,9 @@ public class SubjectServiceTest {
 
     @Test
     void givenExistingSubjectId_whenDelete_thenDeleted() {
-        Subject subject = Subject.builder().id(1).build();
-        subjectService.delete(subject);
+        subjectService.delete(1);
 
-        verify(subjectRepository).delete(subject);
+        verify(subjectRepository).deleteById(1);
     }
 
     @Test

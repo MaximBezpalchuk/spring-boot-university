@@ -46,9 +46,9 @@ public class AudienceService {
         return audienceRepository.save(audience);
     }
 
-    public void delete(Audience audience) {
-        logger.debug("Delete audience with id: {}", audience.getId());
-        audienceRepository.delete(audience);
+    public void delete(int id) {
+        logger.debug("Delete audience with id: {}", id);
+        audienceRepository.deleteById(id);
     }
 
     private void uniqueCheck(Audience audience) {

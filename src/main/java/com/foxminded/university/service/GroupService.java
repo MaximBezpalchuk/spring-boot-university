@@ -46,9 +46,9 @@ public class GroupService {
         return groupRepository.save(group);
     }
 
-    public void delete(Group group) {
-        logger.debug("Delete group with id: {}", group.getId());
-        groupRepository.delete(group);
+    public void delete(int id) {
+        logger.debug("Delete group with id: {}", id);
+        groupRepository.deleteById(id);
     }
 
     private void uniqueCheck(Group group) {

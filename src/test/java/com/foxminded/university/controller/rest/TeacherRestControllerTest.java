@@ -91,19 +91,18 @@ public class TeacherRestControllerTest {
 
     @Test
     public void whenSaveTeacher_thenTeacherSaved() throws Exception {
-        Teacher teacher1 = createTeacherNoId();
-        Teacher teacher2 = createTeacherNoId();
-        teacher2.setId(2);
-        TeacherDto teacherDto = teacherMapper.teacherToDto(teacher1);
-        when(teacherService.save(teacher1)).thenReturn(teacher2);
+        Teacher teacher = createTeacherNoId();
+        TeacherDto teacherDto = teacherMapper.teacherToDto(teacher);
+        when(teacherService.save(teacher)).thenAnswer(I -> {
+            teacher.setId(2);
+            return teacher;
+        });
 
         mockMvc.perform(post("/api/teachers")
                 .content(objectMapper.writeValueAsString(teacherDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/api/teachers/2"))
                 .andExpect(status().isCreated());
-
-        verify(teacherService).save(teacher1);
     }
 
     @Test
@@ -123,16 +122,11 @@ public class TeacherRestControllerTest {
 
     @Test
     public void whenDeleteTeacher_thenTeacherDeleted() throws Exception {
-        Teacher teacher = createTeacherNoId();
-        teacher.setId(1);
-        TeacherDto teacherDto = teacherMapper.teacherToDto(teacher);
-
         mockMvc.perform(delete("/api/teachers/{id}", 1)
-                .content(objectMapper.writeValueAsString(teacherDto))
                 .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(teacherService).delete(teacher);
+        verify(teacherService).delete(1);
     }
 
     private Teacher createTeacherNoId() {

@@ -1,9 +1,14 @@
 package com.foxminded.university.dto;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class GroupDto {
 
     private Integer id;
+    @NotBlank(message = "{Name.group.notBlank}")
     private String name;
+    @NotNull(message = "{Cathedra.notNull}")
     private CathedraDto cathedra;
 
     public GroupDto(Integer id, String name, CathedraDto cathedra) {

@@ -61,7 +61,7 @@ public class HolidayRestController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@RequestBody HolidayDto holidayDto) {
-        holidayService.delete(holidayMapper.dtoToHoliday(holidayDto));
+    public void delete(@PathVariable int id) {
+        holidayService.delete(id);
     }
 }

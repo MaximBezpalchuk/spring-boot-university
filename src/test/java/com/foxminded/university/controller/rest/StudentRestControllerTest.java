@@ -128,16 +128,11 @@ public class StudentRestControllerTest {
 
     @Test
     public void whenDeleteStudent_thenStudentDeleted() throws Exception {
-        Student student = createStudentNoId();
-        student.setId(1);
-        StudentDto studentDto = studentMapper.studentToDto(student);
-
         mockMvc.perform(delete("/api/students/{id}", 1)
-                .content(objectMapper.writeValueAsString(studentDto))
                 .contentType(APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        verify(studentService).delete(student);
+        verify(studentService).delete(1);
     }
 
     private Student createStudentNoId() {

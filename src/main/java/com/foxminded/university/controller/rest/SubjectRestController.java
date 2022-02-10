@@ -61,7 +61,7 @@ public class SubjectRestController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@RequestBody SubjectDto subjectDto) {
-        subjectService.delete(subjectMapper.dtoToSubject(subjectDto));
+    public void delete(@PathVariable int id) {
+        subjectService.delete(id);
     }
 }

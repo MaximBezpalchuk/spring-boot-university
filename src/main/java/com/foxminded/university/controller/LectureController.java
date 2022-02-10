@@ -128,7 +128,7 @@ public class LectureController {
     @DeleteMapping("/lectures/{id}")
     public String delete(@ModelAttribute Lecture lecture) {
         logger.debug("Delete lecture with id {}", lecture.getId());
-        lectureService.delete(lecture);
+        lectureService.delete(lecture.getId());
 
         return "redirect:/lectures";
     }

@@ -61,7 +61,7 @@ public class AudienceRestController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@RequestBody AudienceDto audienceDto) {
-        audienceService.delete(audienceMapper.dtoToAudience(audienceDto));
+    public void delete(@PathVariable int id) {
+        audienceService.delete(id);
     }
 }

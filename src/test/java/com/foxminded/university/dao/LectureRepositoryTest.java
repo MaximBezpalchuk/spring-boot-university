@@ -47,7 +47,7 @@ public class LectureRepositoryTest {
         LectureTime time = entityManager.find(LectureTime.class, 1);
         Optional<Lecture> expected = Optional.of(Lecture.builder()
             .id(1)
-            .group(Arrays.asList(group))
+            .groups(Arrays.asList(group))
             .cathedra(cathedra)
             .subject(subject)
             .date(LocalDate.of(2021, 4, 4))
@@ -70,7 +70,7 @@ public class LectureRepositoryTest {
         LectureTime time = entityManager.find(LectureTime.class, 1);
         List<Lecture> lectures = Arrays.asList(Lecture.builder()
             .id(1)
-            .group(Arrays.asList(group))
+            .groups(Arrays.asList(group))
             .cathedra(cathedra)
             .subject(subject)
             .date(LocalDate.of(2021, 4, 4))
@@ -98,7 +98,7 @@ public class LectureRepositoryTest {
         Teacher teacher = entityManager.find(Teacher.class, 2);
         LectureTime time = entityManager.find(LectureTime.class, 8);
         Lecture expected = Lecture.builder()
-            .group(Arrays.asList(group))
+            .groups(Arrays.asList(group))
             .cathedra(cathedra)
             .subject(subject)
             .date(LocalDate.of(2021, 4, 4))
@@ -140,7 +140,7 @@ public class LectureRepositoryTest {
         LectureTime time = entityManager.find(LectureTime.class, 1);
         Optional<Lecture> expected = Optional.of(Lecture.builder()
             .id(1)
-            .group(Arrays.asList(group))
+            .groups(Arrays.asList(group))
             .cathedra(cathedra)
             .subject(subject)
             .date(LocalDate.of(2021, 4, 4))
@@ -165,7 +165,7 @@ public class LectureRepositoryTest {
         LectureTime time = entityManager.find(LectureTime.class, 1);
         Optional<Lecture> expected = Optional.of(Lecture.builder()
             .id(1)
-            .group(Arrays.asList(group))
+            .groups(Arrays.asList(group))
             .cathedra(cathedra)
             .subject(subject)
             .date(LocalDate.of(2021, 4, 4))

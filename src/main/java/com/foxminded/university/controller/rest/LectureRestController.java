@@ -61,8 +61,8 @@ public class LectureRestController {
     }
 
     @DeleteMapping("{id}")
-    public void delete(@RequestBody LectureDto lectureDto) {
-        lectureService.delete(lectureMapper.dtoToLecture(lectureDto));
+    public void delete(@PathVariable int id) {
+        lectureService.delete(id);
     }
 
     @PatchMapping("{id}/edit/teacher")

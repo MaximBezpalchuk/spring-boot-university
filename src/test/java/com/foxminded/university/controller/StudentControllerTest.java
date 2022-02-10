@@ -155,7 +155,7 @@ public class StudentControllerTest {
         mockMvc.perform(delete("/students/{id}", 1))
                 .andExpect(redirectedUrl("/students"));
 
-        verify(studentService).delete(Student.builder().id(1).build());
+        verify(studentService).delete(1);
     }
 
     @Test

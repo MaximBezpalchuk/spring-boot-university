@@ -61,7 +61,7 @@ public class LectureTimeRestController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@RequestBody LectureTimeDto lectureTimeDto) {
-        lectureTimeService.delete(lectureTimeMapper.dtoToLectureTime(lectureTimeDto));
+    public void delete(@PathVariable int id) {
+        lectureTimeService.delete(id);
     }
 }
