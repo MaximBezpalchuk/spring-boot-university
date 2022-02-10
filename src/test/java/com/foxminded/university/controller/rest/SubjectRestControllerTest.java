@@ -68,7 +68,7 @@ public class SubjectRestControllerTest {
         Page<Subject> page = new PageImpl<>(subjects, PageRequest.of(0, 1), 2);
         List<SubjectDto> subjectDtos = subjects.stream().map(subjectMapper::subjectToDto).collect(Collectors.toList());
         Page<SubjectDto> pageDtos = new PageImpl<>(subjectDtos, PageRequest.of(0, 1), 2);
-        when(subjectService.findAll(isA(Pageable.class))).thenReturn(page);
+        when(subjectService.findAll(PageRequest.of(0, 1))).thenReturn(page);
 
         mockMvc.perform(get("/api/subjects")
                 .contentType(MediaType.APPLICATION_JSON))

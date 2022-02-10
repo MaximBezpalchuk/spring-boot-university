@@ -37,6 +37,6 @@ public class SubjectMapperTest {
         assertEquals(subjectDto.getId(), 1);
         assertEquals(subjectDto.getName(), "Subject Name");
         assertEquals(subjectDto.getDescription(), "Subject desc");
-        assertEquals(subjectDto.getCathedraDto().getId(), 1);
+        assertEquals(subjectDto.getCathedra().getId(), 1);
     }
 }

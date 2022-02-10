@@ -83,18 +83,17 @@ public class AudienceRestControllerTest {
 
     @Test
     public void whenSaveAudience_thenAudienceSaved() throws Exception {
-        Audience audience1 = createAudienceNoId();
-        Audience audience2 = createAudienceNoId();
-        audience2.setId(4);
-        AudienceDto audienceDto = audienceMapper.audienceToDto(audience1);
-        when(audienceService.save(audience1)).thenReturn(audience2);
+        Audience audience = createAudienceNoId();
+        AudienceDto audienceDto = audienceMapper.audienceToDto(audience);
+        when(audienceService.save(audience)).thenAnswer(I -> {
+            audience.setId(4);
+            return audience;
+        });
         mockMvc.perform(post("/api/audiences")
                 .content(objectMapper.writeValueAsString(audienceDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/api/audiences/4"))
                 .andExpect(status().isCreated());
-
-        verify(audienceService).save(audience1);
     }
 
     @Test

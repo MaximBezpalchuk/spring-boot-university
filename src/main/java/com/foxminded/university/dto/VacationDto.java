@@ -1,19 +1,26 @@
 package com.foxminded.university.dto;
 
+import com.foxminded.university.validation.CorrectPeriod;
+
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
+@CorrectPeriod
 public class VacationDto {
 
     private Integer id;
+    @NotNull(message = "{Start.vacation.notNull}")
     private LocalDate start;
+    @NotNull(message = "{End.vacation.notNull}")
     private LocalDate end;
-    private TeacherDto teacherDto;
+    @NotNull(message = "{Teacher.notNull}")
+    private TeacherDto teacher;
 
-    public VacationDto(Integer id, LocalDate start, LocalDate end, TeacherDto teacherDto) {
+    public VacationDto(Integer id, LocalDate start, LocalDate end, TeacherDto teacher) {
         this.id = id;
         this.start = start;
         this.end = end;
-        this.teacherDto = teacherDto;
+        this.teacher = teacher;
     }
 
     public VacationDto() {
@@ -44,10 +51,10 @@ public class VacationDto {
     }
 
     public TeacherDto getTeacherDto() {
-        return teacherDto;
+        return teacher;
     }
 
-    public void setTeacherDto(TeacherDto teacherDto) {
-        this.teacherDto = teacherDto;
+    public void setTeacher(TeacherDto teacherDto) {
+        this.teacher = teacherDto;
     }
 }

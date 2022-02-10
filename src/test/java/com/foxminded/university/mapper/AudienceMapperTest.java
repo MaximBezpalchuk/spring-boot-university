@@ -32,6 +32,6 @@ public class AudienceMapperTest {
         assertEquals(audienceDto.getId(), 1);
         assertEquals(audienceDto.getRoom(), 1);
         assertEquals(audienceDto.getCapacity(), 10);
-        assertEquals(audienceDto.getCathedraDto().getId(), 1);
+        assertEquals(audienceDto.getCathedra().getId(), 1);
     }
 }

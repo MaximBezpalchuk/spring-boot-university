@@ -1,11 +1,14 @@
 package com.foxminded.university.dto;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
 
 public class LectureTimeDto {
 
     private Integer id;
+    @NotNull(message = "{LectureTime.start.notNull}")
     private LocalTime start;
+    @NotNull(message = "{LectureTime.end.notNull}")
     private LocalTime end;
 
     public LectureTimeDto(Integer id, LocalTime start, LocalTime end) {

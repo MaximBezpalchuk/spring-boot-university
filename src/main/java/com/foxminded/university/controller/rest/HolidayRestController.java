@@ -19,6 +19,7 @@ import java.net.URI;
 @RestController
 @RequestMapping("api/holidays")
 public class HolidayRestController {
+
     private static final Logger logger = LoggerFactory.getLogger(HolidayController.class);
 
     private final HolidayService holidayService;

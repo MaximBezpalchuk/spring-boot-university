@@ -2,7 +2,12 @@ package com.foxminded.university.dto;
 
 import com.foxminded.university.model.Degree;
 import com.foxminded.university.model.Gender;
+import com.foxminded.university.validation.PhoneNumber;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,20 +15,32 @@ import java.util.List;
 public class TeacherDto {
 
     private Integer id;
+    @NotBlank(message = "{FirstName.person.notBlank}")
     private String firstName;
+    @NotBlank(message = "{LastName.person.notBlank}")
     private String lastName;
+    @PhoneNumber
+    @NotBlank(message = "{Phone.person.notBlank}")
     private String phone;
+    @NotBlank(message = "{Address.person.notBlank}")
     private String address;
+    @NotBlank(message = "{Email.person.notBlank}")
+    @Email
     private String email;
     private Gender gender;
+    @NotBlank(message = "{PostalCode.person.notBlank}")
     private String postalCode;
+    @NotBlank(message = "{Education.person.notBlank}")
     private String education;
+    @NotNull(message = "{BirthDate.person.notNull}")
     private LocalDate birthDate;
-    private CathedraDto cathedraDto;
+    @NotNull(message = "{Cathedra.notNull}")
+    private CathedraDto cathedra;
     private Degree degree;
-    private List<SubjectDto> subjectDtos = new ArrayList<>();
+    @NotEmpty(message = "{Subjects.teacher.notEmpty}")
+    private List<SubjectDto> subjects = new ArrayList<>();
 
-    public TeacherDto(Integer id, String firstName, String lastName, String phone, String address, String email, Gender gender, String postalCode, String education, LocalDate birthDate, CathedraDto cathedraDto, Degree degree, List<SubjectDto> subjectDtos) {
+    public TeacherDto(Integer id, String firstName, String lastName, String phone, String address, String email, Gender gender, String postalCode, String education, LocalDate birthDate, CathedraDto cathedra, Degree degree, List<SubjectDto> subjects) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -34,9 +51,9 @@ public class TeacherDto {
         this.postalCode = postalCode;
         this.education = education;
         this.birthDate = birthDate;
-        this.cathedraDto = cathedraDto;
+        this.cathedra = cathedra;
         this.degree = degree;
-        this.subjectDtos = subjectDtos;
+        this.subjects = subjects;
     }
 
     public TeacherDto() {
@@ -122,12 +139,12 @@ public class TeacherDto {
         this.birthDate = birthDate;
     }
 
-    public CathedraDto getCathedraDto() {
-        return cathedraDto;
+    public CathedraDto getCathedra() {
+        return cathedra;
     }
 
-    public void setCathedraDto(CathedraDto cathedraDto) {
-        this.cathedraDto = cathedraDto;
+    public void setCathedra(CathedraDto cathedra) {
+        this.cathedra = cathedra;
     }
 
     public Degree getDegree() {
@@ -138,11 +155,11 @@ public class TeacherDto {
         this.degree = degree;
     }
 
-    public List<SubjectDto> getSubjectDtos() {
-        return subjectDtos;
+    public List<SubjectDto> getSubjects() {
+        return subjects;
     }
 
-    public void setSubjectDtos(List<SubjectDto> subjectDtos) {
-        this.subjectDtos = subjectDtos;
+    public void setSubjects(List<SubjectDto> subjects) {
+        this.subjects = subjects;
     }
 }

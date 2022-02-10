@@ -66,7 +66,7 @@ public class TeacherRestControllerTest {
         Page<Teacher> page = new PageImpl<>(teachers, PageRequest.of(0, 2), 1);
         List<TeacherDto> teacherDtos = teachers.stream().map(teacherMapper::teacherToDto).collect(Collectors.toList());
         Page<TeacherDto> pageDtos = new PageImpl<>(teacherDtos, PageRequest.of(0, 2), 1);
-        when(teacherService.findAll(isA(Pageable.class))).thenReturn(page);
+        when(teacherService.findAll(PageRequest.of(0, 2))).thenReturn(page);
 
         mockMvc.perform(get("/api/teachers")
                 .contentType(MediaType.APPLICATION_JSON))

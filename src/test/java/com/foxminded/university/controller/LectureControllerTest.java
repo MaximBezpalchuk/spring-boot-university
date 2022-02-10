@@ -103,7 +103,7 @@ public class LectureControllerTest {
             .build();
         List<Lecture> lectures = Arrays.asList(lecture1, lecture2);
         Page<Lecture> page = new PageImpl<>(lectures, PageRequest.of(0, 1), 2);
-        when(lectureService.findAll(isA(Pageable.class))).thenReturn(page);
+        when(lectureService.findAll(PageRequest.of(0, 1))).thenReturn(page);
 
         mockMvc.perform(get("/lectures"))
             .andExpect(status().isOk())

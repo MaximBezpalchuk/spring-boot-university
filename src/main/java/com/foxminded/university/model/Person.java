@@ -1,6 +1,5 @@
 package com.foxminded.university.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.foxminded.university.validation.PhoneNumber;
 import org.springframework.format.annotation.DateTimeFormat;
 

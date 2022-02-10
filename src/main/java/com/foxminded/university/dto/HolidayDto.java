@@ -1,19 +1,24 @@
 package com.foxminded.university.dto;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 public class HolidayDto {
 
     private Integer id;
+    @NotBlank(message = "{Name.holiday.notBlank}")
     private String name;
+    @NotNull(message = "{Date.notNull}")
     private LocalDate date;
-    private CathedraDto cathedraDto;
+    @NotNull(message = "{Cathedra.notNull}")
+    private CathedraDto cathedra;
 
-    public HolidayDto(Integer id, String name, LocalDate date, CathedraDto cathedraDto) {
+    public HolidayDto(Integer id, String name, LocalDate date, CathedraDto cathedra) {
         this.id = id;
         this.name = name;
         this.date = date;
-        this.cathedraDto = cathedraDto;
+        this.cathedra = cathedra;
     }
 
     public HolidayDto() {
@@ -43,11 +48,11 @@ public class HolidayDto {
         this.date = date;
     }
 
-    public CathedraDto getCathedraDto() {
-        return cathedraDto;
+    public CathedraDto getCathedra() {
+        return cathedra;
     }
 
-    public void setCathedraDto(CathedraDto cathedraDto) {
-        this.cathedraDto = cathedraDto;
+    public void setCathedra(CathedraDto cathedra) {
+        this.cathedra = cathedra;
     }
 }

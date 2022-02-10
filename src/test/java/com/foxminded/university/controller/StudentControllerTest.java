@@ -75,7 +75,7 @@ public class StudentControllerTest {
                 .build();
         List<Student> students = Arrays.asList(student1, student2);
         Page<Student> page = new PageImpl<>(students, PageRequest.of(0, 1), 2);
-        when(studentService.findAll(isA(Pageable.class))).thenReturn(page);
+        when(studentService.findAll(PageRequest.of(0, 1))).thenReturn(page);
 
         mockMvc.perform(get("/students"))
                 .andExpect(status().isOk())

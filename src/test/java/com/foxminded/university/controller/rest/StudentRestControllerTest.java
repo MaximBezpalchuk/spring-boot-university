@@ -15,6 +15,7 @@ import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -26,6 +27,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import javax.persistence.EntityManager;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,6 +49,8 @@ public class StudentRestControllerTest {
     private StudentMapper studentMapper = new StudentMapperImpl(groupMapper);
     @Mock
     private StudentService studentService;
+    @Mock
+    private EntityManager em;
     @InjectMocks
     private StudentRestController studentRestController;
 
@@ -69,7 +73,7 @@ public class StudentRestControllerTest {
         Page<Student> page = new PageImpl<>(students, PageRequest.of(0, 1), 2);
         List<StudentDto> studentDtos = students.stream().map(studentMapper::studentToDto).collect(Collectors.toList());
         Page<StudentDto> pageDtos = new PageImpl<>(studentDtos, PageRequest.of(0, 1), 2);
-        when(studentService.findAll(isA(Pageable.class))).thenReturn(page);
+        when(studentService.findAll(PageRequest.of(0, 1))).thenReturn(page);
 
         mockMvc.perform(get("/api/students")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -94,19 +98,19 @@ public class StudentRestControllerTest {
 
     @Test
     public void whenSaveStudent_thenStudentSaved() throws Exception {
-        Student student1 = createStudentNoId();
-        Student student2 = createStudentNoId();
-        student2.setId(2);
-        StudentDto studentDto = studentMapper.studentToDto(student1);
-        when(studentService.save(student1)).thenReturn(student2);
+        Student student = createStudentNoId();
+        StudentDto studentDto = studentMapper.studentToDto(student);
+
+        when(studentService.save(student)).thenAnswer(I -> {
+            student.setId(2);
+            return student;
+        });
 
         mockMvc.perform(post("/api/students")
                 .content(objectMapper.writeValueAsString(studentDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/api/students/2"))
                 .andExpect(status().isCreated());
-
-        verify(studentService).save(student1);
     }
 
     @Test

@@ -1,17 +1,24 @@
 package com.foxminded.university.dto;
 
+import org.hibernate.validator.constraints.Range;
+
+import javax.validation.constraints.NotNull;
+
 public class AudienceDto {
 
     private Integer id;
+    @Range(min = 1, message = "{Room.audience.range}")
     private Integer room;
+    @Range(min = 1, message = "{Capacity.audience.range}")
     private Integer capacity;
-    private CathedraDto cathedraDto;
+    @NotNull(message = "{Cathedra.notNull}")
+    private CathedraDto cathedra;
 
-    public AudienceDto(Integer id, Integer room, Integer capacity, CathedraDto cathedraDto) {
+    public AudienceDto(Integer id, Integer room, Integer capacity, CathedraDto cathedra) {
         this.id = id;
         this.room = room;
         this.capacity = capacity;
-        this.cathedraDto = cathedraDto;
+        this.cathedra = cathedra;
     }
 
     public AudienceDto() {
@@ -41,11 +48,11 @@ public class AudienceDto {
         this.capacity = capacity;
     }
 
-    public CathedraDto getCathedraDto() {
-        return cathedraDto;
+    public CathedraDto getCathedra() {
+        return cathedra;
     }
 
-    public void setCathedraDto(CathedraDto cathedraDto) {
-        this.cathedraDto = cathedraDto;
+    public void setCathedra(CathedraDto cathedra) {
+        this.cathedra = cathedra;
     }
 }

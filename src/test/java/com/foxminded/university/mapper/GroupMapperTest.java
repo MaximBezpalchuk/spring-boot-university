@@ -31,6 +31,6 @@ public class GroupMapperTest {
         assertNotNull(groupDto);
         assertEquals(groupDto.getId(), 1);
         assertEquals(groupDto.getName(), "Killers");
-        assertEquals(groupDto.getCathedraDto().getId(), 1);
+        assertEquals(groupDto.getCathedra().getId(), 1);
     }
 }

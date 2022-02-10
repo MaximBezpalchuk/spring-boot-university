@@ -49,18 +49,18 @@ public class LectureMapperTest {
         // then
         assertNotNull(lectureDto);
         assertEquals(lectureDto.getId(), 1);
-        assertEquals(lectureDto.getAudienceDto().getId(), 1);
-        assertEquals(lectureDto.getAudienceDto().getCathedraDto().getId(), 1);
-        assertEquals(lectureDto.getCathedraDto().getId(), 1);
+        assertEquals(lectureDto.getAudience().getId(), 1);
+        assertEquals(lectureDto.getAudience().getCathedra().getId(), 1);
+        assertEquals(lectureDto.getCathedra().getId(), 1);
         assertEquals(lectureDto.getDate(), LocalDate.of(2021, 1, 1));
-        assertEquals(lectureDto.getGroupDtos().get(0).getId(), 1);
-        assertEquals(lectureDto.getGroupDtos().get(0).getCathedraDto().getId(), 1);
-        assertEquals(lectureDto.getSubjectDto().getId(), 1);
-        assertEquals(lectureDto.getSubjectDto().getCathedraDto().getId(), 1);
-        assertEquals(lectureDto.getTeacherDto().getId(), 1);
-        assertEquals(lectureDto.getTeacherDto().getCathedraDto().getId(), 1);
-        assertEquals(lectureDto.getTeacherDto().getSubjectDtos().get(0).getId(), 1);
-        assertEquals(lectureDto.getTeacherDto().getSubjectDtos().get(0).getCathedraDto().getId(), 1);
-        assertEquals(lectureDto.getLectureTimeDto().getId(), 1);
+        assertEquals(lectureDto.getGroups().get(0).getId(), 1);
+        assertEquals(lectureDto.getGroups().get(0).getCathedra().getId(), 1);
+        assertEquals(lectureDto.getSubject().getId(), 1);
+        assertEquals(lectureDto.getSubject().getCathedra().getId(), 1);
+        assertEquals(lectureDto.getTeacher().getId(), 1);
+        assertEquals(lectureDto.getTeacher().getCathedra().getId(), 1);
+        assertEquals(lectureDto.getTeacher().getSubjects().get(0).getId(), 1);
+        assertEquals(lectureDto.getTeacher().getSubjects().get(0).getCathedra().getId(), 1);
+        assertEquals(lectureDto.getTime().getId(), 1);
     }
 }

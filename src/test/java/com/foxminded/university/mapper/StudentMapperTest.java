@@ -54,7 +54,7 @@ public class StudentMapperTest {
         assertEquals(studentDto.getPostalCode(), "123");
         assertEquals(studentDto.getEducation(), "Edu");
         assertEquals(studentDto.getBirthDate(), LocalDate.of(2020,1,1));
-        assertEquals(studentDto.getGroupDto().getId(), 1);
-        assertEquals(studentDto.getGroupDto().getCathedraDto().getId(), 1);
+        assertEquals(studentDto.getGroup().getId(), 1);
+        assertEquals(studentDto.getGroup().getCathedra().getId(), 1);
     }
 }

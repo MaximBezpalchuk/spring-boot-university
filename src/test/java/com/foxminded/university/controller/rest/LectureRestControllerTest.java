@@ -145,8 +145,10 @@ public class LectureRestControllerTest {
         Group group = Group.builder().id(1).name("Group Name").cathedra(cathedra).build();
         Subject subject = Subject.builder().id(1).name("Subject name").description("Subject desc").cathedra(cathedra)
                 .build();
-        Teacher teacher = Teacher.builder().id(1).firstName("Test Name").lastName("Last Name").cathedra(cathedra).gender(Gender.MALE)
-                .subjects(Arrays.asList(subject)).build();
+        Teacher teacher = Teacher.builder().id(1).firstName("TestName").lastName("TestLastName").phone("88005553535")
+                .address("Address").email("one@mail.com").gender(Gender.MALE).postalCode("123").education("Edu")
+                .birthDate(LocalDate.of(2020, 1, 1)).cathedra(cathedra).subjects(Arrays.asList(subject))
+                .degree(Degree.PROFESSOR).build();
         LectureTime time = LectureTime.builder().id(1).start(LocalTime.of(8, 0)).end(LocalTime.of(9, 45)).build();
 
         return Lecture.builder()

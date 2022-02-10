@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("api/groups")
 public class GroupRestController {
+
     private static final Logger logger = LoggerFactory.getLogger(GroupController.class);
 
     private final GroupService groupService;

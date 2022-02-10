@@ -19,6 +19,7 @@ import java.net.URI;
 @RestController
 @RequestMapping("api/lectures")
 public class LectureRestController {
+
     private static final Logger logger = LoggerFactory.getLogger(LectureController.class);
 
     private final LectureService lectureService;

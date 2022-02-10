@@ -3,7 +3,6 @@ package com.foxminded.university.dao.mapper;
 import com.foxminded.university.dto.LectureTimeDto;
 import com.foxminded.university.model.LectureTime;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface LectureTimeMapper {

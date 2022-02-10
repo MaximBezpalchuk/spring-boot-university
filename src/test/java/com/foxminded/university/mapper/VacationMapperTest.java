@@ -41,8 +41,8 @@ public class VacationMapperTest {
         assertEquals(vacationDto.getId(), 1);
         assertEquals(vacationDto.getStart(), LocalDate.of(2021, 1, 1));
         assertEquals(vacationDto.getEnd(), LocalDate.of(2021, 1, 2));
-        assertEquals(vacationDto.getTeacherDto().getCathedraDto().getId(), 1);
-        assertEquals(vacationDto.getTeacherDto().getSubjectDtos().get(0).getId(), 1);
-        assertEquals(vacationDto.getTeacherDto().getSubjectDtos().get(0).getCathedraDto().getId(), 1);
+        assertEquals(vacationDto.getTeacherDto().getCathedra().getId(), 1);
+        assertEquals(vacationDto.getTeacherDto().getSubjects().get(0).getId(), 1);
+        assertEquals(vacationDto.getTeacherDto().getSubjects().get(0).getCathedra().getId(), 1);
     }
 }

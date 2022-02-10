@@ -93,19 +93,18 @@ public class HolidayRestControllerTest {
 
     @Test
     public void whenSaveHoliday_thenHolidaySaved() throws Exception {
-        Holiday holiday1 = createHolidayNoId();
-        Holiday holiday2 = createHolidayNoId();
-        holiday2.setId(7);
-        HolidayDto holidayDto = holidayMapper.holidayToDto(holiday1);
-        when(holidayService.save(holiday1)).thenReturn(holiday2);
+        Holiday holiday = createHolidayNoId();
+        HolidayDto holidayDto = holidayMapper.holidayToDto(holiday);
+        when(holidayService.save(holiday)).thenAnswer(I -> {
+            holiday.setId(7);
+            return holiday;
+        });
 
         mockMvc.perform(post("/api/holidays")
                 .content(objectMapper.writeValueAsString(holidayDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/api/holidays/7"))
                 .andExpect(status().isCreated());
-
-        verify(holidayService).save(holiday1);
     }
 
     @Test

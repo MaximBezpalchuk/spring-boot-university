@@ -1,17 +1,23 @@
 package com.foxminded.university.dto;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class SubjectDto {
 
     private Integer id;
+    @NotBlank(message = "{Name.subject.notBlank}")
     private String name;
+    @NotBlank(message = "{Description.subject.notBlank}")
     private String description;
-    private CathedraDto cathedraDto;
+    @NotNull(message = "{Cathedra.notNull}")
+    private CathedraDto cathedra;
 
-    public SubjectDto(Integer id, String name, String description, CathedraDto cathedraDto) {
+    public SubjectDto(Integer id, String name, String description, CathedraDto cathedra) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.cathedraDto = cathedraDto;
+        this.cathedra = cathedra;
     }
 
     public SubjectDto() {
@@ -41,11 +47,11 @@ public class SubjectDto {
         this.description = description;
     }
 
-    public CathedraDto getCathedraDto() {
-        return cathedraDto;
+    public CathedraDto getCathedra() {
+        return cathedra;
     }
 
-    public void setCathedraDto(CathedraDto cathedraDto) {
-        this.cathedraDto = cathedraDto;
+    public void setCathedra(CathedraDto cathedra) {
+        this.cathedra = cathedra;
     }
 }

@@ -1,24 +1,40 @@
 package com.foxminded.university.dto;
 
 import com.foxminded.university.model.Gender;
+import com.foxminded.university.validation.MinAge;
+import com.foxminded.university.validation.PhoneNumber;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
+@MinAge(14)
 public class StudentDto {
 
     private Integer id;
+    @NotBlank(message = "{FirstName.person.notBlank}")
     private String firstName;
+    @NotBlank(message = "{LastName.person.notBlank}")
     private String lastName;
+    @PhoneNumber
+    @NotBlank(message = "{Phone.person.notBlank}")
     private String phone;
+    @NotBlank(message = "{Address.person.notBlank}")
     private String address;
+    @NotBlank(message = "{Email.person.notBlank}")
+    @Email
     private String email;
     private Gender gender;
+    @NotBlank(message = "{PostalCode.person.notBlank}")
     private String postalCode;
+    @NotBlank(message = "{Education.person.notBlank}")
     private String education;
+    @NotNull(message = "{BirthDate.person.notNull}")
     private LocalDate birthDate;
-    private GroupDto groupDto;
+    private GroupDto group;
 
-    public StudentDto(Integer id, String firstName, String lastName, String phone, String address, String email, Gender gender, String postalCode, String education, LocalDate birthDate, GroupDto groupDto) {
+    public StudentDto(Integer id, String firstName, String lastName, String phone, String address, String email, Gender gender, String postalCode, String education, LocalDate birthDate, GroupDto group) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -29,7 +45,7 @@ public class StudentDto {
         this.postalCode = postalCode;
         this.education = education;
         this.birthDate = birthDate;
-        this.groupDto = groupDto;
+        this.group = group;
     }
 
     public StudentDto() {
@@ -115,11 +131,11 @@ public class StudentDto {
         this.birthDate = birthDate;
     }
 
-    public GroupDto getGroupDto() {
-        return groupDto;
+    public GroupDto getGroup() {
+        return group;
     }
 
-    public void setGroupDto(GroupDto groupDto) {
-        this.groupDto = groupDto;
+    public void setGroup(GroupDto group) {
+        this.group = group;
     }
 }

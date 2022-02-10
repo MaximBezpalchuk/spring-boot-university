@@ -1,6 +1,5 @@
 package com.foxminded.university.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.foxminded.university.validation.CorrectPeriod;
 import org.springframework.format.annotation.DateTimeFormat;
 

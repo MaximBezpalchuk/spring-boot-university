@@ -85,18 +85,17 @@ public class GroupRestControllerTest {
 
     @Test
     public void whenSaveGroup_thenGroupSaved() throws Exception {
-        Group group1 = createGroupNoId();
-        Group group2 = createGroupNoId();
-        group2.setId(3);
-        GroupDto groupDto = groupMapper.groupToDto(group1);
-        when(groupService.save(group1)).thenReturn(group2);
+        Group group = createGroupNoId();
+        GroupDto groupDto = groupMapper.groupToDto(group);
+        when(groupService.save(group)).thenAnswer(I -> {
+            group.setId(3);
+            return group;
+        });
         mockMvc.perform(post("/api/groups")
                 .content(objectMapper.writeValueAsString(groupDto))
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/api/groups/3"))
                 .andExpect(status().isCreated());
-
-        verify(groupService).save(group1);
     }
 
     @Test

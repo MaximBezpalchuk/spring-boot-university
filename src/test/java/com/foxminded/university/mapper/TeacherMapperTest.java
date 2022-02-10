@@ -55,9 +55,9 @@ public class TeacherMapperTest {
         assertEquals(teacherDto.getPostalCode(), "123");
         assertEquals(teacherDto.getEducation(), "Edu");
         assertEquals(teacherDto.getBirthDate(), LocalDate.of(2020, 1, 1));
-        assertEquals(teacherDto.getCathedraDto().getId(), 1);
-        assertEquals(teacherDto.getSubjectDtos().get(0).getId(), 1);
-        assertEquals(teacherDto.getSubjectDtos().get(0).getCathedraDto().getId(), 1);
+        assertEquals(teacherDto.getCathedra().getId(), 1);
+        assertEquals(teacherDto.getSubjects().get(0).getId(), 1);
+        assertEquals(teacherDto.getSubjects().get(0).getCathedra().getId(), 1);
         assertEquals(teacherDto.getDegree(), Degree.PROFESSOR);
     }
 }

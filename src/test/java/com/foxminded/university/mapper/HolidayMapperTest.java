@@ -39,6 +39,6 @@ public class HolidayMapperTest {
         assertEquals(holidayDto.getId(), 1);
         assertEquals(holidayDto.getName(), "Test Name");
         assertEquals(holidayDto.getDate(), LocalDate.of(2021, 1, 1));
-        assertEquals(holidayDto.getCathedraDto().getId(), 1);
+        assertEquals(holidayDto.getCathedra().getId(), 1);
     }
 }
