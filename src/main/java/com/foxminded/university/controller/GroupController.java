@@ -77,7 +77,7 @@ public class GroupController {
     @DeleteMapping("/{id}")
     public String delete(@ModelAttribute Group group) {
         logger.debug("Delete group with id {}", group.getId());
-        groupService.delete(group);
+        groupService.delete(group.getId());
 
         return "redirect:/groups";
     }

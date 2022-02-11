@@ -162,7 +162,7 @@ public class VacationControllerTest {
         mockMvc.perform(delete("/teachers/{id}/vacations/{vacId}", 1, 1))
             .andExpect(redirectedUrl("/teachers/1/vacations"));
 
-        verify(vacationService).delete(Vacation.builder().id(1).build());
+        verify(vacationService).delete(1);
     }
 
     @Test

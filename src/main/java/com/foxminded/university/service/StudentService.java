@@ -44,16 +44,17 @@ public class StudentService {
             .orElseThrow(() -> new EntityNotFoundException("Can`t find any student with id: " + id));
     }
 
-    public void save(Student student) {
+    public Student save(Student student) {
         logger.debug("Save student");
         uniqueCheck(student);
         groupOverflowCheck(student);
-        studentRepository.save(student);
+
+        return studentRepository.save(student);
     }
 
-    public void delete(Student student) {
-        logger.debug("Delete student with id: {}", student.getId());
-        studentRepository.delete(student);
+    public void delete(int id) {
+        logger.debug("Delete student with id: {}", id);
+        studentRepository.deleteById(id);
     }
 
     private void uniqueCheck(Student student) {

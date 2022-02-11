@@ -33,6 +33,12 @@ public class CathedraService {
             .orElseThrow(() -> new EntityNotFoundException("Can`t find any cathedra with id: " + id));
     }
 
+    public Cathedra findByName(String name) {
+        logger.debug("Find cathedra by name {}", name);
+        return cathedraRepository.findByName(name)
+                .orElseThrow(() -> new EntityNotFoundException("Can`t find any cathedra with name: " + name));
+    }
+
     public void save(Cathedra cathedra) {
         logger.debug("Save cathedra");
         uniqueCheck(cathedra);

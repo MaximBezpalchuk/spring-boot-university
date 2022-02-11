@@ -33,15 +33,22 @@ public class GroupService {
             .orElseThrow(() -> new EntityNotFoundException("Can`t find any group with id: " + id));
     }
 
-    public void save(Group group) {
-        logger.debug("Save group");
-        uniqueCheck(group);
-        groupRepository.save(group);
+    public Group findByName(String name) {
+        logger.debug("Find group by name {}", name);
+        return groupRepository.findByName(name)
+                .orElseThrow(() -> new EntityNotFoundException("Can`t find any group with name: " + name));
     }
 
-    public void delete(Group group) {
-        logger.debug("Delete group with id: {}", group.getId());
-        groupRepository.delete(group);
+    public Group save(Group group) {
+        logger.debug("Save group");
+        uniqueCheck(group);
+
+        return groupRepository.save(group);
+    }
+
+    public void delete(int id) {
+        logger.debug("Delete group with id: {}", id);
+        groupRepository.deleteById(id);
     }
 
     private void uniqueCheck(Group group) {

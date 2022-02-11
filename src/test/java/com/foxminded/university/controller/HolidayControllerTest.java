@@ -65,7 +65,7 @@ public class HolidayControllerTest {
             .build();
         List<Holiday> holidays = Arrays.asList(holiday1, holiday2);
         Page<Holiday> page = new PageImpl<>(holidays, PageRequest.of(0, 1), 2);
-        when(holidayService.findAll(isA(Pageable.class))).thenReturn(page);
+        when(holidayService.findAll(PageRequest.of(0, 1))).thenReturn(page);
 
         mockMvc.perform(get("/holidays"))
             .andExpect(status().isOk())
@@ -149,6 +149,6 @@ public class HolidayControllerTest {
         mockMvc.perform(delete("/holidays/{id}", 1))
             .andExpect(redirectedUrl("/holidays"));
 
-        verify(holidayService).delete(Holiday.builder().id(1).build());
+        verify(holidayService).delete(1);
     }
 }

@@ -147,9 +147,8 @@ public class LectureTimeServiceTest {
 
     @Test
     void givenExistingLectureTimeId_whenDelete_thenDeleted() {
-        LectureTime lectureTime = LectureTime.builder().id(1).build();
-        lectureTimeService.delete(lectureTime);
+        lectureTimeService.delete(1);
 
-        verify(lectureTimeRepository).delete(lectureTime);
+        verify(lectureTimeRepository).deleteById(1);
     }
 }

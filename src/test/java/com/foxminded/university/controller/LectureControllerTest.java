@@ -1,11 +1,13 @@
 package com.foxminded.university.controller;
 
+import com.foxminded.university.dao.mapper.AudienceMapper;
 import com.foxminded.university.dao.mapper.LectureToEventMapper;
 import com.foxminded.university.model.*;
 import com.foxminded.university.service.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -36,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class LectureControllerTest {
 
     private MockMvc mockMvc;
-    private final LectureToEventMapper lectureToEventMapper = LectureToEventMapper.INSTANCE;
+    private final LectureToEventMapper lectureToEventMapper = Mappers.getMapper(LectureToEventMapper.class);
 
     @Mock
     private LectureService lectureService;
@@ -84,7 +86,7 @@ public class LectureControllerTest {
             .audience(audience)
             .cathedra(cathedra)
             .date(LocalDate.of(2021, 1, 1))
-            .group(Arrays.asList(group))
+            .groups(Arrays.asList(group))
             .subject(subject)
             .teacher(teacher)
             .time(time)
@@ -94,14 +96,14 @@ public class LectureControllerTest {
             .audience(audience)
             .cathedra(cathedra)
             .date(LocalDate.of(2021, 1, 2))
-            .group(Arrays.asList(group))
+            .groups(Arrays.asList(group))
             .subject(subject)
             .teacher(teacher)
             .time(time)
             .build();
         List<Lecture> lectures = Arrays.asList(lecture1, lecture2);
         Page<Lecture> page = new PageImpl<>(lectures, PageRequest.of(0, 1), 2);
-        when(lectureService.findAll(isA(Pageable.class))).thenReturn(page);
+        when(lectureService.findAll(PageRequest.of(0, 1))).thenReturn(page);
 
         mockMvc.perform(get("/lectures"))
             .andExpect(status().isOk())
@@ -130,7 +132,7 @@ public class LectureControllerTest {
             .audience(audience)
             .cathedra(cathedra)
             .date(LocalDate.of(2021, 1, 1))
-            .group(Arrays.asList(group))
+            .groups(Arrays.asList(group))
             .subject(subject)
             .teacher(teacher)
             .time(time)
@@ -184,7 +186,7 @@ public class LectureControllerTest {
             .audience(audience)
             .cathedra(cathedra)
             .date(LocalDate.of(2021, 1, 1))
-            .group(Arrays.asList(group))
+            .groups(Arrays.asList(group))
             .subject(subject)
             .teacher(teacher)
             .time(time)
@@ -212,7 +214,7 @@ public class LectureControllerTest {
             .audience(audience)
             .cathedra(cathedra)
             .date(LocalDate.of(2021, 1, 1))
-            .group(Arrays.asList(group))
+            .groups(Arrays.asList(group))
             .subject(subject)
             .teacher(teacher)
             .time(time)
@@ -238,7 +240,7 @@ public class LectureControllerTest {
         mockMvc.perform(delete("/lectures/{id}", 1))
             .andExpect(redirectedUrl("/lectures"));
 
-        verify(lectureService).delete(Lecture.builder().id(1).build());
+        verify(lectureService).delete(1);
     }
 
     @Test
@@ -363,7 +365,7 @@ public class LectureControllerTest {
             .audience(audience)
             .cathedra(cathedra)
             .date(LocalDate.of(2021, 1, 1))
-            .group(Arrays.asList(group))
+            .groups(Arrays.asList(group))
             .subject(subject)
             .teacher(teacher)
             .time(time)

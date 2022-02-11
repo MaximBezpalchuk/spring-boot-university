@@ -1,11 +1,9 @@
 package com.foxminded.university.controller;
 
-import com.foxminded.university.dao.mapper.LectureToEventMapper;
 import com.foxminded.university.model.Gender;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Student;
 import com.foxminded.university.service.GroupService;
-import com.foxminded.university.service.LectureService;
 import com.foxminded.university.service.StudentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,13 +42,10 @@ public class StudentControllerTest {
 
     private MockMvc mockMvc;
     private Validator validator;
-    private final LectureToEventMapper lectureToEventMapper = LectureToEventMapper.INSTANCE;
     @Mock
     private StudentService studentService;
     @Mock
     private GroupService groupService;
-    @Mock
-    private LectureService lectureService;
     @InjectMocks
     private StudentController studentController;
 
@@ -80,7 +75,7 @@ public class StudentControllerTest {
                 .build();
         List<Student> students = Arrays.asList(student1, student2);
         Page<Student> page = new PageImpl<>(students, PageRequest.of(0, 1), 2);
-        when(studentService.findAll(isA(Pageable.class))).thenReturn(page);
+        when(studentService.findAll(PageRequest.of(0, 1))).thenReturn(page);
 
         mockMvc.perform(get("/students"))
                 .andExpect(status().isOk())
@@ -160,7 +155,7 @@ public class StudentControllerTest {
         mockMvc.perform(delete("/students/{id}", 1))
                 .andExpect(redirectedUrl("/students"));
 
-        verify(studentService).delete(Student.builder().id(1).build());
+        verify(studentService).delete(1);
     }
 
     @Test

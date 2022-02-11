@@ -1,6 +1,5 @@
 package com.foxminded.university.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -24,7 +23,6 @@ public class Holiday {
 
     @Column
     @JsonSerialize(as = LocalDate.class)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     @NotNull(message = "{Date.notNull}")
     private LocalDate date;
@@ -94,7 +92,7 @@ public class Holiday {
             return false;
         Holiday other = (Holiday) obj;
         return Objects.equals(cathedra, other.cathedra) && Objects.equals(date, other.date) && id == other.id
-                && Objects.equals(name, other.name);
+            && Objects.equals(name, other.name);
     }
 
     public static class Builder {

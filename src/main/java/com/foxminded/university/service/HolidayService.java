@@ -40,15 +40,16 @@ public class HolidayService {
             .orElseThrow(() -> new EntityNotFoundException("Can`t find any holiday with id: " + id));
     }
 
-    public void save(Holiday holiday) {
+    public Holiday save(Holiday holiday) {
         logger.debug("Save holiday");
         uniqueCheck(holiday);
-        holidayRepository.save(holiday);
+
+        return holidayRepository.save(holiday);
     }
 
-    public void delete(Holiday holiday) {
-        logger.debug("Delete holiday with id: {}", holiday.getId());
-        holidayRepository.delete(holiday);
+    public void delete(int id) {
+        logger.debug("Delete holiday with id: {}", id);
+        holidayRepository.deleteById(id);
     }
 
     private void uniqueCheck(Holiday holiday) {

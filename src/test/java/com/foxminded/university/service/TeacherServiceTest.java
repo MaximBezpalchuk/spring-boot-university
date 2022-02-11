@@ -94,10 +94,9 @@ public class TeacherServiceTest {
 
     @Test
     void givenExistingTeacherId_whenDelete_thenDeleted() {
-        Teacher teacher = Teacher.builder().id(1).build();
-        teacherService.delete(teacher);
+        teacherService.delete(1);
 
-        verify(teacherRepository).delete(teacher);
+        verify(teacherRepository).deleteById(1);
     }
 
     @Test

@@ -77,7 +77,7 @@ public class AudienceController {
     @DeleteMapping("/{id}")
     public String delete(@ModelAttribute Audience audience) {
         logger.debug("Delete audience with id {}", audience.getId());
-        audienceService.delete(audience);
+        audienceService.delete(audience.getId());
 
         return "redirect:/audiences";
     }

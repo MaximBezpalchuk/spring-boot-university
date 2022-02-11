@@ -150,9 +150,9 @@ public class Lecture {
             return false;
         Lecture other = (Lecture) obj;
         return Objects.equals(audience, other.audience) && Objects.equals(cathedra, other.cathedra)
-                && Objects.equals(date, other.date) && Objects.equals(groups, other.groups) && id == other.id
-                && Objects.equals(subject, other.subject) && Objects.equals(teacher, other.teacher)
-                && Objects.equals(time, other.time);
+            && Objects.equals(date, other.date) && Objects.equals(groups, other.groups) && id == other.id
+            && Objects.equals(subject, other.subject) && Objects.equals(teacher, other.teacher)
+            && Objects.equals(time, other.time);
     }
 
     public static class Builder {
@@ -201,7 +201,7 @@ public class Lecture {
             return this;
         }
 
-        public Builder group(List<Group> groups) {
+        public Builder groups(List<Group> groups) {
             this.groups = groups;
             return this;
         }

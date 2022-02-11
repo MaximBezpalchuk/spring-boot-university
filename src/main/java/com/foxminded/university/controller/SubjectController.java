@@ -80,7 +80,7 @@ public class SubjectController {
     @DeleteMapping("/{id}")
     public String delete(@ModelAttribute Subject subject) {
         logger.debug("Delete subject with id {}", subject.getId());
-        subjectService.delete(subject);
+        subjectService.delete(subject.getId());
 
         return "redirect:/subjects";
     }

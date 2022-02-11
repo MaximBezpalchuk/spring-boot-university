@@ -64,7 +64,7 @@ public class SubjectControllerTest {
             .build();
         List<Subject> subjects = Arrays.asList(subject1, subject2);
         Page<Subject> page = new PageImpl<>(subjects, PageRequest.of(0, 1), 2);
-        when(subjectService.findAll(isA(Pageable.class))).thenReturn(page);
+        when(subjectService.findAll(PageRequest.of(0, 1))).thenReturn(page);
 
         mockMvc.perform(get("/subjects"))
             .andExpect(status().isOk())
@@ -148,6 +148,6 @@ public class SubjectControllerTest {
         mockMvc.perform(delete("/subjects/{id}", 1))
             .andExpect(redirectedUrl("/subjects"));
 
-        verify(subjectService).delete(Subject.builder().id(1).build());
+        verify(subjectService).delete(1);
     }
 }

@@ -62,7 +62,7 @@ public class LectureService {
             .orElseThrow(() -> new EntityNotFoundException("Can`t find any lecture with id: " + id));
     }
 
-    public void save(Lecture lecture) {
+    public Lecture save(Lecture lecture) {
         logger.debug("Save lecture");
         uniqueCheck(lecture);
         sundayCheck(lecture);
@@ -73,12 +73,13 @@ public class LectureService {
         teacherCompetentWithSubjectCheck(lecture);
         enoughAudienceCapacityCheck(lecture);
         audienceOccupiedCheck(lecture);
-        lectureRepository.save(lecture);
+
+        return lectureRepository.save(lecture);
     }
 
-    public void delete(Lecture lecture) {
-        logger.debug("Delete lecture with id: {}", lecture.getId());
-        lectureRepository.delete(lecture);
+    public void delete(int id) {
+        logger.debug("Delete lecture with id: {}", id);
+        lectureRepository.deleteById(id);
     }
 
     private void uniqueCheck(Lecture lecture) {

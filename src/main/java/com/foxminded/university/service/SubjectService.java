@@ -40,15 +40,22 @@ public class SubjectService {
             .orElseThrow(() -> new EntityNotFoundException("Can`t find any subject with id: " + id));
     }
 
-    public void save(Subject subject) {
-        logger.debug("Save subject");
-        uniqueCheck(subject);
-        subjectRepository.save(subject);
+    public Subject findByName(String name) {
+        logger.debug("Find subject by name {}", name);
+        return subjectRepository.findByName(name)
+            .orElseThrow(() -> new EntityNotFoundException("Can`t find any subject with name: " + name));
     }
 
-    public void delete(Subject subject) {
-        logger.debug("Delete subject with id: {}", subject.getId());
-        subjectRepository.delete(subject);
+    public Subject save(Subject subject) {
+        logger.debug("Save subject");
+        uniqueCheck(subject);
+
+        return subjectRepository.save(subject);
+    }
+
+    public void delete(int id) {
+        logger.debug("Delete subject with id: {}", id);
+        subjectRepository.deleteById(id);
     }
 
     private void uniqueCheck(Subject subject) {

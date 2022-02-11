@@ -33,15 +33,22 @@ public class AudienceService {
             .orElseThrow(() -> new EntityNotFoundException("Can`t find any audience with id: " + id));
     }
 
-    public void save(Audience audience) {
-        logger.debug("Save audience");
-        uniqueCheck(audience);
-        audienceRepository.save(audience);
+    public Audience findByRoom(int room) {
+        logger.debug("Find audience by room {}", room);
+        return audienceRepository.findByRoom(room)
+            .orElseThrow(() -> new EntityNotFoundException("Can`t find any audience with room: " + room));
     }
 
-    public void delete(Audience audience) {
-        logger.debug("Delete audience with id: {}", audience.getId());
-        audienceRepository.delete(audience);
+    public Audience save(Audience audience) {
+        logger.debug("Save audience");
+        uniqueCheck(audience);
+
+        return audienceRepository.save(audience);
+    }
+
+    public void delete(int id) {
+        logger.debug("Delete audience with id: {}", id);
+        audienceRepository.deleteById(id);
     }
 
     private void uniqueCheck(Audience audience) {

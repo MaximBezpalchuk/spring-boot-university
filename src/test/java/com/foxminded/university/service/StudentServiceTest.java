@@ -159,9 +159,8 @@ public class StudentServiceTest {
 
     @Test
     void givenExistingStudentId_whenDelete_thenDeleted() {
-        Student student = Student.builder().id(1).build();
-        studentService.delete(student);
+        studentService.delete(1);
 
-        verify(studentRepository).delete(student);
+        verify(studentRepository).deleteById(1);
     }
 }
