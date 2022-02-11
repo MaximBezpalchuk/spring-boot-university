@@ -23,6 +23,10 @@ spring:
         default-page-size: 3
         one-indexed-parameters: true
 
+springdoc:
+  api-docs:
+    path: /api-docs
+
 university:
   minLectureDurationInMinutes: 30
   maxGroupSize: 10
