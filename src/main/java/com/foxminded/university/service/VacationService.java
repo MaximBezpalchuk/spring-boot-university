@@ -35,9 +35,9 @@ public class VacationService {
         return vacationRepository.findAll();
     }
 
-    public Vacation findById(int id) {
-        logger.debug("Find vacation by id {}", id);
-        return vacationRepository.findById(id)
+    public Vacation findByTeacherIdAndId(int teacherId, int id) {
+        logger.debug("Find vacation by teacher id {} and id {}", teacherId, id);
+        return vacationRepository.findByTeacherIdAndId(teacherId, id)
             .orElseThrow(() -> new EntityNotFoundException("Can`t find any vacation with id: " + id));
     }
 

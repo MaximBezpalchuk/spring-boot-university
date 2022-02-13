@@ -27,6 +27,7 @@ import javax.validation.ValidatorFactory;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -98,7 +99,7 @@ public class VacationControllerTest {
             .start(LocalDate.of(2021, 1, 1))
             .end(LocalDate.of(2021, 1, 2))
             .build();
-        when(vacationService.findById(vacation.getId())).thenReturn(vacation);
+        when(vacationService.findByTeacherIdAndId(1, vacation.getId())).thenReturn(vacation);
 
         mockMvc.perform(get("/teachers/{teacherId}/vacations/{id}", teacher.getId(), vacation.getId()))
             .andExpect(status().isOk())
@@ -147,7 +148,7 @@ public class VacationControllerTest {
             .end(LocalDate.of(2021, 1, 2))
             .build();
 
-        when(vacationService.findById(1)).thenReturn(expected);
+        when(vacationService.findByTeacherIdAndId(1, 1)).thenReturn(expected);
         when(teacherService.findById(teacher.getId())).thenReturn(teacher);
 
         mockMvc.perform(get("/teachers/{id}/vacations/{vacId}/edit", teacher.getId(), 1))
