@@ -42,7 +42,6 @@ public class LectureRestController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Show all lectures"),
         @ApiResponse(responseCode = "404", description = "Lectures not found", content = @Content),
-        @ApiResponse(responseCode = "500", description = "Internal error", content = @Content),
         @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     public Page<LectureDto> getAllLectures(Pageable pageable) {
         logger.debug("Show all lectures");

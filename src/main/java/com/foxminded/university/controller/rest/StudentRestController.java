@@ -42,7 +42,6 @@ public class StudentRestController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Show all students"),
         @ApiResponse(responseCode = "404", description = "Students not found", content = @Content),
-        @ApiResponse(responseCode = "500", description = "Internal error", content = @Content),
         @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     public Page<StudentDto> getAllStudents(Pageable pageable) {
         logger.debug("Show all students");

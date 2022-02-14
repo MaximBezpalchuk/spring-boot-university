@@ -62,7 +62,6 @@ public class VacationRestController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Show all vacations"),
         @ApiResponse(responseCode = "404", description = "Vacations not found", content = @Content),
-        @ApiResponse(responseCode = "500", description = "Internal error", content = @Content),
         @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     public Page<VacationDto> getAllVacationsByTeacherId(@Parameter(description = "Id of teacher to search its vacations") @PathVariable int teacherId, Pageable pageable) {
         logger.debug("Show all vacations by teacher id {}", teacherId);
@@ -116,7 +115,6 @@ public class VacationRestController {
         @ApiResponse(responseCode = "200", description = "Show all lectures by period",
             content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Slice.class)) }),
         @ApiResponse(responseCode = "404", description = "Lectures not found", content = @Content),
-        @ApiResponse(responseCode = "500", description = "Internal error", content = @Content),
         @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     public Slice changeTeacherOnLectures(@Parameter(description = "Id of teacher to search lectures with this teacher") @PathVariable int teacherId,
                                          @Parameter(description = "Start period") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,

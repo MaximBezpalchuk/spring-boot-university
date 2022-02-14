@@ -42,7 +42,6 @@ public class SubjectRestController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Show all subjects"),
         @ApiResponse(responseCode = "404", description = "Subjects not found", content = @Content),
-        @ApiResponse(responseCode = "500", description = "Internal error", content = @Content),
         @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     public Page<SubjectDto> getAllSubjects(Pageable pageable) {
         logger.debug("Show all subjects");

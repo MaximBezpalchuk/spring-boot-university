@@ -43,7 +43,6 @@ public class LectureTimeRestController {
         @ApiResponse(responseCode = "200", description = "Show all lecture times",
             content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Slice.class)) }),
         @ApiResponse(responseCode = "404", description = "Lecture times not found", content = @Content),
-        @ApiResponse(responseCode = "500", description = "Internal error", content = @Content),
         @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     public Slice getAllLectureTimes() {
         logger.debug("Show all lecture times");

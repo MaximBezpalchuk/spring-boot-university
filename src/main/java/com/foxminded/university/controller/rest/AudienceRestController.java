@@ -43,7 +43,6 @@ public class AudienceRestController {
         @ApiResponse(responseCode = "200", description = "Show all audiences",
             content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Slice.class)) }),
         @ApiResponse(responseCode = "404", description = "Audiences not found", content = @Content),
-        @ApiResponse(responseCode = "500", description = "Internal error", content = @Content),
         @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
     public Slice getAllAudiences() {
         logger.debug("Show all audiences");
