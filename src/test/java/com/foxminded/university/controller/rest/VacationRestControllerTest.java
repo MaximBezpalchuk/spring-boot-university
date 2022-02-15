@@ -92,7 +92,7 @@ public class VacationRestControllerTest {
         Vacation vacation = createVacationNoId();
         vacation.setId(1);
         VacationDto vacationDto = vacationMapper.vacationToDto(vacation);
-        when(vacationService.findById(vacation.getId())).thenReturn(vacation);
+        when(vacationService.findByTeacherIdAndId(1, vacation.getId())).thenReturn(vacation);
 
         mockMvc.perform(get("/api/teachers/{teacherId}/vacations/{id}", vacation.getTeacher().getId(), vacation.getId())
                 .contentType(MediaType.APPLICATION_JSON))

@@ -3,6 +3,7 @@ package com.foxminded.university.controller.rest;
 import com.foxminded.university.controller.VacationController;
 import com.foxminded.university.dao.mapper.LectureMapper;
 import com.foxminded.university.dao.mapper.VacationMapper;
+import com.foxminded.university.dto.HolidayDto;
 import com.foxminded.university.dto.Slice;
 import com.foxminded.university.dto.VacationDto;
 import com.foxminded.university.exception.BusyTeacherException;
@@ -12,6 +13,12 @@ import com.foxminded.university.model.Vacation;
 import com.foxminded.university.service.LectureService;
 import com.foxminded.university.service.TeacherService;
 import com.foxminded.university.service.VacationService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -51,22 +58,39 @@ public class VacationRestController {
     }
 
     @GetMapping
-    public Page<VacationDto> getAllVacationsByTeacherId(@PathVariable int teacherId, Pageable pageable) {
+    @Operation(summary = "Get all vacations by teacher id")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Show all vacations"),
+        @ApiResponse(responseCode = "404", description = "Vacations not found", content = @Content),
+        @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
+    public Page<VacationDto> getAllVacationsByTeacherId(@Parameter(description = "Id of teacher to search its vacations") @PathVariable int teacherId, Pageable pageable) {
         logger.debug("Show all vacations by teacher id {}", teacherId);
 
         return vacationService.findByTeacherId(pageable, teacherId).map(vacationMapper::vacationToDto);
     }
 
     @GetMapping("/{id}")
-    public VacationDto showVacation(@PathVariable int id) {
+    @Operation(summary = "Get an vacation by its id")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Found the vacation",
+            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = VacationDto.class)) }),
+        @ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
+        @ApiResponse(responseCode = "404", description = "Vacation not found", content = @Content),
+        @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
+    public VacationDto showVacation(@Parameter(description = "Id of teacher that vacation need to search") @PathVariable int teacherId, @Parameter(description = "Id of vacation to be searched") @PathVariable int id) {
         logger.debug("Show vacation with id {}", id);
 
-        return vacationMapper.vacationToDto(vacationService.findById(id));
+        return vacationMapper.vacationToDto(vacationService.findByTeacherIdAndId(teacherId, id));
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity createVacation(@PathVariable int teacherId, @RequestBody VacationDto vacationDto) {
+    @Operation(summary = "Create a new vacation by its DTO")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Vacation successfully created",
+            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = ResponseEntity.class)) }),
+        @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
+    public ResponseEntity createVacation(@Parameter(description = "Id of teacher to create its vacations") @PathVariable int teacherId, @RequestBody VacationDto vacationDto) {
         Vacation vacation;
         Vacation vacationFromDto = vacationMapper.dtoToVacation(vacationDto);
         List<Lecture> lectures = lectureService.findByTeacherIdAndPeriod(teacherId, vacationFromDto.getStart(),
@@ -86,9 +110,15 @@ public class VacationRestController {
     }
 
     @GetMapping("/lectures")
-    public Slice changeTeacherOnLectures(@PathVariable int teacherId,
-                                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
-                                         @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
+    @Operation(summary = "Get all lectures by period")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Show all lectures by period",
+            content = { @Content(mediaType = "application/json", schema = @Schema(implementation = Slice.class)) }),
+        @ApiResponse(responseCode = "404", description = "Lectures not found", content = @Content),
+        @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
+    public Slice changeTeacherOnLectures(@Parameter(description = "Id of teacher to search lectures with this teacher") @PathVariable int teacherId,
+                                         @Parameter(description = "Start period") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+                                         @Parameter(description = "End period") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
         logger.debug("Change teacher on lectures - teacher with id {}", teacherId);
         List<Lecture> lectures = lectureService.findByTeacherIdAndPeriod(teacherId, start, end);
 
@@ -96,9 +126,15 @@ public class VacationRestController {
     }
 
     @PatchMapping("/lectures")
-    public void autofillTeachersOnLectures(@PathVariable int teacherId,
-                                           @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
-                                           @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
+    @Operation(summary = "Update an existing lectures with new teacher by random")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Lectures successfully updated",content = @Content),
+        @ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
+        @ApiResponse(responseCode = "404", description = "Lectures not found", content = @Content),
+        @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
+    public void autofillTeachersOnLectures(@Parameter(description = "Id of teacher to search lectures with this teacher") @PathVariable int teacherId,
+                                           @Parameter(description = "Start period") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
+                                           @Parameter(description = "End period") @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
         logger.debug("Autofill teacher on lectures - teacher with id {}", teacherId);
         List<Lecture> lectures = lectureService.findByTeacherIdAndPeriod(teacherId, start, end);
         for (Lecture lecture : lectures) {
@@ -110,7 +146,13 @@ public class VacationRestController {
     }
 
     @PatchMapping("/{id}")
-    public void update(@RequestBody VacationDto vacationDto, @PathVariable int teacherId) {
+    @Operation(summary = "Update an existing vacation by its DTO")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Vacation successfully updated",content = @Content),
+        @ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
+        @ApiResponse(responseCode = "404", description = "Vacation not found", content = @Content),
+        @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
+    public void update(@RequestBody VacationDto vacationDto, @Parameter(description = "Id of teacher to update its vacations") @PathVariable int teacherId) {
         Vacation vacation = vacationMapper.dtoToVacation(vacationDto);
         List<Lecture> lectures = lectureService.findByTeacherIdAndPeriod(teacherId, vacation.getStart(),
             vacation.getEnd());
@@ -124,7 +166,13 @@ public class VacationRestController {
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable int id) {
+    @Operation(summary = "Delete an existing vacation by its id")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Holiday successfully deleted", content = @Content),
+        @ApiResponse(responseCode = "400", description = "Invalid id supplied", content = @Content),
+        @ApiResponse(responseCode = "404", description = "Holiday not found", content = @Content),
+        @ApiResponse(responseCode = "500", description = "Internal error", content = @Content)})
+    public void delete(@Parameter(description = "Id of vacation to be deleted") @PathVariable int id) {
         vacationService.delete(id);
     }
 }

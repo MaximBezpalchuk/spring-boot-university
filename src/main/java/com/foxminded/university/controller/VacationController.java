@@ -48,9 +48,9 @@ public class VacationController {
     }
 
     @GetMapping("/{id}")
-    public String showVacation(@PathVariable int id, Model model) {
+    public String showVacation(@PathVariable int teacherId, @PathVariable int id, Model model) {
         logger.debug("Show vacation page with id {}", id);
-        model.addAttribute("vacation", vacationService.findById(id));
+        model.addAttribute("vacation", vacationService.findByTeacherIdAndId(teacherId, id));
 
         return "teachers/vacations/show";
     }
@@ -115,7 +115,7 @@ public class VacationController {
     public String editVacation(@PathVariable int teacherId, @PathVariable int id, Model model) {
         logger.debug("Show edit vacation page");
         model.addAttribute("teacher", teacherService.findById(teacherId));
-        model.addAttribute("vacation", vacationService.findById(id));
+        model.addAttribute("vacation", vacationService.findByTeacherIdAndId(teacherId, id));
 
         return "teachers/vacations/edit";
     }

@@ -29,4 +29,6 @@ public interface VacationRepository extends JpaRepository<Vacation, Integer> {
     default List<Vacation> findByTeacherAndYear(Teacher teacher, int year) {
         return findByTeacherAndStartBetween(teacher, LocalDate.of(year, Month.JANUARY, 1), LocalDate.of(year, Month.DECEMBER, 31));
     }
+
+    Optional<Vacation> findByTeacherIdAndId(int teacherId, int id);
 }

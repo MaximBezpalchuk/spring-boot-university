@@ -73,8 +73,8 @@ public class VacationServiceTest {
     @Test
     void givenExistingVacation_whenFindById_thenVacationFound() {
         Optional<Vacation> expected = Optional.of(Vacation.builder().id(1).build());
-        when(vacationRepository.findById(1)).thenReturn(expected);
-        Vacation actual = vacationService.findById(1);
+        when(vacationRepository.findByTeacherIdAndId(1, 1)).thenReturn(expected);
+        Vacation actual = vacationService.findByTeacherIdAndId(1, 1);
 
         assertEquals(expected.get(), actual);
     }
@@ -83,7 +83,7 @@ public class VacationServiceTest {
     void givenExistingVacation_whenFindById_thenEntityNotFoundException() {
         when(vacationRepository.findById(10)).thenReturn(Optional.empty());
         Exception exception = assertThrows(EntityNotFoundException.class, () -> {
-            vacationService.findById(10);
+            vacationService.findByTeacherIdAndId(1, 10);
         });
 
         assertEquals("Can`t find any vacation with id: 10", exception.getMessage());
