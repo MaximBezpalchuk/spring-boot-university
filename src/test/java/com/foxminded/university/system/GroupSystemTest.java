@@ -81,7 +81,6 @@ public class GroupSystemTest {
         mockMvc.perform(post("/api/groups")
                 .content(objectMapper.writeValueAsString(groupDto))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/api/groups/3"))
                 .andExpect(status().isCreated());
     }
 

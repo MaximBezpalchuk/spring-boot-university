@@ -81,7 +81,6 @@ public class AudienceSystemTest {
         mockMvc.perform(post("/api/audiences")
                 .content(objectMapper.writeValueAsString(audienceDto))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/api/audiences/4"))
                 .andExpect(status().isCreated());
     }
 

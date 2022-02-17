@@ -76,7 +76,6 @@ public class LectureTimeSystemTest {
         mockMvc.perform(post("/api/lecturetimes")
                 .content(objectMapper.writeValueAsString(lectureTimeDto))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/api/lecturetimes/9"))
                 .andExpect(status().isCreated());
     }
 

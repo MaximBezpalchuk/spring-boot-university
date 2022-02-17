@@ -61,7 +61,7 @@ public class StudentSystemTest {
         student2.setFirstName("FirstName1");
         List<Student> students = Arrays.asList(student1, student2);
         List<StudentDto> studentDtos = students.stream().map(studentMapper::studentToDto).collect(Collectors.toList());
-        Page<StudentDto> pageDtos = new PageImpl<>(studentDtos, PageRequest.of(0, 3), 1);
+        Page<StudentDto> pageDtos = new PageImpl<>(studentDtos, PageRequest.of(0, 3), 2);
 
         mockMvc.perform(get("/api/students")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -90,7 +90,6 @@ public class StudentSystemTest {
         mockMvc.perform(post("/api/students")
                 .content(objectMapper.writeValueAsString(studentDto))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/api/students/6"))
                 .andExpect(status().isCreated());
     }
 

@@ -56,3 +56,71 @@ students:
     education: "high"
     birth_date: 1990-01-01 00:00:00
     group_id: 1
+subjects:
+  - id: 1
+    name: "Test Name"
+    description: "Desc"
+    cathedra_id: 1
+  - id: 2
+    name: "Test Name2"
+    description: "Desc"
+    cathedra_id: 1
+teachers:
+  - id: 1
+    first_name: "FirstName"
+    last_name: "LastName"
+    phone: "8888"
+    address: "abc"
+    email: "1@a.com"
+    gender: "MALE"
+    postal_code: "123"
+    education: "high"
+    birth_date: 1990-01-01 00:00:00
+    degree: PROFESSOR
+    cathedra_id: 1
+  - id: 2
+    first_name: "FirstName1"
+    last_name: "LastName"
+    phone: "8888"
+    address: "abc"
+    email: "1@a.com"
+    gender: "MALE"
+    postal_code: "123"
+    education: "high"
+    birth_date: 1990-01-01 00:00:00
+    degree: PROFESSOR
+    cathedra_id: 1
+subjects_teachers:
+  - subject_id: 1
+    teacher_id: 1
+  - subject_id: 1
+    teacher_id: 2
+vacations:
+  - id: 1
+    start: 2021-01-01 00:00:00
+    finish: 2021-01-02 00:00:00
+    teacher_id: 1
+  - id: 2
+    start: 2021-01-02 00:00:00
+    finish: 2021-01-03 00:00:00
+    teacher_id: 1
+lectures:
+  - id: 1
+    audience_id: 1
+    cathedra_id: 1
+    date: 2021-01-01 00:00:00
+    subject_id: 1
+    teacher_id: 1
+    lecture_time_id: 1
+  - id: 2
+    audience_id: 1
+    cathedra_id: 1
+    date: 2021-01-02 00:00:00
+    subject_id: 1
+    teacher_id: 1
+    lecture_time_id: 1
+lectures_groups:
+  - lecture_id: 1
+    group_id: 1
+  - lecture_id: 2
+    group_id: 1

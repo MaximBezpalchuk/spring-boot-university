@@ -84,7 +84,6 @@ public class HolidaySystemTest {
         mockMvc.perform(post("/api/holidays")
                 .content(objectMapper.writeValueAsString(holidayDto))
                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/api/holidays/7"))
                 .andExpect(status().isCreated());
     }
 
