@@ -54,10 +54,10 @@ public class AudienceSystemTest {
         List<AudienceDto> audienceDtos = audiences.stream().map(audienceMapper::audienceToDto).collect(Collectors.toList());
 
         mockMvc.perform(get("/api/audiences")
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-            .andExpect(content().string(objectMapper.writeValueAsString(new Slice(audienceDtos))))
-            .andExpect(status().isOk());
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(objectMapper.writeValueAsString(new Slice(audienceDtos))))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -67,9 +67,9 @@ public class AudienceSystemTest {
         AudienceDto audienceDto = audienceMapper.audienceToDto(audience);
 
         mockMvc.perform(get("/api/audiences/{id}", audience.getId())
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(content().string(objectMapper.writeValueAsString(audienceDto)))
-            .andExpect(status().isOk());
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().string(objectMapper.writeValueAsString(audienceDto)))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -79,10 +79,10 @@ public class AudienceSystemTest {
         AudienceDto audienceDto = audienceMapper.audienceToDto(audience);
 
         mockMvc.perform(post("/api/audiences")
-            .content(objectMapper.writeValueAsString(audienceDto))
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/api/audiences/4"))
-            .andExpect(status().isCreated());
+                .content(objectMapper.writeValueAsString(audienceDto))
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/api/audiences/4"))
+                .andExpect(status().isCreated());
     }
 
     @Test
@@ -92,16 +92,16 @@ public class AudienceSystemTest {
         AudienceDto audienceDto = audienceMapper.audienceToDto(audience);
 
         mockMvc.perform(patch("/api/audiences/{id}", 1)
-            .content(objectMapper.writeValueAsString(audienceDto))
-            .contentType(APPLICATION_JSON))
-            .andExpect(status().isOk());
+                .content(objectMapper.writeValueAsString(audienceDto))
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     @Test
     public void whenDeleteAudience_thenAudienceDeleted() throws Exception {
         mockMvc.perform(delete("/api/audiences/{id}", 1)
-            .contentType(APPLICATION_JSON))
-            .andExpect(status().isOk());
+                .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 
     private Audience createAudienceNoId() {

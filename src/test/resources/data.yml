@@ -10,6 +10,22 @@ audiences:
     room: 2
     capacity: 5
     cathedra_id: 1
+groups:
+  - id: 1
+    name: "Killers"
+    cathedra_id: 1
+  - id: 2
+    name: "Killers2"
+    cathedra_id: 1
+holidays:
+  - id: 1
+    name: "Test Name"
+    date: 2021-01-01 00:00:00
+    cathedra_id: 1
+  - id: 2
+    name: "Test Name2"
+    date: 2021-01-01 00:00:00
+    cathedra_id: 1
 lecture_times:
   - id: 1
     start: 08:00:00
@@ -17,3 +33,26 @@ lecture_times:
   - id: 2
     start: 08:00:00
     finish: 09:00:00
+students:
+  - id: 1
+    first_name: "FirstName"
+    last_name: "LastName"
+    phone: "8888"
+    address: "abc"
+    email: "1@a.com"
+    gender: "MALE"
+    postal_code: "123"
+    education: "high"
+    birth_date: 1990-01-01 00:00:00
+    group_id: 1
+  - id: 2
+    first_name: "FirstName1"
+    last_name: "LastName"
+    phone: "8888"
+    address: "abc"
+    email: "1@a.com"
+    gender: "MALE"
+    postal_code: "123"
+    education: "high"
+    birth_date: 1990-01-01 00:00:00
+    group_id: 1
