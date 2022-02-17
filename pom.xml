@@ -24,7 +24,6 @@
         <mapstruct.version>1.4.2.Final</mapstruct.version>
         <spring-boot.version>2.5.2</spring-boot.version>
         <org.springdoc.version>1.6.6</org.springdoc.version>
-        <testcontainers.version>1.16.3</testcontainers.version>
         <junit.version>5.8.2</junit.version>
         <dbrider.version>1.15.2</dbrider.version>
         <snakeyaml.version>1.26</snakeyaml.version>
@@ -133,24 +132,6 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>${h2.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>testcontainers</artifactId>
-            <version>${testcontainers.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${testcontainers.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

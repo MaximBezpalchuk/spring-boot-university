@@ -8,7 +8,6 @@ import com.foxminded.university.dto.AudienceDto;
 import com.foxminded.university.dto.Slice;
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Cathedra;
-import com.foxminded.university.model.LectureTime;
 import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.configuration.Orthography;
 import com.github.database.rider.core.api.dataset.DataSet;
@@ -18,37 +17,22 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.containers.wait.strategy.Wait;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Testcontainers
 @DBRider
-@DataSet(value = { "data.yml" }, cleanAfter = true)
+@DataSet(value = {"data.yml"}, cleanAfter = true)
 @DBUnit(caseInsensitiveStrategy = Orthography.LOWERCASE)
 public class AudienceSystemTest {
 
@@ -58,9 +42,6 @@ public class AudienceSystemTest {
     private ObjectMapper objectMapper;
     private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper.class);
     private AudienceMapper audienceMapper = new AudienceMapperImpl(cathedraMapper);
-
-    @Container
-    private final PostgreSQLContainer<?> POSTGRESQL_CONTAINER = new PostgreSQLContainer<>("postgres:11");
 
     @Test
     void whenGetAllAudiences_thenAllAudiencesReturned() throws Exception {
@@ -73,10 +54,10 @@ public class AudienceSystemTest {
         List<AudienceDto> audienceDtos = audiences.stream().map(audienceMapper::audienceToDto).collect(Collectors.toList());
 
         mockMvc.perform(get("/api/audiences")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().string(objectMapper.writeValueAsString(new Slice(audienceDtos))))
-                .andExpect(status().isOk());
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+            .andExpect(content().string(objectMapper.writeValueAsString(new Slice(audienceDtos))))
+            .andExpect(status().isOk());
     }
 
     @Test
