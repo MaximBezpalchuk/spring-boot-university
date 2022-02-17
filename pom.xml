@@ -26,6 +26,8 @@
         <org.springdoc.version>1.6.6</org.springdoc.version>
         <testcontainers.version>1.16.3</testcontainers.version>
         <junit.version>5.8.2</junit.version>
+        <dbrider.version>1.15.2</dbrider.version>
+        <snakeyaml.version>1.26</snakeyaml.version>
     </properties>
 
     <dependencies>
@@ -123,6 +125,11 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>${snakeyaml.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>${h2.version}</version>
@@ -162,6 +169,24 @@
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>
             <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.database-rider</groupId>
+            <artifactId>rider-core</artifactId>
+            <version>${dbrider.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.database-rider</groupId>
+            <artifactId>rider-spring</artifactId>
+            <version>${dbrider.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.database-rider</groupId>
+            <artifactId>rider-junit5</artifactId>
+            <version>${dbrider.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

@@ -1,0 +1,19 @@
+cathedras:
+  - id: 1
+    name: "Fantastic Cathedra"
+audiences:
+  - id: 1
+    room: 1
+    capacity: 5
+    cathedra_id: 1
+  - id: 2
+    room: 2
+    capacity: 5
+    cathedra_id: 1
+lecture_times:
+  - id: 1
+    start: 08:00:00
+    finish: 09:00:00
+  - id: 2
+    start: 08:00:00
+    finish: 09:00:00

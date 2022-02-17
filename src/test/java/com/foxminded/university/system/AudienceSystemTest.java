@@ -8,12 +8,21 @@ import com.foxminded.university.dto.AudienceDto;
 import com.foxminded.university.dto.Slice;
 import com.foxminded.university.model.Audience;
 import com.foxminded.university.model.Cathedra;
+import com.foxminded.university.model.LectureTime;
+import com.github.database.rider.core.api.configuration.DBUnit;
+import com.github.database.rider.core.api.configuration.Orthography;
+import com.github.database.rider.core.api.dataset.DataSet;
+import com.github.database.rider.spring.api.DBRider;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -21,42 +30,49 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Transactional
 @Testcontainers
+@DBRider
+@DataSet(value = { "data.yml" }, cleanAfter = true)
+@DBUnit(caseInsensitiveStrategy = Orthography.LOWERCASE)
 public class AudienceSystemTest {
 
     @Autowired
-    private MockMvc mvc;
+    private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
     private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper.class);
     private AudienceMapper audienceMapper = new AudienceMapperImpl(cathedraMapper);
 
     @Container
-    private final PostgreSQLContainer<?> POSTGRESQL_CONTAINER =
-            new PostgreSQLContainer<>("postgres:11")// Создать контейнер из образа postgres:11
-                    .withInitScript("schema.sql").withInitScript("data.sql").waitingFor(Wait.forListeningPort());
+    private final PostgreSQLContainer<?> POSTGRESQL_CONTAINER = new PostgreSQLContainer<>("postgres:11");
 
     @Test
-    void whenRestGetAllAudiences_thenAllJsonAudiencesReturned() throws Exception {
-        Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
-
-        Audience audience1 = Audience.builder().id(1).room(1).capacity(10).cathedra(cathedra).build();
-        Audience audience2 = Audience.builder().id(2).room(2).capacity(30).cathedra(cathedra).build();
-        Audience audience3 = Audience.builder().id(3).room(3).capacity(10).cathedra(cathedra).build();
-        List<Audience> audiences = Arrays.asList(audience1, audience2, audience3);
+    void whenGetAllAudiences_thenAllAudiencesReturned() throws Exception {
+        Audience audience1 = createAudienceNoId();
+        audience1.setId(1);
+        Audience audience2 = createAudienceNoId();
+        audience2.setId(2);
+        audience2.setRoom(2);
+        List<Audience> audiences = Arrays.asList(audience1, audience2);
         List<AudienceDto> audienceDtos = audiences.stream().map(audienceMapper::audienceToDto).collect(Collectors.toList());
 
-        mvc.perform(get("/api/audiences")
+        mockMvc.perform(get("/api/audiences")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(content().string(objectMapper.writeValueAsString(new Slice(audienceDtos))))
@@ -64,17 +80,52 @@ public class AudienceSystemTest {
     }
 
     @Test
-    void whenGetAllAudiences_thenAllHtmlAudiencesReturned() throws Exception {
+    public void whenGetOneAudience_thenOneAudienceReturned() throws Exception {
+        Audience audience = createAudienceNoId();
+        audience.setId(1);
+        AudienceDto audienceDto = audienceMapper.audienceToDto(audience);
+
+        mockMvc.perform(get("/api/audiences/{id}", audience.getId())
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(content().string(objectMapper.writeValueAsString(audienceDto)))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    public void whenSaveAudience_thenAudienceSaved() throws Exception {
+        Audience audience = createAudienceNoId();
+        audience.setRoom(5);
+        AudienceDto audienceDto = audienceMapper.audienceToDto(audience);
+
+        mockMvc.perform(post("/api/audiences")
+            .content(objectMapper.writeValueAsString(audienceDto))
+            .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(header().string(HttpHeaders.LOCATION, "http://localhost/api/audiences/4"))
+            .andExpect(status().isCreated());
+    }
+
+    @Test
+    public void whenEditAudience_thenAudienceFound() throws Exception {
+        Audience audience = createAudienceNoId();
+        audience.setId(1);
+        AudienceDto audienceDto = audienceMapper.audienceToDto(audience);
+
+        mockMvc.perform(patch("/api/audiences/{id}", 1)
+            .content(objectMapper.writeValueAsString(audienceDto))
+            .contentType(APPLICATION_JSON))
+            .andExpect(status().isOk());
+    }
+
+    @Test
+    public void whenDeleteAudience_thenAudienceDeleted() throws Exception {
+        mockMvc.perform(delete("/api/audiences/{id}", 1)
+            .contentType(APPLICATION_JSON))
+            .andExpect(status().isOk());
+    }
+
+    private Audience createAudienceNoId() {
         Cathedra cathedra = Cathedra.builder().id(1).name("Fantastic Cathedra").build();
 
-        Audience audience1 = Audience.builder().id(1).room(1).capacity(10).cathedra(cathedra).build();
-        Audience audience2 = Audience.builder().id(2).room(2).capacity(30).cathedra(cathedra).build();
-        Audience audience3 = Audience.builder().id(3).room(3).capacity(10).cathedra(cathedra).build();
-        List<Audience> audiences = Arrays.asList(audience1, audience2, audience3);
-
-        mvc.perform(get("/audiences"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("audiences/index"))
-                .andExpect(model().attribute("audiences", audiences));
+        return Audience.builder().room(1).capacity(5).cathedra(cathedra).build();
     }
 }
