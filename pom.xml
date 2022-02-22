@@ -27,6 +27,7 @@
         <junit.version>5.8.2</junit.version>
         <dbrider.version>1.15.2</dbrider.version>
         <snakeyaml.version>1.26</snakeyaml.version>
+        <testcontainers.version>1.16.3</testcontainers.version>
     </properties>
 
     <dependencies>
@@ -168,6 +169,24 @@
             <groupId>com.github.database-rider</groupId>
             <artifactId>rider-junit5</artifactId>
             <version>${dbrider.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
