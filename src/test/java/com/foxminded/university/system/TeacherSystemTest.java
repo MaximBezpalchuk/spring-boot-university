@@ -1,7 +1,7 @@
 package com.foxminded.university.system;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.foxminded.university.dao.mapper.*;
+import com.foxminded.university.dao.mapper.TeacherMapper;
 import com.foxminded.university.dto.TeacherDto;
 import com.foxminded.university.model.*;
 import com.github.database.rider.core.api.configuration.DBUnit;
@@ -9,7 +9,6 @@ import com.github.database.rider.core.api.configuration.Orthography;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -40,9 +39,8 @@ public class TeacherSystemTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-    private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper.class);
-    private SubjectMapper subjectMapper = new SubjectMapperImpl(cathedraMapper);
-    private TeacherMapper teacherMapper = new TeacherMapperImpl(cathedraMapper, subjectMapper);
+    @Autowired
+    private TeacherMapper teacherMapper;
 
     @Test
     public void whenGetAllTeachers_thenAllTeachersReturned() throws Exception {

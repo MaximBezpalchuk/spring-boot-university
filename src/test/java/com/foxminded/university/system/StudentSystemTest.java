@@ -1,7 +1,7 @@
 package com.foxminded.university.system;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.foxminded.university.dao.mapper.*;
+import com.foxminded.university.dao.mapper.StudentMapper;
 import com.foxminded.university.dto.StudentDto;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Gender;
@@ -12,29 +12,23 @@ import com.github.database.rider.core.api.configuration.Orthography;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
-import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -48,9 +42,8 @@ public class StudentSystemTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-    private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper.class);
-    private GroupMapper groupMapper = new GroupMapperImpl(cathedraMapper);
-    private StudentMapper studentMapper = new StudentMapperImpl(groupMapper);
+    @Autowired
+    private StudentMapper studentMapper;
 
     @Test
     public void whenGetAllStudents_thenAllStudentsReturned() throws Exception {

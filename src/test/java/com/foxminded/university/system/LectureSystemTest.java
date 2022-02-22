@@ -1,7 +1,7 @@
 package com.foxminded.university.system;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.foxminded.university.dao.mapper.*;
+import com.foxminded.university.dao.mapper.LectureMapper;
 import com.foxminded.university.dto.LectureDto;
 import com.foxminded.university.model.*;
 import com.github.database.rider.core.api.configuration.DBUnit;
@@ -9,7 +9,6 @@ import com.github.database.rider.core.api.configuration.Orthography;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -41,13 +40,8 @@ public class LectureSystemTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-    private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper.class);
-    private GroupMapper groupMapper = new GroupMapperImpl(cathedraMapper);
-    private SubjectMapper subjectMapper = new SubjectMapperImpl(cathedraMapper);
-    private TeacherMapper teacherMapper = new TeacherMapperImpl(cathedraMapper, subjectMapper);
-    private AudienceMapper audienceMapper = new AudienceMapperImpl(cathedraMapper);
-    private LectureTimeMapper lectureTimeMapper = Mappers.getMapper(LectureTimeMapper.class);
-    private LectureMapper lectureMapper = new LectureMapperImpl(cathedraMapper, groupMapper, teacherMapper, audienceMapper, subjectMapper, lectureTimeMapper);
+    @Autowired
+    private LectureMapper lectureMapper;
 
     @Test
     public void whenGetAllLectures_thenAllLecturesReturned() throws Exception {

@@ -1,9 +1,7 @@
 package com.foxminded.university.system;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.foxminded.university.dao.mapper.CathedraMapper;
 import com.foxminded.university.dao.mapper.GroupMapper;
-import com.foxminded.university.dao.mapper.GroupMapperImpl;
 import com.foxminded.university.dto.GroupDto;
 import com.foxminded.university.dto.Slice;
 import com.foxminded.university.model.Cathedra;
@@ -13,11 +11,9 @@ import com.github.database.rider.core.api.configuration.Orthography;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -27,7 +23,8 @@ import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -40,8 +37,8 @@ public class GroupSystemTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-    private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper.class);
-    private GroupMapper groupMapper = new GroupMapperImpl(cathedraMapper);
+    @Autowired
+    private GroupMapper groupMapper;
 
     @Test
     public void whenGetAllGroups_thenAllGroupsReturned() throws Exception {

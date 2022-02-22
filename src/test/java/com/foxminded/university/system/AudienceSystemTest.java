@@ -2,8 +2,6 @@ package com.foxminded.university.system;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foxminded.university.dao.mapper.AudienceMapper;
-import com.foxminded.university.dao.mapper.AudienceMapperImpl;
-import com.foxminded.university.dao.mapper.CathedraMapper;
 import com.foxminded.university.dto.AudienceDto;
 import com.foxminded.university.dto.Slice;
 import com.foxminded.university.model.Audience;
@@ -13,11 +11,9 @@ import com.github.database.rider.core.api.configuration.Orthography;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -27,7 +23,8 @@ import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -40,8 +37,8 @@ public class AudienceSystemTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-    private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper.class);
-    private AudienceMapper audienceMapper = new AudienceMapperImpl(cathedraMapper);
+    @Autowired
+    private AudienceMapper audienceMapper;
 
     @Test
     void whenGetAllAudiences_thenAllAudiencesReturned() throws Exception {

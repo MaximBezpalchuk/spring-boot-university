@@ -1,7 +1,8 @@
 package com.foxminded.university.system;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.foxminded.university.dao.mapper.*;
+import com.foxminded.university.dao.mapper.LectureMapper;
+import com.foxminded.university.dao.mapper.VacationMapper;
 import com.foxminded.university.dto.LectureDto;
 import com.foxminded.university.dto.Slice;
 import com.foxminded.university.dto.VacationDto;
@@ -11,30 +12,24 @@ import com.github.database.rider.core.api.configuration.Orthography;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
-import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -48,14 +43,10 @@ public class VacationSystemTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-    private CathedraMapper cathedraMapper = Mappers.getMapper(CathedraMapper.class);
-    private GroupMapper groupMapper = new GroupMapperImpl(cathedraMapper);
-    private AudienceMapper audienceMapper = new AudienceMapperImpl(cathedraMapper);
-    private LectureTimeMapper lectureTimeMapper = Mappers.getMapper(LectureTimeMapper.class);
-    private SubjectMapper subjectMapper = new SubjectMapperImpl(cathedraMapper);
-    private TeacherMapper teacherMapper = new TeacherMapperImpl(cathedraMapper, subjectMapper);
-    private VacationMapper vacationMapper = new VacationMapperImpl(teacherMapper);
-    private LectureMapper lectureMapper = new LectureMapperImpl(cathedraMapper, groupMapper, teacherMapper, audienceMapper, subjectMapper, lectureTimeMapper);
+    @Autowired
+    private LectureMapper lectureMapper;
+    @Autowired
+    private VacationMapper vacationMapper;
 
     @Test
     public void whenGetAllVacations_thenAllVacationsReturned() throws Exception {
