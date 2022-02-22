@@ -1,50 +1,53 @@
 package com.foxminded.university.system;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.foxminded.university.dao.mapper.HolidayMapper;
 import com.foxminded.university.dto.HolidayDto;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Holiday;
+import com.foxminded.university.paginationConfig.PaginatedResponse;
 import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.configuration.Orthography;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.Assert.assertEquals;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Testcontainers
 @DBRider
 @DataSet(value = {"data.yml"}, cleanAfter = true)
 @DBUnit(caseInsensitiveStrategy = Orthography.LOWERCASE)
 public class HolidaySystemTest {
 
+    @Container
+    private final PostgreSQLContainer<?> POSTGRESQL_CONTAINER = new PostgreSQLContainer<>("postgres:11");
     @Autowired
-    private MockMvc mockMvc;
-    @Autowired
-    private ObjectMapper objectMapper;
+    private TestRestTemplate restTemplate;
     @Autowired
     private HolidayMapper holidayMapper;
 
     @Test
-    public void whenGetAllHolidays_thenAllHolidaysReturned() throws Exception {
+    public void whenGetAllHolidays_thenAllHolidaysReturned() {
+        ParameterizedTypeReference<PaginatedResponse<HolidayDto>> responseType = new ParameterizedTypeReference<PaginatedResponse<HolidayDto>>() {};
+        ResponseEntity<PaginatedResponse<HolidayDto>> holidayResponse = restTemplate.exchange("/api/holidays/", HttpMethod.GET, null, responseType);
+        List<HolidayDto> actualHolidayDtos = holidayResponse.getBody().getContent();
         Holiday holiday1 = createHolidayNoId();
         holiday1.setId(1);
         Holiday holiday2 = createHolidayNoId();
@@ -52,55 +55,73 @@ public class HolidaySystemTest {
         holiday2.setName("Test Name2");
         List<Holiday> holidays = Arrays.asList(holiday1, holiday2);
         List<HolidayDto> holidayDtos = holidays.stream().map(holidayMapper::holidayToDto).collect(Collectors.toList());
-        Page<HolidayDto> pageDtos = new PageImpl<>(holidayDtos, PageRequest.of(0, 3), 1);
 
-        mockMvc.perform(get("/api/holidays")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().string(objectMapper.writeValueAsString(pageDtos)))
-                .andExpect(status().isOk());
+        assertEquals(holidayDtos, actualHolidayDtos);
     }
 
     @Test
-    public void whenGetOneHoliday_thenOneHolidayReturned() throws Exception {
+    public void whenGetOneHoliday_thenOneHolidayReturned() {
+        HolidayDto actual = restTemplate.getForObject("/api/holidays/{id}", HolidayDto.class, 1);
         Holiday holiday = createHolidayNoId();
         holiday.setId(1);
-        HolidayDto holidayDto = holidayMapper.holidayToDto(holiday);
+        HolidayDto expected = holidayMapper.holidayToDto(holiday);
 
-        mockMvc.perform(get("/api/holidays/{id}", holiday.getId())
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().string(objectMapper.writeValueAsString(holidayDto)))
-                .andExpect(status().isOk());
+        assertEquals(expected, actual);
     }
 
     @Test
-    public void whenSaveHoliday_thenHolidaySaved() throws Exception {
+    void whenFindNotExistingHoliday_thenHolidayNotFound() {
+        ResponseEntity<String> holidayResponse = restTemplate.getForEntity("/api/holidays/{id}", String.class, 67);
+
+        assertEquals(HttpStatus.NOT_FOUND, holidayResponse.getStatusCode());
+    }
+
+    @Test
+    public void whenSaveHoliday_thenHolidaySaved() {
         Holiday holiday = createHolidayNoId();
         holiday.setName("Any Name");
         HolidayDto holidayDto = holidayMapper.holidayToDto(holiday);
+        ResponseEntity<String> holidayResponse = restTemplate.postForEntity("/api/holidays/", holidayDto, String.class);
 
-        mockMvc.perform(post("/api/holidays")
-                .content(objectMapper.writeValueAsString(holidayDto))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+        assertEquals(HttpStatus.CREATED, holidayResponse.getStatusCode());
+
+        ParameterizedTypeReference<PaginatedResponse<HolidayDto>> responseType = new ParameterizedTypeReference<PaginatedResponse<HolidayDto>>() {};
+        ResponseEntity<PaginatedResponse<HolidayDto>> result = restTemplate.exchange("/api/holidays/", HttpMethod.GET, null, responseType);
+        List<HolidayDto> actualHolidayDtos = result.getBody().getContent();
+        Holiday holiday1 = createHolidayNoId();
+        holiday1.setId(1);
+        Holiday holiday2 = createHolidayNoId();
+        holiday2.setId(2);
+        holiday2.setName("Test Name2");
+        holiday.setId(7);
+        List<Holiday> holidays = Arrays.asList(holiday1, holiday2, holiday);
+        List<HolidayDto> holidayDtos = holidays.stream().map(holidayMapper::holidayToDto).collect(Collectors.toList());
+
+        assertEquals(holidayDtos, actualHolidayDtos);
     }
 
     @Test
-    public void whenEditHoliday_thenHolidayFound() throws Exception {
+    public void whenEditHoliday_thenHolidayFound() {
         Holiday holiday = createHolidayNoId();
         holiday.setId(1);
+        holiday.setName("Any name");
         HolidayDto holidayDto = holidayMapper.holidayToDto(holiday);
+        HttpEntity<HolidayDto> holidayHttpEntity = new HttpEntity<>(holidayDto);
+        ResponseEntity<String> holidayResponse = restTemplate.exchange("/api/holidays/{id}?_method=patch", HttpMethod.POST, holidayHttpEntity, String.class, 1);
 
-        mockMvc.perform(patch("/api/holidays/{id}", 1)
-                .content(objectMapper.writeValueAsString(holidayDto))
-                .contentType(APPLICATION_JSON))
-                .andExpect(status().isOk());
+        assertEquals(holidayResponse.getStatusCode(), HttpStatus.OK);
+
+        HolidayDto updatedHolidays = restTemplate.getForObject("/api/holidays/{id}", HolidayDto.class, 1);
+
+        assertEquals(holidayDto, updatedHolidays);
     }
 
     @Test
-    public void whenDeleteHoliday_thenHolidayDeleted() throws Exception {
-        mockMvc.perform(delete("/api/holidays/{id}", 1)
-                .contentType(APPLICATION_JSON))
-                .andExpect(status().isOk());
+    public void whenDeleteHoliday_thenHolidayDeleted() {
+        restTemplate.delete("/api/holidays/{id}", 2);
+        ResponseEntity<String> holidayResponse = restTemplate.getForEntity("/holidays/{id}", String.class, 2);
+
+        assertEquals(HttpStatus.NOT_FOUND, holidayResponse.getStatusCode());
     }
 
     private Holiday createHolidayNoId() {

@@ -11,98 +11,116 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Testcontainers
 @DBRider
 @DataSet(value = {"data.yml"}, cleanAfter = true)
 @DBUnit(caseInsensitiveStrategy = Orthography.LOWERCASE)
 public class LectureTimeSystemTest {
 
+    @Container
+    private final PostgreSQLContainer<?> POSTGRESQL_CONTAINER = new PostgreSQLContainer<>("postgres:11");
     @Autowired
-    private MockMvc mockMvc;
+    private TestRestTemplate restTemplate;
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
     private LectureTimeMapper lectureTimeMapper;
 
     @Test
-    public void whenGetAllLectureTimes_thenAllLectureTimesReturned() throws Exception {
+    public void whenGetAllLectureTimes_thenAllLectureTimesReturned() {
+        Slice actual = restTemplate.getForObject("/api/lecturetimes/", Slice.class);
         LectureTime lectureTime1 = createLectureTimeNoId();
         lectureTime1.setId(1);
         LectureTime lectureTime2 = createLectureTimeNoId();
         lectureTime2.setId(2);
-        List<LectureTime> lectureTimes = Arrays.asList(lectureTime1, lectureTime2);
-        List<LectureTimeDto> lectureTimeDtos = lectureTimes.stream().map(lectureTimeMapper::lectureTimeToDto).collect(Collectors.toList());
+        LectureTimeDto lectureTime1Dto = lectureTimeMapper.lectureTimeToDto(lectureTime1);
+        LectureTimeDto lectureTime2Dto = lectureTimeMapper.lectureTimeToDto(lectureTime2);
 
-        mockMvc.perform(get("/api/lecturetimes")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().string(objectMapper.writeValueAsString(new Slice(lectureTimeDtos))))
-                .andExpect(status().isOk());
+        assertArrayEquals(new LectureTimeDto[]{lectureTime1Dto, lectureTime2Dto}, objectMapper.convertValue(actual.getItems(), LectureTimeDto[].class));
     }
 
     @Test
-    public void whenGetOneLectureTime_thenOneLectureTimeReturned() throws Exception {
+    public void whenGetOneLectureTime_thenOneLectureTimeReturned() {
+        LectureTimeDto actual = restTemplate.getForObject("/api/lecturetimes/{id}", LectureTimeDto.class, 1);
         LectureTime lectureTime = createLectureTimeNoId();
         lectureTime.setId(1);
-        LectureTimeDto lectureTimeDto = lectureTimeMapper.lectureTimeToDto(lectureTime);
+        LectureTimeDto expected = lectureTimeMapper.lectureTimeToDto(lectureTime);
 
-        mockMvc.perform(get("/api/lecturetimes/{id}", lectureTime.getId())
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().string(objectMapper.writeValueAsString(lectureTimeDto)))
-                .andExpect(status().isOk());
+        assertEquals(expected, actual);
     }
 
     @Test
-    public void whenSaveLectureTime_thenLectureTimeSaved() throws Exception {
+    void whenFindNotExistingLectureTime_thenALectureTimeNotFound() {
+        ResponseEntity<String> lectureTimeResponse = restTemplate.getForEntity("/api/lecturetimes/{id}", String.class, 67);
+
+        assertEquals(HttpStatus.NOT_FOUND, lectureTimeResponse.getStatusCode());
+    }
+
+    @Test
+    public void whenSaveLectureTime_thenLectureTimeSaved() {
         LectureTime lectureTime = createLectureTimeNoId();
         lectureTime.setStart(LocalTime.of(7, 0));
         LectureTimeDto lectureTimeDto = lectureTimeMapper.lectureTimeToDto(lectureTime);
+        ResponseEntity<String> audienceResponse = restTemplate.postForEntity("/api/lecturetimes/", lectureTimeDto, String.class);
 
-        mockMvc.perform(post("/api/lecturetimes")
-                .content(objectMapper.writeValueAsString(lectureTimeDto))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+        assertEquals(HttpStatus.CREATED, audienceResponse.getStatusCode());
+
+        lectureTimeDto.setId(9);
+        Slice actual = restTemplate.getForObject("/api/lecturetimes/", Slice.class);
+        LectureTime lectureTime1 = createLectureTimeNoId();
+        lectureTime1.setId(1);
+        LectureTime lectureTime2 = createLectureTimeNoId();
+        lectureTime2.setId(2);
+        LectureTimeDto lectureTime1Dto = lectureTimeMapper.lectureTimeToDto(lectureTime1);
+        LectureTimeDto lectureTime2Dto = lectureTimeMapper.lectureTimeToDto(lectureTime2);
+
+        assertArrayEquals(new LectureTimeDto[]{lectureTime1Dto, lectureTime2Dto, lectureTimeDto}, objectMapper.convertValue(actual.getItems(), LectureTimeDto[].class));
     }
 
     @Test
-    public void whenEditLectureTime_thenLectureTimeFound() throws Exception {
+    public void whenEditLectureTime_thenLectureTimeFound() {
         LectureTime lectureTime = createLectureTimeNoId();
         lectureTime.setId(1);
         lectureTime.setStart(LocalTime.of(7, 0));
         LectureTimeDto lectureTimeDto = lectureTimeMapper.lectureTimeToDto(lectureTime);
+        HttpEntity<LectureTimeDto> lectureTimeHttpEntity = new HttpEntity<>(lectureTimeDto);
+        ResponseEntity<String> lectureTimeResponse = restTemplate.exchange("/api/lecturetimes/{id}?_method=patch", HttpMethod.POST, lectureTimeHttpEntity, String.class, 1);
 
-        mockMvc.perform(patch("/api/lecturetimes/{id}", 1)
-                .content(objectMapper.writeValueAsString(lectureTimeDto))
-                .contentType(APPLICATION_JSON))
-                .andExpect(status().isOk());
+        assertEquals(lectureTimeResponse.getStatusCode(), HttpStatus.OK);
+
+        LectureTimeDto updatedLectureTime = restTemplate.getForObject("/api/lecturetimes/{id}", LectureTimeDto.class, 1);
+
+        assertEquals(lectureTimeDto, updatedLectureTime);
     }
 
     @Test
-    public void whenDeleteLectureTime_thenLectureTimeDeleted() throws Exception {
-        mockMvc.perform(delete("/api/lecturetimes/{id}", 1)
-                .contentType(APPLICATION_JSON))
-                .andExpect(status().isOk());
+    public void whenDeleteLectureTime_thenLectureTimeDeleted() {
+        restTemplate.delete("/api/lecturetimes/{id}", 2);
+        ResponseEntity<String> lectureTimeResponse = restTemplate.getForEntity("/lecturetimes/{id}", String.class, 2);
+
+        assertEquals(HttpStatus.NOT_FOUND, lectureTimeResponse.getStatusCode());
     }
 
     private LectureTime createLectureTimeNoId() {
         return LectureTime.builder()
-                .start(LocalTime.of(8, 0))
-                .end(LocalTime.of(9, 0))
-                .build();
+            .start(LocalTime.of(8, 0))
+            .end(LocalTime.of(9, 0))
+            .build();
     }
 }

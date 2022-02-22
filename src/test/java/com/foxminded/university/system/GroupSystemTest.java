@@ -12,61 +12,64 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-@SpringBootTest
-@AutoConfigureMockMvc
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Testcontainers
 @DBRider
 @DataSet(value = {"data.yml"}, cleanAfter = true)
 @DBUnit(caseInsensitiveStrategy = Orthography.LOWERCASE)
 public class GroupSystemTest {
 
+    @Container
+    private final PostgreSQLContainer<?> POSTGRESQL_CONTAINER = new PostgreSQLContainer<>("postgres:11");
     @Autowired
-    private MockMvc mockMvc;
+    private TestRestTemplate restTemplate;
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
     private GroupMapper groupMapper;
 
     @Test
-    public void whenGetAllGroups_thenAllGroupsReturned() throws Exception {
+    public void whenGetAllGroups_thenAllGroupsReturned() {
+        Slice actual = restTemplate.getForObject("/api/groups/", Slice.class);
         Group group1 = createGroupNoId();
         group1.setId(1);
         Group group2 = createGroupNoId();
         group2.setId(2);
         group2.setName("Killers2");
-        List<Group> groups = Arrays.asList(group1, group2);
-        List<GroupDto> groupDtos = groups.stream().map(groupMapper::groupToDto).collect(Collectors.toList());
+        GroupDto group1Dto = groupMapper.groupToDto(group1);
+        GroupDto group2Dto = groupMapper.groupToDto(group2);
 
-        mockMvc.perform(get("/api/groups")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().string(objectMapper.writeValueAsString(new Slice(groupDtos))))
-                .andExpect(status().isOk());
+        assertArrayEquals(new GroupDto[]{group1Dto, group2Dto}, objectMapper.convertValue(actual.getItems(), GroupDto[].class));
     }
 
     @Test
-    public void whenGetOneGroup_thenOneGroupReturned() throws Exception {
+    public void whenGetOneGroup_thenOneGroupReturned() {
+        GroupDto actual = restTemplate.getForObject("/api/groups/{id}", GroupDto.class, 1);
         Group group = createGroupNoId();
         group.setId(1);
-        GroupDto groupDto = groupMapper.groupToDto(group);
+        GroupDto expected = groupMapper.groupToDto(group);
 
-        mockMvc.perform(get("/api/groups/{id}", group.getId())
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().string(objectMapper.writeValueAsString(groupDto)))
-                .andExpect(status().isOk());
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void whenFindNotExistingGroup_thenGroupNotFound() {
+        ResponseEntity<String> groupResponse = restTemplate.getForEntity("/api/groups/{id}", String.class, 67);
+
+        assertEquals(HttpStatus.NOT_FOUND, groupResponse.getStatusCode());
     }
 
     @Test
@@ -74,30 +77,45 @@ public class GroupSystemTest {
         Group group = createGroupNoId();
         group.setName("Any Name");
         GroupDto groupDto = groupMapper.groupToDto(group);
+        ResponseEntity<String> groupResponse = restTemplate.postForEntity("/api/groups/", groupDto, String.class);
 
-        mockMvc.perform(post("/api/groups")
-                .content(objectMapper.writeValueAsString(groupDto))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+        assertEquals(HttpStatus.CREATED, groupResponse.getStatusCode());
+
+        groupDto.setId(3);
+        Slice actual = restTemplate.getForObject("/api/groups/", Slice.class);
+        Group group1 = createGroupNoId();
+        group1.setId(1);
+        Group group2 = createGroupNoId();
+        group2.setId(2);
+        group2.setName("Killers2");
+        GroupDto group1Dto = groupMapper.groupToDto(group1);
+        GroupDto group2Dto = groupMapper.groupToDto(group2);
+
+        assertArrayEquals(new GroupDto[]{group1Dto, group2Dto, groupDto}, objectMapper.convertValue(actual.getItems(), GroupDto[].class));
     }
 
     @Test
-    public void whenEditGroup_thenGroupFound() throws Exception {
+    public void whenEditGroup_thenGroupFound() {
         Group group = createGroupNoId();
         group.setId(1);
+        group.setName("Test Name");
         GroupDto groupDto = groupMapper.groupToDto(group);
+        HttpEntity<GroupDto> groupHttpEntity = new HttpEntity<>(groupDto);
+        ResponseEntity<String> groupResponse = restTemplate.exchange("/api/groups/{id}?_method=patch", HttpMethod.POST, groupHttpEntity, String.class, 1);
 
-        mockMvc.perform(patch("/api/groups/{id}", 1)
-                .content(objectMapper.writeValueAsString(groupDto))
-                .contentType(APPLICATION_JSON))
-                .andExpect(status().isOk());
+        assertEquals(groupResponse.getStatusCode(), HttpStatus.OK);
+
+        GroupDto updatedGroup = restTemplate.getForObject("/api/groups/{id}", GroupDto.class, 1);
+
+        assertEquals(groupDto, updatedGroup);
     }
 
     @Test
-    public void whenDeleteGroup_thenGroupDeleted() throws Exception {
-        mockMvc.perform(delete("/api/groups/{id}", 1)
-                .contentType(APPLICATION_JSON))
-                .andExpect(status().isOk());
+    public void whenDeleteGroup_thenGroupDeleted() {
+        restTemplate.delete("/api/groups/{id}", 2);
+        ResponseEntity<String> groupResponse = restTemplate.getForEntity("/groups/{id}", String.class, 2);
+
+        assertEquals(HttpStatus.NOT_FOUND, groupResponse.getStatusCode());
     }
 
     private Group createGroupNoId() {

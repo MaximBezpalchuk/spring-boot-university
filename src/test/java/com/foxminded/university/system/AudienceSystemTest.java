@@ -12,92 +12,110 @@ import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.spring.api.DBRider;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-@SpringBootTest
-@AutoConfigureMockMvc
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Testcontainers
 @DBRider
 @DataSet(value = {"data.yml"}, cleanAfter = true)
 @DBUnit(caseInsensitiveStrategy = Orthography.LOWERCASE)
 public class AudienceSystemTest {
 
+    @Container
+    private final PostgreSQLContainer<?> POSTGRESQL_CONTAINER = new PostgreSQLContainer<>("postgres:11");
     @Autowired
-    private MockMvc mockMvc;
+    private TestRestTemplate restTemplate;
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
     private AudienceMapper audienceMapper;
 
     @Test
-    void whenGetAllAudiences_thenAllAudiencesReturned() throws Exception {
+    void whenGetAllAudiences_thenAllAudiencesReturned() {
+        Slice actual = restTemplate.getForObject("/api/audiences/", Slice.class);
         Audience audience1 = createAudienceNoId();
         audience1.setId(1);
         Audience audience2 = createAudienceNoId();
         audience2.setId(2);
         audience2.setRoom(2);
-        List<Audience> audiences = Arrays.asList(audience1, audience2);
-        List<AudienceDto> audienceDtos = audiences.stream().map(audienceMapper::audienceToDto).collect(Collectors.toList());
+        AudienceDto audience1Dto = audienceMapper.audienceToDto(audience1);
+        AudienceDto audience2Dto = audienceMapper.audienceToDto(audience2);
 
-        mockMvc.perform(get("/api/audiences")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(content().string(objectMapper.writeValueAsString(new Slice(audienceDtos))))
-                .andExpect(status().isOk());
+        assertArrayEquals(new AudienceDto[]{audience1Dto, audience2Dto}, objectMapper.convertValue(actual.getItems(), AudienceDto[].class));
     }
 
     @Test
-    public void whenGetOneAudience_thenOneAudienceReturned() throws Exception {
+    public void whenGetOneAudience_thenOneAudienceReturned() {
+        AudienceDto actual = restTemplate.getForObject("/api/audiences/{id}", AudienceDto.class, 1);
         Audience audience = createAudienceNoId();
         audience.setId(1);
-        AudienceDto audienceDto = audienceMapper.audienceToDto(audience);
+        AudienceDto expected = audienceMapper.audienceToDto(audience);
 
-        mockMvc.perform(get("/api/audiences/{id}", audience.getId())
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().string(objectMapper.writeValueAsString(audienceDto)))
-                .andExpect(status().isOk());
+        assertEquals(expected, actual);
     }
 
     @Test
-    public void whenSaveAudience_thenAudienceSaved() throws Exception {
+    void whenFindNotExistingAudience_thenAudienceNotFound() {
+        ResponseEntity<String> audienceResponse = restTemplate.getForEntity("/api/audiences/{id}", String.class, 67);
+
+        assertEquals(HttpStatus.NOT_FOUND, audienceResponse.getStatusCode());
+    }
+
+    @Test
+    public void whenSaveAudience_thenAudienceSaved() {
         Audience audience = createAudienceNoId();
         audience.setRoom(5);
         AudienceDto audienceDto = audienceMapper.audienceToDto(audience);
+        ResponseEntity<String> audienceResponse = restTemplate.postForEntity("/api/audiences/", audienceDto, String.class);
 
-        mockMvc.perform(post("/api/audiences")
-                .content(objectMapper.writeValueAsString(audienceDto))
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isCreated());
+        assertEquals(HttpStatus.CREATED, audienceResponse.getStatusCode());
+
+        audienceDto.setId(4);
+        Slice actual = restTemplate.getForObject("/api/audiences/", Slice.class);
+        Audience audience1 = createAudienceNoId();
+        audience1.setId(1);
+        Audience audience2 = createAudienceNoId();
+        audience2.setId(2);
+        audience2.setRoom(2);
+        AudienceDto audience1Dto = audienceMapper.audienceToDto(audience1);
+        AudienceDto audience2Dto = audienceMapper.audienceToDto(audience2);
+
+        assertArrayEquals(new AudienceDto[]{audience1Dto, audience2Dto, audienceDto}, objectMapper.convertValue(actual.getItems(), AudienceDto[].class));
     }
 
     @Test
-    public void whenEditAudience_thenAudienceFound() throws Exception {
+    public void whenEditAudience_thenAudienceFound() {
         Audience audience = createAudienceNoId();
         audience.setId(1);
+        audience.setRoom(123);
         AudienceDto audienceDto = audienceMapper.audienceToDto(audience);
+        HttpEntity<AudienceDto> audienceHttpEntity = new HttpEntity<>(audienceDto);
+        ResponseEntity<String> audienceResponse = restTemplate.exchange("/api/audiences/{id}?_method=patch", HttpMethod.POST, audienceHttpEntity, String.class, 1);
 
-        mockMvc.perform(patch("/api/audiences/{id}", 1)
-                .content(objectMapper.writeValueAsString(audienceDto))
-                .contentType(APPLICATION_JSON))
-                .andExpect(status().isOk());
+        assertEquals(audienceResponse.getStatusCode(), HttpStatus.OK);
+
+        AudienceDto updatedAudience = restTemplate.getForObject("/api/audiences/{id}", AudienceDto.class, 1);
+
+        assertEquals(audienceDto, updatedAudience);
     }
 
     @Test
-    public void whenDeleteAudience_thenAudienceDeleted() throws Exception {
-        mockMvc.perform(delete("/api/audiences/{id}", 1)
-                .contentType(APPLICATION_JSON))
-                .andExpect(status().isOk());
+    public void whenDeleteAudience_thenAudienceDeleted() {
+        restTemplate.delete("/api/audiences/{id}", 2);
+        ResponseEntity<String> audienceResponse = restTemplate.getForEntity("/audiences/{id}", String.class, 2);
+
+        assertEquals(HttpStatus.NOT_FOUND, audienceResponse.getStatusCode());
     }
 
     private Audience createAudienceNoId() {
