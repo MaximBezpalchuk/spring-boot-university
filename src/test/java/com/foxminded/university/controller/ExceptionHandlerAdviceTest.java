@@ -38,7 +38,7 @@ public class ExceptionHandlerAdviceTest {
         when(audienceService.findById(10000)).thenThrow(new EntityNotFoundException("test error"));
 
         mockMvc.perform(get("/audiences/{id}", 10000))
-            .andExpect(status().isOk())
+            .andExpect(status().isNotFound())
             .andExpect(view().name("exception"))
             .andExpect(forwardedUrl("exception"))
             .andExpect(result -> assertTrue(result.getResolvedException() instanceof EntityNotFoundException))
