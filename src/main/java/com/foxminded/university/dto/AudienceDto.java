@@ -3,6 +3,7 @@ package com.foxminded.university.dto;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 public class AudienceDto {
 
@@ -54,5 +55,21 @@ public class AudienceDto {
 
     public void setCathedra(CathedraDto cathedra) {
         this.cathedra = cathedra;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AudienceDto that = (AudienceDto) o;
+        return id.equals(that.id) &&
+            room.equals(that.room) &&
+            capacity.equals(that.capacity) &&
+            cathedra.equals(that.cathedra);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, room, capacity, cathedra);
     }
 }

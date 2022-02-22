@@ -3,6 +3,7 @@ package com.foxminded.university.dto;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Objects;
 
 public class HolidayDto {
 
@@ -54,5 +55,21 @@ public class HolidayDto {
 
     public void setCathedra(CathedraDto cathedra) {
         this.cathedra = cathedra;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        HolidayDto that = (HolidayDto) o;
+        return id.equals(that.id) &&
+            name.equals(that.name) &&
+            date.equals(that.date) &&
+            cathedra.equals(that.cathedra);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, date, cathedra);
     }
 }

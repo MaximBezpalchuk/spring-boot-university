@@ -2,6 +2,7 @@ package com.foxminded.university.dto;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class LectureTimeDto {
 
@@ -42,5 +43,20 @@ public class LectureTimeDto {
 
     public void setEnd(LocalTime end) {
         this.end = end;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LectureTimeDto that = (LectureTimeDto) o;
+        return id.equals(that.id) &&
+            start.equals(that.start) &&
+            end.equals(that.end);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, start, end);
     }
 }

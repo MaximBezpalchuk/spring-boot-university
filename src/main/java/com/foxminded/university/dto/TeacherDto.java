@@ -11,6 +11,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class TeacherDto {
 
@@ -161,5 +162,30 @@ public class TeacherDto {
 
     public void setDegree(Degree degree) {
         this.degree = degree;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TeacherDto that = (TeacherDto) o;
+        return id.equals(that.id) &&
+            firstName.equals(that.firstName) &&
+            lastName.equals(that.lastName) &&
+            phone.equals(that.phone) &&
+            address.equals(that.address) &&
+            email.equals(that.email) &&
+            gender == that.gender &&
+            postalCode.equals(that.postalCode) &&
+            education.equals(that.education) &&
+            birthDate.equals(that.birthDate) &&
+            cathedra.equals(that.cathedra) &&
+            subjects.equals(that.subjects) &&
+            degree == that.degree;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate, cathedra, subjects, degree);
     }
 }

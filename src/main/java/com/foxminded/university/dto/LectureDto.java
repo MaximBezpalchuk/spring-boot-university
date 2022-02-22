@@ -4,6 +4,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 public class LectureDto {
 
@@ -99,5 +100,25 @@ public class LectureDto {
 
     public void setTime(LectureTimeDto time) {
         this.time = time;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LectureDto that = (LectureDto) o;
+        return id.equals(that.id) &&
+            cathedra.equals(that.cathedra) &&
+            groups.equals(that.groups) &&
+            teacher.equals(that.teacher) &&
+            audience.equals(that.audience) &&
+            date.equals(that.date) &&
+            subject.equals(that.subject) &&
+            time.equals(that.time);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, cathedra, groups, teacher, audience, date, subject, time);
     }
 }

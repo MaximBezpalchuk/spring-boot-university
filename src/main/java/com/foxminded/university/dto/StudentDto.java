@@ -8,6 +8,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @MinAge(14)
 public class StudentDto {
@@ -137,5 +138,28 @@ public class StudentDto {
 
     public void setGroup(GroupDto group) {
         this.group = group;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StudentDto that = (StudentDto) o;
+        return id.equals(that.id) &&
+            firstName.equals(that.firstName) &&
+            lastName.equals(that.lastName) &&
+            phone.equals(that.phone) &&
+            address.equals(that.address) &&
+            email.equals(that.email) &&
+            gender == that.gender &&
+            postalCode.equals(that.postalCode) &&
+            education.equals(that.education) &&
+            birthDate.equals(that.birthDate) &&
+            group.equals(that.group);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, firstName, lastName, phone, address, email, gender, postalCode, education, birthDate, group);
     }
 }

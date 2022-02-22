@@ -2,6 +2,7 @@ package com.foxminded.university.dto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 public class GroupDto {
 
@@ -42,5 +43,20 @@ public class GroupDto {
 
     public void setCathedra(CathedraDto cathedra) {
         this.cathedra = cathedra;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        GroupDto groupDto = (GroupDto) o;
+        return id.equals(groupDto.id) &&
+            name.equals(groupDto.name) &&
+            cathedra.equals(groupDto.cathedra);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, cathedra);
     }
 }
