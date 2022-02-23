@@ -1,4 +1,4 @@
-package com.foxminded.university.paginationConfig;
+package com.foxminded.university.pagination.config;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

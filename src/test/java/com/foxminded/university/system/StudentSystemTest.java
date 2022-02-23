@@ -6,7 +6,7 @@ import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Gender;
 import com.foxminded.university.model.Group;
 import com.foxminded.university.model.Student;
-import com.foxminded.university.paginationConfig.PaginatedResponse;
+import com.foxminded.university.pagination.config.PaginatedResponse;
 import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.configuration.Orthography;
 import com.github.database.rider.core.api.dataset.DataSet;

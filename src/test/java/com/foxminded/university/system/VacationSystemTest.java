@@ -7,7 +7,7 @@ import com.foxminded.university.dto.LectureDto;
 import com.foxminded.university.dto.Slice;
 import com.foxminded.university.dto.VacationDto;
 import com.foxminded.university.model.*;
-import com.foxminded.university.paginationConfig.PaginatedResponse;
+import com.foxminded.university.pagination.config.PaginatedResponse;
 import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.configuration.Orthography;
 import com.github.database.rider.core.api.dataset.DataSet;
@@ -31,7 +31,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -178,8 +177,13 @@ public class VacationSystemTest {
             .build();
         LectureDto lectureDto = lectureMapper.lectureToDto(lecture);
 
-        Slice actual = restTemplate.getForObject("/api/teachers/{id}/vacations/lectures?start=2021-01-01&end=2021-01-02", Slice.class, teacher.getId());
-        assertArrayEquals(new LectureDto[]{lectureDto}, objectMapper.convertValue(actual.getItems(), LectureDto[].class));
+        Slice<LectureDto> actual = restTemplate.exchange("/api/teachers/{id}/vacations/lectures?start=2021-01-01&end=2021-01-02",
+            HttpMethod.GET,
+            null,
+            new ParameterizedTypeReference<Slice<LectureDto>>() {
+            }, teacher.getId()).getBody();
+
+        assertEquals(new Slice<>(Arrays.asList(lectureDto)), actual);
     }
 
     private Vacation createVacationNoId() {

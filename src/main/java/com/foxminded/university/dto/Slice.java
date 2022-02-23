@@ -3,22 +3,22 @@ package com.foxminded.university.dto;
 import java.util.List;
 import java.util.Objects;
 
-public class Slice {
+public class Slice<T> {
 
-    private List items;
+    private List<T> items;
 
-    public Slice(List items) {
+    public Slice(List<T> items) {
         this.items = items;
     }
 
     public Slice() {
     }
 
-    public List getItems() {
+    public List<T> getItems() {
         return items;
     }
 
-    public void setItems(List items) {
+    public void setItems(List<T> items) {
         this.items = items;
     }
 

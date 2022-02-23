@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,8 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import static org.junit.Assert.assertArrayEquals;
+import java.util.Arrays;
+
 import static org.junit.Assert.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -43,7 +45,11 @@ public class GroupSystemTest {
 
     @Test
     public void whenGetAllGroups_thenAllGroupsReturned() {
-        Slice actual = restTemplate.getForObject("/api/groups/", Slice.class);
+        Slice<GroupDto> actual = restTemplate.exchange("/api/groups/",
+            HttpMethod.GET,
+            null,
+            new ParameterizedTypeReference<Slice<GroupDto>>() {
+            }).getBody();
         Group group1 = createGroupNoId();
         group1.setId(1);
         Group group2 = createGroupNoId();
@@ -51,8 +57,9 @@ public class GroupSystemTest {
         group2.setName("Killers2");
         GroupDto group1Dto = groupMapper.groupToDto(group1);
         GroupDto group2Dto = groupMapper.groupToDto(group2);
+        Slice<GroupDto> expected = new Slice<>(Arrays.asList(group1Dto, group2Dto));
 
-        assertArrayEquals(new GroupDto[]{group1Dto, group2Dto}, objectMapper.convertValue(actual.getItems(), GroupDto[].class));
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -82,7 +89,11 @@ public class GroupSystemTest {
         assertEquals(HttpStatus.CREATED, groupResponse.getStatusCode());
 
         groupDto.setId(3);
-        Slice actual = restTemplate.getForObject("/api/groups/", Slice.class);
+        Slice<GroupDto> actual = restTemplate.exchange("/api/groups/",
+            HttpMethod.GET,
+            null,
+            new ParameterizedTypeReference<Slice<GroupDto>>() {
+            }).getBody();
         Group group1 = createGroupNoId();
         group1.setId(1);
         Group group2 = createGroupNoId();
@@ -90,8 +101,9 @@ public class GroupSystemTest {
         group2.setName("Killers2");
         GroupDto group1Dto = groupMapper.groupToDto(group1);
         GroupDto group2Dto = groupMapper.groupToDto(group2);
+        Slice<GroupDto> expected = new Slice<>(Arrays.asList(group1Dto, group2Dto, groupDto));
 
-        assertArrayEquals(new GroupDto[]{group1Dto, group2Dto, groupDto}, objectMapper.convertValue(actual.getItems(), GroupDto[].class));
+        assertEquals(expected, actual);
     }
 
     @Test

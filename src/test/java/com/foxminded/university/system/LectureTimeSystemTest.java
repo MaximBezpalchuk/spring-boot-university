@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -22,8 +23,8 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalTime;
+import java.util.Arrays;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -44,15 +45,20 @@ public class LectureTimeSystemTest {
 
     @Test
     public void whenGetAllLectureTimes_thenAllLectureTimesReturned() {
-        Slice actual = restTemplate.getForObject("/api/lecturetimes/", Slice.class);
+        Slice<LectureTimeDto> actual = restTemplate.exchange("/api/lecturetimes/",
+            HttpMethod.GET,
+            null,
+            new ParameterizedTypeReference<Slice<LectureTimeDto>>() {
+            }).getBody();
         LectureTime lectureTime1 = createLectureTimeNoId();
         lectureTime1.setId(1);
         LectureTime lectureTime2 = createLectureTimeNoId();
         lectureTime2.setId(2);
         LectureTimeDto lectureTime1Dto = lectureTimeMapper.lectureTimeToDto(lectureTime1);
         LectureTimeDto lectureTime2Dto = lectureTimeMapper.lectureTimeToDto(lectureTime2);
+        Slice<LectureTimeDto> expected = new Slice<>(Arrays.asList(lectureTime1Dto, lectureTime2Dto));
 
-        assertArrayEquals(new LectureTimeDto[]{lectureTime1Dto, lectureTime2Dto}, objectMapper.convertValue(actual.getItems(), LectureTimeDto[].class));
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -82,15 +88,20 @@ public class LectureTimeSystemTest {
         assertEquals(HttpStatus.CREATED, audienceResponse.getStatusCode());
 
         lectureTimeDto.setId(9);
-        Slice actual = restTemplate.getForObject("/api/lecturetimes/", Slice.class);
+        Slice<LectureTimeDto> actual = restTemplate.exchange("/api/lecturetimes/",
+            HttpMethod.GET,
+            null,
+            new ParameterizedTypeReference<Slice<LectureTimeDto>>() {
+            }).getBody();
         LectureTime lectureTime1 = createLectureTimeNoId();
         lectureTime1.setId(1);
         LectureTime lectureTime2 = createLectureTimeNoId();
         lectureTime2.setId(2);
         LectureTimeDto lectureTime1Dto = lectureTimeMapper.lectureTimeToDto(lectureTime1);
         LectureTimeDto lectureTime2Dto = lectureTimeMapper.lectureTimeToDto(lectureTime2);
+        Slice<LectureTimeDto> expected = new Slice<>(Arrays.asList(lectureTime1Dto, lectureTime2Dto, lectureTimeDto));
 
-        assertArrayEquals(new LectureTimeDto[]{lectureTime1Dto, lectureTime2Dto, lectureTimeDto}, objectMapper.convertValue(actual.getItems(), LectureTimeDto[].class));
+        assertEquals(expected, actual);
     }
 
     @Test

@@ -3,7 +3,7 @@ package com.foxminded.university.system;
 import com.foxminded.university.dao.mapper.LectureMapper;
 import com.foxminded.university.dto.LectureDto;
 import com.foxminded.university.model.*;
-import com.foxminded.university.paginationConfig.PaginatedResponse;
+import com.foxminded.university.pagination.config.PaginatedResponse;
 import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.configuration.Orthography;
 import com.github.database.rider.core.api.dataset.DataSet;

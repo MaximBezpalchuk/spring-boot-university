@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,8 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import static org.junit.Assert.assertArrayEquals;
+import java.util.Arrays;
+
 import static org.junit.Assert.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -43,7 +45,11 @@ public class AudienceSystemTest {
 
     @Test
     void whenGetAllAudiences_thenAllAudiencesReturned() {
-        Slice actual = restTemplate.getForObject("/api/audiences/", Slice.class);
+        Slice<AudienceDto> actual = restTemplate.exchange("/api/audiences/",
+            HttpMethod.GET,
+            null,
+            new ParameterizedTypeReference<Slice<AudienceDto>>() {
+            }).getBody();
         Audience audience1 = createAudienceNoId();
         audience1.setId(1);
         Audience audience2 = createAudienceNoId();
@@ -51,8 +57,9 @@ public class AudienceSystemTest {
         audience2.setRoom(2);
         AudienceDto audience1Dto = audienceMapper.audienceToDto(audience1);
         AudienceDto audience2Dto = audienceMapper.audienceToDto(audience2);
+        Slice<AudienceDto> expected = new Slice<>(Arrays.asList(audience1Dto, audience2Dto));
 
-        assertArrayEquals(new AudienceDto[]{audience1Dto, audience2Dto}, objectMapper.convertValue(actual.getItems(), AudienceDto[].class));
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -82,7 +89,11 @@ public class AudienceSystemTest {
         assertEquals(HttpStatus.CREATED, audienceResponse.getStatusCode());
 
         audienceDto.setId(4);
-        Slice actual = restTemplate.getForObject("/api/audiences/", Slice.class);
+        Slice<AudienceDto> actual = restTemplate.exchange("/api/audiences/",
+            HttpMethod.GET,
+            null,
+            new ParameterizedTypeReference<Slice<AudienceDto>>() {
+            }).getBody();
         Audience audience1 = createAudienceNoId();
         audience1.setId(1);
         Audience audience2 = createAudienceNoId();
@@ -90,8 +101,9 @@ public class AudienceSystemTest {
         audience2.setRoom(2);
         AudienceDto audience1Dto = audienceMapper.audienceToDto(audience1);
         AudienceDto audience2Dto = audienceMapper.audienceToDto(audience2);
+        Slice<AudienceDto> expected = new Slice<>(Arrays.asList(audience1Dto, audience2Dto, audienceDto));
 
-        assertArrayEquals(new AudienceDto[]{audience1Dto, audience2Dto, audienceDto}, objectMapper.convertValue(actual.getItems(), AudienceDto[].class));
+        assertEquals(expected, actual);
     }
 
     @Test

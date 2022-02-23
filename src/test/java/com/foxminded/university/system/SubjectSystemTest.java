@@ -4,7 +4,7 @@ import com.foxminded.university.dao.mapper.SubjectMapper;
 import com.foxminded.university.dto.SubjectDto;
 import com.foxminded.university.model.Cathedra;
 import com.foxminded.university.model.Subject;
-import com.foxminded.university.paginationConfig.PaginatedResponse;
+import com.foxminded.university.pagination.config.PaginatedResponse;
 import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.configuration.Orthography;
 import com.github.database.rider.core.api.dataset.DataSet;
