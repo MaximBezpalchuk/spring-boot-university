@@ -11,7 +11,7 @@ import java.util.Objects;
 @MinAge(14)
 public class Student extends Person {
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id")
     private Group group;
 

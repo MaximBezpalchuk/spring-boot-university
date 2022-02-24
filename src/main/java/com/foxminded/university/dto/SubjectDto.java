@@ -2,6 +2,7 @@ package com.foxminded.university.dto;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 public class SubjectDto {
 
@@ -53,5 +54,21 @@ public class SubjectDto {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SubjectDto that = (SubjectDto) o;
+        return id.equals(that.id) &&
+            cathedra.equals(that.cathedra) &&
+            name.equals(that.name) &&
+            description.equals(that.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, cathedra, name, description);
     }
 }

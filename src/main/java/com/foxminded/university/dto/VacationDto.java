@@ -4,6 +4,7 @@ import com.foxminded.university.validation.CorrectPeriod;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @CorrectPeriod
 public class VacationDto {
@@ -56,5 +57,21 @@ public class VacationDto {
 
     public void setTeacher(TeacherDto teacherDto) {
         this.teacher = teacherDto;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        VacationDto that = (VacationDto) o;
+        return id.equals(that.id) &&
+            start.equals(that.start) &&
+            end.equals(that.end) &&
+            teacher.equals(that.teacher);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, start, end, teacher);
     }
 }
