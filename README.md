@@ -1,3 +1,9 @@
-# university
+# University pet-project (based on foxminded menthoring couse)
 
-Task 11
+Swap DriverManagerDataSource to JndiDataSourceLookup
+
+The program features:
+- change connection settings from config.properties to context.xml
+
+Stack updated:
+- JNDI
