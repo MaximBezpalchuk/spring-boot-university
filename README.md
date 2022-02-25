@@ -1,3 +1,7 @@
-# university
+# University pet-project (based on foxminded menthoring couse)
 
-Task 11
+App updated with service layer
+The program features updates:
+- add service layer with basic business logic
+Stack updated:
+- none
