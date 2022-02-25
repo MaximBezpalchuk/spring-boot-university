@@ -1,4 +1,4 @@
-# University pet-project (based on foxminded menthoring couse)
+# University pet-project (based on foxminded menthoring course)
 
 This project was focused at the consistent development of Spring technologies. The final version is a MVC model of the 
 non-existent institute.
