@@ -1,3 +1,7 @@
-# university
+# University pet-project (based on foxminded menthoring couse)
 
-Task 11
+The program features:
+- add swagger UI and open-api (springdoc)
+
+Stack updated:
+- Swagger
