@@ -1,4 +1,4 @@
-# University pet-project (based on foxminded menthoring couse)
+# University pet-project (based on foxminded menthoring course)
 
 The program features:
 - convert DAO layer from hibernate to data JPA (@Component to @Repository)
