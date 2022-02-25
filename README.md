@@ -1,3 +1,7 @@
-# university
+# University pet-project (based on foxminded menthoring couse)
 
-Task 11
+The program features:
+- add system tests with SpringBootTest
+
+Stack updated:
+- SpringBootTest
