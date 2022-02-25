@@ -1,4 +1,4 @@
-# University pet-project (based on foxminded menthoring couse)
+# University pet-project (based on foxminded menthoring course)
 
 The program features:
 - add status pages for models (new controllers)
