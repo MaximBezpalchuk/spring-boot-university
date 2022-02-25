@@ -1,4 +1,4 @@
-# University pet-project (based on foxminded menthoring couse)
+# University pet-project (based on foxminded menthoring course)
 
 App updated with Spring JDBC and PostgreSQL. DAO layer was created with own Row Mappers
 
