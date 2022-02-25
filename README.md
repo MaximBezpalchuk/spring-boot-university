@@ -1,4 +1,4 @@
-# University pet-project (based on foxminded menthoring couse)
+# University pet-project (based on foxminded menthoring course)
 
 A console application was created based on an UML-diagram
 
