@@ -1,3 +1,8 @@
-# university
+# University pet-project (based on foxminded menthoring couse)
 
-Task 11
+The program features:
+- add REST controllers (endpoints)
+- add DTOs
+
+Stack updated:
+- REST
