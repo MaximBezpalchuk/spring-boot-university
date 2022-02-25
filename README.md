@@ -2,7 +2,8 @@
 
 The program features:
 - change DAO layer from JDBC to hibernate
-- delete own mappers to hibernate auto-mapping by method-names (you can check named queries and named native queries in branch commits)
+- delete own mappers to hibernate auto-mapping
+- named queries and named native queries on models
 
 Stack updated:
 - Hibernate
